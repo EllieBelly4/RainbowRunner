@@ -2,7 +2,6 @@ package login
 
 import (
 	"RainbowRunner/internal/message"
-	"encoding/hex"
 	"fmt"
 	"net"
 )
@@ -56,10 +55,6 @@ func handleConnection(conn net.Conn) {
 			fmt.Printf("failed to read from connection: %e\n", err)
 			break
 		}
-
-		hexBuf := hex.EncodeToString(buf[0:read])
-
-		fmt.Printf("Read %d:\n%s\n", read, hexBuf)
 
 		parser.Parse(buf, read)
 	}

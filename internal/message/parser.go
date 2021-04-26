@@ -5,6 +5,8 @@ import (
 	"RainbowRunner/internal/connection"
 	"RainbowRunner/internal/crypt"
 	"encoding/binary"
+	"encoding/hex"
+	"fmt"
 	"net"
 )
 
@@ -35,13 +37,17 @@ func (p *Parser) Parse(read []byte, count int) {
 }
 
 func (p *Parser) processMessage(reader *byter.Byter) {
+	fmt.Printf("Read:\n%s\n", hex.Dump(reader.Buffer))
+
 	messageTypeID := reader.UInt8()
 
 	var err error
 
-	switch messageTypeID {
-	case uint8(0):
+	switch int(messageTypeID) {
+	case 0:
 		err = HandleLoginMessage(p.connection, reader)
+	case 5:
+		err = HandleServerListMessage(p.connection, reader)
 	}
 
 	if err != nil {
