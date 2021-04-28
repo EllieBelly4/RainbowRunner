@@ -2,12 +2,11 @@ package message
 
 import (
 	"RainbowRunner/internal/byter"
-	"RainbowRunner/internal/connection"
 	"RainbowRunner/internal/crypt"
 	"fmt"
 )
 
-func HandleLoginMessage(conn *connection.Connection, reader *byter.Byter) error {
+func HandleLoginMessage(conn *AuthMessageParser, reader *byter.Byter) error {
 	decryptedLogin := crypt.DecryptDES(reader.Bytes(0x18), 0x18)
 	remainingPassword := reader.Bytes(0x1E - 0x18)
 	decryptedLogin = append(decryptedLogin, remainingPassword...)
@@ -32,11 +31,10 @@ func HandleLoginMessage(conn *connection.Connection, reader *byter.Byter) error 
 	00000036 db ? ; undefined
 	00000037 db ? ; undefined
 	00000038 linACLoginOkPacket ends
-	 */
-	
-	var response = byter.NewByter(make([]byte, 0, 128))
+	*/
 
-	response.WriteByte(0x03)
+	var response = byter.NewLEByter(make([]byte, 0, 128))
+
 	response.WriteUInt32(0xFFEEFFEE)
 	response.WriteUInt32(0xAABBAABB)
 	response.WriteUInt32(0xDDCCDDCC)
@@ -51,7 +49,7 @@ func HandleLoginMessage(conn *connection.Connection, reader *byter.Byter) error 
 	response.WriteBool(true)
 	response.WriteBool(true)
 
-	err := conn.WriteMessageByter(response)
+	err := conn.WriteAuthMessage(AuthServerLoginOkPacket, response)
 
 	if err != nil {
 		return err

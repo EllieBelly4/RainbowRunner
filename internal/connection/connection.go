@@ -4,7 +4,6 @@ import (
 	"RainbowRunner/internal/byter"
 	"RainbowRunner/internal/crypt"
 	"encoding/binary"
-	"fmt"
 	"net"
 )
 
@@ -12,7 +11,7 @@ type Connection struct {
 	Conn net.Conn
 }
 
-func (c *Connection) WriteMessageBytes(bytes []byte) error {
+func (c *Connection) WriteMessageBytes(bytes []byte) ([]byte, error) {
 	length := len(bytes)
 	remainder := length % 8
 
@@ -29,13 +28,8 @@ func (c *Connection) WriteMessageBytes(bytes []byte) error {
 		byte(packetLength >> 8),
 	})
 
-	fmt.Printf("%x", []byte{
-		byte(packetLength),
-		byte(packetLength >> 8),
-	})
-
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	checksum := uint32(0)
@@ -52,25 +46,18 @@ func (c *Connection) WriteMessageBytes(bytes []byte) error {
 	bytes = append(bytes, checksumBytes...)
 	bytes = append(bytes, []byte{0x0, 0x0, 0x0, 0x0}...)
 
-	fmt.Printf("Checksum: %x\n", checksum)
-
 	//written, err := c.Conn.Write(bytes)
 	encryptedPayload := crypt.EncryptBlowfish(bytes, len(bytes))
-	written, err := c.Conn.Write(encryptedPayload)
+	_, err = c.Conn.Write(encryptedPayload)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	fmt.Printf("%x\n", bytes)
-	fmt.Printf("%x\n", encryptedPayload)
-
-	fmt.Printf("Send message with payload length %d\n", written)
-
-	return nil
+	return bytes, nil
 }
 
-func (c *Connection) WriteMessageByter(response *byter.Byter) error {
+func (c *Connection) WriteMessageByter(response *byter.Byter) ([]byte, error) {
 	return c.WriteMessageBytes(response.Buffer)
 }
 

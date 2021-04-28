@@ -10,11 +10,11 @@ import (
 	"net"
 )
 
-type Parser struct {
+type AuthMessageParser struct {
 	connection *connection.Connection
 }
 
-func (p *Parser) Parse(read []byte, count int) {
+func (p *AuthMessageParser) Parse(read []byte, count int) {
 	var readBytes = 0
 
 	for readBytes < count {
@@ -24,11 +24,10 @@ func (p *Parser) Parse(read []byte, count int) {
 		//var encrypted = crypt.EncryptBlowfish(decrypted, len(decrypted))
 		//fmt.Printf("Old:\n%s\nNew:\n%s\n", hex.Dump(read[readBytes+2:readBytes+packetLength]), hex.Dump(encrypted))
 
-		var byteReader = byter.NewByter(decrypted)
-		byteReader.LittleEndian()
+		var byteReader = byter.NewLEByter(decrypted)
 
 		if count-readBytes >= packetLength {
-			p.processMessage(byteReader)
+			p.processMessage(byteReader, packetLength)
 			readBytes += packetLength
 		} else {
 			panic("Can't handle the split packets right now")
@@ -36,18 +35,23 @@ func (p *Parser) Parse(read []byte, count int) {
 	}
 }
 
-func (p *Parser) processMessage(reader *byter.Byter) {
-	fmt.Printf("Read:\n%s\n", hex.Dump(reader.Buffer))
-
+func (p *AuthMessageParser) processMessage(reader *byter.Byter, length int) {
 	messageTypeID := reader.UInt8()
+
+	fmt.Printf(
+		"Received %s (%d bytes):\n%s\n",
+		AuthClientMessage(messageTypeID).String(), length, hex.Dump(reader.Buffer),
+	)
 
 	var err error
 
-	switch int(messageTypeID) {
-	case 0:
-		err = HandleLoginMessage(p.connection, reader)
-	case 5:
-		err = HandleServerListMessage(p.connection, reader)
+	switch AuthClientMessage(messageTypeID) {
+	case AuthClientLoginPacket:
+		err = HandleLoginMessage(p, reader)
+	case AuthClientAboutToPlayPacket:
+		err = HandleAboutToPlay(p, reader)
+	case AuthClientServerListExtPacket:
+		err = HandleServerListMessage(p, reader)
 	}
 
 	if err != nil {
@@ -55,8 +59,20 @@ func (p *Parser) processMessage(reader *byter.Byter) {
 	}
 }
 
-func NewParser(conn net.Conn) *Parser {
-	return &Parser{
+func (p *AuthMessageParser) WriteAuthMessage(messageType AuthServerMessage, response *byter.Byter) error {
+	sent, err := p.connection.WriteMessageBytes(append([]byte{byte(messageType)}, response.Buffer...))
+
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Sent %s (%d bytes):\n%s\n", messageType.String(), len(sent), hex.Dump(sent))
+
+	return nil
+}
+
+func NewAuthMessageParser(conn net.Conn) *AuthMessageParser {
+	return &AuthMessageParser{
 		connection: connection.NewConnection(conn),
 	}
 }

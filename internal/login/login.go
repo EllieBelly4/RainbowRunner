@@ -34,7 +34,7 @@ func StartLoginServer() {
 }
 
 func handleConnection(conn net.Conn) {
-	parser := message.NewParser(conn)
+	parser := message.NewAuthMessageParser(conn)
 	buf := make([]byte, 1024*10)
 
 	fmt.Println("Client connected")

@@ -33,3 +33,7 @@ Encrypted data passed in with length 0x1E
 Limited to 0x18 due to 8 byte block size
 
 ESI input plain text 0019B35C
+
+Message buffer for serialisation (works for server list): 0A4DA230
+
+DFCMessage write buffer starts: 0A4F79F8

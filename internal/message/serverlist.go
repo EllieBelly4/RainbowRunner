@@ -2,10 +2,9 @@ package message
 
 import (
 	"RainbowRunner/internal/byter"
-	"RainbowRunner/internal/connection"
 )
 
-func HandleServerListMessage(c *connection.Connection, reader *byter.Byter) error {
+func HandleServerListMessage(c *AuthMessageParser, reader *byter.Byter) error {
 	// Session1
 	reader.UInt32()
 	// Session2
@@ -45,23 +44,25 @@ func HandleServerListMessage(c *connection.Connection, reader *byter.Byter) erro
 	00000013 db ? ; undefined
 	00000014 dm_serverInfoEx ends
 	*/
-	response := byter.NewByter(make([]byte, 0, 128))
-	response.WriteByte(0x04)
-	response.WriteByte(0x01) // If this is 0 then "World is down"
-	response.WriteByte(0x01) // Unk
+	serverCount := byte(0xFF)
 
-	response.WriteByte(0x0D) // Server ID
+	response := byter.NewLEByter(make([]byte, 0, 128))
+	response.WriteByte(serverCount) // Server Count
+	response.WriteByte(0x00)        // Last Server ID?
 
-	// Server Entry
-	response.WriteUInt32(0x7F000001) // IP 127.0.0.1
-	response.WriteUInt32(0x00000A2B) // Port 2603
-	response.WriteBool(false)        // Age limit
-	response.WriteBool(false)        // PKFlag
-	response.WriteUInt16(0x0000)     // Current User ? User count?
-	response.WriteUInt16(0xFFFF)     // Max user count
-	response.WriteByte(0x01)         // Server Status
+	for i := byte(0); i < serverCount; i++ {
+		// Server Entry
+		response.WriteByte(i)                    // Server ID
+		response.WriteUInt32(0x0100007F)         // IP 127.0.0.1
+		response.WriteUInt32(0x00000A2B)         // Port 2603
+		response.WriteBool(false)                // Age limit
+		response.WriteBool(false)                // PKFlag
+		response.WriteUInt16(uint16(0x0010 + i)) // Current User ? User count?
+		response.WriteUInt16(0xFFFF)             // Max user count
+		response.WriteByte(0x01)                 // Server Status
+	}
 
-	err := c.WriteMessageByter(response)
+	err := c.WriteAuthMessage(AuthServerSendServerListExPacket, response)
 
 	if err != nil {
 		return err

@@ -42,6 +42,26 @@ func (b *Byter) UInt32() uint32 {
 	}
 }
 
+func (b *Byter) UInt64() uint64 {
+	var result uint64 = 0
+
+	if b.littleEndian {
+		i := b.getDataIndex(4)
+		result |= uint64(binary.LittleEndian.Uint32(b.Buffer[i:])) << 32
+
+		i = b.getDataIndex(4)
+		result |= uint64(binary.LittleEndian.Uint32(b.Buffer[i:]))
+	} else {
+		i := b.getDataIndex(4)
+		result |= uint64(binary.BigEndian.Uint32(b.Buffer[i:])) << 32
+
+		i = b.getDataIndex(4)
+		result |= uint64(binary.BigEndian.Uint32(b.Buffer[i:]))
+	}
+
+	return result
+}
+
 func (b *Byter) getDataIndex(num int) int {
 	if b.Buffer == nil || len(b.Buffer)-b.i < num {
 		panic("Not enough data remaining in buffer!")
@@ -77,7 +97,11 @@ func (b *Byter) WriteBool(i bool) error {
 func (b *Byter) WriteUInt32(i uint32) error {
 	b.Buffer = append(b.Buffer, []byte{0, 0, 0, 0}...)
 
-	binary.LittleEndian.PutUint32(b.Buffer[len(b.Buffer)-4:], i)
+	if b.littleEndian {
+		binary.LittleEndian.PutUint32(b.Buffer[len(b.Buffer)-4:], i)
+	} else {
+		binary.BigEndian.PutUint32(b.Buffer[len(b.Buffer)-4:], i)
+	}
 
 	return nil
 }
@@ -85,13 +109,28 @@ func (b *Byter) WriteUInt32(i uint32) error {
 func (b *Byter) WriteUInt16(i uint16) error {
 	b.Buffer = append(b.Buffer, []byte{0, 0}...)
 
-	binary.LittleEndian.PutUint16(b.Buffer[len(b.Buffer)-2:], i)
+	if b.littleEndian {
+		binary.LittleEndian.PutUint16(b.Buffer[len(b.Buffer)-2:], i)
+	} else {
+		binary.BigEndian.PutUint16(b.Buffer[len(b.Buffer)-2:], i)
+	}
 
 	return nil
+}
+
+func (b *Byter) Data() []byte {
+	return b.Buffer[0:len(b.Buffer)]
 }
 
 func NewByter(buffer []byte) *Byter {
 	return &Byter{
 		Buffer: buffer,
+	}
+}
+
+func NewLEByter(buffer []byte) *Byter {
+	return &Byter{
+		Buffer:       buffer,
+		littleEndian: true,
 	}
 }
