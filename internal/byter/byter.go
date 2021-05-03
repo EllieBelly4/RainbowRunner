@@ -45,6 +45,24 @@ func (b *Byter) UInt32() uint32 {
 	}
 }
 
+func (b *Byter) UInt24() uint32 {
+	i := b.getDataIndex(3)
+
+	result := uint32(0)
+
+	if b.littleEndian {
+		result |= uint32(b.Buffer[i])
+		i++
+		result |= uint32(binary.LittleEndian.Uint16(b.Buffer[i:])) << 8
+	} else {
+		result |= uint32(b.Buffer[i]) << 16
+		i++
+		result |= uint32(binary.LittleEndian.Uint16(b.Buffer[i:]))
+	}
+
+	return result
+}
+
 func (b *Byter) UInt64() uint64 {
 	var result uint64 = 0
 

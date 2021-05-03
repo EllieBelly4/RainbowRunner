@@ -61,90 +61,34 @@ func handleConnection(conn net.Conn) {
 
 		reader := byter.NewLEByter(buf[0:read])
 
-		reader.UInt8()      // Message Type?
-		reader.UInt8()      // Unk Dynamic
-		reader.UInt16()     // Unk
-		reader.UInt32()     // Unk
-		reader.Bytes(3)     // Unk
-		_ = reader.UInt8()  // Unk Message Static
-		_ = reader.UInt32() // One Time Key
-		reader.Bytes(1)     // Null
+		msgType := reader.UInt8() // Message Type?
 
-		//fmt.Printf("%x %x", unkMessageStatic, key)
+		switch msgType {
+		case 0x02:
+			reader.UInt8()          // Unk Dynamic
+			reader.UInt16()         // Unk
+			size := reader.UInt24() // Size
 
-		//response := byter.NewLEByter(make([]byte, 0, 1024))
-		//
-		//// Header 8 bytes
-		//response.WriteByte(0x10) // Multiple of 4/8
-		//response.WriteByte(0x34) // Unk
-		//
-		//response.WriteUInt16(0x11E6) // Unk
-		////response.WriteByte(0xBE)         // Unk
-		//response.WriteUInt32(0x00000001) // Packet Size (max 100000h)
+			if size == 9 {
+				reader.UInt8()      // Channel
+				_ = reader.UInt32() // Unk Message Static
+				_ = reader.UInt32() // One Time Key
+				reader.Bytes(1)     // Null
 
-		// Body
-		// Message Type 0x03 == game server auth success
-		//response.WriteByte(0x03)
-		//response.WriteByte(0x00)
-		//response.WriteByte(0x00)
-		//response.WriteByte(0x00)
-		//response.WriteUInt32(0xFEEDBEE5)
-		//response.WriteUInt32(0xFEEDBEE5)
-		//response.WriteUInt32(0xFEEDBEE5)
-		//response.WriteUInt32(0xFEEDBEE5)
-		//response.WriteUInt32(0xFEEDBEE5)
-		//response.WriteByte(0x00)
+				body := byter.NewLEByter(make([]byte, 0, 1024))
 
-		body := byter.NewLEByter(make([]byte, 0, 1024))
+				body.WriteByte(0x03)
+				WriteMessage(0x10, 0x262728, 0x0a, conn, body)
 
-		body.WriteByte(0x03)
-		//body.WriteUInt24(0x262728)
-		WriteMessage(0x10, 0x262728, 0x0a, conn, body)
-
-		//body = byter.NewLEByter(make([]byte, 0, 1024))
-		//
-		//body.WriteUInt32(0xFEEDBABA)
-		//WriteCompressed8(body, conn)
-
-		body = byter.NewLEByter(make([]byte, 0, 1024))
-		body.WriteUInt32(0xFEEDBABA)
-		body.WriteUInt32(0xFEEDBABA)
-		body.WriteUInt32(0xFEEDBABA)
-		body.WriteUInt32(0xFEEDBABA)
-		body.WriteUInt32(0xFEEDBABA)
-		body.WriteUInt32(0xFEEDBABA)
-		body.WriteUInt32(0xFEEDBABA)
-		body.WriteUInt32(0xFEEDBABA)
-		body.WriteUInt32(0xFEEDBABA)
-		body.WriteUInt32(0xFEEDBABA)
-		WriteCompressedA(0x00, 0x03, body, conn)
-
-		// This one makes it to the fork where we fail
-		//body = byter.NewLEByter(make([]byte, 0, 1024))
-		//body.WriteUInt32(0xFEEDBABA)
-		//WriteCompressedA(body, conn)
-
-		// This causes disconnection with no error
-		//body.Clear()
-		//body.WriteByte(0x34)
-		//body.WriteUInt32(0xFEEDBABA)
-		//WriteMessage(0x03, 0x02, conn, body)
-
-		// This causes allocation error
-		//04 00 03 00 05 00 00 53  dd ba ba ed fe
-
-		//for i := 0; i <= 0xFF; i++ {
-		//	for j := 0; j <= 0xFF; j++ {
-		//		body.Clear()
-		//		body.WriteByte(byte(j))
-		//		body.WriteUInt32(0xFEEDBABA)
-		//		WriteMessage(0x04, uint8(i), conn, body)
-		//	}
-		//	//WriteMessage(0x02, uint8(i), conn, body)
-		//}
-
-		//conn.Write(response.Data())
-		//parser.Parse(buf, read)
+				body = byter.NewLEByter(make([]byte, 0, 1024))
+				body.WriteUInt32(0x01020304)
+				WriteCompressedA(0x00, 0x03, body, conn)
+			} else {
+				fmt.Printf("Ignoring short message 0x02 of length %d\n", size)
+			}
+		default:
+			fmt.Printf("Unhandled message type %x\n", msgType)
+		}
 	}
 }
 
@@ -156,7 +100,7 @@ func WriteCompressed8(body *byter.Byter, conn net.Conn) {
 	w.Write(body.Data())
 	w.Close()
 
-	fmt.Printf("Compressed raw:\n%sas:\n%s", hex.Dump(body.Data()), hex.Dump(b.Bytes()))
+	//fmt.Printf("Compressed raw:\n%sas:\n%s", hex.Dump(body.Data()), hex.Dump(b.Bytes()))
 
 	response.WriteByte(0x08)       // Packet Type
 	response.WriteUInt24(0x313233) // Unk
@@ -182,7 +126,7 @@ func WriteCompressedA(dest uint8, messageType uint8, body *byter.Byter, conn net
 	w.Write(body.Data())
 	w.Close()
 
-	fmt.Printf("Compressed raw:\n%sas:\n%s", hex.Dump(body.Data()), hex.Dump(b.Bytes()))
+	//fmt.Printf("Compressed raw:\n%sas:\n%s", hex.Dump(body.Data()), hex.Dump(b.Bytes()))
 
 	response.WriteByte(0x0a)       // Packet Type
 	response.WriteUInt24(0x313233) // Unk
