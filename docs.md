@@ -80,9 +80,12 @@ DFCMessageClient::updateReceivedMessages seems to be base class for handling all
    00000000 02         00 e6 11  01 00 00    00    03         |.........|
 ```
 
-3. [Server] Sends something
+3. [Server] Sends client connected message with client ID Message below is compressed with zlib
 
-Message client needs to receive a message marking it as connected, this happens in DFCMessageClient::processConnected
+```
+0a 33 32 31 17 00 00 00  00 03 00 04 00 00 00 78
+9c 62 61 66 62 04 04 00  00 ff ff 00 22 00 0b   
+```
 
 4. [Client] Sends something again
 
@@ -126,6 +129,22 @@ DFCMessageServer::getClientChannelByID
 |0x0a|Some compressed message|Unk|
 
 ##### Message compression
+
+Messages are compressed with zlib and have varying structures
+
+###### 0x0A - Channel target message?
+
+```
+[Type] [Unk     ] [Comp Body Len + 7] [Chan] [Msg Type] [Uncomp Body Len] [Comp Data]
+ 0a     31 32 33   14 00 00 00         00     03         04 00 00 00       ...
+```
+
+###### 0x08 - Direct message?
+
+```
+[Type] [Unk     ] [Comp Body Len + 7] [Uncomp Body Len] [Comp Data]
+ 0a     31 32 33   14 00 00 00         04 00 00 00       ...
+```
 
 ```
 body.WriteByte(0xFF)
