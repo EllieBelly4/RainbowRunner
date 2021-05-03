@@ -1,6 +1,9 @@
 package byter
 
-import "encoding/binary"
+import (
+	"bytes"
+	"encoding/binary"
+)
 
 type Byter struct {
 	i            int
@@ -106,6 +109,22 @@ func (b *Byter) WriteUInt32(i uint32) error {
 	return nil
 }
 
+func (b *Byter) WriteUInt24(num uint) error {
+	if b.littleEndian {
+		b.Buffer = append(b.Buffer, byte(num))
+
+		b.Buffer = append(b.Buffer, []byte{0, 0}...)
+		binary.LittleEndian.PutUint16(b.Buffer[len(b.Buffer)-2:], uint16(num>>8))
+	} else {
+		b.Buffer = append(b.Buffer, byte(num>>16))
+
+		b.Buffer = append(b.Buffer, []byte{0, 0}...)
+		binary.BigEndian.PutUint16(b.Buffer[len(b.Buffer)-2:], uint16(num))
+	}
+
+	return nil
+}
+
 func (b *Byter) WriteUInt16(i uint16) error {
 	b.Buffer = append(b.Buffer, []byte{0, 0}...)
 
@@ -120,6 +139,18 @@ func (b *Byter) WriteUInt16(i uint16) error {
 
 func (b *Byter) Data() []byte {
 	return b.Buffer[0:len(b.Buffer)]
+}
+
+func (b *Byter) Write(body *Byter) {
+	b.Buffer = append(b.Buffer, body.Data()...)
+}
+
+func (b *Byter) Clear() {
+	b.Buffer = b.Buffer[:0]
+}
+
+func (b *Byter) WriteBuffer(b2 bytes.Buffer) {
+	b.Buffer = append(b.Buffer, b2.Bytes()...)
 }
 
 func NewByter(buffer []byte) *Byter {
