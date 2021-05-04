@@ -83,11 +83,13 @@ DFCMessageClient::updateReceivedMessages seems to be base class for handling all
 3. [Server] Sends client connected message with client ID Message below is compressed with zlib
 
 ```
+Body: b4 b3 b2 00
+
 0a 33 32 31 17 00 00 00  00 03 00 04 00 00 00 78
 9c 62 61 66 62 04 04 00  00 ff ff 00 22 00 0b   
 ```
 
-4. [Client] Sends something again
+4. [Client] Possibly heartbeat
 
 ```
 (GameServer)Received: 
@@ -99,7 +101,7 @@ DFCMessageClient::updateReceivedMessages seems to be base class for handling all
 When forcing the processConnected function call we get this message:
 "Message sent before acquiring an address"
 
-##### DFCMessageClientProcessConected()
+##### DFCMessageClientProcessConnected()
 
 How do we get there?
 
@@ -121,25 +123,58 @@ DFCMessageServer::getClientChannelByID
 
 #### Message Types
 
+##### Server
 |ID|Name|Description|
 |---|---|---|
 |0x01|Unk|Causes disconnections in all cases|
 |0x02|Channel Message?|Does not work until game is in "connected" state|
+|0x06|Unk||
 |0x10|Auth message|Used prior to channel messages|
 |0x0a|Some compressed message|Unk|
 
-##### Message compression
+##### Client
+|ID|Name|Description|
+|---|---|---|
+|0x02|Client messages|connect/disconnect/assign ID/heartbeat|
+|0x06|Client messages?|First message for character selection uses this|
 
-Messages are compressed with zlib and have varying structures
+##### Message structure
 
-###### 0x0A - Channel target message?
+Some messages are compressed with zlib and have varying structures
+
+###### 0x06 - Unk
+Seems to be client only, send 0x0a in response from server
+
+Basic Header: 8 bytes 
+
+```
+debug430:0A4377D0                     dw 0F0B4h; destination_channel
+debug430:0A4377D0                     dw 0B2B3h; unk_23
+
+Client
+[Type] [Src or Dst] [MsgLength] [Chan?] [Dst] [Unk  ] [Unk  ] [Unk] [ Unk ] [Body ]
+ 06     55 65 0A     0A 00 00    0A      B4    B3 B2   01 00   01    00 00   03 00
+ 
+Server
+[Type] [Src or Dst] [MsgLength] [Chan?] [Dest] [Unk  ] [Unk  ] [Unk] [Unk  ] 
+ 06     b4 b3 b2     0c 00 00    01      cd     b4 b3   dc ac   0d    f0 b0
+ 
+ // Anything after the final f0 b0 will be parsed again from 0d                                   
+ 06     b4 b3 b2     0c 00 00    01      cd     b4 b3   dc ac   0d    f0 b0     b0 60 50 80 70
+ 
+ // This message causes the decompression process even though it's not compressed
+ 06 fb 68 0a 07 00 00 0a  b4 b3 b2 01 00 b4 00 00                                  
+ 06 fb 68 0a 07 00 00 0a  b4 b3 b2 01 00 01 00 00                                  
+```
+
+###### (Compressed) 0x0A - Channel target message?
 
 ```
 [Type] [Unk     ] [Comp Body Len + 7] [Chan] [Msg Type] [Uncomp Body Len] [Comp Data]
  0a     31 32 33   14 00 00 00         00     03         04 00 00 00       ...
 ```
 
-###### 0x08 - Direct message?
+###### (Compressed) 0x08 - Direct message?
 
 ```
 [Type] [Unk     ] [Comp Body Len + 7] [Uncomp Body Len] [Comp Data]

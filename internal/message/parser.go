@@ -7,6 +7,7 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"net"
 )
 
@@ -22,7 +23,7 @@ func (p *AuthMessageParser) Parse(read []byte, count int) {
 
 		var decrypted = crypt.DecryptBlowfish(read[readBytes+2:readBytes+packetLength-2], packetLength-2)
 		//var encrypted = crypt.EncryptBlowfish(decrypted, len(decrypted))
-		//fmt.Printf("Old:\n%s\nNew:\n%s\n", hex.Dump(read[readBytes+2:readBytes+packetLength]), hex.Dump(encrypted))
+		//log.Info(fmt.Sprintf("Old:\n%s\nNew:\n%s\n", hex.Dump(read[readBytes+2:readBytes+packetLength]), hex.Dump(encrypted)))
 
 		var byteReader = byter.NewLEByter(decrypted)
 
@@ -38,10 +39,10 @@ func (p *AuthMessageParser) Parse(read []byte, count int) {
 func (p *AuthMessageParser) processMessage(reader *byter.Byter, length int) {
 	messageTypeID := reader.UInt8()
 
-	fmt.Printf(
+	log.Info(fmt.Sprintf(
 		"Received %s (%d bytes):\n%s\n",
 		AuthClientMessage(messageTypeID).String(), length, hex.Dump(reader.Buffer),
-	)
+	))
 
 	var err error
 
@@ -66,7 +67,7 @@ func (p *AuthMessageParser) WriteAuthMessage(messageType AuthServerMessage, resp
 		return err
 	}
 
-	fmt.Printf("Sent %s (%d bytes):\n%s\n", messageType.String(), len(sent), hex.Dump(sent))
+	log.Info(fmt.Sprintf("Sent %s (%d bytes):\n%s\n", messageType.String(), len(sent), hex.Dump(sent)))
 
 	return nil
 }

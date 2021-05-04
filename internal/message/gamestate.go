@@ -3,6 +3,7 @@ package message
 import (
 	"RainbowRunner/internal/byter"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 )
 
 func HandleAboutToPlay(p *AuthMessageParser, reader *byter.Byter) error {
@@ -10,7 +11,7 @@ func HandleAboutToPlay(p *AuthMessageParser, reader *byter.Byter) error {
 	reader.UInt64()
 	serverID := reader.UInt8()
 
-	fmt.Printf("Wants to join server %d\n", serverID)
+	log.Info(fmt.Sprintf("Wants to join server %d\n", serverID))
 
 	response := byter.NewLEByter(make([]byte, 0, 0xFF))
 

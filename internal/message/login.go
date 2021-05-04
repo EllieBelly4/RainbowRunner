@@ -4,6 +4,7 @@ import (
 	"RainbowRunner/internal/byter"
 	"RainbowRunner/internal/crypt"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 )
 
 func HandleLoginMessage(conn *AuthMessageParser, reader *byter.Byter) error {
@@ -12,7 +13,7 @@ func HandleLoginMessage(conn *AuthMessageParser, reader *byter.Byter) error {
 	decryptedLogin = append(decryptedLogin, remainingPassword...)
 	username := string(decryptedLogin[0:14])
 	password := string(decryptedLogin[14:])
-	fmt.Printf("Login attempt with %s:%s\n", username, password)
+	log.Info(fmt.Sprintf("Login attempt with %s:%s\n", username, password))
 
 	/**
 	00000000 linACLoginOkPacket struc ; (sizeof=0x38, align=0x4, copyof_811)

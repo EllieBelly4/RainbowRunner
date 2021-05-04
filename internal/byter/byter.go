@@ -171,6 +171,15 @@ func (b *Byter) WriteBuffer(b2 bytes.Buffer) {
 	b.Buffer = append(b.Buffer, b2.Bytes()...)
 }
 
+func (b *Byter) String() {
+	str := ""
+
+	for b.Buffer[b.i] != 0x00 {
+		i := b.getDataIndex(1)
+		str += string(b.Buffer[i])
+	}
+}
+
 func NewByter(buffer []byte) *Byter {
 	return &Byter{
 		Buffer: buffer,

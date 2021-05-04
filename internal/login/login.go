@@ -3,6 +3,7 @@ package login
 import (
 	"RainbowRunner/internal/message"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"net"
 )
 
@@ -52,7 +53,7 @@ func handleConnection(conn net.Conn) {
 		read, err := conn.Read(buf)
 
 		if err != nil {
-			fmt.Printf("failed to read from connection: %e\n", err)
+			log.Info(fmt.Sprintf("failed to read from connection: %e\n", err))
 			break
 		}
 
