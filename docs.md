@@ -298,3 +298,7 @@ wrong ZoneServer(%s). Expected message from(%s)
 .rdata:00706EE8 0000002C C Expected float32 but got \"%s\" in chunk \"%s\"
 .rdata:00706F18 0000002C C Expected float64 but got \"%s\" in chunk \"%s\"
 ```
+
+### DFCObject serialisation
+[Serialisation](./resources/Docs/serialisation.md)
+

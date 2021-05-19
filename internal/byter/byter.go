@@ -171,13 +171,32 @@ func (b *Byter) WriteBuffer(b2 bytes.Buffer) {
 	b.Buffer = append(b.Buffer, b2.Bytes()...)
 }
 
-func (b *Byter) String() {
+func (b *Byter) String() string {
 	str := ""
+	i := b.getDataIndex(1)
 
-	for b.Buffer[b.i] != 0x00 {
-		i := b.getDataIndex(1)
+	for b.Buffer[i] != 0x00 {
 		str += string(b.Buffer[i])
+		i = b.getDataIndex(1)
 	}
+
+	return str
+}
+
+func (b *Byter) WriteBytes(data []byte) {
+	b.Buffer = append(b.Buffer, data...)
+}
+
+func (b *Byter) WriteString(s string) {
+	b.Buffer = append(b.Buffer, []byte(s)...)
+}
+
+func (b *Byter) WriteCString(s string) {
+	b.WriteString(s + "\x00")
+}
+
+func (b *Byter) WriteNull() error {
+	return b.WriteByte(0x00)
 }
 
 func NewByter(buffer []byte) *Byter {

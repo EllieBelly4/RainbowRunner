@@ -1,0 +1,50 @@
+debug084:0333FD68                     dd offset ??_7Avatar@@6BDFCNode@@@ ; const Avatar::`vftable'{for `DFCNode'}
+debug084:0333FD6C                     dd 3
+debug084:0333FD70                     dd 0BAADF00Dh
+debug084:0333FD74                     dd 0BAADF00Dh
+debug084:0333FD78                     dd 0
+debug084:0333FD7C                     dd 0
+debug084:0333FD80                     dd 0
+debug084:0333FD84                     dd 0
+debug084:0333FD88                     dd 0
+debug084:0333FD8C                     dd 0
+debug084:0333FD90                     dd 0BAADF00Dh
+debug084:0333FD94                     dd offset ??_7Avatar@@6BIEventHandler@@@ ; const Avatar::`vftable'{for `IEventHandler'}
+debug084:0333FD98                     dd offset dword_3340FE0
+debug084:0333FD9C                     dd 0BAADF00Dh
+debug084:0333FDA0                     dd offset ??_7EventSystem@@6B@ ; const EventSystem::`vftable'
+debug084:0333FDA4                     dd 0
+debug084:0333FDA8                     dd 0BAADF00Dh
+debug084:0333FDAC                     dd offset dword_3340DE8
+debug084:0333FDB0                     dd 0BAADF00Ch
+debug084:0333FDB4                     dd 0
+debug084:0333FDB8                     dd 0
+debug084:0333FDBC                     dd offset off_33443A0
+debug084:0333FDC0                     dd offset off_3340470
+debug084:0333FDC4                     dd 0
+debug084:0333FDC8                     dd 0BAADF00Ch
+debug084:0333FDCC                     dd 0BAADF00Dh
+debug084:0333FDD0                     dd offset ??_7Avatar@@6B@ ; const Avatar::`vftable'
+debug084:0333FDD4                     dd 0BAADF00Dh
+debug084:0333FDD8                     dd offset off_333E680
+debug084:0333FDDC                     dd 0
+debug084:0333FDE0                     dd 0BAADF00Dh
+debug084:0333FDE4                     dd 0BAADF00Dh
+debug084:0333FDE8                     dd 0
+debug084:0333FDEC                     dd 0
+debug084:0333FDF0                     dd 0
+debug084:0333FDF4                     dd 0BAADF00Dh
+debug084:0333FDF8                     dd 0
+debug084:0333FDFC                     dd 0
+debug084:0333FE00                     dd 0
+debug084:0333FE04                     dd 0
+debug084:0333FE08                     dd 8006h
+debug084:0333FE0C                     dd 0
+debug084:0333FE10                     dd 0
+debug084:0333FE14                     dd 0
+debug084:0333FE18                     dd 0
+debug084:0333FE1C                     dd 0
+debug084:0333FE20                     dd 0BAADF00Dh
+debug084:0333FE24                     dd 0FFh
+debug084:0333FE28                     dd 0BAADF00Dh
+debug084:0333FE2C                     dd 0

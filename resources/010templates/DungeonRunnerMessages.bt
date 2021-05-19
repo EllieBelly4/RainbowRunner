@@ -1,0 +1,66 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct {
+    ubyte a;
+    ubyte b;
+    ubyte c;
+    local uint v = (uint)a;
+    v |= (uint)b << 8;
+    v |= (uint)c << 16;
+} UINT24 <read=read_UINT24>;
+
+string read_UINT24(UINT24 &in) {
+    local string out;
+    SPrintf(out, "%Xh", in.v);
+    return out;
+}
+
+typedef struct SixMessageHeader{
+    UINT24 src_or_dest_1;
+    UINT24 msg_length;
+    ubyte channel_maybe <format=hex>;
+    UINT24 src_or_dest_2;
+    ubyte unk_type;
+    ubyte unk_1;
+    UINT24 unk_3;
+    ubyte channel;
+    ubyte msg_sub_type;
+};
+
+typedef struct CharacterCreateMessage  {
+    string name;
+    string class;
+    byte unk;
+    ubyte face;
+    ubyte hair;
+    ubyte hair_colour;
+};
+
+LittleEndian();
+
+byte message_type;
+
+if (message_type == 0x06) {
+    SixMessageHeader messageHeader;
+
+    switch(messageHeader.channel) {
+        case 0x04:
+            switch(messageHeader.msg_sub_type){
+                case 0x02:
+                    CharacterCreateMessage characterCreateMessage;
+                    break;
+            }
+            break;
+    }
+}

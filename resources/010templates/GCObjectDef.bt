@@ -1,0 +1,28 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct GCObjectDef {
+    uint32 unk;
+    uint32 constructor_ptr;
+
+    uint32 unk;
+    uint32 unk;
+
+    uint32 unk;
+    uint32 unk;
+        
+    uint32 unk_same;
+    uint32 unk_same;
+};
+
+GCObjectDef obj;
