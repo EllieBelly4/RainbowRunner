@@ -19,6 +19,11 @@ const (
 	Unk2
 	Unk3
 	CharacterChannel
+	Unk5
+	Unk6
+	Unk7
+	Unk8
+	Unk9
 )
 
 type CharacterMessage byte
@@ -29,6 +34,13 @@ const (
 	CharacterCreate
 	CharacterGetList
 	CharacterDelete
+	CharacterPlay
+)
+
+type Unk9Message byte
+
+const (
+	Unk9Unk0 Unk9Message = iota
 )
 
 var blowfishKey = "[;',27h,'.]94-31==-%&@!^+]"
@@ -130,6 +142,11 @@ func handleConnection(conn net.Conn) {
 					body.WriteByte(byte(CharacterChannel))   // Character channel
 					body.WriteByte(byte(CharacterConnected)) // Connected
 					WriteCompressedA(clientID, 0x01, 0x0f, body, conn)
+				case CharacterPlay:
+					body := byter.NewLEByter(make([]byte, 0, 1024))
+					body.WriteByte(byte(CharacterChannel))
+					body.WriteByte(byte(CharacterPlay))
+					WriteCompressedA(clientID, 0x01, 0x0f, body, conn)
 				case CharacterGetList:
 					sendCharacterList(conn, clientID)
 				case CharacterCreate:
@@ -146,119 +163,74 @@ func handleConnection(conn net.Conn) {
 					body.WriteByte(byte(CharacterChannel)) // Character channel
 					body.WriteByte(byte(CharacterCreate))
 
-					// GCSerialisation version (0x13 == latest)
-					body.WriteByte(0x13)
-
-					//body.WriteByte(0x01) // Unk
-
-					//body.WriteCString("Player") // Native type?
-					body.WriteCString("Avatar") // Native type?
-					//body.WriteUInt32(0x11121314)
-					//body.WriteUInt32(0xDDEEFFEE)
-					body.WriteUInt32(0x01)
-
-					body.WriteCString("ID")
-					// 6100
-					//body.WriteUInt16(0xEEEE) // Unk
-					//body.WriteByte(0x00) // Unk
-
-					body.WriteUInt32(0x00000000) // GCObject count
-
-					//body.WriteCString("Player")
-					//body.WriteCString("Name")
-					//body.WriteCString("Ellie")
-
-					// GCObject Name, must be same(extend?) as base type
-					body.WriteCString("Avatar")
-					// GCObject property name
-					// Properties are instances of GCNativeProperty
-					body.WriteCString("Hair")
-					body.WriteUInt32(0x00)
-					body.WriteCString("HairColor")
-					body.WriteUInt32(0x00)
-					body.WriteCString("Name")
-					body.WriteCString("Ellie")
-					body.WriteCString("Face")
-					body.WriteUInt32(0x01)
-					body.WriteCString("FaceFeature")
-					body.WriteUInt32(0x01)
-					body.WriteCString("Skin")
-					body.WriteUInt32(0x01)
-
-					//
-					// When this is 0x02 it does not check for type strings use section A otherwise use section B
-					//
-					//body.WriteByte(0x00) // Unk, potentially version again? or type, 0x02 = properties
-
-					////////////////////////////////////////////////////////////////////////////////////////////
-					///////////////////////////////// Section A          ///////////////////////////////////////
-					////////////////////////////////////////////////////////////////////////////////////////////
-
-					// This seems to be getting an existing entity by ID?
-
-					// Using instead of 2 bytes below
-					//body.WriteUInt32(0x00000001)
-
-					////////////////////////////////////////////////////////////////////////////////////////////
-					///////////////////////////////// Section B          ///////////////////////////////////////
-					////////////////////////////////////////////////////////////////////////////////////////////
-
-					// Entity
-					//body.WriteCString("Player") // GCObject base type?
-					//body.WriteCString("Hair")   // Property name
-
-					// This works:
-					//body.WriteCString("Avatar") // GCObject base type?
-					//body.WriteCString("Hair")   // Property name
-
-					//Property Names?:
-					// Visible
-
-					//body.WriteUInt32(0x86878889) // Unk
-
-					////////////////////////////////////////////////////////////////////////////////////////////
-					///////////////////////////////// Sections END       ///////////////////////////////////////
-					////////////////////////////////////////////////////////////////////////////////////////////
-
-					//charBytes := make([]byte, 1024)
-					//length, err := hex.Decode(charBytes, []byte("61006176617461722e636c61737365732e466967687465724d616c65000000000000"))
-					//
-					//if err != nil {
-					//	panic(err)
-					//}
-
-					//body.WriteBytes(charBytes[:length])
+					sendPlayer(body)
 
 					WriteCompressedA(clientID, 0x01, 0x0f, body, conn)
 
-					sendCharacterList(conn, clientID)
+					//sendCharacterList(conn, clientID)
 				default:
 					log.Warnf("Unhandled msgSubType %x", msgSubType)
+				}
+
+			case Unk9:
+				switch Unk9Message(msgSubType) {
+				case Unk9Unk0:
+					body := byter.NewLEByter(make([]byte, 0, 1024))
+					body.WriteByte(byte(Unk9))
+					body.WriteByte(byte(Unk9Unk0))
+					WriteCompressedA(clientID, 0x01, 0x0f, body, conn)
 				}
 			default:
 				log.Warnf("Unhandled channel message %x", msgChan)
 			}
-
 			//body := byter.NewLEByter(make([]byte, 0, 1024))
 			//body.WriteUInt16(0xB3B4)
 			//body.WriteUInt16(0xACDC)
 			//body.WriteUInt16(0xF00D)
 			//body.WriteByte(0xB0)
 			//Write6(0x0a, 0x01, body, conn)
+
 		default:
 			log.Info(fmt.Sprintf("Unhandled message type %x\n", msgType))
 		}
 	}
 }
 
-func sendCharacterList(conn net.Conn, clientID uint32) {
-	body := byter.NewLEByter(make([]byte, 0, 1024))
-	body.WriteByte(byte(CharacterChannel)) // Character channel
-	body.WriteByte(byte(CharacterGetList)) // Get character list (GotCharacter)
-
+func sendPlayer(body *byter.Byter) {
 	player := objects.NewGCObject("Player")
 	player.ID = 0xBABAFAAB
 	player.Name = "Ellie"
+
+	hero := objects.NewGCObject("Hero")
+	hero.ID = 0xBABAF00B
+	hero.Name = "EllieHero"
+	hero.Properties = []objects.GCObjectProperty{
+		objects.Uint32Prop("Level", 10),
+		objects.Uint32Prop("Experience", 1000),
+	}
+
+	professionTitle := objects.NewGCObject("ProfessionTitle")
+	professionTitle.ID = 0xBAB5BAB5
+	professionTitle.Name = "FIGHTER"
+	professionTitle.Properties = []objects.GCObjectProperty{
+		objects.Uint32Prop("Elements", 0x01),
+	}
+
+	rpgSettings := objects.NewGCObject("RPGSettings")
+	rpgSettings.ID = 0x55665566
+	rpgSettings.Name = "EllieRPG"
+
+	rpgSettings.AddChild(professionTitle)
+
+	heroDesc := objects.NewGCObject("HeroDesc")
+	heroDesc.ID = 0xF00DB0B0
+	heroDesc.Name = "EllieHeroDesc"
+
+	hero.AddChild(heroDesc)
+	hero.AddChild(rpgSettings)
+
+	player.AddChild(hero)
+	player.Serialise(body)
 
 	avatar := objects.NewGCObject("Avatar")
 	avatar.ID = 0xBABAFAAC
@@ -274,124 +246,62 @@ func sendCharacterList(conn net.Conn, clientID uint32) {
 	modifiers := objects.NewGCObject("Modifiers")
 	modifiers.ID = 0xBABAFAAC
 	modifiers.Name = "Mod Name"
-	modifiers.Properties = []objects.GCObjectProperty{
-		objects.Uint32Prop("IDGenerator", 0x01),
-	}
+	//modifiers.Properties = []objects.GCObjectProperty{
+	//	objects.Uint32Prop("IDGenerator", 0x01),
+	//}
 
-	//avatar.AddChild(modifiers)
-	player.AddChild(avatar)
-	player.Serialise(body)
+	manipulators := objects.NewGCObject("Manipulators")
+	manipulators.ID = 0xBABAFACC
+	manipulators.Name = "ManipulateMe"
+
+	animationList := objects.NewGCObject("AnimationList")
+	animationList.ID = 0xBABAF00E
+	animationList.Name = "EllieAnimations"
+
+	avatarDesc := objects.NewGCObject("AvatarDesc")
+	avatarDesc.ID = 0xBABAF00D
+	avatarDesc.Name = "EllieAvatarDesc"
+
+	visual := objects.NewGCObject("Visual")
+	visual.ID = 0xBABAF00D
+	visual.Name = "EllieVisual"
+	avatarDesc.AddChild(animationList)
+
+	//worldEntityDesc := objects.NewGCObject("WorldEntityDesc")
+	//worldEntityDesc.ID = 0xBABABABA
+	//worldEntityDesc.Name = "EllieWorldEntityDesc"
+
+	unitBehaviour := objects.NewGCObject("UnitBehavior")
+	unitBehaviour.ID = 0xBABAF00F
+	unitBehaviour.Name = "EllieBehaviour"
 
 	body.WriteCString("Unk")  // Specific to player read
 	body.WriteCString("Unk2") // Specific to player read
 
+	avatar.AddChild(hero)
 	avatar.AddChild(modifiers)
+	avatar.AddChild(rpgSettings)
+	avatar.AddChild(manipulators)
+	avatar.AddChild(avatarDesc)
+	avatar.AddChild(visual)
+	avatar.AddChild(unitBehaviour)
 	avatar.Serialise(body)
+}
+
+func sendCharacterList(conn net.Conn, clientID uint32) {
+	body := byter.NewLEByter(make([]byte, 0, 1024))
+	body.WriteByte(byte(CharacterChannel)) // Character channel
+	body.WriteByte(byte(CharacterGetList)) // Get character list (GotCharacter)
+
+	count := 0
+
+	if count == 0 {
+		body.WriteByte(0x00)
+	}
+
+	sendPlayer(body)
 
 	WriteCompressedA(clientID, 0x01, 0x0f, body, conn)
-
-	//// GCSerialisation version (0x13 == latest)
-	//body.WriteByte(0x13)
-	//
-	//////////////////////////////////////////////////////////////
-	///////////////////// GCObject 1 header ////////////////////////
-	//////////////////////////////////////////////////////////////
-	//
-	//body.WriteCString("Player")  // Native type?
-	//body.WriteUInt32(0xBABAFAAB) // Potentially an ID?
-	//body.WriteCString("Ellie")   // Name
-	//body.WriteUInt32(0x00000001) // Child GCObject count?
-	//
-	//////////////////////////////////////////////////////////////
-	///////////////////// GCObject 2 header ////////////////////////
-	//////////////////////////////////////////////////////////////
-	//body.WriteByte(0x13)
-	//body.WriteCString("Avatar")
-	//body.WriteUInt32(0xBABAFAAC) // Potentially an ID?
-	//body.WriteCString("Ellie")   // Name
-	//body.WriteUInt32(0x00000000) // Child GCObject count?
-	//
-	//////////////////// GCObject type ///////////////////////////
-	//body.WriteCString("avatar") // GCObject name
-	//
-	//////////////////////////////////////////////////////////////
-	//////////////////// GCObject 2 properties /////////////////////
-	//////////////////////////////////////////////////////////////
-	//body.WriteCString("Hair")
-	//body.WriteUInt32(0x00)
-	//body.WriteCString("HairColor")
-	//body.WriteUInt32(0x00)
-	//body.WriteCString("Face")
-	//body.WriteUInt32(0x01)
-	//body.WriteCString("FaceFeature")
-	//body.WriteUInt32(0x01)
-	//body.WriteCString("Skin")
-	//body.WriteUInt32(0x01)
-	//body.WriteNull()
-	//
-	//////////////////// GCObject 1 type ///////////////////////////
-	//body.WriteCString("player")
-	//
-	//////////////////////////////////////////////////////////////
-	//////////////////// GCObject 1 properties ///////////////////
-	//////////////////////////////////////////////////////////////
-	//body.WriteNull()
-	//
-	//////////////////////////////////////////////////////////////
-	///////////////// Player specific properties//////////////////
-	//////////////////////////////////////////////////////////////
-	//body.WriteCString("Unk")
-	//body.WriteCString("Unk2")
-	//
-	//////////////////////////////////////////////////////////////
-	///////////////////// GCObject 3 header? /////////////////////
-	//////////////////////////////////////////////////////////////
-	//body.WriteByte(0x13)
-	//body.WriteCString("Avatar")
-	//body.WriteUInt32(0xBABAFAAC) // Potentially an ID?
-	//body.WriteCString("Ellie")   // Name
-	//body.WriteUInt32(0x00000001) // Child GCObject count?
-	//
-	//////////////////////////////////////////////////////////////
-	///////////////////// GCObject 4 header /////////////////////
-	//////////////////////////////////////////////////////////////
-	//
-	//body.WriteByte(0x13)
-	//body.WriteCString("Modifiers")
-	//body.WriteUInt32(0xBABAFAAC)  // Potentially an ID?
-	//body.WriteCString("Mod Name") // Name
-	//body.WriteUInt32(0x00000000)  // Child GCObject count?
-	//
-	//////////////////// GCObject type ///////////////////////////
-	//
-	//body.WriteCString("modifiers") // GCObject name
-	//
-	//////////////////////////////////////////////////////////////
-	//////////////////// GCObject 4 properties /////////////////////
-	//////////////////////////////////////////////////////////////
-	//body.WriteCString("IDGenerator")
-	//body.WriteUInt32(0x01)
-	//body.WriteNull()
-	//
-	//////////////////// GCObject type ///////////////////////////
-	//body.WriteCString("avatar") // GCObject name
-	//
-	//////////////////////////////////////////////////////////////
-	//////////////////// GCObject 3 properties /////////////////////
-	//////////////////////////////////////////////////////////////
-	//body.WriteCString("Hair")
-	//body.WriteUInt32(0x00)
-	//body.WriteCString("HairColor")
-	//body.WriteUInt32(0x00)
-	//body.WriteCString("Face")
-	//body.WriteUInt32(0x01)
-	//body.WriteCString("FaceFeature")
-	//body.WriteUInt32(0x01)
-	//body.WriteCString("Skin")
-	//body.WriteUInt32(0x01)
-	//body.WriteNull()
-	//
-	//WriteCompressedA(clientID, 0x01, 0x0f, body, conn)
 }
 
 func Write6(clientID uint32, channel byte, afterChannel uint32, body *byter.Byter, conn net.Conn) {

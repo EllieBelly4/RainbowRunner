@@ -15,18 +15,26 @@ Seemingly has no serialisable properties
 ## Avatar :? DFCNode
 
 ### Child nodes?
-
-* Hero
-
+```
+Avatar::AddNode<Modifiers>(void)
+Avatar::AddNode<Manipulators>(void)
+Avatar::AddNode<UnitBehavior>(ArchetypeRef<UnitBehavior> const &)
+Avatar::AddNode<Skills>(ArchetypeRef<Skills> const &)
+Avatar::AddNode<Equipment>(ArchetypeRef<Equipment> const &)
+Avatar::AddNode<UnitContainer>(void)
+Avatar::AddNode<UnitBehavior>(void)
+Avatar::AddNode<Skills>(void)
+Avatar::AddNode<Equipment>(void)
+```
 ### Properties
 
 |Name|Type|
 |---|---|
-|Skin|uint8|
-|Face|uint8|
-|FaceFeature|uint8|
-|Hair|uint8|
-|HairColor|uint8|
+|Skin|uint32|
+|Face|uint32|
+|FaceFeature|uint32|
+|Hair|uint32|
+|HairColor|uint32|
 |TotalWorldTime||
 |DescDeathGoldPenalty||
 |DescDeathExpPenalty||
@@ -34,3 +42,21 @@ Seemingly has no serialisable properties
 |DescSummonExpPenalty||
 |DescStartingCurrency||
 |MetricsSaveCounter||
+
+## AvatarDesc :? WorldEntityDesc
+
+## Unit :? DFCNode
+
+### Properties
+
+|Name|Type|
+|---|---|
+|Level|uint32|
+
+## Hero : Unit
+
+### Properties
+
+|Name|Type|
+|---|---|
+|Experience|uint32|
