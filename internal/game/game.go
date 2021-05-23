@@ -17,13 +17,17 @@ const (
 	NoChannel Channel = iota
 	Unk1
 	Unk2
-	Unk3
+	UserChannel
 	CharacterChannel
 	Unk5
-	Unk6
+	ChatChannel
 	Unk7
 	Unk8
-	Unk9
+	GroupChannel
+	UnkA
+	UnkB
+	UnkC
+	ZoneChannel
 )
 
 type CharacterMessage byte
@@ -37,13 +41,23 @@ const (
 	CharacterPlay
 )
 
-type Unk9Message byte
+type GroupChannelMessage byte
 
 const (
-	Unk9Unk0 Unk9Message = iota
+	GroupConnected GroupChannelMessage = iota
 )
 
-var blowfishKey = "[;',27h,'.]94-31==-%&@!^+]"
+type ZoneChannelMessage byte
+
+const (
+	ZoneUnk0 ZoneChannelMessage = iota
+	ZoneUnk1
+	ZoneUnk2
+	ZoneUnk3
+	ZoneUnk4
+	ZoneUnk5
+	ZoneUnk6
+)
 
 func StartGameServer() {
 	listen, err := net.Listen("tcp", "0.0.0.0:2603")
@@ -172,12 +186,22 @@ func handleConnection(conn net.Conn) {
 					log.Warnf("Unhandled msgSubType %x", msgSubType)
 				}
 
-			case Unk9:
-				switch Unk9Message(msgSubType) {
-				case Unk9Unk0:
+			case GroupChannel:
+				switch GroupChannelMessage(msgSubType) {
+				case GroupConnected:
 					body := byter.NewLEByter(make([]byte, 0, 1024))
-					body.WriteByte(byte(Unk9))
-					body.WriteByte(byte(Unk9Unk0))
+					body.WriteByte(byte(ZoneChannel))
+					body.WriteByte(0x00)
+					body.WriteCString("TheHub")
+					WriteCompressedA(clientID, 0x01, 0x0f, body, conn)
+				}
+			case ZoneChannel:
+				switch ZoneChannelMessage(msgSubType) {
+				case ZoneUnk6:
+					// This is wrong
+					body := byter.NewLEByter(make([]byte, 0, 1024))
+					body.WriteByte(byte(ZoneChannel))
+					body.WriteByte(0x06)
 					WriteCompressedA(clientID, 0x01, 0x0f, body, conn)
 				}
 			default:
@@ -233,17 +257,21 @@ func sendPlayer(body *byter.Byter) {
 	player.Serialise(body)
 
 	avatar := objects.NewGCObject("Avatar")
+	avatar.GCType = "avatar.classes.fighterfemale"
+	//avatar.GCType = "avatar.base.avatar"
 	avatar.ID = 0xBABAFAAC
 	avatar.Name = "Avatar Name"
 	avatar.Properties = []objects.GCObjectProperty{
-		objects.Uint32Prop("Hair", 0x00),
+		objects.Uint32Prop("Hair", 0x01),
 		objects.Uint32Prop("HairColor", 0x00),
 		objects.Uint32Prop("Face", 0x01),
 		objects.Uint32Prop("FaceFeature", 0x01),
 		objects.Uint32Prop("Skin", 0x01),
+		objects.Uint32Prop("Level", 100),
 	}
 
 	modifiers := objects.NewGCObject("Modifiers")
+	modifiers.GCType = "base.meleeunit.modifiers"
 	modifiers.ID = 0xBABAFAAC
 	modifiers.Name = "Mod Name"
 	//modifiers.Properties = []objects.GCObjectProperty{
@@ -254,24 +282,21 @@ func sendPlayer(body *byter.Byter) {
 	manipulators.ID = 0xBABAFACC
 	manipulators.Name = "ManipulateMe"
 
-	animationList := objects.NewGCObject("AnimationList")
-	animationList.ID = 0xBABAF00E
-	animationList.Name = "EllieAnimations"
+	//animationList := objects.NewGCObject("AnimationList")
+	//animationList.ID = 0xBABAF00E
+	//animationList.Name = "EllieAnimations"
 
 	avatarDesc := objects.NewGCObject("AvatarDesc")
+	avatarDesc.GCType = "avatar.classes.fighterfemale.description"
 	avatarDesc.ID = 0xBABAF00D
 	avatarDesc.Name = "EllieAvatarDesc"
-
-	visual := objects.NewGCObject("Visual")
-	visual.ID = 0xBABAF00D
-	visual.Name = "EllieVisual"
-	avatarDesc.AddChild(animationList)
 
 	//worldEntityDesc := objects.NewGCObject("WorldEntityDesc")
 	//worldEntityDesc.ID = 0xBABABABA
 	//worldEntityDesc.Name = "EllieWorldEntityDesc"
 
 	unitBehaviour := objects.NewGCObject("UnitBehavior")
+	unitBehaviour.GCType = "avatar.base.UnitBehavior"
 	unitBehaviour.ID = 0xBABAF00F
 	unitBehaviour.Name = "EllieBehaviour"
 
@@ -283,7 +308,7 @@ func sendPlayer(body *byter.Byter) {
 	avatar.AddChild(rpgSettings)
 	avatar.AddChild(manipulators)
 	avatar.AddChild(avatarDesc)
-	avatar.AddChild(visual)
+	//avatar.AddChild(visual)
 	avatar.AddChild(unitBehaviour)
 	avatar.Serialise(body)
 }
@@ -293,7 +318,7 @@ func sendCharacterList(conn net.Conn, clientID uint32) {
 	body.WriteByte(byte(CharacterChannel)) // Character channel
 	body.WriteByte(byte(CharacterGetList)) // Get character list (GotCharacter)
 
-	count := 0
+	count := 1
 
 	if count == 0 {
 		body.WriteByte(0x00)

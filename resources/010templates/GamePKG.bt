@@ -1,0 +1,29 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+//Header size potentially 0x58
+
+typedef struct Pkg (int len0, int len1, int offset) {
+    local long pos = FTell();
+
+    FSeek(offset);
+
+    byte CompressedHeader[len0] <bgcolor=cLtGreen>;
+
+    byte CompressedData[len1] <bgcolor=cLtPurple>;
+    
+    FSeek(pos);
+};
+
+
+Pkg pkg(0x4D21, 0x1B966, 0x17660000);

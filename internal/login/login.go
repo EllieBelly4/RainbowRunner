@@ -7,8 +7,6 @@ import (
 	"net"
 )
 
-var blowfishKey = "[;',27h,'.]94-31==-%&@!^+]"
-
 func StartLoginServer() {
 	listen, err := net.Listen("tcp", "0.0.0.0:2110")
 

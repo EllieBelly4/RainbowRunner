@@ -25,6 +25,12 @@ func (b *Byter) Bytes(count int) []byte {
 	return b.Buffer[i : i+count]
 }
 
+func (b *Byter) Byte() byte {
+	i := b.getDataIndex(1)
+
+	return b.Buffer[i]
+}
+
 func (b *Byter) UInt16() uint16 {
 	i := b.getDataIndex(2)
 
@@ -197,6 +203,20 @@ func (b *Byter) WriteCString(s string) {
 
 func (b *Byter) WriteNull() error {
 	return b.WriteByte(0x00)
+}
+
+func (b *Byter) Compare(comparison []byte) bool {
+	for _, b1 := range comparison {
+		if b1 != b.Byte() {
+			return false
+		}
+	}
+
+	return true
+}
+
+func (b *Byter) CompareString(str string) bool {
+	return b.Compare([]byte(str))
 }
 
 func NewByter(buffer []byte) *Byter {

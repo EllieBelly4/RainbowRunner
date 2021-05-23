@@ -1,0 +1,210 @@
+
+# ZoneClient
+
+debug285:0A4BC4A8                     dd offset ??_7ManagerChannel@?$TChannelManager@E@@6B@; __vftable ; const TChannelManager<uchar>::ManagerChannel::`vftable'
+debug285:0A4BC4A8                     dd 1    ; references
+debug285:0A4BC4A8                     dd 0BAADF00Dh; unk_0
+debug285:0A4BC4A8                     dd 0BAADF00Dh; unk_1
+debug285:0A4BC4A8                     dd 0BAAD0D0Dh; unk_2
+debug285:0A4BC4A8                     dd offset stru_4270328; channel_manager
+debug285:0A4BC4A8                     dd 0ABABABABh; unk_4
+debug285:0A4BC4A8                     dd 0ABABABABh; unk_5
+debug285:0A4BC4A8                     dd 0    ; unk_6
+debug285:0A4BC4A8                     dd 0    ; unk_7
+debug285:0A4BC4A8                     dd 0BAFA6628h; unk_8
+debug285:0A4BC4A8                     dd 1C37E38Eh; unk_9
+debug285:0A4BC4A8                     dd 75BCB8h; unk_10
+debug285:0A4BC4A8                     dd 1    ; unk_11
+debug285:0A4BC4A8                     dd 0BAADF00Dh; unk_12
+debug285:0A4BC4A8                     dd 0BAADF00Dh; unk_13
+debug285:0A4BC4A8                     dd 75BCB4h; unk_14
+debug285:0A4BC4A8                     dd 8    ; unk_15
+debug285:0A4BC4A8                     dd 8    ; unk_16
+debug285:0A4BC4A8                     dd 0    ; unk_17
+debug285:0A4BC4A8                     dd 0A2DD130h; unk_18
+debug285:0A4BC4A8                     dd 0    ; unk_19
+debug285:0A4BC4A8                     dd 0    ; unk_20
+debug285:0A4BC4A8                     dd 0    ; unk_21
+debug285:0A4BC4A8                     dd 0A2DD130h; unk_22
+debug285:0A4BC4A8                     dd 0ABABABABh; unk_23
+debug285:0A4BC4A8                     dd 0ABABABABh; unk_24
+debug285:0A4BC4A8                     dd 0FEEEFEEEh; unk_25
+debug285:0A4BC4A8                     dd 0    ; unk_26
+debug285:0A4BC4A8                     dd 0    ; unk_27
+debug285:0A4BC4A8                     dd 0B6FA6624h; unk_28
+debug285:0A4BC4A8                     dd 1837E382h; unk_29
+
+# GroupClient
+
+debug285:0A4BC5A8                     dd offset ??_7ManagerChannel@?$TChannelManager@E@@6B@; __vftable ; const TChannelManager<uchar>::ManagerChannel::`vftable'
+debug285:0A4BC5A8                     dd 1    ; references
+debug285:0A4BC5A8                     dd 0BAADF00Dh; unk_0
+debug285:0A4BC5A8                     dd 0BAADF00Dh; unk_1
+debug285:0A4BC5A8                     dd 0BAAD090Dh; unk_2
+debug285:0A4BC5A8                     dd offset stru_4270328; channel_manager
+debug285:0A4BC5A8                     dd 0ABABABABh; unk_4
+debug285:0A4BC5A8                     dd 0ABABABABh; unk_5
+debug285:0A4BC5A8                     dd 0    ; unk_6
+debug285:0A4BC5A8                     dd 0    ; unk_7
+debug285:0A4BC5A8                     dd 0B5FA6627h; unk_8
+debug285:0A4BC5A8                     dd 1837E38Eh; unk_9
+debug285:0A4BC5A8                     dd 0BAADF00Dh; unk_10
+debug285:0A4BC5A8                     dd 0A4BC600h; unk_11
+debug285:0A4BC5A8                     dd 1    ; unk_12
+debug285:0A4BC5A8                     dd 0BAADF00Dh; unk_13
+debug285:0A4BC5A8                     dd 0ABABABABh; unk_14
+debug285:0A4BC5A8                     dd 0ABABABABh; unk_15
+debug285:0A4BC5A8                     dd 0    ; unk_16
+debug285:0A4BC5A8                     dd 0    ; unk_17
+debug285:0A4BC5A8                     dd 0B5FA6627h; unk_18
+debug285:0A4BC5A8                     dd 1C37E38Dh; unk_19
+debug285:0A4BC5A8                     dd 0A4BC628h; unk_20
+debug285:0A4BC5A8                     dd 0A4BC628h; unk_21
+debug285:0A4BC5A8                     dd 0BAADF00Dh; unk_22
+debug285:0A4BC5A8                     dd 0ABABABABh; unk_23
+debug285:0A4BC5A8                     dd 0ABABABABh; unk_24
+debug285:0A4BC5A8                     dd 0FEEEFEEEh; unk_25
+debug285:0A4BC5A8                     dd 0    ; unk_26
+debug285:0A4BC5A8                     dd 0    ; unk_27
+debug285:0A4BC5A8                     dd 0B5FA6627h; unk_28
+debug285:0A4BC5A8                     dd 1C37E38Dh; unk_29
+
+# ChatClient
+
+debug285:0A4BC768                     dd offset ??_7ManagerChannel@?$TChannelManager@E@@6B@; __vftable ; const TChannelManager<uchar>::ManagerChannel::`vftable'
+debug285:0A4BC768                     dd 1    ; references
+debug285:0A4BC768                     dd 0BAADF00Dh; unk_0
+debug285:0A4BC768                     dd 0BAADF00Dh; unk_1
+debug285:0A4BC768                     dd 0BAAD060Dh; unk_2
+debug285:0A4BC768                     dd offset stru_4270328; channel_manager
+debug285:0A4BC768                     dd 0ABABABABh; unk_4
+debug285:0A4BC768                     dd 0ABABABABh; unk_5
+debug285:0A4BC768                     dd 0    ; unk_6
+debug285:0A4BC768                     dd 0    ; unk_7
+debug285:0A4BC768                     dd 0BAFA6628h; unk_8
+debug285:0A4BC768                     dd 1C37E38Eh; unk_9
+debug285:0A4BC768                     dd 75BCB8h; unk_10
+debug285:0A4BC768                     dd 1    ; unk_11
+debug285:0A4BC768                     dd 0BAADF00Dh; unk_12
+debug285:0A4BC768                     dd 0BAADF00Dh; unk_13
+debug285:0A4BC768                     dd 75BCB4h; unk_14
+debug285:0A4BC768                     dd 8    ; unk_15
+debug285:0A4BC768                     dd 8    ; unk_16
+debug285:0A4BC768                     dd 0    ; unk_17
+debug285:0A4BC768                     dd 0A306788h; unk_18
+debug285:0A4BC768                     dd 0    ; unk_19
+debug285:0A4BC768                     dd 0    ; unk_20
+debug285:0A4BC768                     dd 0    ; unk_21
+debug285:0A4BC768                     dd 0A306788h; unk_22
+debug285:0A4BC768                     dd 0ABABABABh; unk_23
+debug285:0A4BC768                     dd 0ABABABABh; unk_24
+debug285:0A4BC768                     dd 0FEEEFEEEh; unk_25
+debug285:0A4BC768                     dd 0    ; unk_26
+debug285:0A4BC768                     dd 0    ; unk_27
+debug285:0A4BC768                     dd 0B6FA6624h; unk_28
+debug285:0A4BC768                     dd 1837E382h; unk_29
+
+# UserManagerClient
+
+debug285:0A4BC7E8                     dd offset ??_7ManagerChannel@?$TChannelManager@E@@6B@; __vftable ; const TChannelManager<uchar>::ManagerChannel::`vftable'
+debug285:0A4BC7E8                     dd 1    ; references
+debug285:0A4BC7E8                     dd 0BAADF00Dh; unk_0
+debug285:0A4BC7E8                     dd 0BAADF00Dh; unk_1
+debug285:0A4BC7E8                     dd 0BAAD030Dh; unk_2
+debug285:0A4BC7E8                     dd offset stru_4270328; channel_manager
+debug285:0A4BC7E8                     dd 0ABABABABh; unk_4
+debug285:0A4BC7E8                     dd 0ABABABABh; unk_5
+debug285:0A4BC7E8                     dd 0    ; unk_6
+debug285:0A4BC7E8                     dd 0    ; unk_7
+debug285:0A4BC7E8                     dd 0B5FA6627h; unk_8
+debug285:0A4BC7E8                     dd 1837E38Eh; unk_9
+debug285:0A4BC7E8                     dd 0BAADF00Dh; unk_10
+debug285:0A4BC7E8                     dd 0A4BC840h; unk_11
+debug285:0A4BC7E8                     dd 2    ; unk_12
+debug285:0A4BC7E8                     dd 0BAADF00Dh; unk_13
+debug285:0A4BC7E8                     dd 0ABABABABh; unk_14
+debug285:0A4BC7E8                     dd 0ABABABABh; unk_15
+debug285:0A4BC7E8                     dd 0    ; unk_16
+debug285:0A4BC7E8                     dd 0    ; unk_17
+debug285:0A4BC7E8                     dd 0B5FA6627h; unk_18
+debug285:0A4BC7E8                     dd 1C37E38Dh; unk_19
+debug285:0A4BC7E8                     dd 0A4BC8B8h; unk_20
+debug285:0A4BC7E8                     dd 0A4BC868h; unk_21
+debug285:0A4BC7E8                     dd 0BAADF00Dh; unk_22
+debug285:0A4BC7E8                     dd 0ABABABABh; unk_23
+debug285:0A4BC7E8                     dd 0ABABABABh; unk_24
+debug285:0A4BC7E8                     dd 0FEEEFEEEh; unk_25
+debug285:0A4BC7E8                     dd 0    ; unk_26
+debug285:0A4BC7E8                     dd 0    ; unk_27
+debug285:0A4BC7E8                     dd 0B5FA6627h; unk_28
+debug285:0A4BC7E8                     dd 1C37E38Dh; unk_29
+
+# GatewayClient
+
+debug285:0A4BC388                     dd offset ??_7ManagerChannel@?$TChannelManager@E@@6B@; __vftable ; const TChannelManager<uchar>::ManagerChannel::`vftable'
+debug285:0A4BC388                     dd 1    ; references
+debug285:0A4BC388                     dd 0BAADF00Dh; unk_0
+debug285:0A4BC388                     dd 0BAADF00Dh; unk_1
+debug285:0A4BC388                     dd 0BAAD040Dh; unk_2
+debug285:0A4BC388                     dd offset stru_4270328; channel_manager
+debug285:0A4BC388                     dd 0ABABABABh; unk_4
+debug285:0A4BC388                     dd 0ABABABABh; unk_5
+debug285:0A4BC388                     dd 0    ; unk_6
+debug285:0A4BC388                     dd 0    ; unk_7
+debug285:0A4BC388                     dd 0B5FA6627h; unk_8
+debug285:0A4BC388                     dd 1837E38Eh; unk_9
+debug285:0A4BC388                     dd 0BAADF00Dh; unk_10
+debug285:0A4BC388                     dd 0A4BC3E0h; unk_11
+debug285:0A4BC388                     dd 1    ; unk_12
+debug285:0A4BC388                     dd 0BAADF00Dh; unk_13
+debug285:0A4BC388                     dd 0ABABABABh; unk_14
+debug285:0A4BC388                     dd 0ABABABABh; unk_15
+debug285:0A4BC388                     dd 0    ; unk_16
+debug285:0A4BC388                     dd 0    ; unk_17
+debug285:0A4BC388                     dd 0B5FA6627h; unk_18
+debug285:0A4BC388                     dd 1C37E38Dh; unk_19
+debug285:0A4BC388                     dd 0A4BC408h; unk_20
+debug285:0A4BC388                     dd 0A4BC408h; unk_21
+debug285:0A4BC388                     dd 0BAADF00Dh; unk_22
+debug285:0A4BC388                     dd 0ABABABABh; unk_23
+debug285:0A4BC388                     dd 0ABABABABh; unk_24
+debug285:0A4BC388                     dd 0FEEEFEEEh; unk_25
+debug285:0A4BC388                     dd 0    ; unk_26
+debug285:0A4BC388                     dd 0    ; unk_27
+debug285:0A4BC388                     dd 0B5FA6627h; unk_28
+debug285:0A4BC388                     dd 1C37E38Dh; unk_29
+
+# CharacterManagerClient
+
+debug285:0A4BC388                     dd offset ??_7ManagerChannel@?$TChannelManager@E@@6B@; __vftable ; const TChannelManager<uchar>::ManagerChannel::`vftable'
+debug285:0A4BC388                     dd 1    ; references
+debug285:0A4BC388                     dd 0BAADF00Dh; unk_0
+debug285:0A4BC388                     dd 0BAADF00Dh; unk_1
+debug285:0A4BC388                     dd 0BAAD040Dh; unk_2
+debug285:0A4BC388                     dd offset stru_4270328; channel_manager
+debug285:0A4BC388                     dd 0ABABABABh; unk_4
+debug285:0A4BC388                     dd 0ABABABABh; unk_5
+debug285:0A4BC388                     dd 0    ; unk_6
+debug285:0A4BC388                     dd 0    ; unk_7
+debug285:0A4BC388                     dd 0B5FA6627h; unk_8
+debug285:0A4BC388                     dd 1837E38Eh; unk_9
+debug285:0A4BC388                     dd 0BAADF00Dh; unk_10
+debug285:0A4BC388                     dd 0A4BC3E0h; unk_11
+debug285:0A4BC388                     dd 1    ; unk_12
+debug285:0A4BC388                     dd 0BAADF00Dh; unk_13
+debug285:0A4BC388                     dd 0ABABABABh; unk_14
+debug285:0A4BC388                     dd 0ABABABABh; unk_15
+debug285:0A4BC388                     dd 0    ; unk_16
+debug285:0A4BC388                     dd 0    ; unk_17
+debug285:0A4BC388                     dd 0B5FA6627h; unk_18
+debug285:0A4BC388                     dd 1C37E38Dh; unk_19
+debug285:0A4BC388                     dd 0A4BC408h; unk_20
+debug285:0A4BC388                     dd 0A4BC408h; unk_21
+debug285:0A4BC388                     dd 0BAADF00Dh; unk_22
+debug285:0A4BC388                     dd 0ABABABABh; unk_23
+debug285:0A4BC388                     dd 0ABABABABh; unk_24
+debug285:0A4BC388                     dd 0FEEEFEEEh; unk_25
+debug285:0A4BC388                     dd 0    ; unk_26
+debug285:0A4BC388                     dd 0    ; unk_27
+debug285:0A4BC388                     dd 0B5FA6627h; unk_28
+debug285:0A4BC388                     dd 1C37E38Dh; unk_29

@@ -22,9 +22,6 @@ func (p *AuthMessageParser) Parse(read []byte, count int) {
 		packetLength := int(binary.LittleEndian.Uint16(read[readBytes:]))
 
 		var decrypted = crypt.DecryptBlowfish(read[readBytes+2:readBytes+packetLength-2], packetLength-2)
-		//var encrypted = crypt.EncryptBlowfish(decrypted, len(decrypted))
-		//log.Info(fmt.Sprintf("Old:\n%s\nNew:\n%s\n", hex.Dump(read[readBytes+2:readBytes+packetLength]), hex.Dump(encrypted)))
-
 		var byteReader = byter.NewLEByter(decrypted)
 
 		if count-readBytes >= packetLength {

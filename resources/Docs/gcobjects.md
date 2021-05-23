@@ -42,6 +42,7 @@ Avatar::AddNode<Equipment>(void)
 |DescSummonExpPenalty||
 |DescStartingCurrency||
 |MetricsSaveCounter||
+|Level||
 
 ## AvatarDesc :? WorldEntityDesc
 
