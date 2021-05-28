@@ -5,6 +5,7 @@ Game resources are stored as packages in game.pkg. Packages are indexed in the g
 There is a resource manager config in game directory [resourcemanager.cfg](../Files/resourcemanager.cfg)
 
 Index is read in `PackageIndex::Read()`
+Package data is read by one of the PackageReaders, ZLib compressed uses PackageReader::ZCompressedReader
 
 ## Index
 File size is (0x4215 * 5) * 8
@@ -22,6 +23,8 @@ Resources are cached based on [resourcemanager.cfg](../Files/resourcemanager.cfg
 Resources seem to go through a cache and can be retrieved with a string ID. Resource keys are case-insensitive
 
 ## Types
+
+### GCDictionary
 
 ### Zones
 

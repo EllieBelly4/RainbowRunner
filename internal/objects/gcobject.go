@@ -41,17 +41,17 @@ func Uint32Prop(name string, val uint32) GCObjectProperty {
 	}
 }
 
-//func StringProp(name string, val string) GCObjectProperty {
-//	return GCObjectProperty{
-//		Name:  name,
-//		Value: val,
-//	}
-//}
+func StringProp(name string, val string) GCObjectProperty {
+	return GCObjectProperty{
+		Name:  name,
+		Value: val,
+	}
+}
 
 func NewGCObject(nativeType string) *GCObject {
 	return &GCObject{
-		// This is the latest version
-		Version:    0x13,
+		// At version 2A or above you must use a hash I think
+		Version:    0x29,
 		NativeType: nativeType,
 		GCType:     strings.ToLower(nativeType),
 	}
@@ -78,12 +78,12 @@ func (o GCObject) Serialise(byter *byter.Byter) {
 	byter.WriteNull()
 }
 
-func (o *GCObject) AddChild(modifiers *GCObject) {
+func (o *GCObject) AddChild(child *GCObject) {
 	if o.Children == nil {
 		o.Children = make([]*GCObject, 0, 128)
 	}
 
-	o.Children = append(o.Children, modifiers)
+	o.Children = append(o.Children, child)
 }
 
 func (p GCObjectProperty) Serialise(b *byter.Byter) {

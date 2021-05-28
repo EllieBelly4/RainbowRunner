@@ -38,6 +38,15 @@ typedef struct SixMessageHeader{
     ubyte msg_sub_type;
 };
 
+
+typedef struct TwoMessageHeader{
+    UINT24 client_id;
+    UINT24 msg_length;
+    ubyte msg_type; // Guess
+    uint32 unk;
+    uint32 one_time_key;
+};
+
 typedef struct CharacterCreateMessage  {
     string name;
     string class;
@@ -63,4 +72,8 @@ if (message_type == 0x06) {
             }
             break;
     }
+} else if (message_type == 0x02) {
+    TwoMessageHeader messageHeader;
+    
 }
+

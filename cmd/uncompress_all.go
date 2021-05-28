@@ -11,7 +11,7 @@ import (
 
 func main() {
 	//fileName := "resources/Dumps/010/game_pkg_gcdictionary.dict_compressed_zlib_deflate_best_compression"
-	fileName := "E:\\Games\\DungeonRunners\\game.pkg"
+	fileName := "E:\\Games\\DungeonRunners v666\\game.pkg"
 
 	data, err := os.Open(fileName)
 	offset := int64(0x00)
@@ -64,8 +64,8 @@ func main() {
 			continue
 		}
 
-		fmt.Printf("Read file at %x, size: %d\n", offset, totalBytes)
-		outFilename := fmt.Sprintf("D:\\Work\\dungeon-runners\\dumps\\gamepkg_%x", offset)
+		fmt.Printf("Read file at 0x%x, size: %d\n", offset, totalBytes)
+		outFilename := fmt.Sprintf("D:\\Work\\dungeon-runners\\666 dumps\\gamepkg_%x", offset)
 
 		ioutil.WriteFile(outFilename, buffer[0:totalBytes], 755)
 

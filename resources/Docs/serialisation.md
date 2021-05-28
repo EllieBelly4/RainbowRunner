@@ -114,6 +114,22 @@ QuestObjective
 RoomNode
 GCObjectIterator
 ```
+### DiskPkgFileInfo
 
+Size: 0x20
 
-
+```
+mov     eax, ecx
+and     byte ptr [eax+14h], 0FEh
+and     dword ptr [eax+18h], 80000000h
+xor     ecx, ecx
+mov     dword ptr [eax], 0FFFFFFFFh
+mov     [eax+4], ecx
+mov     [eax+8], ecx
+mov     dword ptr [eax+0Ch], 0FFFFFFFFh
+mov     [eax+10h], ecx
+mov     [eax+24h], ecx
+mov     [eax+28h], ecx
+mov     [eax+20h], ecx
+mov     [eax+1Ch], ecx
+```

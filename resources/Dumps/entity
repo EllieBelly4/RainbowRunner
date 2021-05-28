@@ -1,0 +1,39 @@
+05/27 14:11:03.734      31612:  Avatar::OnPostLoad: Player(0:Ellie) changed queue levels, resetting attribute totals.
+05/27 14:11:04.933      31612:  ZoneClient::processMessages(): Received message 0 from ZoneServer(1.15). Current State: 110
+05/27 14:11:04.947      31612:  ZoneClient::EnterLoading Starting load of Tutorial.
+05/27 14:11:04.965      31612:  World::attachObjects World(tutorial) Size (1920.000000 x 1920.000000)
+05/27 14:11:04.965      31612:  PathMap : buildPathMap() begin...
+05/27 14:11:04.967      31612:  PathMap : buildPathMap() end. Total(2393) Connected(2050)
+05/27 14:11:04.967      31612:  ItemFinder::initialize World(tutorial) Size (16 x 16)
+05/27 14:11:04.967      31612:  ZoneClient::EnterLoading Finished load of tutorial.
+05/27 14:11:04.968      31612:  ZoneClient::EnterLoading ZoneLoadTime: 21.  Zone tutorial
+05/27 14:11:04.982      31612:  ZoneClient::processMessages(): Received message 1 from ZoneServer(1.15). Current State: 114
+05/27 14:11:04.982      31612:  ZoneClient::processMessages(): Received message 5 from ZoneServer(1.15). Current State: 115
+05/27 14:12:51.231      31612:  Created CrashLog: E:\Games\DungeonRunners v666\logs\DungeonRunnersCrash-05272021-14-12-51-231-00.log.
+05/27 14:12:51.236      31612:  CrashLog: ClientEntityManager::processEntityUpdate Entity synch error detected:
+
+ID: 1
+Type: Player
+Name:
+World:
+
+[Local]
+Flags = 0
+UpdateNumber = 0
+Position = 0, 0, 0
+Level = 0
+HP = 0
+MP = 0
+
+[Remote]
+Flags = 2
+UpdateNumber = 0
+Position = 0, 0, 0
+Level = 0
+HP = 1
+MP = 0
+
+05/27 14:12:51.237      31612:  ZoneClient::UpdateWorld Failed to enter world. ZoneClient Status: 115 Last EntityManager error: 1
+
+05/27 14:32:09.032      28108:  ClientEntityManager::processMessage(385) Now connected
+05/27 14:32:49.691      28108:  TradeClient::doEvent Failed to get local Avatar.

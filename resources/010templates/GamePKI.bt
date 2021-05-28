@@ -15,52 +15,79 @@ LittleEndian();
 
 struct Header {
     uint32 index_version;
+    uint32 unk;
     GUID guid <fgcolor=cLtBlue>;
-    uint32 entry_count;
-    uint32 metadata_ptr;
-    uint32 unk6_06BDFB;
-    uint32 string_data_ptr;
+uint32 unk_1 <format=hex>;
+uint32 unk_2 <format=hex>;
+uint32 unk_3 <format=hex>;
+uint32 unk_4 <format=hex>;
+uint32 unk_5 <format=hex>;
+uint32 unk_6 <format=hex>;
+uint32 unk_7 <format=hex>;
+uint32 unk_8 <format=hex>;
+uint32 unk_9 <format=hex>;
+uint32 unk_10 <format=hex>;
+uint32 unk_11 <format=hex>;
+uint32 unk_12 <format=hex>;
+uint32 unk_13 <format=hex>;
+uint32 unk_14 <format=hex>;
+uint32 unk_15 <format=hex>;
+uint32 unk_16 <format=hex>;
+uint32 unk_17 <format=hex>;
+uint32 unk_18 <format=hex>;
+uint32 unk_19 <format=hex>;
+uint32 unk_20 <format=hex>;
+uint32 unk_21 <format=hex>;
 } header;
+
+// This came from the game client, not sure where it comes from
+local uint entry_count = 0x78AD;
 
 typedef struct MetadataEntry {
     uint32 str <bgcolor=cLtRed,read=ReadOffsetString>;
     uint16 some_flag <bgcolor=cLtBlue>; //0x40 or
-    uint16 unk1 <bgcolor=cLtYellow>;
+    uint16 unk_1 <bgcolor=cLtYellow>;
     uint32 unk_2;
-    uint32 unk_3;
-    uint32 unk_4;
-    uint16 compressed_header_len <format=hex>;
-    uint16 file_offset <read=ReadFileOffset>;
-    uint32 unk_6;
+    uint32 file_offset;
+    uint32 uncompressed_file_length;
+    byte compressed;
+    byte unk_5;
+    uint16 unk_6;
     uint32 unk_7;
-    uint32 unk_8;
-    uint32 compressed_data_len <format=hex>;
+    uint16 unk_8_a <format=hex>;
+    uint16 unk_8_b <format=hex>;
+    uint32 unk_9;
+    uint32 unk_10;
+    uint32 unk_11;
 };
 
 local int i;
 
-for (i = 0; i < header.entry_count; i++)
+for (i = 0; i < entry_count; i++)
 {    
-    MetadataEntry entry <bgcolor=cLtGreen, read=ReadMetadataEntry>;
+   MetadataEntry entry <bgcolor=cLtGreen>;
 }
 
-struct StringHeader {
-    uint32 unk[9];
-} stringHeader;
+uint32 string_section_length;
+
+
+struct StringWrapper {
+
+string str;
+
+} str[entry_count] <read=ReadStringWrapper, optimize=false>;
+
+
+string ReadStringWrapper(StringWrapper &strWrap) {
+    return strWrap.str;
+}
+
 
 string ReadOffsetString(uint32 ptr){
-    local int baseOffset = header.entry_count * sizeof(MetadataEntry) + sizeof(Header);
-
+    local int baseOffset = entry_count * sizeof(MetadataEntry) + sizeof(Header) + 4;
     return ReadString(baseOffset + ptr);
 }
 
-string ReadMetadataEntry(MetadataEntry &entry) {
-    local string str;
-
-    SPrintf(str, "PkgLen: 0x%x", entry.file_length_1 + entry.file_length_0);
-
-    return str;
-}
 
 string ReadFileOffset(uint16 offset){
     local uint32 final = (uint32)offset << 16;

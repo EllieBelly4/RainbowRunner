@@ -3,8 +3,6 @@ package game
 import (
 	"RainbowRunner/internal/byter"
 	"RainbowRunner/internal/objects"
-	"bytes"
-	"compress/zlib"
 	"encoding/hex"
 	"fmt"
 	log "github.com/sirupsen/logrus"
@@ -21,13 +19,15 @@ const (
 	CharacterChannel
 	Unk5
 	ChatChannel
-	Unk7
+	ClientEntityChannel
 	Unk8
 	GroupChannel
-	UnkA
+	TradeChannel
 	UnkB
 	UnkC
 	ZoneChannel
+	UnkE
+	PosseChannel
 )
 
 type CharacterMessage byte
@@ -112,14 +112,18 @@ func handleConnection(conn net.Conn) {
 
 		msgType := reader.UInt8() // Message Type?
 
-		switch msgType {
-		case 0x02:
+		if msgType == 0x0a {
 			clientID = reader.UInt24() // Unk
-			size := reader.UInt24()    // Size
+			reader.UInt32()            // Packet Length
+			reader.UInt8()
+			msgTypeA := reader.UInt8()
+			reader.UInt8()
+			reader = ReadCompressedA(reader)
 
-			if size == 9 {
-				reader.UInt8()      // Channel
-				_ = reader.UInt32() // Unk Message Static
+			log.Infof("Uncompressed A:\n%s", hex.Dump(reader.Buffer))
+
+			if msgTypeA == 0x00 {
+				reader.UInt8()      // Some type?
 				_ = reader.UInt32() // One Time Key
 				reader.Bytes(1)     // Null
 
@@ -134,132 +138,105 @@ func handleConnection(conn net.Conn) {
 				// Unk
 				body.WriteByte(0x00)
 				WriteCompressedA(clientID, 0x00, 0x03, body, conn)
+			} else if msgTypeA == 0x02 {
 			} else {
-				log.Info(fmt.Sprintf("Ignoring short message 0x02 of length %d\n", size))
+				log.Panicf("Unhandled 0x0a message type %x", msgTypeA)
 			}
-		case 0x06:
-			reader.UInt24() // Unk
-			reader.UInt24() // Size
-			reader.UInt8()
-			reader.UInt24()              // Client ID
-			reader.UInt8()               // Channel?
-			reader.UInt8()               // Sub type?
-			reader.UInt24()              // Unk
-			msgChan := reader.UInt8()    // Channel
-			msgSubType := reader.UInt8() // Message Type
+		} else if msgType == 0x06 || msgType == 0x0e {
+			if msgType == 0x0e {
+				first := true
+				// TODO when we can reliably get the length of all packets we can ensure this is done for everything
+				for reader.HasRemainingData() {
+					if !first {
+						reader.UInt8()
+					}
+					msgReader := ReadCompressedE(reader)
 
-			switch Channel(msgChan) {
-			case CharacterChannel:
-				switch CharacterMessage(msgSubType) {
-				case CharacterConnected:
-					body := byter.NewLEByter(make([]byte, 0, 1024))
-					body.WriteByte(byte(CharacterChannel))   // Character channel
-					body.WriteByte(byte(CharacterConnected)) // Connected
-					WriteCompressedA(clientID, 0x01, 0x0f, body, conn)
-				case CharacterPlay:
-					body := byter.NewLEByter(make([]byte, 0, 1024))
-					body.WriteByte(byte(CharacterChannel))
-					body.WriteByte(byte(CharacterPlay))
-					WriteCompressedA(clientID, 0x01, 0x0f, body, conn)
-				case CharacterGetList:
-					sendCharacterList(conn, clientID)
-				case CharacterCreate:
-					name := reader.String()
-					class := reader.String()
-					reader.UInt8() // Unk
-					reader.UInt8() // Face
-					reader.UInt8() // Hair
-					reader.UInt8() // Hair Colour
+					log.Infof("Uncompressed E:\n%s", hex.Dump(msgReader.Buffer))
 
-					log.Infof("New character created %s (%s)", name, class)
-
-					body := byter.NewLEByter(make([]byte, 0, 1024))
-					body.WriteByte(byte(CharacterChannel)) // Character channel
-					body.WriteByte(byte(CharacterCreate))
-
-					sendPlayer(body)
-
-					WriteCompressedA(clientID, 0x01, 0x0f, body, conn)
-
-					//sendCharacterList(conn, clientID)
-				default:
-					log.Warnf("Unhandled msgSubType %x", msgSubType)
+					handleChannelMessage(conn, msgReader, clientID)
+					first = false
 				}
+			} else {
+				reader.UInt24() // Unk
+				reader.UInt24() // Size
+				reader.UInt8()
+				reader.UInt24() // Client ID
+				reader.UInt8()  // Channel?
+				reader.UInt8()  // Sub type?
+				reader.UInt24() // Unk
 
-			case GroupChannel:
-				switch GroupChannelMessage(msgSubType) {
-				case GroupConnected:
-					body := byter.NewLEByter(make([]byte, 0, 1024))
-					body.WriteByte(byte(ZoneChannel))
-					body.WriteByte(0x00)
-					body.WriteCString("TheHub")
-					WriteCompressedA(clientID, 0x01, 0x0f, body, conn)
-				}
-			case ZoneChannel:
-				switch ZoneChannelMessage(msgSubType) {
-				case ZoneUnk6:
-					// This is wrong
-					body := byter.NewLEByter(make([]byte, 0, 1024))
-					body.WriteByte(byte(ZoneChannel))
-					body.WriteByte(0x06)
-					WriteCompressedA(clientID, 0x01, 0x0f, body, conn)
-				}
-			default:
-				log.Warnf("Unhandled channel message %x", msgChan)
+				handleChannelMessage(conn, reader, clientID)
 			}
-			//body := byter.NewLEByter(make([]byte, 0, 1024))
-			//body.WriteUInt16(0xB3B4)
-			//body.WriteUInt16(0xACDC)
-			//body.WriteUInt16(0xF00D)
-			//body.WriteByte(0xB0)
-			//Write6(0x0a, 0x01, body, conn)
-
-		default:
+		} else {
 			log.Info(fmt.Sprintf("Unhandled message type %x\n", msgType))
 		}
 	}
 }
 
 func sendPlayer(body *byter.Byter) {
+	//hero := objects.NewGCObject("Hero")
+	//hero.ID = 0xBABAF00B
+	//hero.Name = "EllieHero"
+	//hero.Properties = []objects.GCObjectProperty{
+	//	objects.Uint32Prop("Level", 10),
+	//	objects.Uint32Prop("Experience", 1000),
+	//}
+
+	//professionTitle := objects.NewGCObject("ProfessionTitle")
+	//professionTitle.ID = 0xBAB5BAB5
+	//professionTitle.Name = "FIGHTER"
+	//professionTitle.Properties = []objects.GCObjectProperty{
+	//	objects.Uint32Prop("Elements", 0x01),
+	//}
+
+	//rpgSettings := objects.NewGCObject("RPGSettings")
+	//rpgSettings.ID = 0x55665566
+	//rpgSettings.Name = "EllieRPG"
+
+	//rpgSettings.AddChild(professionTitle)
+
+	//heroDesc := objects.NewGCObject("HeroDesc")
+	//heroDesc.ID = 0xF00DB0B0
+	//heroDesc.Name = "EllieHeroDesc"
+
+	//hero.AddChild(heroDesc)
+	//hero.AddChild(rpgSettings)
+
+	//player.AddChild(hero)
+	avatar := getAvatar(0x01)
+	//avatar2 := getAvatar(0x02)
+
 	player := objects.NewGCObject("Player")
 	player.ID = 0xBABAFAAB
-	player.Name = "Ellie"
+	player.Name = "Player Name"
 
-	hero := objects.NewGCObject("Hero")
-	hero.ID = 0xBABAF00B
-	hero.Name = "EllieHero"
-	hero.Properties = []objects.GCObjectProperty{
-		objects.Uint32Prop("Level", 10),
-		objects.Uint32Prop("Experience", 1000),
+	player.AddChild(avatar)
+	//player.AddChild(avatar2)
+	player.Properties = []objects.GCObjectProperty{
+		objects.StringProp("Name", "Ellie"),
 	}
 
-	professionTitle := objects.NewGCObject("ProfessionTitle")
-	professionTitle.ID = 0xBAB5BAB5
-	professionTitle.Name = "FIGHTER"
-	professionTitle.Properties = []objects.GCObjectProperty{
-		objects.Uint32Prop("Elements", 0x01),
-	}
-
-	rpgSettings := objects.NewGCObject("RPGSettings")
-	rpgSettings.ID = 0x55665566
-	rpgSettings.Name = "EllieRPG"
-
-	rpgSettings.AddChild(professionTitle)
-
-	heroDesc := objects.NewGCObject("HeroDesc")
-	heroDesc.ID = 0xF00DB0B0
-	heroDesc.Name = "EllieHeroDesc"
-
-	hero.AddChild(heroDesc)
-	hero.AddChild(rpgSettings)
-
-	player.AddChild(hero)
 	player.Serialise(body)
 
+	body.WriteCString("Unk")  // Specific to player::readObject
+	body.WriteCString("Unk2") // Specific to player::readObject
+	body.WriteCString("Unk3") // Specific to player::readObject
+	body.WriteCString("Unk4") // Specific to player::readObject
+	body.WriteUInt32(0x01)    // Specific to player::readObject
+	body.WriteUInt32(0x01)    // Specific to player::readObject
+
+	avatar.Serialise(body)
+
+	body.WriteByte(0x01)
+	body.WriteUInt32(0x01)
+}
+
+func getAvatar(ID uint32) *objects.GCObject {
 	avatar := objects.NewGCObject("Avatar")
 	avatar.GCType = "avatar.classes.fighterfemale"
 	//avatar.GCType = "avatar.base.avatar"
-	avatar.ID = 0xBABAFAAC
+	avatar.ID = ID
 	avatar.Name = "Avatar Name"
 	avatar.Properties = []objects.GCObjectProperty{
 		objects.Uint32Prop("Hair", 0x01),
@@ -271,7 +248,7 @@ func sendPlayer(body *byter.Byter) {
 	}
 
 	modifiers := objects.NewGCObject("Modifiers")
-	modifiers.GCType = "base.meleeunit.modifiers"
+	modifiers.GCType = "Modifiers"
 	modifiers.ID = 0xBABAFAAC
 	modifiers.Name = "Mod Name"
 	//modifiers.Properties = []objects.GCObjectProperty{
@@ -285,6 +262,11 @@ func sendPlayer(body *byter.Byter) {
 	//animationList := objects.NewGCObject("AnimationList")
 	//animationList.ID = 0xBABAF00E
 	//animationList.Name = "EllieAnimations"
+
+	avatarSkills := objects.NewGCObject("Skills")
+	avatarSkills.GCType = "avatar.base.skills"
+	avatarSkills.ID = 0xBAADBABA
+	avatarSkills.Name = "EllieSkills"
 
 	avatarDesc := objects.NewGCObject("AvatarDesc")
 	avatarDesc.GCType = "avatar.classes.fighterfemale.description"
@@ -300,17 +282,14 @@ func sendPlayer(body *byter.Byter) {
 	unitBehaviour.ID = 0xBABAF00F
 	unitBehaviour.Name = "EllieBehaviour"
 
-	body.WriteCString("Unk")  // Specific to player read
-	body.WriteCString("Unk2") // Specific to player read
-
-	avatar.AddChild(hero)
+	//avatar.AddChild(visual)
+	//avatar.AddChild(rpgSettings)
 	avatar.AddChild(modifiers)
-	avatar.AddChild(rpgSettings)
+	avatar.AddChild(avatarSkills)
 	avatar.AddChild(manipulators)
 	avatar.AddChild(avatarDesc)
-	//avatar.AddChild(visual)
 	avatar.AddChild(unitBehaviour)
-	avatar.Serialise(body)
+	return avatar
 }
 
 func sendCharacterList(conn net.Conn, clientID uint32) {
@@ -318,104 +297,14 @@ func sendCharacterList(conn net.Conn, clientID uint32) {
 	body.WriteByte(byte(CharacterChannel)) // Character channel
 	body.WriteByte(byte(CharacterGetList)) // Get character list (GotCharacter)
 
-	count := 1
+	count := 0x01
 
-	if count == 0 {
-		body.WriteByte(0x00)
+	body.WriteByte(byte(count))
+
+	for i := 0; i < count; i++ {
+		body.WriteUInt32(uint32(i + 1)) // ID?
+		sendPlayer(body)
 	}
-
-	sendPlayer(body)
 
 	WriteCompressedA(clientID, 0x01, 0x0f, body, conn)
-}
-
-func Write6(clientID uint32, channel byte, afterChannel uint32, body *byter.Byter, conn net.Conn) {
-	response := byter.NewLEByter(make([]byte, 0, 8))
-
-	response.WriteByte(0x06)                     // Packet Type
-	response.WriteUInt24(uint(clientID))         // Unk
-	response.WriteUInt24(uint(len(body.Data()))) // Packet Size (max 100000h)
-	response.WriteByte(channel)                  // Channel?
-	response.WriteUInt24(uint(afterChannel))     // SubType?
-	response.Write(body)
-
-	written, err := conn.Write(response.Data())
-
-	if err != nil || written == 0 {
-		panic(err)
-	}
-
-	log.Info(fmt.Sprintf("Sent: \n%s", hex.Dump(response.Data())))
-}
-
-func WriteCompressed8(body *byter.Byter, conn net.Conn) {
-	response := byter.NewLEByter(make([]byte, 0, 7))
-
-	var b bytes.Buffer
-	w := zlib.NewWriter(&b)
-	w.Write(body.Data())
-	w.Close()
-
-	//log.Info(fmt.Sprintf("Compressed raw:\n%sas:\n%s", hex.Dump(body.Data()), hex.Dump(b.Bytes())))
-
-	response.WriteByte(0x08)       // Packet Type
-	response.WriteUInt24(0x313233) // Unk
-	response.WriteUInt32(uint32(len(b.Bytes())) + 7)
-	response.WriteUInt32(uint32(len(body.Data())))
-
-	response.WriteBuffer(b)
-
-	written, err := conn.Write(response.Data())
-
-	if err != nil || written == 0 {
-		panic(err)
-	}
-
-	log.Info(fmt.Sprintf("Sent: \n%s", hex.Dump(response.Data())))
-}
-
-func WriteCompressedA(clientID uint32, dest uint8, messageType uint8, body *byter.Byter, conn net.Conn) {
-	response := byter.NewLEByter(make([]byte, 0, 7))
-
-	var b bytes.Buffer
-	w := zlib.NewWriter(&b)
-	w.Write(body.Data())
-	w.Close()
-
-	response.WriteByte(0x0a)             // Packet Type
-	response.WriteUInt24(uint(clientID)) // Unk
-	response.WriteUInt32(uint32(len(b.Bytes())) + 7)
-	// Source
-	response.WriteByte(dest)
-	response.WriteByte(messageType)
-	response.WriteByte(0x00)
-	response.WriteUInt32(uint32(len(body.Data())))
-
-	response.WriteBuffer(b)
-
-	written, err := conn.Write(response.Data())
-
-	if err != nil || written == 0 {
-		panic(err)
-	}
-
-	log.Info(fmt.Sprintf("Sent Compressed: \n%sCompressed raw body:\n%s", hex.Dump(response.Data()), hex.Dump(body.Data())))
-}
-
-func WriteMessage(msgType uint8, unk uint32, channel uint8, conn net.Conn, body *byter.Byter) {
-	response := byter.NewLEByter(make([]byte, 0, 8))
-
-	response.WriteByte(msgType)                  // Packet Type
-	response.WriteUInt24(uint(unk))              // Unk
-	response.WriteUInt24(uint(len(body.Data()))) // Packet Size (max 100000h)
-	response.WriteByte(channel)                  // Unk, Channel?
-	response.Write(body)
-
-	written, err := conn.Write(response.Data())
-
-	if err != nil || written == 0 {
-		panic(err)
-	}
-
-	log.Info(fmt.Sprintf("Sent: \n%s", hex.Dump(response.Data())))
 }

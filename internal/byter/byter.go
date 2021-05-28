@@ -6,7 +6,7 @@ import (
 )
 
 type Byter struct {
-	i            int
+	I            int
 	Buffer       []byte
 	littleEndian bool
 }
@@ -90,12 +90,12 @@ func (b *Byter) UInt64() uint64 {
 }
 
 func (b *Byter) getDataIndex(num int) int {
-	if b.Buffer == nil || len(b.Buffer)-b.i < num {
+	if b.Buffer == nil || len(b.Buffer)-b.I < num {
 		panic("Not enough data remaining in buffer!")
 	}
 
-	i := b.i
-	b.i += num
+	i := b.I
+	b.I += num
 	return i
 }
 
@@ -217,6 +217,52 @@ func (b *Byter) Compare(comparison []byte) bool {
 
 func (b *Byter) CompareString(str string) bool {
 	return b.Compare([]byte(str))
+}
+
+func (b *Byter) WriteInt32(i int32) error {
+	b.Buffer = append(b.Buffer, []byte{0, 0, 0, 0}...)
+
+	if b.littleEndian {
+		binary.LittleEndian.PutUint32(b.Buffer[len(b.Buffer)-4:], uint32(i))
+	} else {
+		binary.BigEndian.PutUint32(b.Buffer[len(b.Buffer)-4:], uint32(i))
+	}
+
+	return nil
+}
+
+func (b *Byter) RemainingBytes() []byte {
+	return b.Bytes(len(b.Buffer) - b.I)
+}
+
+func (b *Byter) HasRemainingData() bool {
+	return len(b.Buffer)-b.I > 1
+}
+
+func (b *Byter) CString() string {
+	str := ""
+
+	for {
+		c := b.Byte()
+
+		if c == 0 {
+			break
+		}
+
+		str += string(c)
+	}
+
+	return str
+}
+
+func (b *Byter) Bool() bool {
+	v := b.Byte()
+
+	if v == 1 {
+		return true
+	}
+
+	return false
 }
 
 func NewByter(buffer []byte) *Byter {

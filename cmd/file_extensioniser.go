@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	root := "D:\\Work\\dungeon-runners\\dumps"
+	root := "D:\\Work\\dungeon-runners\\666 dumps"
 
 	filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		if len(filepath.Ext(path)) > 0 {
