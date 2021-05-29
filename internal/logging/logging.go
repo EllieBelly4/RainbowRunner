@@ -9,7 +9,7 @@ import (
 )
 
 func Init() {
-	timestamp := time.Now().Format(time.ANSIC)
+	timestamp := time.Now().Format(time.RFC3339)
 	safeTime := strings.Replace(timestamp, ":", "_", -1)
 
 	logFile, err := os.OpenFile("resources\\Logs\\"+safeTime+".txt", os.O_APPEND|os.O_CREATE, 0755)
