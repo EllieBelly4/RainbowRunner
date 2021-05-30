@@ -2,17 +2,16 @@ package game
 
 import (
 	"RainbowRunner/internal/byter"
-	"net"
 )
 
-func handleUserUnk0(conn net.Conn, clientID uint32) {
+func handleUserUnk0(conn *RRConn) {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(UserChannel))
 	body.WriteByte(0x00)
-	WriteCompressedA(clientID, 0x01, 0x0f, body, conn)
+	WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
-func handleUserUnk1(conn net.Conn, clientID uint32) {
+func handleUserUnk1(conn *RRConn) {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(UserChannel))
 	body.WriteByte(0x01)
@@ -33,5 +32,5 @@ func handleUserUnk1(conn net.Conn, clientID uint32) {
 	body.WriteCString("ILikeTrains")
 	body.WriteCString("AndBrains")
 
-	WriteCompressedA(clientID, 0x01, 0x0f, body, conn)
+	WriteCompressedA(conn, 0x01, 0x0f, body)
 }

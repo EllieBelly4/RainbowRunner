@@ -4,7 +4,6 @@ import (
 	"RainbowRunner/internal/byter"
 	"RainbowRunner/internal/objects"
 	log "github.com/sirupsen/logrus"
-	"net"
 )
 
 type CharacterMessage byte
@@ -18,7 +17,7 @@ const (
 	CharacterPlay
 )
 
-func handleCharacterCreate(conn net.Conn, reader *byter.Byter, clientID uint32) {
+func handleCharacterCreate(conn *RRConn, reader *byter.Byter) {
 	name := reader.String()
 	class := reader.String()
 	reader.UInt8() // Unk
@@ -37,21 +36,21 @@ func handleCharacterCreate(conn net.Conn, reader *byter.Byter, clientID uint32) 
 
 	sendPlayer(body)
 
-	WriteCompressedA(clientID, 0x01, 0x0f, body, conn)
+	WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
-func handleCharacterPlay(conn net.Conn, clientID uint32) {
+func handleCharacterPlay(conn *RRConn) {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(CharacterChannel))
 	body.WriteByte(byte(CharacterPlay))
-	WriteCompressedA(clientID, 0x01, 0x0f, body, conn)
+	WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
-func handleCharacterConnected(conn net.Conn, clientID uint32) {
+func handleCharacterConnected(conn *RRConn) {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(CharacterChannel))   // Character channel
 	body.WriteByte(byte(CharacterConnected)) // Connected
-	WriteCompressedA(clientID, 0x01, 0x0f, body, conn)
+	WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
 func sendPlayer(body *byter.Byter) {

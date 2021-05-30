@@ -2,7 +2,6 @@ package game
 
 import (
 	"RainbowRunner/internal/byter"
-	"net"
 )
 
 type ClientEntityMessage byte
@@ -23,7 +22,17 @@ const (
 
 //07 34 05 00 64 01
 
-func sendCreateNewPlayerEntity(conn net.Conn, clientID uint32, body *byter.Byter) {
+func handleClientEntityUnk4(conn *RRConn, reader *byter.Byter) {
+	reader.UInt16()
+	reader.Byte()
+
+	body := byter.NewLEByter(make([]byte, 0, 1024))
+	body.WriteByte(byte(ClientEntityChannel))
+	body.WriteByte(0x04)
+	WriteCompressedA(conn, 0x01, 0x0f, body)
+}
+
+func sendCreateNewPlayerEntity(conn *RRConn, body *byter.Byter) {
 	body = byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(ClientEntityChannel))
 	//body.WriteByte(0x01) // Create
@@ -335,5 +344,5 @@ func sendCreateNewPlayerEntity(conn net.Conn, clientID uint32, body *byter.Byter
 	//body.WriteUInt32(147200) // HP
 
 	body.WriteByte(70) // Now connected
-	WriteCompressedA(clientID, 0x01, 0x0f, body, conn)
+	WriteCompressedA(conn, 0x01, 0x0f, body)
 }

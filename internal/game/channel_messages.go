@@ -2,9 +2,9 @@ package game
 
 import (
 	"RainbowRunner/internal/byter"
+	"errors"
 	"fmt"
 	log "github.com/sirupsen/logrus"
-	"net"
 )
 
 const msgBar = "=======================================================================\n"
@@ -30,7 +30,7 @@ const (
 	PosseChannel
 )
 
-func handleChannelMessage(conn net.Conn, reader *byter.Byter, clientID uint32) {
+func handleChannelMessage(conn *RRConn, reader *byter.Byter) {
 	msgChan := reader.UInt8()    // Channel
 	msgSubType := reader.UInt8() // Message Type
 
@@ -39,22 +39,17 @@ func handleChannelMessage(conn net.Conn, reader *byter.Byter, clientID uint32) {
 		body := byter.NewLEByter(make([]byte, 0, 1024))
 		body.WriteByte(byte(Unk2)) // Character channel
 		body.WriteByte(0x00)
-		WriteCompressedA(clientID, 0x01, 0x0f, body, conn)
+		WriteCompressedA(conn, 0x01, 0x0f, body)
 	case CharacterChannel:
-		switch CharacterMessage(msgSubType) {
-		case CharacterConnected:
-			handleCharacterConnected(conn, clientID)
-		case CharacterPlay:
-			handleCharacterPlay(conn, clientID)
-		case CharacterGetList:
-			sendCharacterList(conn, clientID)
-		case CharacterCreate:
-			handleCharacterCreate(conn, reader, clientID)
-		default:
+		err := handleCharacterChannelMessages(conn, reader, CharacterMessage(msgSubType), msgChan)
+
+		if err != nil {
 			noticeMessage("Unhandled chan %x msgSubType %x", msgChan, msgSubType)
 		}
 	case ClientEntityChannel:
 		switch ClientEntityMessage(msgSubType) {
+		case ClientEntityUnk4:
+			handleClientEntityUnk4(conn, reader)
 		//case ClientEntityUnk7:
 		//	fmt.Printf()
 		default:
@@ -63,24 +58,50 @@ func handleChannelMessage(conn net.Conn, reader *byter.Byter, clientID uint32) {
 	case GroupChannel:
 		switch GroupChannelMessage(msgSubType) {
 		case GroupConnected:
-			handleGroupConnected(conn, clientID)
+			handleGroupConnected(conn)
 		}
 	case ZoneChannel:
-		switch ZoneChannelMessage(msgSubType) {
-		case ZoneUnk6:
-			handleZoneUnk6(conn, clientID)
-		}
+		handleZoneMessages(conn, msgSubType, reader)
 	case UserChannel:
 		switch msgSubType {
 		case 0x00: // Request rosters
-			handleUserUnk0(conn, clientID)
+			handleUserUnk0(conn)
 		case 0x01: // Rosters response
-			handleUserUnk1(conn, clientID)
+			handleUserUnk1(conn)
 		default:
 			noticeMessage("Unhandled chan %x msgSubType %x", msgChan, msgSubType)
 		}
 	default:
 		noticeMessage("Unhandled channel message %x", msgChan)
+	}
+}
+
+func handleCharacterChannelMessages(conn *RRConn, reader *byter.Byter, msgSubType CharacterMessage, msgChan uint8) error {
+	switch msgSubType {
+	case CharacterConnected:
+		handleCharacterConnected(conn)
+	case CharacterPlay:
+		handleCharacterPlay(conn)
+	case CharacterGetList:
+		sendCharacterList(conn)
+	case CharacterCreate:
+		handleCharacterCreate(conn, reader)
+	default:
+		return errors.New("unhandled")
+	}
+
+	return nil
+}
+
+func handleZoneMessages(conn *RRConn, msgSubType uint8, reader *byter.Byter) {
+	switch ZoneChannelMessage(msgSubType) {
+	case ZoneUnk6:
+		handleZoneUnk6(conn)
+	case ZoneUnk8:
+		body := byter.NewLEByter(make([]byte, 0, 1024))
+		body.WriteByte(byte(ZoneChannel))
+		body.WriteByte(0x08)
+		WriteCompressedA(conn, 0x01, 0x0f, body)
 	}
 }
 

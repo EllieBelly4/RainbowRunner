@@ -8,6 +8,11 @@ import (
 	"net"
 )
 
+type RRConn struct {
+	NetConn  net.Conn
+	ClientID uint32
+}
+
 func StartGameServer() {
 	listen, err := net.Listen("tcp", "0.0.0.0:2603")
 
@@ -45,7 +50,10 @@ func handleConnection(conn net.Conn) {
 	buf := make([]byte, 1024*10)
 
 	fmt.Println("Client connected to gameserver")
-	var clientID uint32 = 0
+	rrconn := &RRConn{
+		NetConn:  conn,
+		ClientID: 0,
+	}
 
 	// We are receiving mixed messages, 0x0a + 0x0e
 	// Need to support splitting now
@@ -68,16 +76,16 @@ func handleConnection(conn net.Conn) {
 		reader := byter.NewLEByter(buf[0:read])
 
 		for reader.HasRemainingData() {
-			readPacket(conn, reader, clientID)
+			readPacket(rrconn, reader)
 		}
 	}
 }
 
-func readPacket(conn net.Conn, reader *byter.Byter, clientID uint32) {
+func readPacket(conn *RRConn, reader *byter.Byter) {
 	msgType := reader.UInt8() // Message Type?
 
 	if msgType == 0x0a {
-		clientID = reader.UInt24()      // Unk
+		conn.ClientID = reader.UInt24() // Unk
 		packetLength := reader.UInt32() // Packet Length
 		reader.UInt8()
 		msgTypeA := reader.UInt8()
@@ -94,14 +102,14 @@ func readPacket(conn net.Conn, reader *byter.Byter, clientID uint32) {
 			body := byter.NewLEByter(make([]byte, 0, 1024))
 
 			body.WriteByte(0x03)
-			WriteMessage(0x10, clientID, 0x0a, conn, body)
+			WriteMessage(conn, 0x10, 0x0a, body)
 
 			body = byter.NewLEByter(make([]byte, 0, 1024))
 			// Unk
 			body.WriteUInt24(0xB2B3B4)
 			// Unk
 			body.WriteByte(0x00)
-			WriteCompressedA(clientID, 0x00, 0x03, body, conn)
+			WriteCompressedA(conn, 0x00, 0x03, body)
 		} else if msgTypeA == 0x02 {
 		} else {
 			log.Panicf("Unhandled 0x0a message type %x", msgTypeA)
@@ -112,7 +120,7 @@ func readPacket(conn net.Conn, reader *byter.Byter, clientID uint32) {
 
 			log.Infof("Uncompressed E:\n%s", hex.Dump(msgReader.Buffer))
 
-			handleChannelMessage(conn, msgReader, clientID)
+			handleChannelMessage(conn, msgReader)
 		} else {
 			reader.UInt24() // Unk
 			reader.UInt24() // Size
@@ -122,14 +130,14 @@ func readPacket(conn net.Conn, reader *byter.Byter, clientID uint32) {
 			reader.UInt8()  // Sub type?
 			reader.UInt24() // Unk
 
-			handleChannelMessage(conn, reader, clientID)
+			handleChannelMessage(conn, reader)
 		}
 	} else {
 		log.Info(fmt.Sprintf("Unhandled message type %x\n", msgType))
 	}
 }
 
-func sendCharacterList(conn net.Conn, clientID uint32) {
+func sendCharacterList(conn *RRConn) {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(CharacterChannel)) // Character channel
 	body.WriteByte(byte(CharacterGetList)) // Get character list (GotCharacter)
@@ -143,5 +151,5 @@ func sendCharacterList(conn net.Conn, clientID uint32) {
 		sendPlayer(body)
 	}
 
-	WriteCompressedA(clientID, 0x01, 0x0f, body, conn)
+	WriteCompressedA(conn, 0x01, 0x0f, body)
 }
