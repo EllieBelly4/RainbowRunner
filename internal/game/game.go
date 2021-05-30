@@ -47,6 +47,14 @@ func handleConnection(conn net.Conn) {
 	fmt.Println("Client connected to gameserver")
 	var clientID uint32 = 0
 
+	// We are receiving mixed messages, 0x0a + 0x0e
+	// Need to support splitting now
+	//time=2021-05-30T12:58:21+01:00 level=info msg=(GameServer)Received:
+	//00000000  0a dd 7b 00 0f 00 00 00  00 02 00 00 00 00 00 78  |..{............x|
+	//00000010  9c 03 00 00 00 00 01 0e  dd 7b 00 19 00 00 00 b4  |.........{......|
+	//00000020  b3 b2 01 00 01 0f 00 05  00 00 00 78 9c 63 67 61  |...........x.cga|
+	//00000030  62 10 05 00 00 53 00 23                           |b....S.#|
+
 	for {
 		read, err := conn.Read(buf)
 

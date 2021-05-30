@@ -3,6 +3,7 @@ package byter
 import (
 	"bytes"
 	"encoding/binary"
+	"math"
 )
 
 type Byter struct {
@@ -263,6 +264,22 @@ func (b *Byter) Bool() bool {
 	}
 
 	return false
+}
+
+func (b *Byter) WriteFloat32(i float32) {
+	n := math.Float32bits(i)
+
+	if b.littleEndian {
+		b.WriteByte(byte(n))
+		b.WriteByte(byte(n >> 8))
+		b.WriteByte(byte(n >> 16))
+		b.WriteByte(byte(n >> 24))
+	} else {
+		b.WriteByte(byte(n >> 24))
+		b.WriteByte(byte(n >> 16))
+		b.WriteByte(byte(n >> 8))
+		b.WriteByte(byte(n))
+	}
 }
 
 func NewByter(buffer []byte) *Byter {
