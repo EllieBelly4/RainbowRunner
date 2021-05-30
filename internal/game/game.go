@@ -67,67 +67,65 @@ func handleConnection(conn net.Conn) {
 
 		reader := byter.NewLEByter(buf[0:read])
 
-		msgType := reader.UInt8() // Message Type?
-
-		if msgType == 0x0a {
-			clientID = reader.UInt24() // Unk
-			reader.UInt32()            // Packet Length
-			reader.UInt8()
-			msgTypeA := reader.UInt8()
-			reader.UInt8()
-			reader = ReadCompressedA(reader)
-
-			log.Infof("Uncompressed A:\n%s", hex.Dump(reader.Buffer))
-
-			if msgTypeA == 0x00 {
-				reader.UInt8()      // Some type?
-				_ = reader.UInt32() // One Time Key
-				reader.Bytes(1)     // Null
-
-				body := byter.NewLEByter(make([]byte, 0, 1024))
-
-				body.WriteByte(0x03)
-				WriteMessage(0x10, clientID, 0x0a, conn, body)
-
-				body = byter.NewLEByter(make([]byte, 0, 1024))
-				// Unk
-				body.WriteUInt24(0xB2B3B4)
-				// Unk
-				body.WriteByte(0x00)
-				WriteCompressedA(clientID, 0x00, 0x03, body, conn)
-			} else if msgTypeA == 0x02 {
-			} else {
-				log.Panicf("Unhandled 0x0a message type %x", msgTypeA)
-			}
-		} else if msgType == 0x06 || msgType == 0x0e {
-			if msgType == 0x0e {
-				first := true
-				// TODO when we can reliably get the length of all packets we can ensure this is done for everything
-				for reader.HasRemainingData() {
-					if !first {
-						reader.UInt8()
-					}
-					msgReader := ReadCompressedE(reader)
-
-					log.Infof("Uncompressed E:\n%s", hex.Dump(msgReader.Buffer))
-
-					handleChannelMessage(conn, msgReader, clientID)
-					first = false
-				}
-			} else {
-				reader.UInt24() // Unk
-				reader.UInt24() // Size
-				reader.UInt8()
-				reader.UInt24() // Client ID
-				reader.UInt8()  // Channel?
-				reader.UInt8()  // Sub type?
-				reader.UInt24() // Unk
-
-				handleChannelMessage(conn, reader, clientID)
-			}
-		} else {
-			log.Info(fmt.Sprintf("Unhandled message type %x\n", msgType))
+		for reader.HasRemainingData() {
+			readPacket(conn, reader, clientID)
 		}
+	}
+}
+
+func readPacket(conn net.Conn, reader *byter.Byter, clientID uint32) {
+	msgType := reader.UInt8() // Message Type?
+
+	if msgType == 0x0a {
+		clientID = reader.UInt24()      // Unk
+		packetLength := reader.UInt32() // Packet Length
+		reader.UInt8()
+		msgTypeA := reader.UInt8()
+		reader.UInt8()
+		reader = ReadCompressedA(reader, packetLength)
+
+		log.Infof("Uncompressed A:\n%s", hex.Dump(reader.Buffer))
+
+		if msgTypeA == 0x00 {
+			reader.UInt8()      // Some type?
+			_ = reader.UInt32() // One Time Key
+			reader.Bytes(1)     // Null
+
+			body := byter.NewLEByter(make([]byte, 0, 1024))
+
+			body.WriteByte(0x03)
+			WriteMessage(0x10, clientID, 0x0a, conn, body)
+
+			body = byter.NewLEByter(make([]byte, 0, 1024))
+			// Unk
+			body.WriteUInt24(0xB2B3B4)
+			// Unk
+			body.WriteByte(0x00)
+			WriteCompressedA(clientID, 0x00, 0x03, body, conn)
+		} else if msgTypeA == 0x02 {
+		} else {
+			log.Panicf("Unhandled 0x0a message type %x", msgTypeA)
+		}
+	} else if msgType == 0x06 || msgType == 0x0e {
+		if msgType == 0x0e {
+			msgReader := ReadCompressedE(reader)
+
+			log.Infof("Uncompressed E:\n%s", hex.Dump(msgReader.Buffer))
+
+			handleChannelMessage(conn, msgReader, clientID)
+		} else {
+			reader.UInt24() // Unk
+			reader.UInt24() // Size
+			reader.UInt8()
+			reader.UInt24() // Client ID
+			reader.UInt8()  // Channel?
+			reader.UInt8()  // Sub type?
+			reader.UInt24() // Unk
+
+			handleChannelMessage(conn, reader, clientID)
+		}
+	} else {
+		log.Info(fmt.Sprintf("Unhandled message type %x\n", msgType))
 	}
 }
 

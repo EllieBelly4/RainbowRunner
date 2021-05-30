@@ -40,9 +40,9 @@ func ReadCompressedE(reader *byter.Byter) *byter.Byter {
 	return byter.NewLEByter(uncompressed)
 }
 
-func ReadCompressedA(reader *byter.Byter) *byter.Byter {
+func ReadCompressedA(reader *byter.Byter, packetLength uint32) *byter.Byter {
 	bLength := reader.UInt32() // Body Length
-	compressed := reader.RemainingBytes()
+	compressed := reader.Bytes(int(packetLength - 7))
 	cReader := bytes.NewReader(compressed)
 	r, err := zlib.NewReader(cReader)
 
