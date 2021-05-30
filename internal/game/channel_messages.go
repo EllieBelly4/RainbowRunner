@@ -30,78 +30,47 @@ const (
 	PosseChannel
 )
 
-func handleChannelMessage(conn *RRConn, reader *byter.Byter) {
-	msgChan := reader.UInt8()    // Channel
-	msgSubType := reader.UInt8() // Message Type
+var UnhandledChannelMessageError = errors.New("unhandled channel message")
 
-	switch Channel(msgChan) {
-	case Unk2:
-		body := byter.NewLEByter(make([]byte, 0, 1024))
-		body.WriteByte(byte(Unk2)) // Character channel
-		body.WriteByte(0x00)
-		WriteCompressedA(conn, 0x01, 0x0f, body)
-	case CharacterChannel:
-		err := handleCharacterChannelMessages(conn, reader, CharacterMessage(msgSubType), msgChan)
+type ChannelMessageHandler func(conn *RRConn, msgType byte, reader *byter.Byter) error
 
-		if err != nil {
-			noticeMessage("Unhandled chan %x msgSubType %x", msgChan, msgSubType)
-		}
-	case ClientEntityChannel:
-		switch ClientEntityMessage(msgSubType) {
-		case ClientEntityUnk4:
-			handleClientEntityUnk4(conn, reader)
-		//case ClientEntityUnk7:
-		//	fmt.Printf()
-		default:
-			noticeMessage("Unhandled chan %x msgSubType %x", msgChan, msgSubType)
-		}
-	case GroupChannel:
-		switch GroupChannelMessage(msgSubType) {
-		case GroupConnected:
-			handleGroupConnected(conn)
-		}
-	case ZoneChannel:
-		handleZoneMessages(conn, msgSubType, reader)
-	case UserChannel:
-		switch msgSubType {
-		case 0x00: // Request rosters
-			handleUserUnk0(conn)
-		case 0x01: // Rosters response
-			handleUserUnk1(conn)
-		default:
-			noticeMessage("Unhandled chan %x msgSubType %x", msgChan, msgSubType)
-		}
-	default:
-		noticeMessage("Unhandled channel message %x", msgChan)
-	}
+var channelMessageHandlers = map[Channel]ChannelMessageHandler{
+	CharacterChannel:    handleCharacterChannelMessages,
+	Unk2:                handleUnk2ChannelMessages,
+	ClientEntityChannel: handleClientEntityChannelMessages,
+	GroupChannel:        handleGroupChannelMessages,
+	ZoneChannel:         handleZoneChannelMessages,
+	UserChannel:         handleUserChannelMessages,
 }
 
-func handleCharacterChannelMessages(conn *RRConn, reader *byter.Byter, msgSubType CharacterMessage, msgChan uint8) error {
-	switch msgSubType {
-	case CharacterConnected:
-		handleCharacterConnected(conn)
-	case CharacterPlay:
-		handleCharacterPlay(conn)
-	case CharacterGetList:
-		sendCharacterList(conn)
-	case CharacterCreate:
-		handleCharacterCreate(conn, reader)
-	default:
-		return errors.New("unhandled")
-	}
-
+func handleUnk2ChannelMessages(conn *RRConn, msgType byte, reader *byter.Byter) error {
+	log.Info("sending unknown response for Unk2 channel")
+	body := byter.NewLEByter(make([]byte, 0, 1024))
+	body.WriteByte(byte(Unk2)) // Character channel
+	body.WriteByte(0x00)
+	WriteCompressedA(conn, 0x01, 0x0f, body)
 	return nil
 }
 
-func handleZoneMessages(conn *RRConn, msgSubType uint8, reader *byter.Byter) {
-	switch ZoneChannelMessage(msgSubType) {
-	case ZoneUnk6:
-		handleZoneUnk6(conn)
-	case ZoneUnk8:
-		body := byter.NewLEByter(make([]byte, 0, 1024))
-		body.WriteByte(byte(ZoneChannel))
-		body.WriteByte(0x08)
-		WriteCompressedA(conn, 0x01, 0x0f, body)
+func handleChannelMessage(conn *RRConn, reader *byter.Byter) {
+	msgChan := reader.UInt8()   // Channel
+	msgSubType := reader.Byte() // Message Type
+
+	handler, ok := channelMessageHandlers[Channel(msgChan)]
+
+	if !ok {
+		noticeMessage("unhandled channel %x", msgChan)
+		return
+	}
+
+	err := handler(conn, msgSubType, reader)
+
+	if err != nil {
+		if errors.Is(err, UnhandledChannelMessageError) {
+			noticeMessage("unhandled channel message chan: %x type: %x", msgChan, msgSubType)
+		} else {
+			log.Error(err)
+		}
 	}
 }
 

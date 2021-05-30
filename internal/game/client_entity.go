@@ -20,6 +20,18 @@ const (
 	ClientEntityUnk34 = 0x34
 )
 
+func handleClientEntityChannelMessages(conn *RRConn, msgType byte, reader *byter.Byter) error {
+	switch ClientEntityMessage(msgType) {
+	case ClientEntityUnk4:
+		handleClientEntityUnk4(conn, reader)
+	//case ClientEntityUnk7:
+	//	fmt.Printf()
+	default:
+		return UnhandledChannelMessageError
+	}
+	return nil
+}
+
 //07 34 05 00 64 01
 
 func handleClientEntityUnk4(conn *RRConn, reader *byter.Byter) {

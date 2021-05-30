@@ -17,6 +17,23 @@ const (
 	CharacterPlay
 )
 
+func handleCharacterChannelMessages(conn *RRConn, msgType byte, reader *byter.Byter) error {
+	switch CharacterMessage(msgType) {
+	case CharacterConnected:
+		handleCharacterConnected(conn)
+	case CharacterPlay:
+		handleCharacterPlay(conn)
+	case CharacterGetList:
+		sendCharacterList(conn)
+	case CharacterCreate:
+		handleCharacterCreate(conn, reader)
+	default:
+		return UnhandledChannelMessageError
+	}
+
+	return nil
+}
+
 func handleCharacterCreate(conn *RRConn, reader *byter.Byter) {
 	name := reader.String()
 	class := reader.String()

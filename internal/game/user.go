@@ -4,6 +4,19 @@ import (
 	"RainbowRunner/internal/byter"
 )
 
+func handleUserChannelMessages(conn *RRConn, msgSubType byte, reader *byter.Byter) error {
+	switch msgSubType {
+	case 0x00: // Request rosters
+		handleUserUnk0(conn)
+	case 0x01: // Rosters response
+		handleUserUnk1(conn)
+	default:
+		return UnhandledChannelMessageError
+	}
+
+	return nil
+}
+
 func handleUserUnk0(conn *RRConn) {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(UserChannel))

@@ -18,6 +18,21 @@ const (
 	ZoneUnk8
 )
 
+func handleZoneChannelMessages(conn *RRConn, msgSubType uint8, reader *byter.Byter) error {
+	switch ZoneChannelMessage(msgSubType) {
+	case ZoneUnk6:
+		handleZoneUnk6(conn)
+	case ZoneUnk8:
+		body := byter.NewLEByter(make([]byte, 0, 1024))
+		body.WriteByte(byte(ZoneChannel))
+		body.WriteByte(0x08)
+		WriteCompressedA(conn, 0x01, 0x0f, body)
+	default:
+		return UnhandledChannelMessageError
+	}
+	return nil
+}
+
 func handleZoneUnk6(conn *RRConn) {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(ZoneChannel))
