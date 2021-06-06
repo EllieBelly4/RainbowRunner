@@ -9,9 +9,13 @@ import (
 )
 
 type RRConn struct {
-	NetConn  net.Conn
-	ClientID uint32
+	NetConn     net.Conn
+	ClientID    uint32
+	Player      *Player
+	IsConnected bool
 }
+
+var Connections = make(map[uint32]*RRConn)
 
 func StartGameServer() {
 	listen, err := net.Listen("tcp", "0.0.0.0:2603")
@@ -39,21 +43,29 @@ func StartGameServer() {
 }
 
 func handleConnection(conn net.Conn) {
+	//parser := message.NewParser(conn)
+	buf := make([]byte, 1024*10)
+
+	fmt.Println("Client connected to gameserver")
+	rrconn := &RRConn{
+		NetConn:     conn,
+		ClientID:    0,
+		IsConnected: true,
+	}
+
+	rrconn.Player = NewPlayer(rrconn)
+
+	Connections[rrconn.ClientID] = rrconn
+
 	defer func(conn net.Conn) {
+		rrconn.IsConnected = false
 		err := conn.Close()
 		if err != nil {
 			panic(err)
 		}
 	}(conn)
 
-	//parser := message.NewParser(conn)
-	buf := make([]byte, 1024*10)
-
-	fmt.Println("Client connected to gameserver")
-	rrconn := &RRConn{
-		NetConn:  conn,
-		ClientID: 0,
-	}
+	go StartGameLoop(rrconn)
 
 	// We are receiving mixed messages, 0x0a + 0x0e
 	// Need to support splitting now
@@ -71,7 +83,7 @@ func handleConnection(conn net.Conn) {
 			break
 		}
 
-		log.Info(fmt.Sprintf("(GameServer)Received: \n%s\n", hex.Dump(buf[0:read])))
+		//log.Info(fmt.Sprintf("(GameServer)Received: \n%s\n", hex.Dump(buf[0:read])))
 
 		reader := byter.NewLEByter(buf[0:read])
 
@@ -85,7 +97,7 @@ func readPacket(conn *RRConn, reader *byter.Byter) {
 	msgType := reader.UInt8() // Message Type?
 
 	if msgType == 0x0a {
-		conn.ClientID = reader.UInt24() // Unk
+		reader.UInt24()                 // Unk
 		packetLength := reader.UInt32() // Packet Length
 		reader.UInt8()
 		msgTypeA := reader.UInt8()
@@ -111,14 +123,16 @@ func readPacket(conn *RRConn, reader *byter.Byter) {
 			body.WriteByte(0x00)
 			WriteCompressedA(conn, 0x00, 0x03, body)
 		} else if msgTypeA == 0x02 {
+			body := byter.NewLEByter(make([]byte, 0, 1024))
+			WriteCompressedA(conn, 0x00, 0x02, body)
 		} else {
-			log.Panicf("Unhandled 0x0a message type %x", msgTypeA)
+			panic(fmt.Sprintf("Unhandled 0x0a message type %x", msgTypeA))
 		}
 	} else if msgType == 0x06 || msgType == 0x0e {
 		if msgType == 0x0e {
 			msgReader := ReadCompressedE(reader)
 
-			log.Infof("Uncompressed E:\n%s", hex.Dump(msgReader.Buffer))
+			log.Infof("Received E:\n%s", hex.Dump(msgReader.Buffer))
 
 			handleChannelMessage(conn, msgReader)
 		} else {
@@ -133,7 +147,7 @@ func readPacket(conn *RRConn, reader *byter.Byter) {
 			handleChannelMessage(conn, reader)
 		}
 	} else {
-		log.Info(fmt.Sprintf("Unhandled message type %x\n", msgType))
+		fmt.Errorf("Unhandled message type %x\n", msgType)
 	}
 }
 

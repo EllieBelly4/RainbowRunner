@@ -26,5 +26,12 @@ func handleGroupConnected(conn *RRConn) {
 	body.WriteByte(byte(GroupChannel))
 	body.WriteByte(48)
 
-	sendGoToZone(conn, body, "dungeon00_level01")
+	//sendGoToZone(conn, body, "dungeon00_level01")
+	//sendGoToZone(conn, body, "TestTilesets")
+	//sendGoToZone(conn, body, "thehub")
+	//sendGoToZone(conn, body, "dungeon01_level01")
+	//sendGoToZone(conn, body, "dungeon15_level01")
+	sendGoToZone(conn, body, "dungeon16_level00")
+	//sendGoToZone(conn, body, "town")
+	//sendGoToZone(conn, body, "dungeon02_level01")
 }

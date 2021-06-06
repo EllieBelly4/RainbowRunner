@@ -52,6 +52,45 @@ func (b *Byter) UInt32() uint32 {
 	}
 }
 
+func (b *Byter) Fixed32() float32 {
+	i := b.getDataIndex(4)
+
+	if b.littleEndian {
+		frac := binary.LittleEndian.Uint16(b.Buffer[i:])
+		intNum := binary.LittleEndian.Uint16(b.Buffer[i+2:])
+
+		fracNum := math.Floor(math.Log10(math.Abs(float64(frac)))) + 1
+		div := math.Pow(10, fracNum)
+
+		finalFrac := float32(0)
+
+		if frac != 0 {
+			finalFrac = float32(frac) / float32(div)
+		}
+
+		full := float32(intNum) + finalFrac
+
+		return full
+	} else {
+		panic("not implemented")
+		//return float32(binary.BigEndian.Uint32(b.Buffer[i:]))
+	}
+}
+
+func (b *Byter) Float32() float32 {
+	i := b.getDataIndex(4)
+
+	if b.littleEndian {
+		return float32(binary.LittleEndian.Uint32(b.Buffer[i:]))
+	} else {
+		return float32(binary.BigEndian.Uint32(b.Buffer[i:]))
+	}
+}
+
+func (b *Byter) Int32() int32 {
+	return int32(b.UInt32())
+}
+
 func (b *Byter) UInt24() uint32 {
 	i := b.getDataIndex(3)
 
@@ -88,6 +127,10 @@ func (b *Byter) UInt64() uint64 {
 	}
 
 	return result
+}
+
+func (b Byter) GetLength() int {
+	return len(b.Buffer)
 }
 
 func (b *Byter) getDataIndex(num int) int {
@@ -129,6 +172,18 @@ func (b *Byter) WriteUInt32(i uint32) error {
 		binary.LittleEndian.PutUint32(b.Buffer[len(b.Buffer)-4:], i)
 	} else {
 		binary.BigEndian.PutUint32(b.Buffer[len(b.Buffer)-4:], i)
+	}
+
+	return nil
+}
+
+func (b *Byter) WriteUInt64(i uint64) error {
+	b.Buffer = append(b.Buffer, []byte{0, 0, 0, 0, 0, 0, 0, 0}...)
+
+	if b.littleEndian {
+		binary.LittleEndian.PutUint64(b.Buffer[len(b.Buffer)-8:], i)
+	} else {
+		binary.BigEndian.PutUint64(b.Buffer[len(b.Buffer)-8:], i)
 	}
 
 	return nil
@@ -220,6 +275,10 @@ func (b *Byter) CompareString(str string) bool {
 	return b.Compare([]byte(str))
 }
 
+func (b *Byter) Seek(address int) {
+	b.I = address
+}
+
 func (b *Byter) WriteInt32(i int32) error {
 	b.Buffer = append(b.Buffer, []byte{0, 0, 0, 0}...)
 
@@ -280,6 +339,10 @@ func (b *Byter) WriteFloat32(i float32) {
 		b.WriteByte(byte(n >> 8))
 		b.WriteByte(byte(n))
 	}
+}
+
+func (b *Byter) Int16() int16 {
+	return int16(b.UInt16())
 }
 
 func NewByter(buffer []byte) *Byter {

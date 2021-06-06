@@ -2,6 +2,7 @@ package game
 
 import (
 	"RainbowRunner/internal/byter"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	log "github.com/sirupsen/logrus"
@@ -9,6 +10,7 @@ import (
 
 const msgBar = "=======================================================================\n"
 
+//go:generate stringer -type=Channel
 type Channel byte
 
 const (
@@ -59,9 +61,11 @@ func handleChannelMessage(conn *RRConn, reader *byter.Byter) {
 	handler, ok := channelMessageHandlers[Channel(msgChan)]
 
 	if !ok {
-		noticeMessage("unhandled channel %x", msgChan)
+		noticeMessage("unhandled channel %x\n%s", msgChan, hex.Dump(reader.Data()))
 		return
 	}
+
+	fmt.Printf("<---- recv [%s-0x%x] len %d\n", Channel(msgChan).String(), msgSubType, len(reader.Buffer))
 
 	err := handler(conn, msgSubType, reader)
 
@@ -69,14 +73,14 @@ func handleChannelMessage(conn *RRConn, reader *byter.Byter) {
 		if errors.Is(err, UnhandledChannelMessageError) {
 			noticeMessage("unhandled channel message chan: %x type: %x", msgChan, msgSubType)
 		} else {
-			log.Error(err)
+			fmt.Println(err)
 		}
 	}
 }
 
 func noticeMessage(s string, a ...interface{}) {
 	msg := fmt.Sprintf(s, a...)
-	log.Infof("\n%s%s\n%s", msgBar, msg, msgBar)
+	fmt.Printf("\n%s%s\n%s", msgBar, msg, msgBar)
 }
 
 func addCreateComponent(body *byter.Byter, parentID uint16, componentID uint16, typeString string) {
@@ -85,4 +89,5 @@ func addCreateComponent(body *byter.Byter, parentID uint16, componentID uint16, 
 	body.WriteUInt16(componentID) // Component ID
 	body.WriteByte(0xFF)          // Unk
 	body.WriteCString(typeString) // Component Type
+	body.WriteByte(0x01)          // Unk
 }

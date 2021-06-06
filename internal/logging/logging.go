@@ -8,6 +8,16 @@ import (
 	"time"
 )
 
+type LoggingOptions struct {
+	LogMoves bool
+	LogSent  bool
+}
+
+var LoggingOpts = LoggingOptions{
+	LogMoves: true,
+	LogSent:  true,
+}
+
 func Init() {
 	timestamp := time.Now().Format(time.RFC3339)
 	safeTime := strings.Replace(timestamp, ":", "_", -1)
@@ -22,7 +32,7 @@ func Init() {
 		DisableQuote: true,
 	})
 
-	mw := io.MultiWriter(os.Stdout, logFile)
+	mw := io.MultiWriter(logFile)
 	log.SetOutput(mw)
 
 	// Only log the warning severity or above.

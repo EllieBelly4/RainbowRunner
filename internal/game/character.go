@@ -100,15 +100,14 @@ func sendPlayer(body *byter.Byter) {
 	//hero.AddChild(rpgSettings)
 
 	//player.AddChild(hero)
-	avatar := getAvatar(0x01)
+	avatar := getAvatar(0x02)
 	//avatar2 := getAvatar(0x02)
 
 	player := objects.NewGCObject("Player")
-	player.ID = 0xBABAFAAB
+	player.ID = 0x01
 	player.Name = "Player Name"
 
 	player.AddChild(avatar)
-	//player.AddChild(avatar2)
 	player.Properties = []objects.GCObjectProperty{
 		objects.StringProp("Name", "Ellie"),
 	}
@@ -145,14 +144,14 @@ func getAvatar(ID uint32) *objects.GCObject {
 
 	modifiers := objects.NewGCObject("Modifiers")
 	modifiers.GCType = "Modifiers"
-	modifiers.ID = 0xBABAFAAC
+	modifiers.ID = 0x02
 	modifiers.Name = "Mod Name"
 	//modifiers.Properties = []objects.GCObjectProperty{
 	//	objects.Uint32Prop("IDGenerator", 0x01),
 	//}
 
 	manipulators := objects.NewGCObject("Manipulators")
-	manipulators.ID = 0xBABAFACC
+	manipulators.ID = 0x03
 	manipulators.Name = "ManipulateMe"
 
 	//animationList := objects.NewGCObject("AnimationList")
@@ -161,7 +160,7 @@ func getAvatar(ID uint32) *objects.GCObject {
 
 	avatarSkills := objects.NewGCObject("Skills")
 	avatarSkills.GCType = "avatar.base.skills"
-	avatarSkills.ID = 0xBAADBABA
+	avatarSkills.ID = 0x04
 	avatarSkills.Name = "EllieSkills"
 
 	avatarDesc := objects.NewGCObject("AvatarDesc")
@@ -169,13 +168,17 @@ func getAvatar(ID uint32) *objects.GCObject {
 	avatarDesc.ID = 0xBABAF00D
 	avatarDesc.Name = "EllieAvatarDesc"
 
+	//avatarDesc.Properties = []objects.GCObjectProperty{
+	//	objects.StringProp("PVEStartSpawnPoint", "Start"),
+	//}
+
 	//worldEntityDesc := objects.NewGCObject("WorldEntityDesc")
 	//worldEntityDesc.ID = 0xBABABABA
 	//worldEntityDesc.Name = "EllieWorldEntityDesc"
 
 	unitBehaviour := objects.NewGCObject("UnitBehavior")
 	unitBehaviour.GCType = "avatar.base.UnitBehavior"
-	unitBehaviour.ID = 0xBABAF00F
+	unitBehaviour.ID = 0x05
 	unitBehaviour.Name = "EllieBehaviour"
 
 	//avatar.AddChild(visual)

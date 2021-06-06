@@ -1,0 +1,35 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+typedef struct Pos {
+    unsigned byte unk;
+    uint32 rotation;
+
+    int32 posx <bgcolor=cRed>;
+    int32 posy <bgcolor=cGreen>;
+
+};
+
+typedef struct ClientEntityMovementMessage {
+    unsigned int16 subtype_1;
+    unsigned byte subtype_2; 
+    unsigned byte unk;
+    unsigned byte count;
+
+    Pos positions[count];
+};
+
+unsigned byte chan;
+unsigned byte type;
+
+ClientEntityMovementMessage msg;
