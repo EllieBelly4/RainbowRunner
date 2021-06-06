@@ -54,8 +54,44 @@ This leads me to believe that MoveTo is not intended for client owned entities.
 
 Potentially I need to send a response for each of the move messages but I do not know what message to send.
 
-`PathManager::RequestPathSync<ClientUnitBehavior>(VectorType const &,VectorType const &,BuildPathSettings const &,ClientUnitBehavior *,void (ClientUnitBehavior::*)(int,Pathfinder *))	.text	00519920	000001F7	0000003C	00000018	R	.	.	.	.	.	.	.`
-PathManager may be related
+//`PathManager::RequestPathSync<ClientUnitBehavior>(VectorType const &,VectorType const &,BuildPathSettings const &,ClientUnitBehavior *,void (ClientUnitBehavior::*)(int,Pathfinder *))	.text	00519920	000001F7	0000003C	00000018	R	.	.	.	.	.	.	.`
+//PathManager may be related
+
+Sending the position is able to decrement the unsynced positions, but the two unk values must be set correctly or they will be ignored.
+
+`ClientUnitBehavior::OnUpdateApplied` will decrement the counter.
+
+Some of the `i` values below worked but not all
+
+```
+	body := byter.NewLEByter(make([]byte, 0))
+
+	body.WriteByte(byte(ClientEntityChannel))
+	body.WriteByte(0x35)   // ComponentUpdate
+	body.WriteUInt16(0x05) // ComponentID
+	body.WriteByte(0x65)   // UnitMoverUpdate
+
+	// UnitBehavior::processUpdate
+	body.WriteByte(0xFF) // Unk
+	body.WriteByte(0x01) // Update count
+
+	// UnitMoverUpdate::Read
+	body.WriteByte(i) // Unk
+
+	body.WriteInt32(p.Position.X)
+	body.WriteInt32(p.Position.Y)
+	body.WriteInt32(p.Position.Z)
+
+	body.WriteByte(0x02)
+	body.WriteUInt32(uint32(p.ClientUpdateNumber))
+
+	//AddSynch(p.Conn, body)
+
+	AddEntityUpdateStreamEnd(body)
+
+	p.send(body)
+	i++
+```
 
 
 ## Tests

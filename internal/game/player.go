@@ -47,6 +47,8 @@ func (p *Player) Warp(x int32, y int32, z int32) {
 	p.updated()
 }
 
+var i = byte(0)
+
 func (p *Player) SendPosition() {
 	//# UnitBehavior - UnitMoverUpdate::read
 	//35 # ComponentUpdate
@@ -72,15 +74,15 @@ func (p *Player) SendPosition() {
 	body.WriteByte(0x65)   // UnitMoverUpdate
 
 	// UnitBehavior::processUpdate
-	body.WriteByte(0x00) // Unk
+	body.WriteByte(0xFF) // Unk
 	body.WriteByte(0x01) // Update count
 
 	// UnitMoverUpdate::Read
-	body.WriteByte(0x00) // Unk
+	body.WriteByte(0x08) // Unk
 
+	body.WriteInt32(p.Rotation)
 	body.WriteInt32(p.Position.X)
 	body.WriteInt32(p.Position.Y)
-	body.WriteInt32(p.Position.Z)
 
 	body.WriteByte(0x02)
 	body.WriteUInt32(uint32(p.ClientUpdateNumber))
@@ -90,6 +92,7 @@ func (p *Player) SendPosition() {
 	AddEntityUpdateStreamEnd(body)
 
 	p.send(body)
+	i++
 }
 
 // Move Move the entity
