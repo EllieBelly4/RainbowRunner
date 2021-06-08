@@ -2,19 +2,11 @@ package game
 
 import (
 	"RainbowRunner/internal/byter"
+	"RainbowRunner/internal/logging"
+	"RainbowRunner/pkg"
+	"fmt"
+	"time"
 )
-
-type Vector3 struct {
-	X, Y, Z int32
-}
-
-type Vector3Short struct {
-	X, Y, Z int16
-}
-
-type Vector3Float32 struct {
-	X, Y, Z float32
-}
 
 type Player struct {
 	Conn      *RRConn
@@ -23,19 +15,21 @@ type Player struct {
 	IsSpawned bool
 
 	IsMoving             bool
-	LastMovementRequest  Vector3
 	ServerUpdateNumber   uint8
 	ClientUpdateNumber   byte
-	Position             Vector3
+	Position             pkg.Vector3
 	MoveUpdate           uint8
 	Rotation             int32
 	TicksSinceLastUpdate int
+	MoveQueue            *MovementUpdateQueue
+	LastPosition         pkg.Vector3
 }
 
 func NewPlayer(conn *RRConn) *Player {
 	return &Player{
 		Conn:               conn,
 		ServerUpdateNumber: 0xFF,
+		MoveQueue:          NewMovementUpdateQueue(1024),
 	}
 }
 
@@ -49,7 +43,7 @@ func (p *Player) Warp(x int32, y int32, z int32) {
 
 var i = byte(0)
 
-func (p *Player) SendPosition() {
+func (p *Player) SendPosition(f byte) {
 	//# UnitBehavior - UnitMoverUpdate::read
 	//35 # ComponentUpdate
 	//05 00 # Component ID
@@ -73,21 +67,40 @@ func (p *Player) SendPosition() {
 	body.WriteUInt16(0x05) // ComponentID
 	body.WriteByte(0x65)   // UnitMoverUpdate
 
+	updateCount := 4
+
 	// UnitBehavior::processUpdate
-	body.WriteByte(0xFF) // Unk
-	body.WriteByte(0x01) // Update count
+	body.WriteByte(0xFF)              // Unk
+	body.WriteByte(byte(updateCount)) // Update count
 
 	// UnitMoverUpdate::Read
-	body.WriteByte(0x08) // Unk
+	//body.WriteByte(0x08) // Not all values work
+	//body.WriteByte(0x01) // Not all values work
 
-	body.WriteInt32(p.Rotation)
-	body.WriteInt32(p.Position.X)
-	body.WriteInt32(p.Position.Y)
+	for i := 0; i < updateCount; i++ {
+		body.WriteByte(0x08) // Not all values work
+		body.WriteInt32(p.Rotation)
+		body.WriteInt32(p.Position.X)
+		body.WriteInt32(p.Position.Y)
+	}
+
+	//body.WriteInt32(0)
+	//body.WriteInt32(0)
+	//body.WriteInt32(0)
 
 	body.WriteByte(0x02)
-	body.WriteUInt32(uint32(p.ClientUpdateNumber))
+	body.WriteUInt32(uint32(time.Now().Unix())) // Random unk value
 
 	//AddSynch(p.Conn, body)
+
+	degrees := float32((float64(p.Rotation) / 0x17000) * 360)
+
+	if logging.LoggingOpts.LogMoves {
+		fmt.Printf(
+			"Sending move 0x%x rotation 0x%x(%.2fdeg) (%d, %d) Hex (%x, %x)\n",
+			f, p.Rotation, degrees, p.Position.X, p.Position.Y, p.Position.X, p.Position.Y,
+		)
+	}
 
 	AddEntityUpdateStreamEnd(body)
 
@@ -127,5 +140,25 @@ func (p *Player) send(body *byter.Byter) {
 }
 
 func (p *Player) Tick() {
+	//for {
+	//	move := p.MoveQueue.Peek()
+	//
+	//	if move == nil {
+	//		break
+	//	}
+	//
+	//	p.MoveQueue.Dequeue()
+	//
+	//	p.Position.X = move.Position.X
+	//	p.Position.Y = move.Position.Y
+	//	p.Rotation = move.Rotation
+	//
+	//	p.SendPosition(0x00)
+	//}
+
+	if p.IsMoving {
+		p.SendPosition(0x00)
+	}
+
 	p.TicksSinceLastUpdate++
 }

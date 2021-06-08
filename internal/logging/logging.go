@@ -9,13 +9,15 @@ import (
 )
 
 type LoggingOptions struct {
-	LogMoves bool
-	LogSent  bool
+	LogMoves   bool
+	LogSent    bool
+	LogSmallAs bool
 }
 
 var LoggingOpts = LoggingOptions{
-	LogMoves: true,
-	LogSent:  true,
+	LogMoves:   true,
+	LogSent:    true,
+	LogSmallAs: false,
 }
 
 func Init() {

@@ -428,3 +428,854 @@ Player move 0x0 flags? 0x4800 (%!f(int32=44894), %!f(int32=72310)) Hex (af5e, 11
 00000240  1a 01 00                                          |...|
 
 ```
+
+
+```
+Level16 long switch from nosync to sync +x mouse only
+
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x16700(0.00deg) (166, 19997) Hex (a6, 4e1d)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 67 01 00 a6 00 00 00  |.4..e....g......|
+00000010  1d 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 46
+Received 3 player moves unk val: ff
+Player move 0x0 rotation 0x14f00(0.00deg) (166, 19997) Hex (a6, 4e1d)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x13700(0.00deg) (166, 19997) Hex (a6, 4e1d)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x11f00(0.00deg) (673, 20149) Hex (2a1, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 03 00  00 4f 01 00 a6 00 00 00  |.4..e....O......|
+00000010  1d 4e 00 00 00 00 37 01  00 a6 00 00 00 1d 4e 00  |.N....7.......N.|
+00000020  00 00 00 1f 01 00 a1 02  00 00 b5 4e 00 00        |...........N..|
+
+<---- recv [ClientEntityChannel-0x34] len 46
+Received 3 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (1205, 20149) Hex (4b5, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x2 rotation 0x10e00(0.00deg) (1737, 20149) Hex (6c9, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+player started moving
+Player move 0x0 rotation 0x10e00(0.00deg) (2269, 20149) Hex (8dd, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 03 00  00 0e 01 00 b5 04 00 00  |.4..e...........|
+00000010  b5 4e 00 00 02 00 0e 01  00 c9 06 00 00 b5 4e 00  |.N............N.|
+00000020  00 00 00 0e 01 00 dd 08  00 00 b5 4e 00 00        |...........N..|
+
+<---- recv [ClientEntityChannel-0x34] len 46
+Received 3 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (2801, 20149) Hex (af1, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (3333, 20149) Hex (d05, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (3865, 20149) Hex (f19, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 03 00  00 0e 01 00 f1 0a 00 00  |.4..e...........|
+00000010  b5 4e 00 00 00 00 0e 01  00 05 0d 00 00 b5 4e 00  |.N............N.|
+00000020  00 00 00 0e 01 00 19 0f  00 00 b5 4e 00 00        |...........N..|
+
+<---- recv [ClientEntityChannel-0x34] len 33
+Received 2 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (4397, 20149) Hex (112d, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (4929, 20149) Hex (1341, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 02 00  00 0e 01 00 2d 11 00 00  |.4..e.......-...|
+00000010  b5 4e 00 00 00 00 0e 01  00 41 13 00 00 b5 4e 00  |.N.......A....N.|
+00000020  00                                                |.|
+
+<---- recv [ClientEntityChannel-0x34] len 33
+Received 2 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (5461, 20149) Hex (1555, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (5993, 20149) Hex (1769, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 02 00  00 0e 01 00 55 15 00 00  |.4..e.......U...|
+00000010  b5 4e 00 00 00 00 0e 01  00 69 17 00 00 b5 4e 00  |.N.......i....N.|
+00000020  00                                                |.|
+
+<---- recv [ClientEntityChannel-0x34] len 59
+Received 4 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (6525, 20149) Hex (197d, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (7057, 20149) Hex (1b91, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (7589, 20149) Hex (1da5, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (8121, 20149) Hex (1fb9, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 04 00  00 0e 01 00 7d 19 00 00  |.4..e.......}...|
+00000010  b5 4e 00 00 00 00 0e 01  00 91 1b 00 00 b5 4e 00  |.N............N.|
+00000020  00 00 00 0e 01 00 a5 1d  00 00 b5 4e 00 00 00 00  |...........N....|
+00000030  0e 01 00 b9 1f 00 00 b5  4e 00 00                 |........N..|
+
+<---- recv [ClientEntityChannel-0x34] len 46
+Received 3 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (8653, 20149) Hex (21cd, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (9185, 20149) Hex (23e1, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (9717, 20149) Hex (25f5, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 03 00  00 0e 01 00 cd 21 00 00  |.4..e........!..|
+00000010  b5 4e 00 00 00 00 0e 01  00 e1 23 00 00 b5 4e 00  |.N........#...N.|
+00000020  00 00 00 0e 01 00 f5 25  00 00 b5 4e 00 00        |.......%...N..|
+
+<---- recv [ClientEntityChannel-0x34] len 33
+Received 2 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (10249, 20149) Hex (2809, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (10781, 20149) Hex (2a1d, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 02 00  00 0e 01 00 09 28 00 00  |.4..e........(..|
+00000010  b5 4e 00 00 00 00 0e 01  00 1d 2a 00 00 b5 4e 00  |.N........*...N.|
+00000020  00                                                |.|
+
+<---- recv [ClientEntityChannel-0x34] len 33
+Received 2 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (11313, 20149) Hex (2c31, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (11845, 20149) Hex (2e45, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 02 00  00 0e 01 00 31 2c 00 00  |.4..e.......1,..|
+00000010  b5 4e 00 00 00 00 0e 01  00 45 2e 00 00 b5 4e 00  |.N.......E....N.|
+00000020  00                                                |.|
+
+<---- recv [ClientEntityChannel-0x34] len 46
+Received 3 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (12377, 20149) Hex (3059, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (12909, 20149) Hex (326d, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (13441, 20149) Hex (3481, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 03 00  00 0e 01 00 59 30 00 00  |.4..e.......Y0..|
+00000010  b5 4e 00 00 00 00 0e 01  00 6d 32 00 00 b5 4e 00  |.N.......m2...N.|
+00000020  00 00 00 0e 01 00 81 34  00 00 b5 4e 00 00        |.......4...N..|
+
+<---- recv [ClientEntityChannel-0x34] len 33
+Received 2 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (13973, 20149) Hex (3695, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (14505, 20149) Hex (38a9, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 02 00  00 0e 01 00 95 36 00 00  |.4..e........6..|
+00000010  b5 4e 00 00 00 00 0e 01  00 a9 38 00 00 b5 4e 00  |.N........8...N.|
+00000020  00                                                |.|
+
+<---- recv [ClientEntityChannel-0x34] len 46
+Received 3 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (15037, 20149) Hex (3abd, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (15569, 20149) Hex (3cd1, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (16101, 20149) Hex (3ee5, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 03 00  00 0e 01 00 bd 3a 00 00  |.4..e........:..|
+00000010  b5 4e 00 00 00 00 0e 01  00 d1 3c 00 00 b5 4e 00  |.N........<...N.|
+00000020  00 00 00 0e 01 00 e5 3e  00 00 b5 4e 00 00        |.......>...N..|
+
+<---- recv [ClientEntityChannel-0x34] len 46
+Received 3 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (16633, 20149) Hex (40f9, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (17165, 20149) Hex (430d, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (17697, 20149) Hex (4521, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 03 00  00 0e 01 00 f9 40 00 00  |.4..e........@..|
+00000010  b5 4e 00 00 00 00 0e 01  00 0d 43 00 00 b5 4e 00  |.N........C...N.|
+00000020  00 00 00 0e 01 00 21 45  00 00 b5 4e 00 00        |......!E...N..|
+
+<---- recv [ClientEntityChannel-0x34] len 59
+Received 4 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (18229, 20149) Hex (4735, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (18761, 20149) Hex (4949, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (19293, 20149) Hex (4b5d, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (19825, 20149) Hex (4d71, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 04 00  00 0e 01 00 35 47 00 00  |.4..e.......5G..|
+00000010  b5 4e 00 00 00 00 0e 01  00 49 49 00 00 b5 4e 00  |.N.......II...N.|
+00000020  00 00 00 0e 01 00 5d 4b  00 00 b5 4e 00 00 00 00  |......]K...N....|
+00000030  0e 01 00 71 4d 00 00 b5  4e 00 00                 |...qM...N..|
+
+<---- recv [ClientEntityChannel-0x34] len 46
+Received 3 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (20357, 20149) Hex (4f85, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (20889, 20149) Hex (5199, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (21421, 20149) Hex (53ad, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 03 00  00 0e 01 00 85 4f 00 00  |.4..e........O..|
+00000010  b5 4e 00 00 00 00 0e 01  00 99 51 00 00 b5 4e 00  |.N........Q...N.|
+00000020  00 00 00 0e 01 00 ad 53  00 00 b5 4e 00 00        |.......S...N..|
+
+<---- recv [ClientEntityChannel-0x34] len 46
+Received 3 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (21953, 20149) Hex (55c1, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (22485, 20149) Hex (57d5, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (23017, 20149) Hex (59e9, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 03 00  00 0e 01 00 c1 55 00 00  |.4..e........U..|
+00000010  b5 4e 00 00 00 00 0e 01  00 d5 57 00 00 b5 4e 00  |.N........W...N.|
+00000020  00 00 00 0e 01 00 e9 59  00 00 b5 4e 00 00        |.......Y...N..|
+
+<---- recv [ClientEntityChannel-0x34] len 59
+Received 4 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (23549, 20149) Hex (5bfd, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (24081, 20149) Hex (5e11, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (24613, 20149) Hex (6025, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (25145, 20149) Hex (6239, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 04 00  00 0e 01 00 fd 5b 00 00  |.4..e........[..|
+00000010  b5 4e 00 00 00 00 0e 01  00 11 5e 00 00 b5 4e 00  |.N........^...N.|
+00000020  00 00 00 0e 01 00 25 60  00 00 b5 4e 00 00 00 00  |......%`...N....|
+00000030  0e 01 00 39 62 00 00 b5  4e 00 00                 |...9b...N..|
+
+<---- recv [ClientEntityChannel-0x34] len 46
+Received 3 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (25677, 20149) Hex (644d, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (26209, 20149) Hex (6661, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (26741, 20149) Hex (6875, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 03 00  00 0e 01 00 4d 64 00 00  |.4..e.......Md..|
+00000010  b5 4e 00 00 00 00 0e 01  00 61 66 00 00 b5 4e 00  |.N.......af...N.|
+00000020  00 00 00 0e 01 00 75 68  00 00 b5 4e 00 00        |......uh...N..|
+
+<---- recv [ClientEntityChannel-0x34] len 59
+Received 4 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (27273, 20149) Hex (6a89, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (27805, 20149) Hex (6c9d, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (28337, 20149) Hex (6eb1, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (28869, 20149) Hex (70c5, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 04 00  00 0e 01 00 89 6a 00 00  |.4..e........j..|
+00000010  b5 4e 00 00 00 00 0e 01  00 9d 6c 00 00 b5 4e 00  |.N........l...N.|
+00000020  00 00 00 0e 01 00 b1 6e  00 00 b5 4e 00 00 00 00  |.......n...N....|
+00000030  0e 01 00 c5 70 00 00 b5  4e 00 00                 |....p...N..|
+
+<---- recv [ClientEntityChannel-0x34] len 33
+Received 2 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (29401, 20149) Hex (72d9, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+Player move 0x0 rotation 0x10e00(0.00deg) (29933, 20149) Hex (74ed, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 02 00  00 0e 01 00 d9 72 00 00  |.4..e........r..|
+00000010  b5 4e 00 00 00 00 0e 01  00 ed 74 00 00 b5 4e 00  |.N........t...N.|
+00000020  00                                                |.|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (30465, 20149) Hex (7701, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 01 77 00 00  |.4..e........w..|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (30997, 20149) Hex (7915, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 15 79 00 00  |.4..e........y..|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (31529, 20149) Hex (7b29, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 29 7b 00 00  |.4..e.......){..|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (32061, 20149) Hex (7d3d, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 3d 7d 00 00  |.4..e.......=}..|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (32593, 20149) Hex (7f51, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 51 7f 00 00  |.4..e.......Q...|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (33125, 20149) Hex (8165, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 65 81 00 00  |.4..e.......e...|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (33657, 20149) Hex (8379, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 79 83 00 00  |.4..e.......y...|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (34189, 20149) Hex (858d, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 8d 85 00 00  |.4..e...........|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (34721, 20149) Hex (87a1, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 a1 87 00 00  |.4..e...........|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (35253, 20149) Hex (89b5, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 b5 89 00 00  |.4..e...........|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (35785, 20149) Hex (8bc9, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 c9 8b 00 00  |.4..e...........|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (36317, 20149) Hex (8ddd, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 dd 8d 00 00  |.4..e...........|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (36849, 20149) Hex (8ff1, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 f1 8f 00 00  |.4..e...........|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (37381, 20149) Hex (9205, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 05 92 00 00  |.4..e...........|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (37913, 20149) Hex (9419, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 19 94 00 00  |.4..e...........|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (38445, 20149) Hex (962d, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 2d 96 00 00  |.4..e.......-...|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (38977, 20149) Hex (9841, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 41 98 00 00  |.4..e.......A...|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (39509, 20149) Hex (9a55, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 55 9a 00 00  |.4..e.......U...|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (40041, 20149) Hex (9c69, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 69 9c 00 00  |.4..e.......i...|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (40573, 20149) Hex (9e7d, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 7d 9e 00 00  |.4..e.......}...|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (41105, 20149) Hex (a091, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 91 a0 00 00  |.4..e...........|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (41637, 20149) Hex (a2a5, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 a5 a2 00 00  |.4..e...........|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (42169, 20149) Hex (a4b9, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 b9 a4 00 00  |.4..e...........|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (42701, 20149) Hex (a6cd, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 cd a6 00 00  |.4..e...........|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (43233, 20149) Hex (a8e1, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 e1 a8 00 00  |.4..e...........|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (43765, 20149) Hex (aaf5, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 f5 aa 00 00  |.4..e...........|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (44297, 20149) Hex (ad09, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 09 ad 00 00  |.4..e...........|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (44829, 20149) Hex (af1d, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 1d af 00 00  |.4..e...........|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (45361, 20149) Hex (b131, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 31 b1 00 00  |.4..e.......1...|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (45893, 20149) Hex (b345, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 45 b3 00 00  |.4..e.......E...|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (46425, 20149) Hex (b559, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 59 b5 00 00  |.4..e.......Y...|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (46957, 20149) Hex (b76d, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 6d b7 00 00  |.4..e.......m...|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (47489, 20149) Hex (b981, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 81 b9 00 00  |.4..e...........|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (48021, 20149) Hex (bb95, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 95 bb 00 00  |.4..e...........|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (48553, 20149) Hex (bda9, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 a9 bd 00 00  |.4..e...........|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (49085, 20149) Hex (bfbd, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 bd bf 00 00  |.4..e...........|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (49617, 20149) Hex (c1d1, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 d1 c1 00 00  |.4..e...........|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (50149, 20149) Hex (c3e5, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 e5 c3 00 00  |.4..e...........|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (50681, 20149) Hex (c5f9, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 f9 c5 00 00  |.4..e...........|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (51213, 20149) Hex (c80d, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 0d c8 00 00  |.4..e...........|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (51745, 20149) Hex (ca21, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 21 ca 00 00  |.4..e.......!...|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10e00(0.00deg) (52277, 20149) Hex (cc35, 4eb5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0e 01 00 35 cc 00 00  |.4..e.......5...|
+00000010  b5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (52805, 20155) Hex (ce45, 4ebb)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 45 ce 00 00  |.4..e.......E...|
+00000010  bb 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x2 rotation 0x10f00(0.00deg) (53333, 20161) Hex (d055, 4ec1)
+>>>>> send [ClientEntityChannel-53] len 26
+player started moving
+00000000  07 34 05 00 65 ff 01 02  00 0f 01 00 55 d0 00 00  |.4..e.......U...|
+00000010  c1 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (53861, 20167) Hex (d265, 4ec7)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 65 d2 00 00  |.4..e.......e...|
+00000010  c7 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (54389, 20173) Hex (d475, 4ecd)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 75 d4 00 00  |.4..e.......u...|
+00000010  cd 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (54917, 20179) Hex (d685, 4ed3)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 85 d6 00 00  |.4..e...........|
+00000010  d3 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (55445, 20185) Hex (d895, 4ed9)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 95 d8 00 00  |.4..e...........|
+00000010  d9 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (55973, 20191) Hex (daa5, 4edf)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 a5 da 00 00  |.4..e...........|
+00000010  df 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (56501, 20197) Hex (dcb5, 4ee5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 b5 dc 00 00  |.4..e...........|
+00000010  e5 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (57029, 20203) Hex (dec5, 4eeb)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 c5 de 00 00  |.4..e...........|
+00000010  eb 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (57557, 20209) Hex (e0d5, 4ef1)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 d5 e0 00 00  |.4..e...........|
+00000010  f1 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (58085, 20215) Hex (e2e5, 4ef7)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 e5 e2 00 00  |.4..e...........|
+00000010  f7 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (58613, 20221) Hex (e4f5, 4efd)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 f5 e4 00 00  |.4..e...........|
+00000010  fd 4e 00 00                                       |.N..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (59141, 20227) Hex (e705, 4f03)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 05 e7 00 00  |.4..e...........|
+00000010  03 4f 00 00                                       |.O..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (59669, 20233) Hex (e915, 4f09)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 15 e9 00 00  |.4..e...........|
+00000010  09 4f 00 00                                       |.O..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (60197, 20239) Hex (eb25, 4f0f)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 25 eb 00 00  |.4..e.......%...|
+00000010  0f 4f 00 00                                       |.O..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (60725, 20245) Hex (ed35, 4f15)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 35 ed 00 00  |.4..e.......5...|
+00000010  15 4f 00 00                                       |.O..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (61253, 20251) Hex (ef45, 4f1b)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 45 ef 00 00  |.4..e.......E...|
+00000010  1b 4f 00 00                                       |.O..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (61781, 20257) Hex (f155, 4f21)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 55 f1 00 00  |.4..e.......U...|
+00000010  21 4f 00 00                                       |!O..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (62309, 20263) Hex (f365, 4f27)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 65 f3 00 00  |.4..e.......e...|
+00000010  27 4f 00 00                                       |'O..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (62837, 20269) Hex (f575, 4f2d)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 75 f5 00 00  |.4..e.......u...|
+00000010  2d 4f 00 00                                       |-O..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (63365, 20275) Hex (f785, 4f33)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 85 f7 00 00  |.4..e...........|
+00000010  33 4f 00 00                                       |3O..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (63893, 20281) Hex (f995, 4f39)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 95 f9 00 00  |.4..e...........|
+00000010  39 4f 00 00                                       |9O..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (64421, 20287) Hex (fba5, 4f3f)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 a5 fb 00 00  |.4..e...........|
+00000010  3f 4f 00 00                                       |?O..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (64949, 20293) Hex (fdb5, 4f45)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 b5 fd 00 00  |.4..e...........|
+00000010  45 4f 00 00                                       |EO..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (65477, 20299) Hex (ffc5, 4f4b)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 c5 ff 00 00  |.4..e...........|
+00000010  4b 4f 00 00                                       |KO..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (66005, 20305) Hex (101d5, 4f51)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 d5 01 01 00  |.4..e...........|
+00000010  51 4f 00 00                                       |QO..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x10f00(0.00deg) (66533, 20311) Hex (103e5, 4f57)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 0f 01 00 e5 03 01 00  |.4..e...........|
+00000010  57 4f 00 00                                       |WO..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x11000(0.00deg) (67061, 20325) Hex (105f5, 4f65)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 10 01 00 f5 05 01 00  |.4..e...........|
+00000010  65 4f 00 00                                       |eO..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x2 rotation 0x11000(0.00deg) (67589, 20339) Hex (10805, 4f73)
+>>>>> send [ClientEntityChannel-53] len 26
+player started moving
+00000000  07 34 05 00 65 ff 01 02  00 10 01 00 05 08 01 00  |.4..e...........|
+00000010  73 4f 00 00                                       |sO..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x11000(0.00deg) (68117, 20353) Hex (10a15, 4f81)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 10 01 00 15 0a 01 00  |.4..e...........|
+00000010  81 4f 00 00                                       |.O..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x11000(0.00deg) (68645, 20367) Hex (10c25, 4f8f)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 10 01 00 25 0c 01 00  |.4..e.......%...|
+00000010  8f 4f 00 00                                       |.O..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x11000(0.00deg) (69173, 20381) Hex (10e35, 4f9d)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 10 01 00 35 0e 01 00  |.4..e.......5...|
+00000010  9d 4f 00 00                                       |.O..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x11000(0.00deg) (69701, 20395) Hex (11045, 4fab)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 10 01 00 45 10 01 00  |.4..e.......E...|
+00000010  ab 4f 00 00                                       |.O..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x11000(0.00deg) (70229, 20409) Hex (11255, 4fb9)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 10 01 00 55 12 01 00  |.4..e.......U...|
+00000010  b9 4f 00 00                                       |.O..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x11000(0.00deg) (70757, 20423) Hex (11465, 4fc7)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 10 01 00 65 14 01 00  |.4..e.......e...|
+00000010  c7 4f 00 00                                       |.O..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x11000(0.00deg) (71285, 20437) Hex (11675, 4fd5)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 10 01 00 75 16 01 00  |.4..e.......u...|
+00000010  d5 4f 00 00                                       |.O..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x11000(0.00deg) (71813, 20451) Hex (11885, 4fe3)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 10 01 00 85 18 01 00  |.4..e...........|
+00000010  e3 4f 00 00                                       |.O..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x11100(0.00deg) (72341, 20477) Hex (11a95, 4ffd)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 11 01 00 95 1a 01 00  |.4..e...........|
+00000010  fd 4f 00 00                                       |.O..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x2 rotation 0x11100(0.00deg) (72869, 20503) Hex (11ca5, 5017)
+>>>>> send [ClientEntityChannel-53] len 26
+player started moving
+00000000  07 34 05 00 65 ff 01 02  00 11 01 00 a5 1c 01 00  |.4..e...........|
+00000010  17 50 00 00                                       |.P..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x11100(0.00deg) (73397, 20529) Hex (11eb5, 5031)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 11 01 00 b5 1e 01 00  |.4..e...........|
+00000010  31 50 00 00                                       |1P..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x11100(0.00deg) (73925, 20555) Hex (120c5, 504b)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 11 01 00 c5 20 01 00  |.4..e........ ..|
+00000010  4b 50 00 00                                       |KP..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x0 rotation 0x11100(0.00deg) (74238, 20586) Hex (121fe, 506a)
+>>>>> send [ClientEntityChannel-53] len 26
+00000000  07 34 05 00 65 ff 01 00  00 11 01 00 fe 21 01 00  |.4..e........!..|
+00000010  6a 50 00 00                                       |jP..|
+
+<---- recv [ClientEntityChannel-0x34] len 20
+Received 1 player moves unk val: ff
+Player move 0x1 rotation 0x11100(0.00deg) (74238, 20586) Hex (121fe, 506a)
+>>>>> send [ClientEntityChannel-53] len 26
+player finished moving
+00000000  07 34 05 00 65 ff 01 01  00 11 01 00 fe 21 01 00  |.4..e........!..|
+00000010  6a 50 00 00                                       |jP..|
+```

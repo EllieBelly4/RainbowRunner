@@ -91,7 +91,7 @@ func handleZoneUnk6(conn *RRConn) {
 		//SendMoveTo(conn, 0x05, 1000, 0x0000)
 	} else if conn.Player.Zone == "dungeon16_level00" {
 		conn.Player.Warp(0, 0, 15000)
-		conn.Player.SendPosition()
+		conn.Player.SendPosition(0x00)
 
 		//body = byter.NewLEByter(make([]byte, 0, 1024))
 		//body.WriteByte(byte(ClientEntityChannel))

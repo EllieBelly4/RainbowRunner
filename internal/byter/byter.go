@@ -345,6 +345,10 @@ func (b *Byter) Int16() int16 {
 	return int16(b.UInt16())
 }
 
+func (b *Byter) WriteInt8(i int8) {
+	b.WriteByte(byte(i))
+}
+
 func NewByter(buffer []byte) *Byter {
 	return &Byter{
 		Buffer: buffer,

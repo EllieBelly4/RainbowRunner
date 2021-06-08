@@ -4,11 +4,11 @@ import (
 	"time"
 )
 
+var Tick = uint(0)
+
 func StartGameLoop(conn *RRConn) {
 	ticker := time.NewTicker(33 * time.Millisecond)
 	defer ticker.Stop()
-
-	ticks := 0
 
 	for conn.IsConnected {
 		select {
@@ -27,13 +27,13 @@ func StartGameLoop(conn *RRConn) {
 			//}
 
 			if conn.Player.TicksSinceLastUpdate >= 0x2D {
-				conn.Player.SendPosition()
+				conn.Player.SendPosition(0x00)
 			}
 
 			//mov := conn.Player.LastMovementRequest
 			//SendMoveTo(conn, 0x05, mov.X, mov.Y)
 
-			ticks++
+			Tick++
 		}
 	}
 }

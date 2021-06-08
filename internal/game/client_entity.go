@@ -5,6 +5,7 @@ import (
 	"RainbowRunner/internal/game/components"
 	"RainbowRunner/internal/game/components/behavior"
 	"RainbowRunner/internal/logging"
+	"RainbowRunner/pkg"
 	"encoding/hex"
 	"fmt"
 )
@@ -67,7 +68,7 @@ func handleClientEntityMovement(conn *RRConn, reader *byter.Byter) error {
 		// The client will then increment by 1 for every individual movement performed (clicking)
 		updateNumber := reader.Byte()
 		count := int(reader.Byte())
-		pos := Vector3{}
+		pos := pkg.Vector2{}
 
 		if logging.LoggingOpts.LogMoves {
 			fmt.Printf("Received %d player moves unk val: %x\n", count, updateNumber)
@@ -77,14 +78,11 @@ func handleClientEntityMovement(conn *RRConn, reader *byter.Byter) error {
 			unk := reader.Byte()       // Unk
 			rotation := reader.Int32() // Seems to be rotation
 
-			degrees := float32((rotation / 0x17000) / 360)
+			degrees := float32((float64(rotation) / 0x17000) * 360)
 
 			pos.X = reader.Int32()
 			pos.Y = reader.Int32()
 
-			conn.Player.Rotation = rotation
-
-			conn.Player.LastMovementRequest = pos
 			conn.Player.ClientUpdateNumber = updateNumber
 			if logging.LoggingOpts.LogMoves {
 				fmt.Printf(
@@ -93,23 +91,35 @@ func handleClientEntityMovement(conn *RRConn, reader *byter.Byter) error {
 				)
 			}
 
-			conn.Player.Position = pos
-			conn.Player.SendPosition()
-			conn.Player.MoveUpdate++
+			conn.Player.LastPosition = conn.Player.Position
+
+			conn.Player.Position.X = pos.X
+			conn.Player.Position.Y = pos.Y
+			conn.Player.Position.Z = 0
+			conn.Player.Rotation = rotation
+
+			//conn.Player.SendPosition(unk)
+
+			//conn.Player.MoveQueue.Add(MovementUpdate{
+			//	Position: pos,
+			//	Rotation: rotation,
+			//	Tick:     Tick,
+			//})
 
 			if unk&0x02 > 0 {
 				if logging.LoggingOpts.LogMoves {
 					fmt.Println("player started moving")
 				}
 				conn.Player.IsMoving = true
+				//conn.Player.SendPosition(0x02)
 			}
 
 			if unk&0x01 > 0 {
 				if logging.LoggingOpts.LogMoves {
 					fmt.Println("player finished moving")
 				}
-				conn.Player.ServerUpdateNumber++
 				conn.Player.IsMoving = false
+				//conn.Player.SendPosition(0x01)
 			}
 		}
 
@@ -129,7 +139,8 @@ func handleClientEntityMovement(conn *RRConn, reader *byter.Byter) error {
 		}
 	// Potentially requesting current position because starting a new path
 	case 0x03:
-		conn.Player.SendPosition()
+		fmt.Printf("player sent pre-path")
+		conn.Player.SendPosition(0x00)
 	default:
 		fmt.Printf("unhandled client entity sub message %x", subMessage)
 		return UnhandledChannelMessageError
