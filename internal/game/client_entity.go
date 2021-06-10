@@ -119,7 +119,7 @@ func handleClientEntityMovement(conn *RRConn, reader *byter.Byter) error {
 					fmt.Println("player finished moving")
 				}
 				conn.Player.IsMoving = false
-				//conn.Player.SendPosition(0x01)
+				conn.Player.SendPosition(0x01)
 			}
 		}
 
@@ -276,39 +276,18 @@ func sendCreateNewPlayerEntity(conn *RRConn, body *byter.Byter) {
 	body.WriteCString("avatar.classes.FighterFemale")
 
 	addCreateComponent(body, 0x02, 0x0A, "avatar.base.Equipment")
-	body.WriteByte(0x01) // Item Count
 
-	body.WriteByte(0xFF)
-	body.WriteCString("1HAxe1PAL.1HAxe1-1")
+	itemCount := byte(0x01)
+	body.WriteByte(itemCount) // Item Count
 
-	// Item::readData
-	// Slot
-	// 0x00 None
-	// 0x01 Amulet
-	// 0x02 Hand
-	// 0x03 LRing
-	// 0x04 RRing
-	// 0x05 Head
-	// 0x06 Torso
-	// 0x07 Foot
-	// 0x08 Shoulder
-	// 0x09 None?
-	// 0x0a Weapon
-	// 0x0b Offhand/Shield
-	body.WriteUInt32(0x0a)
-	body.WriteByte(0x01)
-	body.WriteByte(0x01)
-	body.WriteByte(0x01)
-	body.WriteByte(0x01)
-	// Flag?
-	// 0x04 read 2 more bytes
-	body.WriteByte(0x04)
-
-	// 0x04 case
-	body.WriteUInt16(0x02)
-
-	// GCObject::readChildData<ItemModifier>
-	body.WriteByte(0x00) // Count
+	//addEquippedItem(body, "1HAxe1PAL.1HAxe1-1", EquipmentSlotWeapon)
+	addEquippedItem(
+		body,
+		"LeatherArmor1PAL.LeatherArmor1-1",
+		EquipmentSlotTorso,
+		true,
+		"LeatherModPAL.Unique.Mod0",
+	)
 
 	// UNITCONTAINER ////////////////////////////////////
 	addCreateComponent(body, 0x02, 0x01, "UnitContainer")
@@ -323,7 +302,16 @@ func sendCreateNewPlayerEntity(conn *RRConn, body *byter.Byter) {
 	body.WriteByte(0x01)
 
 	// GCObject::ReadChildData<Item>()
-	body.WriteByte(0x00) // Item count?
+	inventoryItemCount := 0x00
+	body.WriteByte(byte(inventoryItemCount)) // Item count?
+
+	// Items with PAL seem to be for players
+	//for i := 0; i < inventoryItemCount; i++ {
+	//AddInventoryItem(body, "1HAxe2PAL.1HAxe2-1", 0, 0)
+	//AddInventoryItem(body, "LeatherArmor1PAL.LeatherArmor1-1", 2, 0, true)
+	//AddInventoryItem(body, "CrystalHelm1PAL.CrystalHelm1-1", 2, 0)
+	//AddInventoryItem(body, "CrystalMythicPAL.CrystalMythicArmor2", 2, 0)
+	//}
 
 	body.WriteByte(0xFF)
 	body.WriteCString("avatar.base.TradeInventory")
