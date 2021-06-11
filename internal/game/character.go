@@ -168,6 +168,11 @@ func getAvatar(ID uint32) *objects.GCObject {
 	avatarDesc.ID = 0xBABAF00D
 	avatarDesc.Name = "EllieAvatarDesc"
 
+	avatarInventory := objects.NewGCObject("Equipment")
+	avatarInventory.GCType = "avatar.base.Equipment"
+	avatarInventory.ID = 0x5000BAAD
+	avatarInventory.Name = "EllieEquipment"
+
 	//avatarDesc.Properties = []objects.GCObjectProperty{
 	//	objects.StringProp("PVEStartSpawnPoint", "Start"),
 	//}
@@ -187,6 +192,7 @@ func getAvatar(ID uint32) *objects.GCObject {
 	avatar.AddChild(avatarSkills)
 	avatar.AddChild(manipulators)
 	avatar.AddChild(avatarDesc)
+	avatar.AddChild(avatarInventory)
 	avatar.AddChild(unitBehaviour)
 	return avatar
 }

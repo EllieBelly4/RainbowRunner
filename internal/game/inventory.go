@@ -77,13 +77,13 @@ func addEquippedItem(
 	armour bool,
 	mod string,
 ) {
-	body.WriteByte(0xFF)
+	body.WriteByte(0xFF) // GetType
 	body.WriteCString(item)
 
 	// Item::readData
 	body.WriteUInt32(uint32(slot))
-	body.WriteByte(0x10)
-	body.WriteByte(0x11)
+	body.WriteByte(0xFF)
+	body.WriteByte(0xFF)
 	body.WriteByte(0x01)   // Item count
 	body.WriteByte(50 + 5) // Required level + 5
 
@@ -98,26 +98,66 @@ func addEquippedItem(
 
 	if itemFlag&0x04 > 0 {
 		// Soulbind time
-		// Minutes * 0x800
+		// Minutes * 0x800 max 9
 		body.WriteUInt16(0x800 * 7)
 	}
 
-	if armour {
+	if item == "LeatherArmor1PAL.LeatherArmor1-1" {
+		// Required modifiers?
+		// ItemModifier?
+		itemModifierFlag1 := 0x01 | 0x02
+
+		body.WriteByte(byte(itemModifierFlag1))
+
+		if itemModifierFlag1&0x01 > 0 {
+			body.WriteByte(0xFF)
+		}
+
+		if itemModifierFlag1&0x02 > 0 {
+			body.WriteUInt32(0xFFFFFFFF)
+		}
+
+		//if mod != "" {
+		// GCObject::readChildData<ItemModifier>
+		body.WriteByte(0x01) // Count
+
+		body.WriteByte(0xFF)
+		body.WriteCString(mod)
+
 		// ItemModifier?
 		itemModifierFlag := 0x01 | 0x02
 
 		body.WriteByte(byte(itemModifierFlag))
 
 		if itemModifierFlag&0x01 > 0 {
-			body.WriteByte(0xFF)
+			body.WriteByte(0x15)
 		}
 
 		if itemModifierFlag&0x02 > 0 {
-			body.WriteUInt32(0xFFFFFFFF)
+			body.WriteUInt32(0x11111111)
 		}
-	}
+		//} else {
+		//	body.WriteByte(0x00) // Count
+		//}
+	} else if item == "PlateMythicPAL.PlateMythicArmor1" {
+		// Required modifiers?
+		// ItemModifier?
+		itemModifierFlag1 := 0xFF
 
-	if mod != "" {
+		// Each item has different numbers of required modifiers
+		for i := 0; i < 5; i++ {
+			body.WriteByte(byte(itemModifierFlag1))
+
+			if itemModifierFlag1&0x01 > 0 {
+				body.WriteByte(0xFF)
+			}
+
+			if itemModifierFlag1&0x02 > 0 {
+				body.WriteUInt32(0xFFFFFFFF)
+			}
+		}
+
+		//if mod != "" {
 		// GCObject::readChildData<ItemModifier>
 		body.WriteByte(0x01) // Count
 
