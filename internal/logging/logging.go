@@ -12,12 +12,14 @@ type LoggingOptions struct {
 	LogMoves   bool
 	LogSent    bool
 	LogSmallAs bool
+	LogHashes  bool
 }
 
 var LoggingOpts = LoggingOptions{
-	LogMoves:   true,
+	LogMoves:   false,
 	LogSent:    true,
 	LogSmallAs: false,
+	LogHashes:  true,
 }
 
 func Init() {

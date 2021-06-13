@@ -1,0 +1,1 @@
+GCObject::readObject does most of the work when deserialising

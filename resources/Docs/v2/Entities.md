@@ -9,7 +9,7 @@ Entities can have components and sub-entities.
 Components cover anything that is 'owned' by the entity and can be simple stat modifiers or 
 even inventories
 
-* [Inventories](./Inventories.md)
+* [Inventories](Inventory.md)
 
 ## Sub-entities
 

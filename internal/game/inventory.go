@@ -82,7 +82,7 @@ func addEquippedItem(
 
 	// Item::readData
 	body.WriteUInt32(uint32(slot))
-	body.WriteByte(0xFF)
+	body.WriteByte(0x00)
 	body.WriteByte(0xFF)
 	body.WriteByte(0x01)   // Item count
 	body.WriteByte(50 + 5) // Required level + 5

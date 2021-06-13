@@ -126,24 +126,22 @@ func readPacket(conn *RRConn, reader *byter.Byter) {
 		} else {
 			panic(fmt.Sprintf("Unhandled 0x0a message type %x", msgTypeA))
 		}
-	} else if msgType == 0x06 || msgType == 0x0e {
-		if msgType == 0x0e {
-			msgReader := ReadCompressedE(reader)
+	} else if msgType == 0x0e {
+		msgReader := ReadCompressedE(reader)
 
-			log.Infof("Received E:\n%s", hex.Dump(msgReader.Buffer))
+		log.Infof("Received E:\n%s", hex.Dump(msgReader.Buffer))
 
-			handleChannelMessage(conn, msgReader)
-		} else {
-			reader.UInt24() // Unk
-			reader.UInt24() // Size
-			reader.UInt8()
-			reader.UInt24() // Client ID
-			reader.UInt8()  // Channel?
-			reader.UInt8()  // Sub type?
-			reader.UInt24() // Unk
+		handleChannelMessage(conn, msgReader)
+	} else if msgType == 0x06 {
+		reader.UInt24() // Unk
+		reader.UInt24() // Size
+		reader.UInt8()
+		reader.UInt24() // Client ID
+		reader.UInt8()  // Channel?
+		reader.UInt8()  // Sub type?
+		reader.UInt24() // Unk
 
-			handleChannelMessage(conn, reader)
-		}
+		handleChannelMessage(conn, reader)
 	} else {
 		fmt.Errorf("Unhandled message type %x\n", msgType)
 	}

@@ -116,14 +116,21 @@ func sendPlayer(body *byter.Byter) {
 
 	body.WriteCString("Unk")  // Specific to player::readObject
 	body.WriteCString("Unk2") // Specific to player::readObject
-	body.WriteCString("Unk3") // Specific to player::readObject
-	body.WriteCString("Unk4") // Specific to player::readObject
-	body.WriteUInt32(0x01)    // Specific to player::readObject
-	body.WriteUInt32(0x01)    // Specific to player::readObject
+	//body.WriteCString("Unk3") // Specific to player::readObject
+	//body.WriteCString("Unk4") // Specific to player::readObject
+	body.WriteUInt32(0x01) // Specific to player::readObject
+	body.WriteUInt32(0x01) // Specific to player::readObject
 
 	avatar.Serialise(body)
 
 	body.WriteByte(0x01)
+	body.WriteByte(0x01)
+
+	body.WriteCString("Formidable")
+
+	body.WriteByte(0x01)
+	body.WriteByte(0x01)
+
 	body.WriteUInt32(0x01)
 }
 
@@ -146,9 +153,9 @@ func getAvatar(ID uint32) *objects.GCObject {
 	modifiers.GCType = "Modifiers"
 	modifiers.ID = 0x02
 	modifiers.Name = "Mod Name"
-	//modifiers.Properties = []objects.GCObjectProperty{
-	//	objects.Uint32Prop("IDGenerator", 0x01),
-	//}
+	modifiers.Properties = []objects.GCObjectProperty{
+		objects.Uint32Prop("IDGenerator", 0x01),
+	}
 
 	manipulators := objects.NewGCObject("Manipulators")
 	manipulators.ID = 0x03
@@ -168,10 +175,36 @@ func getAvatar(ID uint32) *objects.GCObject {
 	avatarDesc.ID = 0xBABAF00D
 	avatarDesc.Name = "EllieAvatarDesc"
 
-	avatarInventory := objects.NewGCObject("Equipment")
-	avatarInventory.GCType = "avatar.base.Equipment"
-	avatarInventory.ID = 0x5000BAAD
-	avatarInventory.Name = "EllieEquipment"
+	avatarEquipment := objects.NewGCObject("Equipment")
+	avatarEquipment.GCType = "avatar.base.Equipment"
+	avatarEquipment.ID = 0x5000BAAD
+	avatarEquipment.Name = "EllieEquipment"
+
+	//.text:0058E550     ; struct DFCClass *__thiscall Armor::getClass(Armor *__hidden this)
+	//.text:0058E550 000 mov     eax, ?Class@Armor@@2PAVDFCClass@@A ; DFCClass * Armor::Class
+
+	weapon := objects.NewGCObject("MeleeWeapon")
+	weapon.GCType = "1HSword8PAL.1HSword8-1"
+	weapon.ID = 0x12354567
+	weapon.Name = "EllieWeapon"
+
+	//TODO finish
+	weapon.Properties = []objects.GCObjectProperty{
+		//objects.StringProp("Label", "Hello"),
+	}
+
+	slot := objects.NewGCObject("EquipmentSlot")
+	slot.GCType = "avatar.base.Equipment.Description.PrimaryWeaponSlot"
+	slot.ID = 0x12354567
+	slot.Name = "EllieWeaponSlot"
+
+	slot.Properties = []objects.GCObjectProperty{
+		objects.Uint32Prop("SlotID", 0x00),
+		objects.Uint32Prop("SlotType", 0xFFFFFFFF),
+	}
+
+	slot.AddChild(weapon)
+	avatar.AddChild(slot)
 
 	//avatarDesc.Properties = []objects.GCObjectProperty{
 	//	objects.StringProp("PVEStartSpawnPoint", "Start"),
@@ -192,7 +225,7 @@ func getAvatar(ID uint32) *objects.GCObject {
 	avatar.AddChild(avatarSkills)
 	avatar.AddChild(manipulators)
 	avatar.AddChild(avatarDesc)
-	avatar.AddChild(avatarInventory)
+	avatar.AddChild(avatarEquipment)
 	avatar.AddChild(unitBehaviour)
 	return avatar
 }
