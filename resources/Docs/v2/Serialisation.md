@@ -13,7 +13,7 @@ see: `GCClassRegistry::readType`.
 
 ### Object reading
 
-Objects are read in (roughly)`DFCMessageInputStream::readObject -> GCObject::readObject -> DFCNode::readObject`. These
+Objects are read in (roughly)`DFCInputStream::readObject -> GCObject::readObject -> DFCNode::readObject`. These
 functions will read the basic properties of each object and then call `DFCMessageInputStream::readObject` for each child
 node which then goes down the same process.
 

@@ -43,13 +43,15 @@ func handleClientEntityChannelMessages(conn *RRConn, msgType byte, reader *byter
 			case 0x22:
 				fmt.Printf("Player closed inventory\n%s", hex.Dump(reader.Data()))
 			default:
-				fmt.Printf("unhandled inventory message %x", inventoryMessageType)
+				fmt.Printf("unhandled inventory message %x\n%s", inventoryMessageType, hex.Dump(reader.Data()))
 				return UnhandledChannelMessageError
 			}
 		case 0x04:
 			fmt.Printf("Player tried to put something on hotbar\n%s", hex.Dump(reader.Data()))
 		case 0x05:
 			return handleClientEntityMovement(conn, reader)
+		case 0x0a:
+			handleSelectEquipment(conn, reader)
 		default:
 			fmt.Printf("unhandled client entity sub message %x", clientEntitySubMessage)
 			return UnhandledChannelMessageError
@@ -58,6 +60,26 @@ func handleClientEntityChannelMessages(conn *RRConn, msgType byte, reader *byter
 		return UnhandledChannelMessageError
 	}
 	return nil
+}
+
+func handleSelectEquipment(conn *RRConn, reader *byter.Byter) {
+
+	body := byter.NewLEByter(make([]byte, 0, 1024))
+
+	body.WriteByte(byte(ClientEntityChannel))
+	body.WriteByte(0x35) // ComponentUpdate
+
+	body.WriteUInt16(0x0a) // Equipment ComponentID
+	body.WriteByte(0x28)   // Add item
+
+	addEquippedItem(body, "PlateMythicPAL.PlateMythicBoots1", EquipmentSlotFoot, true, "PlateMythicPAL.PlateMythicBoots1.Mod1")
+
+	AddSynch(conn, body)
+	AddEntityUpdateStreamEnd(body)
+
+	WriteCompressedA(conn, 0x01, 0x0f, body)
+
+	fmt.Printf("Player tried to select equipment in inventory\n%s", hex.Dump(reader.Data()))
 }
 
 func handleClientEntityMovement(conn *RRConn, reader *byter.Byter) error {
@@ -239,6 +261,9 @@ func sendCreateNewPlayerEntity(conn *RRConn, body *byter.Byter) {
 	body.WriteByte(0x0)
 	//body.WriteUInt32(0x1)
 
+	//METRICS
+	//addCreateComponent(body, 0x01, 0x0C, "AvatarMetrics")
+
 	// QUEST MANAGER ////////////////////////////////////////////////////////
 	addCreateComponent(body, 0x01, 0x0B, "QuestManager")
 
@@ -273,7 +298,8 @@ func sendCreateNewPlayerEntity(conn *RRConn, body *byter.Byter) {
 	// 0x04 by ID?
 	// 0xFF by string?
 	body.WriteByte(0xFF)
-	body.WriteCString("avatar.classes.FighterFemale")
+	//body.WriteCString("avatar.classes.FighterFemale")
+	body.WriteCString("avatar.classes.FighterMale")
 
 	addCreateComponent(body, 0x02, 0x0A, "avatar.base.Equipment")
 
@@ -283,29 +309,33 @@ func sendCreateNewPlayerEntity(conn *RRConn, body *byter.Byter) {
 	//addEquippedItem(body, "1HAxe1PAL.1HAxe1-1", EquipmentSlotWeapon)
 	addEquippedItem(
 		body,
-		"PlateMythicPAL.PlateMythicArmor1",
+		"ScaleArmor1PAL.ScaleArmor1-1",
 		//"LeatherArmor1PAL.LeatherArmor1-1",
 		EquipmentSlotTorso,
 		true,
 		//"LeatherModPAL.Unique.Mod0",
-		"PlateMythicPAL.PlateMythicArmor1.Mod1",
+		"ScaleModPAL.Rare.Mod0",
 	)
+
+	//addInitEquipment(body, 0x0A)
 
 	// UNITCONTAINER ////////////////////////////////////
 	addCreateComponent(body, 0x02, 0x01, "UnitContainer")
 
 	// Container::readInit()
-	body.WriteUInt32(0)
-	body.WriteUInt32(0)
+	body.WriteUInt32(1)
+	body.WriteUInt32(1)
 	body.WriteByte(0x03) // Inventory Count?
+
 	body.WriteByte(0xFF)
 	body.WriteCString("avatar.base.Inventory")
 	body.WriteByte(0x01)
 	body.WriteByte(0x01)
 
 	// GCObject::ReadChildData<Item>()
-	inventoryItemCount := 0x00
+	inventoryItemCount := 0x01
 	body.WriteByte(byte(inventoryItemCount)) // Item count?
+	AddInventoryItem(body, "PlateMythicPAL.PlateMythicBoots1", 0, 0, "PlateMythicPAL.PlateMythicBoots1.Mod1")
 
 	// Items with PAL seem to be for players
 	//for i := 0; i < inventoryItemCount; i++ {
@@ -331,6 +361,9 @@ func sendCreateNewPlayerEntity(conn *RRConn, body *byter.Byter) {
 
 	// UnitContainer::readInit()
 	body.WriteByte(0x00) // If >0 it tries to read more, something to do with item
+
+	// UNITCONTAINER UPDATE
+	//addUnitContainerUpdate(body, 0x01)
 
 	// MODIFIERS //////////////////////////////////
 	// Modifiers are for modifying damage and defences
@@ -533,7 +566,8 @@ func sendCreateNewPlayerEntity(conn *RRConn, body *byter.Byter) {
 	// When this is set to 0 the character is slightly less broken
 	// With 1 | 2 | 4 | 8 it was causing the character to have no animations and
 	// eventually collapse into itself
-	worldEntityInitFlag := 0x04 | 0x08
+	//worldEntityInitFlag := 0x04 | 0x08
+	worldEntityInitFlag := 0xFF
 	body.WriteByte(byte(worldEntityInitFlag))
 
 	if worldEntityInitFlag&0x01 > 0 {
@@ -563,7 +597,8 @@ func sendCreateNewPlayerEntity(conn *RRConn, body *byter.Byter) {
 	// 0x02 - add HP
 	// 0x04 -
 	//body.WriteByte(0x07) // HasParent + Unk
-	unitReadinitFlag := 0x01 | 0x02 | 0x04 | 0x10 | 0x20 | 0x40 | 0x80
+	//unitReadinitFlag := 0x01 | 0x02 | 0x04 | 0x10 | 0x20 | 0x40 | 0x80
+	unitReadinitFlag := 0x01 | 0x02 | 0x04
 	body.WriteByte(byte(unitReadinitFlag))
 	body.WriteByte(50) // Level
 	body.WriteUInt16(0x01)
@@ -651,6 +686,23 @@ func sendCreateNewPlayerEntity(conn *RRConn, body *byter.Byter) {
 
 	body.WriteByte(70) // Now connected
 	WriteCompressedA(conn, 0x01, 0x0f, body)
+}
+
+func addUnitContainerUpdate(body *byter.Byter, ID uint16) {
+	body.WriteByte(0x35)
+	body.WriteUInt16(ID)
+	body.WriteByte(0x1E)
+
+	//Container::processAddItem
+	body.WriteByte(0x01)
+
+	body.WriteByte(0xFF)
+	body.WriteCString("PlateMythicPAL.PlateMythicBoots1")
+}
+
+func addInitEquipment(body *byter.Byter, componentID uint16) {
+	body.WriteByte(0x33)          // InitComponent
+	body.WriteUInt16(componentID) // Parent Entity ID
 }
 
 func AddSynch(conn *RRConn, body *byter.Byter) {

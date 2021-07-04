@@ -9,17 +9,19 @@ import (
 )
 
 type LoggingOptions struct {
-	LogMoves   bool
-	LogSent    bool
-	LogSmallAs bool
-	LogHashes  bool
+	LogMoves             bool
+	LogSent              bool
+	LogSmallAs           bool
+	LogHashes            bool
+	LogGCObjectSerialise bool
 }
 
 var LoggingOpts = LoggingOptions{
-	LogMoves:   false,
-	LogSent:    true,
-	LogSmallAs: false,
-	LogHashes:  true,
+	LogMoves:             false,
+	LogSent:              true,
+	LogSmallAs:           false,
+	LogHashes:            true,
+	LogGCObjectSerialise: true,
 }
 
 func Init() {

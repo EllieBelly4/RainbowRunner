@@ -4,15 +4,23 @@ import (
 	"RainbowRunner/internal/byter"
 	"RainbowRunner/internal/logging"
 	"fmt"
+	"regexp"
 	"strings"
 )
+
+var currentID = uint32(0)
+
+type IGCObject interface {
+	Serialise(byter *byter.Byter)
+	AddChild(object IGCObject)
+}
 
 type GCObject struct {
 	Version    uint8
 	NativeType string
 	ID         uint32
 	Name       string
-	Children   []*GCObject
+	Children   []IGCObject
 	GCType     string
 	Properties []GCObjectProperty
 }
@@ -50,20 +58,36 @@ func StringProp(name interface{}, val string) GCObjectProperty {
 	}
 }
 
+func NewID() (ID uint32) {
+	ID = currentID
+	//currentID++
+	return 0xCAFEBABA
+}
+
 func NewGCObject(nativeType string) *GCObject {
 	return &GCObject{
 		// At version 2A or above you must use a hash I think
 		//Version:    0x29, // No hash required
 		Version:    0x2D,
 		NativeType: nativeType,
+		ID:         NewID(),
 		GCType:     strings.ToLower(nativeType),
 	}
 }
 
-func (o GCObject) Serialise(byter *byter.Byter) {
+var indent = 0
+
+func (o *GCObject) Serialise(byter *byter.Byter) {
 	byter.WriteByte(o.Version)
 
 	useHashes := o.Version >= 0x2a
+
+	logSerialise("========== GCObject ===========")
+	logSerialise(`ID: %d
+Name: %s
+NativeClass: %s
+GCType: %s
+---`, o.ID, o.Name, o.NativeType, o.GCType)
 
 	if useHashes {
 		byter.WriteUInt32(GetTypeHash(o.NativeType))
@@ -76,9 +100,11 @@ func (o GCObject) Serialise(byter *byter.Byter) {
 
 	byter.WriteUInt32(uint32(len(o.Children)))
 
+	indent++
 	for _, child := range o.Children {
 		child.Serialise(byter)
 	}
+	indent--
 
 	if useHashes {
 		byter.WriteUInt32(GetTypeHash(o.GCType))
@@ -93,9 +119,20 @@ func (o GCObject) Serialise(byter *byter.Byter) {
 	byter.WriteUInt32(0)
 }
 
-func (o *GCObject) AddChild(child *GCObject) {
+func logSerialise(format string, args ...interface{}) {
+	regex := regexp.MustCompile("(?m)^")
+
+	if logging.LoggingOpts.LogGCObjectSerialise {
+		indentString := strings.Repeat("\t", indent)
+		log := fmt.Sprintf(format, args...)
+		log = regex.ReplaceAllString(log, indentString)
+		fmt.Print(log + "\n")
+	}
+}
+
+func (o *GCObject) AddChild(child IGCObject) {
 	if o.Children == nil {
-		o.Children = make([]*GCObject, 0, 128)
+		o.Children = make([]IGCObject, 0, 128)
 	}
 
 	o.Children = append(o.Children, child)

@@ -100,17 +100,27 @@ func sendPlayer(body *byter.Byter) {
 	//hero.AddChild(rpgSettings)
 
 	//player.AddChild(hero)
-	avatar := getAvatar(0x02)
+	avatar := getAvatar()
 	//avatar2 := getAvatar(0x02)
 
 	player := objects.NewGCObject("Player")
-	player.ID = 0x01
 	player.Name = "Player Name"
 
 	player.AddChild(avatar)
 	player.Properties = []objects.GCObjectProperty{
 		objects.StringProp("Name", "Ellie"),
 	}
+
+	//slot6 := objects.NewGCObject("EquipmentSlot")
+	//slot6.GCType = "avatar.base.Equipment.Description.Armor"
+	//slot6.Name = "EllieArmorSlot"
+	//
+	//armor := objects.NewGCObject("Armor")
+	//armor.GCType = "ChainArmor1PAL.ChainArmor1-1"
+	//armor.Name = "EllieArmour"
+
+	//slot6.AddChild(armor)
+	//player.AddChild(slot6)
 
 	player.Serialise(body)
 
@@ -134,98 +144,174 @@ func sendPlayer(body *byter.Byter) {
 	body.WriteUInt32(0x01)
 }
 
-func getAvatar(ID uint32) *objects.GCObject {
+func getAvatar() *objects.GCObject {
 	avatar := objects.NewGCObject("Avatar")
-	avatar.GCType = "avatar.classes.fighterfemale"
+	avatar.GCType = "avatar.classes.FighterMale"
 	//avatar.GCType = "avatar.base.avatar"
-	avatar.ID = ID
 	avatar.Name = "Avatar Name"
 	avatar.Properties = []objects.GCObjectProperty{
 		objects.Uint32Prop("Hair", 0x01),
 		objects.Uint32Prop("HairColor", 0x00),
-		objects.Uint32Prop("Face", 0x01),
-		objects.Uint32Prop("FaceFeature", 0x01),
+		objects.Uint32Prop("Face", 0),
+		objects.Uint32Prop("FaceFeature", 0),
 		objects.Uint32Prop("Skin", 0x01),
-		objects.Uint32Prop("Level", 100),
+		objects.Uint32Prop("Level", 50),
 	}
+
+	metrics := objects.NewAvatarMetrics(0xFE34BE34, "EllieMetrics")
 
 	modifiers := objects.NewGCObject("Modifiers")
 	modifiers.GCType = "Modifiers"
-	modifiers.ID = 0x02
 	modifiers.Name = "Mod Name"
 	modifiers.Properties = []objects.GCObjectProperty{
 		objects.Uint32Prop("IDGenerator", 0x01),
 	}
 
 	manipulators := objects.NewGCObject("Manipulators")
-	manipulators.ID = 0x03
 	manipulators.Name = "ManipulateMe"
 
+	dialogManager := objects.NewGCObject("DialogManager")
+	dialogManager.Name = "EllieDialogManager"
+
 	//animationList := objects.NewGCObject("AnimationList")
-	//animationList.ID = 0xBABAF00E
 	//animationList.Name = "EllieAnimations"
 
 	avatarSkills := objects.NewGCObject("Skills")
 	avatarSkills.GCType = "avatar.base.skills"
-	avatarSkills.ID = 0x04
 	avatarSkills.Name = "EllieSkills"
 
-	avatarDesc := objects.NewGCObject("AvatarDesc")
-	avatarDesc.GCType = "avatar.classes.fighterfemale.description"
-	avatarDesc.ID = 0xBABAF00D
-	avatarDesc.Name = "EllieAvatarDesc"
+	//avatarDesc := objects.NewGCObject("AvatarDesc")
+	//avatarDesc.GCType = "avatar.classes.fighterfemale.description"
+	//avatarDesc.Name = "EllieAvatarDesc"
 
 	avatarEquipment := objects.NewGCObject("Equipment")
 	avatarEquipment.GCType = "avatar.base.Equipment"
-	avatarEquipment.ID = 0x5000BAAD
 	avatarEquipment.Name = "EllieEquipment"
 
 	//.text:0058E550     ; struct DFCClass *__thiscall Armor::getClass(Armor *__hidden this)
 	//.text:0058E550 000 mov     eax, ?Class@Armor@@2PAVDFCClass@@A ; DFCClass * Armor::Class
 
 	weapon := objects.NewGCObject("MeleeWeapon")
-	weapon.GCType = "1HSword8PAL.1HSword8-1"
-	weapon.ID = 0x12354567
+	weapon.ID = 0xAAAABBBB
+	weapon.GCType = "1HMace1PAL.1HMace1-1"
 	weapon.Name = "EllieWeapon"
 
-	//TODO finish
-	weapon.Properties = []objects.GCObjectProperty{
-		//objects.StringProp("Label", "Hello"),
+	weaponDesc := objects.NewGCObject("MeleeWeaponDesc")
+	weaponDesc.ID = 0xAAAABBBB
+	weaponDesc.GCType = "1HMace1PAL.1HMace1-1.Description"
+	weaponDesc.Name = "EllieWeaponDesc"
+	weaponDesc.Properties = []objects.GCObjectProperty{
+		objects.Uint32Prop("SlotType", uint32(EquipmentSlotWeapon)),
 	}
+
+	//TODO finish
+	//weapon.Properties = []objects.GCObjectProperty{
+	////	objects.Uint32Prop("ItemDesc.SlotType", 0x0a),
+	//	objects.Uint32Prop("EquipmentSlot", uint32(EquipmentSlotWeapon)),
+	//}
+
+	armor := objects.NewGCObject("Armor")
+	armor.GCType = "ScaleArmor1PAL.ScaleArmor1-1"
+	armor.Name = "EllieArmour"
+
+	//armor.Properties = []objects.GCObjectProperty{
+	//	objects.Uint32Prop("Slot", uint32(EquipmentSlotTorso)),
+	//}
+
+	unitContainer := objects.NewUnitContainer(1, "EllieUnitContainer")
+	//unitContainer.GCType = "unitcontainer"
+	//unitContainer.Name = "EllieUnitContainer"
+
+	baseInventory := objects.NewGCObject("Inventory")
+	baseInventory.GCType = "avatar.base.Inventory"
+	baseInventory.Name = "EllieBaseInventory"
+
+	bankInventory := objects.NewGCObject("Inventory")
+	bankInventory.GCType = "avatar.base.Bank"
+	bankInventory.Name = "EllieBankInventory"
+
+	//armorSlot := objects.NewGCObject("EquipmentSlot")
+	//armorSlot.GCType = "avatar.base.Equipment.Description.Armor"
+	//armorSlot.Name = "EquipmentSlot6"
+	//
+	//armorSlot.Properties = []objects.GCObjectProperty{
+	//	objects.Uint32Prop("SlotID", uint32(EquipmentSlotTorso)),
+	//}
+
+	//armorSlotDesc := objects.NewGCObject("equipmentdesc")
+	//armorSlotDesc.GCType = "avatar.base.Equipment.Description.Armor"
+	//armorSlotDesc.Name = "EquipmentSlot6Desc"
+	//
+	//armorSlot.AddChild(armorSlotDesc)
+	//armorSlot.AddChild(armor)
+	//armor.AddChild(armorSlot)
+
+	//avatarEquipment.AddChild(armor)
+
+	//armorVisual := objects.NewGCObject("MountedVisual")
+	//armorVisual.GCType = "avatar.races.humanfemale.HumanFemaleVisuals.ChainArmor1.Torso"
+	//armorVisual.Name = "EllieArmorVisual"
+	//
+	//avatar.AddChild(armorVisual)
 
 	slot := objects.NewGCObject("EquipmentSlot")
 	slot.GCType = "avatar.base.Equipment.Description.PrimaryWeaponSlot"
-	slot.ID = 0x12354567
 	slot.Name = "EllieWeaponSlot"
 
 	slot.Properties = []objects.GCObjectProperty{
-		objects.Uint32Prop("SlotID", 0x00),
-		objects.Uint32Prop("SlotType", 0xFFFFFFFF),
+		objects.Uint32Prop("SlotID", uint32(EquipmentSlotWeapon)),
+		objects.Uint32Prop("SlotType", uint32(EquipmentSlotWeapon)),
+		objects.Uint32Prop("DefaultItem", 0xAAAABBBB),
 	}
 
-	slot.AddChild(weapon)
-	avatar.AddChild(slot)
+	//0xbbc86ef4
+	//slot6 := objects.NewGCObject("EquipmentSlot")
+	//slot6.GCType = "avatar.base.Equipment.Description.Armor"
+	//slot6.Name = "EllieArmorSlot"
+
+	//slot6.Properties = []objects.GCObjectProperty{
+	//	objects.Uint32Prop("SlotID", uint32(EquipmentSlotTorso)),
+	//	objects.Uint32Prop("SlotType", uint32(EquipmentSlotTorso)),
+	//	//objects.Uint32Prop("DefaultItem", 0x01),
+	//}
+	//
+
+	//slot6.AddChild(armor)
+	//slot.AddChild(weapon)
+	//
+	//avatarEquipment.AddChild(weapon)
+	//avatar.AddChild(slot6)
+
+	//avatar.AddChild(slot)
+	//avatar.AddChild(slot6)
 
 	//avatarDesc.Properties = []objects.GCObjectProperty{
 	//	objects.StringProp("PVEStartSpawnPoint", "Start"),
 	//}
 
 	//worldEntityDesc := objects.NewGCObject("WorldEntityDesc")
-	//worldEntityDesc.ID = 0xBABABABA
 	//worldEntityDesc.Name = "EllieWorldEntityDesc"
 
 	unitBehaviour := objects.NewGCObject("UnitBehavior")
 	unitBehaviour.GCType = "avatar.base.UnitBehavior"
-	unitBehaviour.ID = 0x05
 	unitBehaviour.Name = "EllieBehaviour"
+
+	unitContainer.AddChild(baseInventory)
+	unitContainer.AddChild(bankInventory)
+
+	avatarEquipment.AddChild(weapon)
+	avatarEquipment.AddChild(armor)
 
 	//avatar.AddChild(visual)
 	//avatar.AddChild(rpgSettings)
-	avatar.AddChild(modifiers)
-	avatar.AddChild(avatarSkills)
-	avatar.AddChild(manipulators)
-	avatar.AddChild(avatarDesc)
 	avatar.AddChild(avatarEquipment)
+	avatar.AddChild(avatarSkills)
+	avatar.AddChild(unitContainer)
 	avatar.AddChild(unitBehaviour)
+	avatar.AddChild(modifiers)
+	avatar.AddChild(manipulators)
+	avatar.AddChild(metrics)
+	avatar.AddChild(dialogManager)
+	//avatar.AddChild(avatarDesc)
 	return avatar
 }

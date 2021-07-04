@@ -221,3 +221,16 @@ FF FF # Per Path (idk)
 
 06 #end
 ```
+
+```
+# Equipment Add-Remove
+35 # ComponentUpdate
+0a 00 # Component ID
+29 # RemoveItem - this is the same as the client message being sent
+# 28 # AddItem
+
+06 00 00 00 # Item Slot?
+
+02 00 7e 04 00 # Synch
+06 # End  
+```

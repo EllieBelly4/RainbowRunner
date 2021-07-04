@@ -11,6 +11,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"io"
 	"net"
+	"runtime"
 )
 
 func ReadCompressedE(reader *byter.Byter) *byter.Byter {
@@ -139,7 +140,15 @@ func WriteCompressedA(conn *RRConn, dest uint8, messageType uint8, body *byter.B
 		return
 	}
 
-	log.Info(fmt.Sprintf("Sent:\n%s", hex.Dump(body.Data())))
+	pc, file, line, ok := runtime.Caller(1)
+	callerInfo := "unk"
+
+	if ok {
+		details := runtime.FuncForPC(pc)
+		callerInfo = fmt.Sprintf("%s() %s:%d", details.Name(), file, line)
+	}
+
+	log.Info(fmt.Sprintf("Sent:\n%s\n%s", callerInfo, hex.Dump(body.Data())))
 }
 
 func WriteMessage(conn *RRConn, msgType uint8, channel uint8, body *byter.Byter) {
