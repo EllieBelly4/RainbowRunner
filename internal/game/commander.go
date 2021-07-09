@@ -1,7 +1,7 @@
 package game
 
 import (
-	"RainbowRunner/internal/byter"
+	byter "RainbowRunner/pkg/byter"
 	"encoding/hex"
 	"regexp"
 )

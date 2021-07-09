@@ -1,7 +1,7 @@
 package message
 
 import (
-	"RainbowRunner/internal/byter"
+	byter "RainbowRunner/pkg/byter"
 )
 
 func HandleServerListMessage(c *AuthMessageParser, reader *byter.Byter) error {

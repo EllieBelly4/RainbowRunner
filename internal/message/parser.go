@@ -1,9 +1,9 @@
 package message
 
 import (
-	"RainbowRunner/internal/byter"
-	"RainbowRunner/internal/connection"
-	"RainbowRunner/internal/crypt"
+	"RainbowRunner/pkg"
+	"RainbowRunner/pkg/byter"
+	"RainbowRunner/pkg/crypt"
 	"encoding/binary"
 	"encoding/hex"
 	"fmt"
@@ -12,7 +12,7 @@ import (
 )
 
 type AuthMessageParser struct {
-	connection *connection.Connection
+	connection *pkg.Connection
 }
 
 func (p *AuthMessageParser) Parse(read []byte, count int) {
@@ -71,6 +71,6 @@ func (p *AuthMessageParser) WriteAuthMessage(messageType AuthServerMessage, resp
 
 func NewAuthMessageParser(conn net.Conn) *AuthMessageParser {
 	return &AuthMessageParser{
-		connection: connection.NewConnection(conn),
+		connection: pkg.NewConnection(conn),
 	}
 }

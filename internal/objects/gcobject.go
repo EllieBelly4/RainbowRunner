@@ -1,8 +1,8 @@
 package objects
 
 import (
-	"RainbowRunner/internal/byter"
 	"RainbowRunner/internal/logging"
+	byter "RainbowRunner/pkg/byter"
 	"fmt"
 	"regexp"
 	"strings"
@@ -60,8 +60,8 @@ func StringProp(name interface{}, val string) GCObjectProperty {
 
 func NewID() (ID uint32) {
 	ID = currentID
-	//currentID++
-	return 0xCAFEBABA
+	currentID++
+	return ID
 }
 
 func NewGCObject(nativeType string) *GCObject {

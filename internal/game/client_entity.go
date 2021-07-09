@@ -1,11 +1,11 @@
 package game
 
 import (
-	"RainbowRunner/internal/byter"
 	"RainbowRunner/internal/game/components"
 	"RainbowRunner/internal/game/components/behavior"
 	"RainbowRunner/internal/logging"
 	"RainbowRunner/pkg"
+	byter "RainbowRunner/pkg/byter"
 	"encoding/hex"
 	"fmt"
 )
@@ -63,7 +63,6 @@ func handleClientEntityChannelMessages(conn *RRConn, msgType byte, reader *byter
 }
 
 func handleSelectEquipment(conn *RRConn, reader *byter.Byter) {
-
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 
 	body.WriteByte(byte(ClientEntityChannel))
@@ -202,7 +201,12 @@ func handleClientEntityUnk4(conn *RRConn, reader *byter.Byter) {
 }
 
 func sendCreateNewPlayerEntity(conn *RRConn, body *byter.Byter) {
-	body = byter.NewLEByter(make([]byte, 0, 1024))
+	body = byter.NewLEByter(make([]byte, 0, 2048))
+
+	//clientEntityWriter := client_entity.NewClientEntityWriter(body)
+
+	//clientEntityWriter.Create(conn.Player)
+
 	body.WriteByte(byte(ClientEntityChannel))
 	//body.WriteByte(0x01) // Create
 	body.WriteByte(0x01) // CreateInit

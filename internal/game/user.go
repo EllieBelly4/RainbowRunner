@@ -1,7 +1,7 @@
 package game
 
 import (
-	"RainbowRunner/internal/byter"
+	byter "RainbowRunner/pkg/byter"
 )
 
 func handleUserChannelMessages(conn *RRConn, msgSubType byte, reader *byter.Byter) error {

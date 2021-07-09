@@ -1,7 +1,7 @@
 package objects
 
 import (
-	"RainbowRunner/internal/byter"
+	byter "RainbowRunner/pkg/byter"
 )
 
 type AvatarMetrics struct {

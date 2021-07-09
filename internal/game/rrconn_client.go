@@ -1,14 +1,17 @@
 package game
 
 import (
-	"RainbowRunner/internal/byter"
 	"RainbowRunner/internal/logging"
+	"RainbowRunner/internal/objects"
 	"RainbowRunner/pkg"
+	"RainbowRunner/pkg/byter"
 	"fmt"
 	"time"
 )
 
-type Player struct {
+type RRConnClient struct {
+	objects.GCObject
+
 	Conn      *RRConn
 	CurrentHP uint32
 	Zone      string
@@ -25,15 +28,21 @@ type Player struct {
 	LastPosition         pkg.Vector3
 }
 
-func NewPlayer(conn *RRConn) *Player {
-	return &Player{
+func NewPlayer(conn *RRConn) (p *RRConnClient) {
+	p = &RRConnClient{
 		Conn:               conn,
 		ServerUpdateNumber: 0xFF,
 		MoveQueue:          NewMovementUpdateQueue(1024),
 	}
+
+	p.Name = "ElliePlayer"
+	p.GCType = "player"
+	p.NativeType = "Player"
+	p.ID = objects.NewID()
+	return
 }
 
-func (p *Player) Warp(x int32, y int32, z int32) {
+func (p *RRConnClient) Warp(x int32, y int32, z int32) {
 	p.Position.X = x
 	p.Position.Y = x
 	p.Position.Z = x
@@ -43,7 +52,7 @@ func (p *Player) Warp(x int32, y int32, z int32) {
 
 var i = byte(0)
 
-func (p *Player) SendPosition(f byte) {
+func (p *RRConnClient) SendPosition(f byte) {
 	//# UnitBehavior - UnitMoverUpdate::read
 	//35 # ComponentUpdate
 	//05 00 # Component ID
@@ -67,7 +76,7 @@ func (p *Player) SendPosition(f byte) {
 	body.WriteUInt16(0x05) // ComponentID
 	body.WriteByte(0x65)   // UnitMoverUpdate
 
-	updateCount := 4
+	updateCount := 10
 
 	// UnitBehavior::processUpdate
 	body.WriteByte(0xFF)              // Unk
@@ -110,12 +119,12 @@ func (p *Player) SendPosition(f byte) {
 
 // Move Move the entity
 // I think this is only meant to be used for server controlled entities
-func (p *Player) Move(x int32, y int32) {
+func (p *RRConnClient) Move(x int32, y int32) {
 	SendMoveTo(p.Conn, 0x2D, 0x05, x, y)
 	p.updated()
 }
 
-func (p *Player) SendFollowClient() {
+func (p *RRConnClient) SendFollowClient() {
 	body := NewLEByterFromCommandString(`# UnitBehavior - FollowClient
 07
 35 # ComponentUpdate
@@ -130,16 +139,16 @@ func (p *Player) SendFollowClient() {
 	p.send(body)
 }
 
-func (p *Player) updated() {
+func (p *RRConnClient) updated() {
 	p.TicksSinceLastUpdate = 0
 }
 
-func (p *Player) send(body *byter.Byter) {
+func (p *RRConnClient) send(body *byter.Byter) {
 	WriteCompressedA(p.Conn, 0x01, 0x0f, body)
 	p.updated()
 }
 
-func (p *Player) Tick() {
+func (p *RRConnClient) Tick() {
 	//for {
 	//	move := p.MoveQueue.Peek()
 	//
@@ -161,4 +170,16 @@ func (p *Player) Tick() {
 	}
 
 	p.TicksSinceLastUpdate++
+}
+
+func (p *RRConnClient) Serialise(b *byter.Byter) {
+	panic("implement me")
+}
+
+func (p *RRConnClient) WriteInit(b *byter.Byter) {
+	panic("implement me")
+}
+
+func (p *RRConnClient) WriteUpdate(b *byter.Byter) {
+	panic("implement me")
 }

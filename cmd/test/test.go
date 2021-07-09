@@ -1,7 +1,7 @@
 package main
 
 import (
-	"RainbowRunner/internal/byter"
+	byter "RainbowRunner/pkg/byter"
 	"fmt"
 )
 

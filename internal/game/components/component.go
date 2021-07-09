@@ -1,6 +1,8 @@
 package components
 
-import "RainbowRunner/internal/byter"
+import (
+	byter "RainbowRunner/pkg/byter"
+)
 
 type BaseComponent struct {
 	ID uint16

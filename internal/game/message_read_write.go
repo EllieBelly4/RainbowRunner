@@ -1,8 +1,8 @@
 package game
 
 import (
-	"RainbowRunner/internal/byter"
 	"RainbowRunner/internal/logging"
+	byter "RainbowRunner/pkg/byter"
 	"bytes"
 	"compress/zlib"
 	"encoding/hex"

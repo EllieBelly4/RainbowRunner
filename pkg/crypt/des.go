@@ -21,5 +21,3 @@ func DecryptDES(encrypted []byte, encryptedSize int) []byte {
 	}
 	return decrypted
 }
-
-

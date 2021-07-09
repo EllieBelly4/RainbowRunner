@@ -1,6 +1,8 @@
 package game
 
-import "RainbowRunner/internal/byter"
+import (
+	byter "RainbowRunner/pkg/byter"
+)
 
 type EquipmentSlot uint32
 

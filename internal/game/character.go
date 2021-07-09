@@ -1,8 +1,8 @@
 package game
 
 import (
-	"RainbowRunner/internal/byter"
 	"RainbowRunner/internal/objects"
+	byter "RainbowRunner/pkg/byter"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -51,7 +51,7 @@ func handleCharacterCreate(conn *RRConn, reader *byter.Byter) {
 
 	body.WriteCString("Ellie")
 
-	sendPlayer(body)
+	sendPlayer(conn, body)
 
 	WriteCompressedA(conn, 0x01, 0x0f, body)
 }
@@ -70,7 +70,7 @@ func handleCharacterConnected(conn *RRConn) {
 	WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
-func sendPlayer(body *byter.Byter) {
+func sendPlayer(conn *RRConn, body *byter.Byter) {
 	//hero := objects.NewGCObject("Hero")
 	//hero.ID = 0xBABAF00B
 	//hero.Name = "EllieHero"

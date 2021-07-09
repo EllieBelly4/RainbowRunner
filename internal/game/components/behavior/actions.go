@@ -1,6 +1,8 @@
 package behavior
 
-import "RainbowRunner/internal/byter"
+import (
+	byter "RainbowRunner/pkg/byter"
+)
 
 type Action interface {
 	OpCode() uint8

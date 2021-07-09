@@ -1,7 +1,7 @@
 package behavior
 
 import (
-	"RainbowRunner/internal/byter"
+	byter "RainbowRunner/pkg/byter"
 )
 
 type UnitBehavior struct {

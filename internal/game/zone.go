@@ -1,7 +1,7 @@
 package game
 
 import (
-	"RainbowRunner/internal/byter"
+	byter "RainbowRunner/pkg/byter"
 )
 
 type ZoneChannelMessage byte
@@ -86,7 +86,10 @@ func handleZoneUnk6(conn *RRConn) {
 
 	if conn.Player.Zone == "town" {
 		//SendWarpTo(conn, 0x05, 4096, -131072, 13056)
-		SendWarpTo(conn, 0x05, 0xF000, 0xF000, 0x8F00)
+
+		//conn.Player.Warp(0xF000, 0xF000, 0x8F00)
+		conn.Player.Warp(106342, -46263, 12778)
+		conn.Player.SendPosition(0x00)
 		//SendMoveTo(conn, 0x05, 0x12000, 0x0000)
 		//SendMoveTo(conn, 0x05, 1000, 0x0000)
 	} else if conn.Player.Zone == "dungeon16_level00" {

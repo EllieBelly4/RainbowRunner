@@ -1,8 +1,8 @@
 package admin
 
 import (
-	"RainbowRunner/internal/byter"
 	"RainbowRunner/internal/game"
+	byter "RainbowRunner/pkg/byter"
 	"encoding/json"
 	"errors"
 	"fmt"

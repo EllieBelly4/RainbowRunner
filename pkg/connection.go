@@ -1,8 +1,8 @@
-package connection
+package pkg
 
 import (
-	"RainbowRunner/internal/byter"
-	"RainbowRunner/internal/crypt"
+	byter "RainbowRunner/pkg/byter"
+	crypt "RainbowRunner/pkg/crypt"
 	"encoding/binary"
 	"net"
 )

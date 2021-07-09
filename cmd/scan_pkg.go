@@ -1,7 +1,7 @@
 package main
 
 import (
-	byter "RainbowRunner/internal/byter"
+	byter "RainbowRunner/pkg/byter"
 	"bytes"
 	"compress/zlib"
 	"encoding/binary"

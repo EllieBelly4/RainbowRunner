@@ -1,20 +1,13 @@
 package game
 
 import (
-	"RainbowRunner/internal/byter"
 	"RainbowRunner/internal/logging"
+	"RainbowRunner/pkg/byter"
 	"encoding/hex"
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"net"
 )
-
-type RRConn struct {
-	NetConn     net.Conn
-	ClientID    uint32
-	Player      *Player
-	IsConnected bool
-}
 
 var Connections = make(map[uint32]*RRConn)
 
@@ -158,7 +151,7 @@ func sendCharacterList(conn *RRConn) {
 
 	for i := 0; i < count; i++ {
 		body.WriteUInt32(uint32(i + 1)) // ID?
-		sendPlayer(body)
+		sendPlayer(nil, body)
 	}
 
 	WriteCompressedA(conn, 0x01, 0x0f, body)

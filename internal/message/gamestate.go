@@ -1,7 +1,7 @@
 package message
 
 import (
-	"RainbowRunner/internal/byter"
+	byter "RainbowRunner/pkg/byter"
 	"fmt"
 	log "github.com/sirupsen/logrus"
 )
