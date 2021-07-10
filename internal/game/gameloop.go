@@ -1,6 +1,7 @@
 package game
 
 import (
+	"RainbowRunner/internal/managers"
 	"time"
 )
 
@@ -13,9 +14,7 @@ func StartGameLoop(conn *RRConn) {
 	for conn.IsConnected {
 		select {
 		case <-ticker.C:
-			if !conn.Client.IsSpawned {
-				continue
-			}
+			managers.Entities.Tick()
 
 			conn.Client.Tick()
 
@@ -26,9 +25,9 @@ func StartGameLoop(conn *RRConn) {
 			//	conn.Player.SendFollowClient()
 			//}
 
-			if conn.Client.TicksSinceLastUpdate >= 0x2D {
-				conn.Client.SendPosition(0x00)
-			}
+			//if conn.Client.TicksSinceLastUpdate >= 0x2D {
+			//	conn.Client.SendPosition()
+			//}
 
 			//mov := conn.Player.LastMovementRequest
 			//SendMoveTo(conn, 0x05, mov.X, mov.Y)

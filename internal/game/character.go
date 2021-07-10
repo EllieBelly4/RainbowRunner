@@ -1,7 +1,9 @@
 package game
 
 import (
+	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
+	"RainbowRunner/internal/managers"
 	"RainbowRunner/internal/objects"
 	byter "RainbowRunner/pkg/byter"
 	log "github.com/sirupsen/logrus"
@@ -49,7 +51,7 @@ func handleCharacterList(conn *RRConn) {
 		sendPlayer(character, conn.Client, body)
 	}
 
-	WriteCompressedA(conn, 0x01, 0x0f, body)
+	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
 func handleCharacterCreate(conn *RRConn, reader *byter.Byter) {
@@ -71,7 +73,7 @@ func handleCharacterCreate(conn *RRConn, reader *byter.Byter) {
 
 	sendPlayer(loadPlayer(conn.Client), conn.Client, body)
 
-	WriteCompressedA(conn, 0x01, 0x0f, body)
+	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
 func handleCharacterPlay(conn *RRConn, reader *byter.Byter) {
@@ -83,7 +85,7 @@ func handleCharacterPlay(conn *RRConn, reader *byter.Byter) {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.CharacterChannel))
 	body.WriteByte(byte(CharacterPlay))
-	WriteCompressedA(conn, 0x01, 0x0f, body)
+	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
 func handleCharacterConnected(conn *RRConn) {
@@ -97,7 +99,7 @@ func handleCharacterConnected(conn *RRConn) {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.CharacterChannel)) // Character channel
 	body.WriteByte(byte(CharacterConnected))        // Connected
-	WriteCompressedA(conn, 0x01, 0x0f, body)
+	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
 func sendPlayer(character *objects.Player, client *RRConnClient, body *byter.Byter) {
@@ -161,7 +163,7 @@ func sendPlayer(character *objects.Player, client *RRConnClient, body *byter.Byt
 	body.WriteByte(0x01)
 	body.WriteByte(0x01)
 
-	body.WriteCString("Formidable")
+	body.WriteCString("Normal")
 
 	body.WriteByte(0x01)
 	body.WriteByte(0x01)
@@ -170,20 +172,20 @@ func sendPlayer(character *objects.Player, client *RRConnClient, body *byter.Byt
 }
 
 func loadAvatar(player *objects.Player) *objects.GCObject {
-	avatar := getAvatar()
+	avatar := getAvatar(player.RREntityProperties().Conn)
 	player.AddChild(avatar)
 
-	objects.Entities.RegisterAll(player.EntityProperties.OwnerID, player)
+	managers.Entities.RegisterAll(player.EntityProperties.Conn, player)
 	return avatar
 }
 
 func loadPlayer(client *RRConnClient) *objects.Player {
 	player := objects.NewPlayer("Ellie")
-	objects.Entities.RegisterAll(client.ID, player)
+	managers.Entities.RegisterAll(client, player)
 	return player
 }
 
-func getAvatar() *objects.GCObject {
+func getAvatar(conn connections.Connection) *objects.GCObject {
 	avatar := objects.NewGCObject("Avatar")
 	avatar.GCType = "avatar.classes.FighterMale"
 	//avatar.GCType = "avatar.base.avatar"
@@ -257,7 +259,7 @@ func getAvatar() *objects.GCObject {
 
 	manipulator := objects.NewGCObject("Manipulator")
 	//manipulator.GCType = "base.MeleeUnit.Manipulators.PrimaryWeapon"
-	objects.Entities.RegisterAll(1, manipulator)
+	managers.Entities.RegisterAll(conn, manipulator)
 
 	unitContainer := objects.NewUnitContainer(manipulator, "EllieUnitContainer")
 	//unitContainer.GCType = "unitcontainer"

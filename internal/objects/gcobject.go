@@ -20,6 +20,10 @@ type GCObject struct {
 	Properties       []GCObjectProperty
 }
 
+func (g *GCObject) Tick() {
+
+}
+
 func (g *GCObject) GetGCObject() *GCObject {
 	return g
 }

@@ -1,6 +1,7 @@
 package game
 
 import (
+	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
 	byter "RainbowRunner/pkg/byter"
 )
@@ -27,7 +28,7 @@ func handleZoneChannelMessages(conn *RRConn, msgSubType uint8, reader *byter.Byt
 		body := byter.NewLEByter(make([]byte, 0, 1024))
 		body.WriteByte(byte(messages.ZoneChannel))
 		body.WriteByte(0x08)
-		WriteCompressedA(conn, 0x01, 0x0f, body)
+		connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 	default:
 		return UnhandledChannelMessageError
 	}
@@ -51,7 +52,7 @@ func handleZoneUnk6(conn *RRConn) {
 		body.WriteUInt32(0x01)
 	}
 
-	WriteCompressedA(conn, 0x01, 0x0f, body)
+	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 
 	body = byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.ZoneChannel))
@@ -60,7 +61,7 @@ func handleZoneUnk6(conn *RRConn) {
 	// Adds two separate values into the ZoneClient
 	body.WriteUInt32(0x01)
 	body.WriteUInt32(0x01)
-	WriteCompressedA(conn, 0x01, 0x0f, body)
+	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 
 	// Creating Player Entity
 	sendCreateNewPlayerEntity(conn, body)
@@ -86,16 +87,15 @@ func handleZoneUnk6(conn *RRConn) {
 	//06 #end`))
 
 	if conn.Client.Zone == "town" {
-		conn.Client.Warp(106342, -46263, 12778)
-		conn.Client.SendPosition(0x00)
+		conn.Client.CurrentCharacter.Warp(106342, -46263, 12778)
+		conn.Client.CurrentCharacter.SendPosition()
 	} else if conn.Client.Zone == "dungeon16_level00" {
-		conn.Client.Warp(0, 0, 15000)
-		conn.Client.SendPosition(0x00)
+		conn.Client.CurrentCharacter.Warp(0, 0, 15000)
+		conn.Client.CurrentCharacter.SendPosition()
 	}
 
-	conn.Client.SendFollowClient()
-
-	conn.Client.IsSpawned = true
+	conn.Client.CurrentCharacter.SendFollowClient()
+	conn.Client.CurrentCharacter.IsSpawned = true
 
 	////	Some client control message
 	//body = byter.NewLEByter(make([]byte, 0, 1024))
@@ -141,5 +141,5 @@ func sendGoToZone(conn *RRConn, body *byter.Byter, zone string) {
 	//body.WriteCString("TheHub")
 	//body.WriteCString("Tutorial")
 	body.WriteCString(zone)
-	WriteCompressedA(conn, 0x01, 0x0f, body)
+	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 }

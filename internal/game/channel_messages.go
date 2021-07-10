@@ -1,6 +1,7 @@
 package game
 
 import (
+	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
 	byter "RainbowRunner/pkg/byter"
 	"encoding/hex"
@@ -29,7 +30,7 @@ func handleUnk2ChannelMessages(conn *RRConn, msgType byte, reader *byter.Byter) 
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.Unk2)) // Character channel
 	body.WriteByte(0x00)
-	WriteCompressedA(conn, 0x01, 0x0f, body)
+	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 	return nil
 }
 

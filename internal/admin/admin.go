@@ -1,6 +1,7 @@
 package admin
 
 import (
+	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game"
 	byter "RainbowRunner/pkg/byter"
 	"encoding/json"
@@ -81,7 +82,7 @@ func HandleRequest(w http.ResponseWriter, req *http.Request) {
 
 		body := byter.NewLEByter(buf)
 		body.WriteBytes(hexData)
-		game.WriteCompressedA(conn, 0x01, 0x0f, body)
+		connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 	} else if commandRequest.Type == "cmd" {
 		SendCommand(commandRequest.Command)
 	}

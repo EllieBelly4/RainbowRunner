@@ -1,4 +1,4 @@
-package game
+package datatypes
 
 import "RainbowRunner/pkg"
 

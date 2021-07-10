@@ -1,12 +1,14 @@
 package objects
 
 import (
+	"RainbowRunner/internal/connections"
 	"RainbowRunner/pkg/byter"
 )
 
 type RREntityProperties struct {
 	OwnerID int
 	ID      uint16
+	Conn    connections.Connection
 }
 
 type RREntity struct {

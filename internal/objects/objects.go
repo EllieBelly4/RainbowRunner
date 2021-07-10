@@ -17,4 +17,5 @@ type DRObject interface {
 	GetChildByGCNativeType(s string) DRObject
 
 	GetGCObject() *GCObject
+	Tick()
 }

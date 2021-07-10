@@ -17,7 +17,7 @@ type LoggingOptions struct {
 }
 
 var LoggingOpts = LoggingOptions{
-	LogMoves:             false,
+	LogMoves:             true,
 	LogSent:              true,
 	LogSmallAs:           false,
 	LogHashes:            false,

@@ -1,6 +1,7 @@
 package game
 
 import (
+	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
 	byter "RainbowRunner/pkg/byter"
 )
@@ -22,7 +23,7 @@ func handleUserUnk0(conn *RRConn) {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.UserChannel))
 	body.WriteByte(0x00)
-	WriteCompressedA(conn, 0x01, 0x0f, body)
+	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
 func handleUserUnk1(conn *RRConn) {
@@ -46,5 +47,5 @@ func handleUserUnk1(conn *RRConn) {
 	body.WriteCString("ILikeTrains")
 	body.WriteCString("AndBrains")
 
-	WriteCompressedA(conn, 0x01, 0x0f, body)
+	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
