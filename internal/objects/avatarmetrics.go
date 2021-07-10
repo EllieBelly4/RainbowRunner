@@ -5,11 +5,11 @@ import (
 )
 
 type AvatarMetrics struct {
-	gcobject *GCObject
+	*GCObject
 }
 
-func (a AvatarMetrics) Serialise(byter *byter.Byter) {
-	a.gcobject.Serialise(byter)
+func (a AvatarMetrics) WriteFullGCObject(byter *byter.Byter) {
+	a.GCObject.WriteFullGCObject(byter)
 
 	// AvatarMetrics::PlayTime::readObject
 	byter.WriteUInt32(0x01)
@@ -44,15 +44,11 @@ func (a AvatarMetrics) Serialise(byter *byter.Byter) {
 	byter.WriteUInt32(0x00) // If > 0 it calls AvatarMetrics::ItemSnapshot::readObject
 }
 
-func (a AvatarMetrics) AddChild(object IGCObject) {
-	a.gcobject.AddChild(object)
-}
-
 func NewAvatarMetrics(id uint32, name string) *AvatarMetrics {
 	metrics := NewGCObject("AvatarMetrics")
-	metrics.Name = name
+	metrics.GCName = name
 
 	return &AvatarMetrics{
-		gcobject: metrics,
+		GCObject: metrics,
 	}
 }

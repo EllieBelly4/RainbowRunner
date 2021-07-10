@@ -9,7 +9,7 @@ import (
 	"net"
 )
 
-var Connections = make(map[uint32]*RRConn)
+var Connections = make(map[int]*RRConn)
 
 func StartGameServer() {
 	listen, err := net.Listen("tcp", "0.0.0.0:2603")
@@ -43,13 +43,12 @@ func handleConnection(conn net.Conn) {
 	fmt.Println("Client connected to gameserver")
 	rrconn := &RRConn{
 		NetConn:     conn,
-		ClientID:    0,
 		IsConnected: true,
 	}
 
-	rrconn.Player = NewPlayer(rrconn)
+	rrconn.Client = NewRRConnClient(1, rrconn)
 
-	Connections[rrconn.ClientID] = rrconn
+	Connections[rrconn.Client.ID] = rrconn
 
 	defer func(conn net.Conn) {
 		rrconn.IsConnected = false
@@ -138,21 +137,4 @@ func readPacket(conn *RRConn, reader *byter.Byter) {
 	} else {
 		fmt.Errorf("Unhandled message type %x\n", msgType)
 	}
-}
-
-func sendCharacterList(conn *RRConn) {
-	body := byter.NewLEByter(make([]byte, 0, 1024))
-	body.WriteByte(byte(CharacterChannel)) // Character channel
-	body.WriteByte(byte(CharacterGetList)) // Get character list (GotCharacter)
-
-	count := 0x01
-
-	body.WriteByte(byte(count))
-
-	for i := 0; i < count; i++ {
-		body.WriteUInt32(uint32(i + 1)) // ID?
-		sendPlayer(nil, body)
-	}
-
-	WriteCompressedA(conn, 0x01, 0x0f, body)
 }

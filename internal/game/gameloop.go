@@ -13,11 +13,11 @@ func StartGameLoop(conn *RRConn) {
 	for conn.IsConnected {
 		select {
 		case <-ticker.C:
-			if !conn.Player.IsSpawned {
+			if !conn.Client.IsSpawned {
 				continue
 			}
 
-			conn.Player.Tick()
+			conn.Client.Tick()
 
 			//if conn.Player.IsMoving {
 			//	conn.Player.SendPosition()
@@ -26,8 +26,8 @@ func StartGameLoop(conn *RRConn) {
 			//	conn.Player.SendFollowClient()
 			//}
 
-			if conn.Player.TicksSinceLastUpdate >= 0x2D {
-				conn.Player.SendPosition(0x00)
+			if conn.Client.TicksSinceLastUpdate >= 0x2D {
+				conn.Client.SendPosition(0x00)
 			}
 
 			//mov := conn.Player.LastMovementRequest

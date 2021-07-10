@@ -1,6 +1,7 @@
 package game
 
 import (
+	"RainbowRunner/internal/game/messages"
 	byter "RainbowRunner/pkg/byter"
 )
 
@@ -23,7 +24,7 @@ func handleGroupChannelMessages(conn *RRConn, msgType byte, reader *byter.Byter)
 
 func handleGroupConnected(conn *RRConn) {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
-	body.WriteByte(byte(GroupChannel))
+	body.WriteByte(byte(messages.GroupChannel))
 	body.WriteByte(48)
 
 	//sendGoToZone(conn, body, "dungeon00_level01")

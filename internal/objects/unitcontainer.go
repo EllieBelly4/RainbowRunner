@@ -5,27 +5,27 @@ import (
 )
 
 type UnitContainer struct {
-	gcobject *GCObject
+	*GCObject
+
+	Manipulator DRObject
 }
 
-func (a UnitContainer) Serialise(byter *byter.Byter) {
-	a.gcobject.Serialise(byter)
+func (a UnitContainer) WriteFullGCObject(byter *byter.Byter) {
+	a.GCObject.WriteFullGCObject(byter)
 
-	manipulator := NewGCObject("Manipulator")
-	//manipulator.GCType = "base.MeleeUnit.Manipulators.PrimaryWeapon"
-	manipulator.Serialise(byter)
+	a.Manipulator.WriteFullGCObject(byter)
 }
 
-func (a UnitContainer) AddChild(object IGCObject) {
-	a.gcobject.AddChild(object)
-}
-
-func NewUnitContainer(id uint32, name string) *UnitContainer {
+func NewUnitContainer(manipulator DRObject, name string) *UnitContainer {
 	container := NewGCObject("UnitContainer")
-	container.ID = id
-	container.Name = name
+	container.GCName = name
+
+	if manipulator.RREntityProperties().ID == 0 {
+		panic("Register component before passing it to unit container")
+	}
 
 	return &UnitContainer{
-		gcobject: container,
+		GCObject:    container,
+		Manipulator: manipulator,
 	}
 }

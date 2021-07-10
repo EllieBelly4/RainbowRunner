@@ -20,7 +20,7 @@ var LoggingOpts = LoggingOptions{
 	LogMoves:             false,
 	LogSent:              true,
 	LogSmallAs:           false,
-	LogHashes:            true,
+	LogHashes:            false,
 	LogGCObjectSerialise: true,
 }
 

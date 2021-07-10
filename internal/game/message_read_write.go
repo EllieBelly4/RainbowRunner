@@ -1,6 +1,7 @@
 package game
 
 import (
+	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/logging"
 	byter "RainbowRunner/pkg/byter"
 	"bytes"
@@ -116,8 +117,8 @@ func WriteCompressedA(conn *RRConn, dest uint8, messageType uint8, body *byter.B
 	w.Write(body.Data())
 	w.Close()
 
-	response.WriteByte(0x0a)                  // Packet Type
-	response.WriteUInt24(uint(conn.ClientID)) // Unk
+	response.WriteByte(0x0a)                   // Packet Type
+	response.WriteUInt24(uint(conn.Client.ID)) // Unk
 	response.WriteUInt32(uint32(len(b.Bytes())) + 7)
 	// Source
 	response.WriteByte(dest)        // Unk
@@ -126,7 +127,7 @@ func WriteCompressedA(conn *RRConn, dest uint8, messageType uint8, body *byter.B
 	response.WriteUInt32(uint32(len(body.Data())))
 
 	if len(body.Buffer) >= 2 && logging.LoggingOpts.LogSent {
-		fmt.Printf(">>>>> send [%s-%d] len %d\n", Channel(body.Data()[0]).String(), body.Data()[1], len(body.Buffer))
+		fmt.Printf(">>>>> send [%s-%d] len %d\n", messages.Channel(body.Data()[0]).String(), body.Data()[1], len(body.Buffer))
 	} else {
 		//fmt.Printf(">>>>> send [nochannel] len %d\n", len(body.Buffer))
 	}
@@ -155,7 +156,7 @@ func WriteMessage(conn *RRConn, msgType uint8, channel uint8, body *byter.Byter)
 	response := byter.NewLEByter(make([]byte, 0, 8))
 
 	response.WriteByte(msgType)                  // Packet Type
-	response.WriteUInt24(uint(conn.ClientID))    // Unk
+	response.WriteUInt24(uint(conn.Client.ID))   // Unk
 	response.WriteUInt24(uint(len(body.Data()))) // Packet Size (max 100000h)
 	response.WriteByte(channel)                  // Unk, Channel?
 	response.Write(body)

@@ -6,7 +6,6 @@ import (
 
 type RRConn struct {
 	NetConn     net.Conn
-	ClientID    uint32
-	Player      *RRConnClient
+	Client      *RRConnClient
 	IsConnected bool
 }

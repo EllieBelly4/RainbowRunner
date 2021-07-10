@@ -1,6 +1,7 @@
 package game
 
 import (
+	"RainbowRunner/internal/game/messages"
 	byter "RainbowRunner/pkg/byter"
 	"encoding/hex"
 	"errors"
@@ -10,45 +11,23 @@ import (
 
 const msgBar = "=======================================================================\n"
 
-//go:generate stringer -type=Channel
-type Channel byte
-
-const (
-	NoChannel Channel = iota
-	Unk1
-	Unk2
-	UserChannel
-	CharacterChannel
-	Unk5
-	ChatChannel
-	ClientEntityChannel
-	Unk8
-	GroupChannel
-	TradeChannel
-	UnkB
-	UnkC
-	ZoneChannel
-	UnkE
-	PosseChannel
-)
-
 var UnhandledChannelMessageError = errors.New("unhandled channel message")
 
 type ChannelMessageHandler func(conn *RRConn, msgType byte, reader *byter.Byter) error
 
-var channelMessageHandlers = map[Channel]ChannelMessageHandler{
-	CharacterChannel:    handleCharacterChannelMessages,
-	Unk2:                handleUnk2ChannelMessages,
-	ClientEntityChannel: handleClientEntityChannelMessages,
-	GroupChannel:        handleGroupChannelMessages,
-	ZoneChannel:         handleZoneChannelMessages,
-	UserChannel:         handleUserChannelMessages,
+var channelMessageHandlers = map[messages.Channel]ChannelMessageHandler{
+	messages.CharacterChannel:    handleCharacterChannelMessages,
+	messages.Unk2:                handleUnk2ChannelMessages,
+	messages.ClientEntityChannel: handleClientEntityChannelMessages,
+	messages.GroupChannel:        handleGroupChannelMessages,
+	messages.ZoneChannel:         handleZoneChannelMessages,
+	messages.UserChannel:         handleUserChannelMessages,
 }
 
 func handleUnk2ChannelMessages(conn *RRConn, msgType byte, reader *byter.Byter) error {
 	log.Info("sending unknown response for Unk2 channel")
 	body := byter.NewLEByter(make([]byte, 0, 1024))
-	body.WriteByte(byte(Unk2)) // Character channel
+	body.WriteByte(byte(messages.Unk2)) // Character channel
 	body.WriteByte(0x00)
 	WriteCompressedA(conn, 0x01, 0x0f, body)
 	return nil
@@ -58,14 +37,14 @@ func handleChannelMessage(conn *RRConn, reader *byter.Byter) {
 	msgChan := reader.UInt8()   // Channel
 	msgSubType := reader.Byte() // Message Type
 
-	handler, ok := channelMessageHandlers[Channel(msgChan)]
+	handler, ok := channelMessageHandlers[messages.Channel(msgChan)]
 
 	if !ok {
 		noticeMessage("unhandled channel %x\n%s", msgChan, hex.Dump(reader.Data()))
 		return
 	}
 
-	fmt.Printf("<---- recv [%s-0x%x] len %d\n", Channel(msgChan).String(), msgSubType, len(reader.Buffer))
+	fmt.Printf("<---- recv [%s-0x%x] len %d\n", messages.Channel(msgChan).String(), msgSubType, len(reader.Buffer))
 
 	err := handler(conn, msgSubType, reader)
 

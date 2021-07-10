@@ -3,6 +3,8 @@ package byter
 import (
 	"bytes"
 	"encoding/binary"
+	"encoding/hex"
+	"fmt"
 	"math"
 )
 
@@ -347,6 +349,10 @@ func (b *Byter) Int16() int16 {
 
 func (b *Byter) WriteInt8(i int8) {
 	b.WriteByte(byte(i))
+}
+
+func (b *Byter) Dump() {
+	fmt.Printf("%s\n", hex.Dump(b.Data()))
 }
 
 func NewByter(buffer []byte) *Byter {

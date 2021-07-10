@@ -8,21 +8,36 @@ import (
 	"strings"
 )
 
-var currentID = uint32(0)
-
-type IGCObject interface {
-	Serialise(byter *byter.Byter)
-	AddChild(object IGCObject)
-}
+//var currentID = uint32(0)
 
 type GCObject struct {
-	Version    uint8
-	NativeType string
-	ID         uint32
-	Name       string
-	Children   []IGCObject
-	GCType     string
-	Properties []GCObjectProperty
+	EntityProperties RREntityProperties
+	Version          uint8
+	GCNativeType     string
+	GCName           string
+	children         []DRObject
+	GCType           string
+	Properties       []GCObjectProperty
+}
+
+func (g *GCObject) GetGCObject() *GCObject {
+	return g
+}
+
+func (g *GCObject) WriteInit(b *byter.Byter) {
+	panic("implement me")
+}
+
+func (g *GCObject) WriteUpdate(b *byter.Byter) {
+	panic("implement me")
+}
+
+func (g *GCObject) Children() []DRObject {
+	return g.children
+}
+
+func (g *GCObject) RREntityProperties() *RREntityProperties {
+	return &g.EntityProperties
 }
 
 type GCObjectProperty struct {
@@ -58,26 +73,25 @@ func StringProp(name interface{}, val string) GCObjectProperty {
 	}
 }
 
-func NewID() (ID uint32) {
-	ID = currentID
-	currentID++
-	return ID
-}
+//func NewID() (ID uint32) {
+//	ID = currentID
+//	currentID++
+//	return ID
+//}
 
 func NewGCObject(nativeType string) *GCObject {
 	return &GCObject{
 		// At version 2A or above you must use a hash I think
 		//Version:    0x29, // No hash required
-		Version:    0x2D,
-		NativeType: nativeType,
-		ID:         NewID(),
-		GCType:     strings.ToLower(nativeType),
+		Version:      0x2D,
+		GCNativeType: nativeType,
+		GCType:       strings.ToLower(nativeType),
 	}
 }
 
 var indent = 0
 
-func (o *GCObject) Serialise(byter *byter.Byter) {
+func (o *GCObject) WriteFullGCObject(byter *byter.Byter) {
 	byter.WriteByte(o.Version)
 
 	useHashes := o.Version >= 0x2a
@@ -87,22 +101,22 @@ func (o *GCObject) Serialise(byter *byter.Byter) {
 Name: %s
 NativeClass: %s
 GCType: %s
----`, o.ID, o.Name, o.NativeType, o.GCType)
+---`, o.EntityProperties.ID, o.GCName, o.GCNativeType, o.GCType)
 
 	if useHashes {
-		byter.WriteUInt32(GetTypeHash(o.NativeType))
+		byter.WriteUInt32(GetTypeHash(o.GCNativeType))
 	} else {
-		byter.WriteCString(o.NativeType)
+		byter.WriteCString(o.GCNativeType)
 	}
 
-	byter.WriteUInt32(o.ID)
-	byter.WriteCString(o.Name)
+	byter.WriteUInt32(uint32(o.EntityProperties.ID))
+	byter.WriteCString(o.GCName)
 
-	byter.WriteUInt32(uint32(len(o.Children)))
+	byter.WriteUInt32(uint32(len(o.children)))
 
 	indent++
-	for _, child := range o.Children {
-		child.Serialise(byter)
+	for _, child := range o.children {
+		child.WriteFullGCObject(byter)
 	}
 	indent--
 
@@ -130,12 +144,12 @@ func logSerialise(format string, args ...interface{}) {
 	}
 }
 
-func (o *GCObject) AddChild(child IGCObject) {
-	if o.Children == nil {
-		o.Children = make([]IGCObject, 0, 128)
+func (o *GCObject) AddChild(child DRObject) {
+	if o.children == nil {
+		o.children = make([]DRObject, 0, 128)
 	}
 
-	o.Children = append(o.Children, child)
+	o.children = append(o.children, child)
 }
 
 func (p GCObjectProperty) Serialise(b *byter.Byter, useHash bool) {
@@ -188,4 +202,24 @@ func GetTypeHash(name string) uint32 {
 	}
 
 	return result
+}
+
+func (p *GCObject) GetChildByGCNativeType(s string) DRObject {
+	for _, child := range p.children {
+		if strings.ToLower(child.GetGCObject().GCNativeType) == strings.ToLower(s) {
+			return child
+		}
+	}
+
+	return nil
+}
+
+func (p *GCObject) GetChildByGCType(s string) DRObject {
+	for _, child := range p.children {
+		if strings.ToLower(child.GetGCObject().GCType) == strings.ToLower(s) {
+			return child
+		}
+	}
+
+	return nil
 }

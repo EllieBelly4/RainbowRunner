@@ -1,37 +1,23 @@
 package game
 
 import (
+	"RainbowRunner/internal/game/client_entity"
 	"RainbowRunner/internal/game/components"
 	"RainbowRunner/internal/game/components/behavior"
+	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/logging"
+	"RainbowRunner/internal/objects"
 	"RainbowRunner/pkg"
-	byter "RainbowRunner/pkg/byter"
+	"RainbowRunner/pkg/byter"
 	"encoding/hex"
 	"fmt"
 )
 
-type ClientEntityMessage byte
-
-const (
-	ClientEntityUnk0 ClientEntityMessage = iota
-	ClientEntityUnk1
-	ClientEntityUnk2
-	ClientEntityUnk3
-	ClientRequestRespawn
-	ClientEntityUnk5
-	ClientEntityUnk6
-	ClientEntityUnk7
-	ClientEntityUnk8
-	ClientEntityUnk9
-	ClientEntityThings   = 0x34
-	ClientEntityMovement = 0x35
-)
-
 func handleClientEntityChannelMessages(conn *RRConn, msgType byte, reader *byter.Byter) error {
-	switch ClientEntityMessage(msgType) {
-	case ClientRequestRespawn:
+	switch messages.ClientEntityMessage(msgType) {
+	case messages.ClientRequestRespawn:
 		handleClientEntityUnk4(conn, reader)
-	case ClientEntityThings:
+	case messages.ClientEntityThings:
 		clientEntitySubMessage := reader.UInt16()
 		switch clientEntitySubMessage {
 		// Inventory Message?
@@ -50,6 +36,8 @@ func handleClientEntityChannelMessages(conn *RRConn, msgType byte, reader *byter
 			fmt.Printf("Player tried to put something on hotbar\n%s", hex.Dump(reader.Data()))
 		case 0x05:
 			return handleClientEntityMovement(conn, reader)
+		case 0x0b:
+			return handleClientEntityMovement(conn, reader)
 		case 0x0a:
 			handleSelectEquipment(conn, reader)
 		default:
@@ -65,11 +53,13 @@ func handleClientEntityChannelMessages(conn *RRConn, msgType byte, reader *byter
 func handleSelectEquipment(conn *RRConn, reader *byter.Byter) {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 
-	body.WriteByte(byte(ClientEntityChannel))
+	body.WriteByte(byte(messages.ClientEntityChannel))
 	body.WriteByte(0x35) // ComponentUpdate
 
-	body.WriteUInt16(0x0a) // Equipment ComponentID
-	body.WriteByte(0x28)   // Add item
+	equipID := conn.Client.CurrentCharacter.GetChildByGCNativeType("Avatar").GetChildByGCNativeType("Equipment").RREntityProperties().ID
+
+	body.WriteUInt16(equipID) // Equipment ComponentID
+	body.WriteByte(0x28)      // Add item
 
 	addEquippedItem(body, "PlateMythicPAL.PlateMythicBoots1", EquipmentSlotFoot, true, "PlateMythicPAL.PlateMythicBoots1.Mod1")
 
@@ -85,83 +75,11 @@ func handleClientEntityMovement(conn *RRConn, reader *byter.Byter) error {
 	subMessage := reader.Byte()
 	switch subMessage {
 	case 0x65:
-		// This increments each time the server sends a MoveTo message
-		// The client will then increment by 1 for every individual movement performed (clicking)
-		updateNumber := reader.Byte()
-		count := int(reader.Byte())
-		pos := pkg.Vector2{}
-
-		if logging.LoggingOpts.LogMoves {
-			fmt.Printf("Received %d player moves unk val: %x\n", count, updateNumber)
-		}
-
-		for i := 0; i < count; i++ {
-			unk := reader.Byte()       // Unk
-			rotation := reader.Int32() // Seems to be rotation
-
-			degrees := float32((float64(rotation) / 0x17000) * 360)
-
-			pos.X = reader.Int32()
-			pos.Y = reader.Int32()
-
-			conn.Player.ClientUpdateNumber = updateNumber
-			if logging.LoggingOpts.LogMoves {
-				fmt.Printf(
-					"Player move 0x%x rotation 0x%x(%.2fdeg) (%d, %d) Hex (%x, %x)\n",
-					unk, rotation, degrees, pos.X, pos.Y, pos.X, pos.Y,
-				)
-			}
-
-			conn.Player.LastPosition = conn.Player.Position
-
-			conn.Player.Position.X = pos.X
-			conn.Player.Position.Y = pos.Y
-			conn.Player.Position.Z = 0
-			conn.Player.Rotation = rotation
-
-			//conn.Player.SendPosition(unk)
-
-			//conn.Player.MoveQueue.Add(MovementUpdate{
-			//	Position: pos,
-			//	Rotation: rotation,
-			//	Tick:     Tick,
-			//})
-
-			if unk&0x02 > 0 {
-				if logging.LoggingOpts.LogMoves {
-					fmt.Println("player started moving")
-				}
-				conn.Player.IsMoving = true
-				//conn.Player.SendPosition(0x02)
-			}
-
-			if unk&0x01 > 0 {
-				if logging.LoggingOpts.LogMoves {
-					fmt.Println("player finished moving")
-				}
-				conn.Player.IsMoving = false
-				conn.Player.SendPosition(0x01)
-			}
-		}
-
-		if conn.Player.MoveUpdate >= 0x2D {
-			//fmt.Printf(
-			//	"sending move update %d, %d || %x, %x!\n",
-			//	pos.X, pos.Y,
-			//	pos.X, pos.Y,
-			//)
-			//conn.Player.Move(pos.X, pos.Y)
-			//conn.Player.SendFollowClient()
-			conn.Player.MoveUpdate = 0
-		}
-
-		if logging.LoggingOpts.LogMoves {
-			fmt.Printf("%s\n", hex.Dump(reader.Data()))
-		}
+		handleClientMove(conn, reader)
 	// Potentially requesting current position because starting a new path
 	case 0x03:
 		fmt.Printf("player sent pre-path")
-		conn.Player.SendPosition(0x00)
+		conn.Client.SendPosition(0x00)
 	default:
 		fmt.Printf("unhandled client entity sub message %x", subMessage)
 		return UnhandledChannelMessageError
@@ -170,12 +88,88 @@ func handleClientEntityMovement(conn *RRConn, reader *byter.Byter) error {
 	return nil
 }
 
+func handleClientMove(conn *RRConn, reader *byter.Byter) {
+	// This increments each time the server sends a MoveTo message
+	// The client will then increment by 1 for every individual movement performed (clicking)
+	updateNumber := reader.Byte()
+	count := int(reader.Byte())
+	pos := pkg.Vector2{}
+
+	if logging.LoggingOpts.LogMoves {
+		fmt.Printf("Received %d player moves unk val: %x\n", count, updateNumber)
+	}
+
+	for i := 0; i < count; i++ {
+		unk := reader.Byte()       // Unk
+		rotation := reader.Int32() // Seems to be rotation
+
+		degrees := float32((float64(rotation) / 0x17000) * 360)
+
+		pos.X = reader.Int32()
+		pos.Y = reader.Int32()
+
+		conn.Client.ClientUpdateNumber = updateNumber
+		if logging.LoggingOpts.LogMoves {
+			fmt.Printf(
+				"Player move 0x%x rotation 0x%x(%.2fdeg) (%d, %d) Hex (%x, %x)\n",
+				unk, rotation, degrees, pos.X, pos.Y, pos.X, pos.Y,
+			)
+		}
+
+		conn.Client.LastPosition = conn.Client.Position
+
+		conn.Client.Position.X = pos.X
+		conn.Client.Position.Y = pos.Y
+		conn.Client.Position.Z = 0
+		conn.Client.Rotation = rotation
+
+		//conn.Player.SendPosition(unk)
+
+		//conn.Player.MoveQueue.Add(MovementUpdate{
+		//	Position: pos,
+		//	Rotation: rotation,
+		//	Tick:     Tick,
+		//})
+
+		if unk&0x02 > 0 {
+			if logging.LoggingOpts.LogMoves {
+				fmt.Println("player started moving")
+			}
+			conn.Client.IsMoving = true
+			//conn.Player.SendPosition(0x02)
+		}
+
+		if unk&0x01 > 0 {
+			if logging.LoggingOpts.LogMoves {
+				fmt.Println("player finished moving")
+			}
+			conn.Client.IsMoving = false
+			conn.Client.SendPosition(0x01)
+		}
+	}
+
+	if conn.Client.MoveUpdate >= 0x2D {
+		//fmt.Printf(
+		//	"sending move update %d, %d || %x, %x!\n",
+		//	pos.X, pos.Y,
+		//	pos.X, pos.Y,
+		//)
+		//conn.Player.Move(pos.X, pos.Y)
+		//conn.Player.SendFollowClient()
+		conn.Client.MoveUpdate = 0
+	}
+
+	if logging.LoggingOpts.LogMoves {
+		fmt.Printf("%s\n", hex.Dump(reader.Data()))
+	}
+}
+
 func handleClientEntityUnk4(conn *RRConn, reader *byter.Byter) {
 	id := reader.UInt16()
 	event := reader.Byte() // Guessing here
 
 	body := byter.NewLEByter(make([]byte, 0, 1024))
-	body.WriteByte(byte(ClientEntityChannel))
+	body.WriteByte(byte(messages.ClientEntityChannel))
 	// AVATAR UPDATE /////////////////////////////////////
 	// This update is required to make the character alive
 	body.WriteByte(0x03) // Update
@@ -203,109 +197,45 @@ func handleClientEntityUnk4(conn *RRConn, reader *byter.Byter) {
 func sendCreateNewPlayerEntity(conn *RRConn, body *byter.Byter) {
 	body = byter.NewLEByter(make([]byte, 0, 2048))
 
-	//clientEntityWriter := client_entity.NewClientEntityWriter(body)
+	player := conn.Client.CurrentCharacter
 
-	//clientEntityWriter.Create(conn.Player)
+	clientEntityWriter := client_entity.NewClientEntityWriter(body)
 
-	body.WriteByte(byte(ClientEntityChannel))
-	//body.WriteByte(0x01) // Create
-	body.WriteByte(0x01) // CreateInit
-	//body.WriteByte(0x02) // Init
-	//body.WriteByte(0x03) // Update
-	//body.WriteByte(21) // ClearEntityManager
-	body.WriteUInt16(0x0001) // Entity ID
-	// Type of lookup?
-	// 0x04 by ID?
-	// 0xFF by string?
-	body.WriteByte(0xFF)
-	// Examples
-	// 0x0002
-	// 0x1ADE
-	// 0x1b08
-	// 0x1af3
-	body.WriteCString("Player") // Unk, might be used to lookup GCObject Type in registry
+	clientEntityWriter.Start()
 
-	// Init PLAYER /////////////////////////////////////////
-	body.WriteByte(0x02)   // Init
-	body.WriteUInt16(0x01) // ID
-	body.WriteCString("Ellie")
-	body.WriteUInt32(0x01)
-	body.WriteUInt32(0x01)
-	body.WriteByte(0x01)
+	clientEntityWriter.Create(player)
+	clientEntityWriter.Init(player)
+	clientEntityWriter.Update(player)
 
-	body.WriteUInt32(0xFEEDBABA) // World ID
-	body.WriteUInt32(1001)       // PvP wins
-	body.WriteUInt32(1000)       // PvP rating?, 0 = ???
+	questManager := player.GetChildByGCType("QuestManager")
+	if questManager == nil {
+		questManager = objects.NewQuestManager()
+		objects.Entities.RegisterAll(conn.Client.ID, questManager)
+	}
+	clientEntityWriter.CreateComponent(questManager, player)
 
-	// Here goes PvP Team
-	// Null string
-	body.WriteByte(0x00)
+	dialogManager := player.GetChildByGCType("DialogManager")
+	if dialogManager == nil {
+		dialogManager = objects.NewDialogManager()
+		objects.Entities.RegisterAll(conn.Client.ID, dialogManager)
+	}
+	clientEntityWriter.CreateComponent(dialogManager, player)
 
-	// If player is in a PvP team then Avatar respawn will look for the team waypoints
-	//body.WriteByte(0xFF)
-	//body.WriteCString("pvp.DefaultTeamList.BlueTeam")
-
-	body.WriteCString("Hello")
-	body.WriteUInt32(0x01)
-
-	// UPDATE PLAYER /////////////////////////////////////////
-	body.WriteByte(0x03)   // MsgType Update
-	body.WriteUInt16(0x01) // Entity ID
-
-	// This maps to a specific event type for Player::processUpdate()
-	// 0x01 - do nothing
-	// 0x03 - Unk
-	body.WriteByte(0x03)
-
-	// 0x03 case
-	body.WriteUInt16(0x02)
-
-	// EntitySynchInfo
-	// Flags
-	body.WriteByte(0x0)
-	//body.WriteUInt32(0x1)
-
-	//METRICS
 	//addCreateComponent(body, 0x01, 0x0C, "AvatarMetrics")
+	//addCreateComponent(body, 0x01, 0x0B, "QuestManager")
+	//addCreateComponent(body, 0x01, 32, "DialogManager")
 
-	// QUEST MANAGER ////////////////////////////////////////////////////////
-	addCreateComponent(body, 0x01, 0x0B, "QuestManager")
+	avatar := player.GetChildByGCNativeType("Avatar")
+	clientEntityWriter.Create(avatar)
 
-	// QuestManager::readInit()
-	body.WriteUInt32(0x01)
-	body.WriteByte(0x01)
-	body.WriteCString("Hello")
-	body.WriteCString("HelloAgain")
-	body.WriteUInt32(0x01)
-	body.WriteByte(0x01)
-	body.WriteCString("HelloAgainAgain")
-	body.WriteCString("HelloAgainAgainAgain")
-	body.WriteUInt32(0x01)
-	body.WriteCString("Hi")
-	body.WriteCString("HiAgain")
-	body.WriteCString("HiAgainAgain")
-
-	// QuestManager::ReadAvailableQuests()
-	body.WriteByte(0x00) // Probably quest count
-
-	// QuestManager::readInit()
-	body.WriteUInt16(0x00) // Objectives count?
-	body.WriteUInt16(0x00) // Some count
-
-	// DIALOGUE MANAGER ///////////////////////////////////////
-	addCreateComponent(body, 0x01, 0x08, "DialogManager")
-
-	// CREATE AVATAR /////////////////////////////////////////
-	body.WriteByte(0x01)     // Create
-	body.WriteUInt16(0x0002) // Entity ID
-	// Type of lookup?
-	// 0x04 by ID?
-	// 0xFF by string?
-	body.WriteByte(0xFF)
+	//// CREATE AVATAR /////////////////////////////////////////
+	//body.WriteByte(0x01)     // Create
+	//body.WriteUInt16(0x0002) // Entity ID
+	//body.WriteByte(0xFF)
 	//body.WriteCString("avatar.classes.FighterFemale")
-	body.WriteCString("avatar.classes.FighterMale")
+	//body.WriteCString("avatar.classes.FighterMale")
 
-	addCreateComponent(body, 0x02, 0x0A, "avatar.base.Equipment")
+	addCreateComponent(body, avatar.RREntityProperties().ID, objects.NewID(), "avatar.base.Equipment")
 
 	itemCount := byte(0x01)
 	body.WriteByte(itemCount) // Item Count
@@ -324,7 +254,7 @@ func sendCreateNewPlayerEntity(conn *RRConn, body *byter.Byter) {
 	//addInitEquipment(body, 0x0A)
 
 	// UNITCONTAINER ////////////////////////////////////
-	addCreateComponent(body, 0x02, 0x01, "UnitContainer")
+	addCreateComponent(body, avatar.RREntityProperties().ID, objects.NewID(), "UnitContainer")
 
 	// Container::readInit()
 	body.WriteUInt32(1)
@@ -371,7 +301,7 @@ func sendCreateNewPlayerEntity(conn *RRConn, body *byter.Byter) {
 
 	// MODIFIERS //////////////////////////////////
 	// Modifiers are for modifying damage and defences
-	addCreateComponent(body, 0x02, 0x0002, "Modifiers")
+	addCreateComponent(body, avatar.RREntityProperties().ID, objects.NewID(), "Modifiers")
 
 	// Modifiers::readInit
 	body.WriteUInt32(0x00) //
@@ -381,13 +311,13 @@ func sendCreateNewPlayerEntity(conn *RRConn, body *byter.Byter) {
 	body.WriteByte(0x00)
 
 	// MANIPULATORS //////////////////////////////////
-	addCreateComponent(body, 0x02, 0x003, "Manipulators")
+	addCreateComponent(body, avatar.RREntityProperties().ID, objects.NewID(), "Manipulators")
 
 	// Manipulators::readInit
 	body.WriteByte(0x00) // Some count
 
 	// SKILLS //////////////////////////////////
-	addCreateComponent(body, 0x02, 0x004, "avatar.base.skills")
+	addCreateComponent(body, avatar.RREntityProperties().ID, objects.NewID(), "avatar.base.skills")
 
 	// Skills::readInit()
 	body.WriteUInt32(0xFFFFFFFF)
@@ -421,8 +351,11 @@ func sendCreateNewPlayerEntity(conn *RRConn, body *byter.Byter) {
 
 	// UnitBehaviour//////////////////////////////////
 	behaviorName := "avatar.base.UnitBehavior"
+
+	unitBehaviour := avatar.GetChildByGCNativeType("UnitBehavior")
+
 	if behaviorName == "avatar.base.UnitBehavior" {
-		addCreateComponent(body, 0x02, 0x005, "avatar.base.UnitBehavior")
+		addCreateComponent(body, avatar.RREntityProperties().ID, unitBehaviour.RREntityProperties().ID, "avatar.base.UnitBehavior")
 
 		behav := behavior.NewBehavior()
 		behav.Init(body, nil, nil)
@@ -473,7 +406,7 @@ func sendCreateNewPlayerEntity(conn *RRConn, body *byter.Byter) {
 		body.WriteByte(0xFF)
 	} else {
 		// This is a monster behavior
-		addCreateComponent(body, 0x02, 0x005, "base.MeleeUnit.Behavior")
+		addCreateComponent(body, avatar.RREntityProperties().ID, objects.NewID(), "base.MeleeUnit.Behavior")
 
 		behav := behavior.NewBehavior()
 		behav.Init(body, nil, nil)
@@ -528,7 +461,7 @@ func sendCreateNewPlayerEntity(conn *RRConn, body *byter.Byter) {
 
 	// Init
 	body.WriteByte(0x02)
-	body.WriteUInt16(0x0002)
+	body.WriteUInt16(avatar.RREntityProperties().ID)
 
 	//WorldEntity::readInit
 	// Flags
@@ -614,10 +547,10 @@ func sendCreateNewPlayerEntity(conn *RRConn, body *byter.Byter) {
 	}
 
 	if unitReadinitFlag&0x02 > 0 {
-		conn.Player.CurrentHP = 1150 * 256
+		conn.Client.CurrentHP = 1150 * 256
 		// 0x02 case
 		// Multiply HP by 256
-		body.WriteUInt32(conn.Player.CurrentHP) // Current HP
+		body.WriteUInt32(conn.Client.CurrentHP) // Current HP
 	}
 
 	if unitReadinitFlag&0x04 > 0 {
@@ -712,11 +645,11 @@ func addInitEquipment(body *byter.Byter, componentID uint16) {
 func AddSynch(conn *RRConn, body *byter.Byter) {
 	// EntitySynchInfo::readFromStream
 	body.WriteByte(0x02)
-	body.WriteUInt32(conn.Player.CurrentHP)
+	body.WriteUInt32(conn.Client.CurrentHP)
 }
 
 func AddComponentUpdate(body *byter.Byter, comp components.Component) {
-	body.WriteByte(byte(ClientEntityChannel))
+	body.WriteByte(byte(messages.ClientEntityChannel))
 	//body.WriteByte(0x36) // UpdateComponent - only synch
 	body.WriteByte(0x35) // ComponentUpdate - component specific handler + synch
 	comp.AddUpdate(body)
@@ -729,7 +662,7 @@ func AddEntityUpdateStreamEnd(body *byter.Byter) error {
 func SendWarpTo(conn *RRConn, compID uint16, posX, posY, posZ int32) {
 	body := byter.NewLEByter(make([]byte, 0))
 
-	body.WriteByte(byte(ClientEntityChannel))
+	body.WriteByte(byte(messages.ClientEntityChannel))
 	body.WriteByte(0x35)
 	body.WriteUInt16(compID) // UnitBehavior
 	body.WriteByte(0x04)     // CreateAction1
@@ -748,7 +681,7 @@ func SendWarpTo(conn *RRConn, compID uint16, posX, posY, posZ int32) {
 func SendMoveTo(conn *RRConn, unk uint8, compID uint16, posX, posY int32) {
 	body := byter.NewLEByter(make([]byte, 0))
 
-	body.WriteByte(byte(ClientEntityChannel))
+	body.WriteByte(byte(messages.ClientEntityChannel))
 	body.WriteByte(0x35)
 	body.WriteUInt16(compID) // UnitBehavior
 	body.WriteByte(0x04)     // CreateAction1

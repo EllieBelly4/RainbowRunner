@@ -1,6 +1,7 @@
 package game
 
 import (
+	"RainbowRunner/internal/game/messages"
 	byter "RainbowRunner/pkg/byter"
 )
 
@@ -24,7 +25,7 @@ func handleZoneChannelMessages(conn *RRConn, msgSubType uint8, reader *byter.Byt
 		handleZoneUnk6(conn)
 	case ZoneUnk8:
 		body := byter.NewLEByter(make([]byte, 0, 1024))
-		body.WriteByte(byte(ZoneChannel))
+		body.WriteByte(byte(messages.ZoneChannel))
 		body.WriteByte(0x08)
 		WriteCompressedA(conn, 0x01, 0x0f, body)
 	default:
@@ -35,7 +36,7 @@ func handleZoneChannelMessages(conn *RRConn, msgSubType uint8, reader *byter.Byt
 
 func handleZoneUnk6(conn *RRConn) {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
-	body.WriteByte(byte(ZoneChannel))
+	body.WriteByte(byte(messages.ZoneChannel))
 	body.WriteByte(0x01)
 	//body.WriteByte(0x02) // Other acceptable values
 	//body.WriteByte(0x05) // Other acceptable values
@@ -53,7 +54,7 @@ func handleZoneUnk6(conn *RRConn) {
 	WriteCompressedA(conn, 0x01, 0x0f, body)
 
 	body = byter.NewLEByter(make([]byte, 0, 1024))
-	body.WriteByte(byte(ZoneChannel))
+	body.WriteByte(byte(messages.ZoneChannel))
 	body.WriteByte(0x05)
 
 	// Adds two separate values into the ZoneClient
@@ -84,34 +85,17 @@ func handleZoneUnk6(conn *RRConn) {
 	//
 	//06 #end`))
 
-	if conn.Player.Zone == "town" {
-		//SendWarpTo(conn, 0x05, 4096, -131072, 13056)
-
-		//conn.Player.Warp(0xF000, 0xF000, 0x8F00)
-		conn.Player.Warp(106342, -46263, 12778)
-		conn.Player.SendPosition(0x00)
-		//SendMoveTo(conn, 0x05, 0x12000, 0x0000)
-		//SendMoveTo(conn, 0x05, 1000, 0x0000)
-	} else if conn.Player.Zone == "dungeon16_level00" {
-		conn.Player.Warp(0, 0, 15000)
-		conn.Player.SendPosition(0x00)
-
-		//body = byter.NewLEByter(make([]byte, 0, 1024))
-		//body.WriteByte(byte(ClientEntityChannel))
-		//body.WriteByte(0x64)
-		//
-		//body.WriteByte(0x1)
-		//body.WriteByte(0x02)
-		//body.WriteByte()
-		//WriteCompressedA(conn, 0x01, 0x0f, body)
-
-		//conn.Player.Move(0, 0)
-		//SendMoveTo(conn, 0x05, 0, 0)
+	if conn.Client.Zone == "town" {
+		conn.Client.Warp(106342, -46263, 12778)
+		conn.Client.SendPosition(0x00)
+	} else if conn.Client.Zone == "dungeon16_level00" {
+		conn.Client.Warp(0, 0, 15000)
+		conn.Client.SendPosition(0x00)
 	}
 
-	conn.Player.SendFollowClient()
+	conn.Client.SendFollowClient()
 
-	conn.Player.IsSpawned = true
+	conn.Client.IsSpawned = true
 
 	////	Some client control message
 	//body = byter.NewLEByter(make([]byte, 0, 1024))
@@ -149,10 +133,10 @@ func handleZoneUnk6(conn *RRConn) {
 }
 
 func sendGoToZone(conn *RRConn, body *byter.Byter, zone string) {
-	conn.Player.Zone = zone
+	conn.Client.Zone = zone
 
 	body = byter.NewLEByter(make([]byte, 0, 1024))
-	body.WriteByte(byte(ZoneChannel))
+	body.WriteByte(byte(messages.ZoneChannel))
 	body.WriteByte(0x00)
 	//body.WriteCString("TheHub")
 	//body.WriteCString("Tutorial")
