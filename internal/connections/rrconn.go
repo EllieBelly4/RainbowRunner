@@ -1,4 +1,4 @@
-package game
+package connections
 
 import (
 	"RainbowRunner/pkg/byter"

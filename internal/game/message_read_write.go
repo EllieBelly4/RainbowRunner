@@ -1,6 +1,7 @@
 package game
 
 import (
+	"RainbowRunner/internal/connections"
 	byter "RainbowRunner/pkg/byter"
 	"bytes"
 	"compress/zlib"
@@ -106,7 +107,7 @@ func WriteCompressed8(body *byter.Byter, conn net.Conn) {
 	log.Info(fmt.Sprintf("Sent: \n%s", hex.Dump(response.Data())))
 }
 
-func WriteMessage(conn *RRConn, msgType uint8, channel uint8, body *byter.Byter) {
+func WriteMessage(conn *connections.RRConn, msgType uint8, channel uint8, body *byter.Byter) {
 	response := byter.NewLEByter(make([]byte, 0, 8))
 
 	response.WriteByte(msgType)                  // Packet Type

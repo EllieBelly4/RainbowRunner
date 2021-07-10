@@ -1,5 +1,7 @@
 package game
 
+import "RainbowRunner/internal/connections"
+
 type Client struct {
-	conn *RRConn
+	conn *connections.RRConn
 }

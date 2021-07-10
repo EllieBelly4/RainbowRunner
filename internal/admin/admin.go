@@ -53,7 +53,7 @@ func HandleRequest(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		var conn *game.RRConn
+		var conn *connections.RRConn
 		var ok bool
 
 		if conn, ok = game.Connections[0]; !ok {

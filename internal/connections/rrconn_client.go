@@ -1,19 +1,16 @@
-package game
+package connections
 
 import (
-	"RainbowRunner/internal/objects"
 	"RainbowRunner/pkg"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 )
 
 type RRConnClient struct {
-	ID               int
-	Conn             *RRConn
-	Characters       []*objects.Player
-	CurrentCharacter *objects.Player
-	Zone             string
-	IsSpawned        bool
+	ID        int
+	Conn      *RRConn
+	Zone      string
+	IsSpawned bool
 
 	TicksSinceLastUpdate int
 	MoveQueue            *datatypes.MovementUpdateQueue

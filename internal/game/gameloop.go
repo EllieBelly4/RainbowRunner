@@ -1,13 +1,14 @@
 package game
 
 import (
+	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/managers"
 	"time"
 )
 
 var Tick = uint(0)
 
-func StartGameLoop(conn *RRConn) {
+func StartGameLoop(conn *connections.RRConn) {
 	ticker := time.NewTicker(33 * time.Millisecond)
 	defer ticker.Stop()
 

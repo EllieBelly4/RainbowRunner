@@ -15,7 +15,7 @@ import (
 	"fmt"
 )
 
-func handleClientEntityChannelMessages(conn *RRConn, msgType byte, reader *byter.Byter) error {
+func handleClientEntityChannelMessages(conn *connections.RRConn, msgType byte, reader *byter.Byter) error {
 	switch messages.ClientEntityMessage(msgType) {
 	case messages.ClientRequestRespawn:
 		handleClientEntityUnk4(conn, reader)
@@ -52,13 +52,13 @@ func handleClientEntityChannelMessages(conn *RRConn, msgType byte, reader *byter
 	return nil
 }
 
-func handleSelectEquipment(conn *RRConn, reader *byter.Byter) {
+func handleSelectEquipment(conn *connections.RRConn, reader *byter.Byter) {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 
 	body.WriteByte(byte(messages.ClientEntityChannel))
 	body.WriteByte(0x35) // ComponentUpdate
 
-	equipID := conn.Client.CurrentCharacter.GetChildByGCNativeType("Avatar").GetChildByGCNativeType("Equipment").RREntityProperties().ID
+	equipID := managers.Players.Players[conn.GetID()].CurrentCharacter.GetChildByGCNativeType("Avatar").GetChildByGCNativeType("Equipment").RREntityProperties().ID
 
 	body.WriteUInt16(equipID) // Equipment ComponentID
 	body.WriteByte(0x28)      // Add item
@@ -73,7 +73,7 @@ func handleSelectEquipment(conn *RRConn, reader *byter.Byter) {
 	fmt.Printf("Player tried to select equipment in inventory\n%s", hex.Dump(reader.Data()))
 }
 
-func handleClientEntityMovement(conn *RRConn, reader *byter.Byter) error {
+func handleClientEntityMovement(conn *connections.RRConn, reader *byter.Byter) error {
 	subMessage := reader.Byte()
 	switch subMessage {
 	case 0x65:
@@ -81,7 +81,7 @@ func handleClientEntityMovement(conn *RRConn, reader *byter.Byter) error {
 	// Potentially requesting current position because starting a new path
 	case 0x03:
 		fmt.Printf("player sent pre-path")
-		conn.Client.CurrentCharacter.SendPosition()
+		managers.Players.Players[conn.GetID()].CurrentCharacter.SendPosition()
 	default:
 		fmt.Printf("unhandled client entity sub message %x", subMessage)
 		return UnhandledChannelMessageError
@@ -90,7 +90,7 @@ func handleClientEntityMovement(conn *RRConn, reader *byter.Byter) error {
 	return nil
 }
 
-func handleClientMove(conn *RRConn, reader *byter.Byter) {
+func handleClientMove(conn *connections.RRConn, reader *byter.Byter) {
 	// This increments each time the server sends a MoveTo message
 	// The client will then increment by 1 for every individual movement performed (clicking)
 	updateNumber := reader.Byte()
@@ -110,7 +110,7 @@ func handleClientMove(conn *RRConn, reader *byter.Byter) {
 		pos.X = reader.Int32()
 		pos.Y = reader.Int32()
 
-		conn.Client.CurrentCharacter.ClientUpdateNumber = updateNumber
+		managers.Players.Players[conn.GetID()].CurrentCharacter.ClientUpdateNumber = updateNumber
 		if logging.LoggingOpts.LogMoves {
 			fmt.Printf(
 				"Player move 0x%x rotation 0x%x(%.2fdeg) (%d, %d) Hex (%x, %x)\n",
@@ -118,12 +118,12 @@ func handleClientMove(conn *RRConn, reader *byter.Byter) {
 			)
 		}
 
-		conn.Client.LastPosition = conn.Client.CurrentCharacter.Position
+		conn.Client.LastPosition = managers.Players.Players[conn.GetID()].CurrentCharacter.Position
 
-		conn.Client.CurrentCharacter.Position.X = pos.X
-		conn.Client.CurrentCharacter.Position.Y = pos.Y
-		conn.Client.CurrentCharacter.Position.Z = 0
-		conn.Client.CurrentCharacter.Rotation = rotation
+		managers.Players.Players[conn.GetID()].CurrentCharacter.Position.X = pos.X
+		managers.Players.Players[conn.GetID()].CurrentCharacter.Position.Y = pos.Y
+		managers.Players.Players[conn.GetID()].CurrentCharacter.Position.Z = 0
+		managers.Players.Players[conn.GetID()].CurrentCharacter.Rotation = rotation
 
 		//conn.Player.SendPosition(unk)
 
@@ -137,7 +137,7 @@ func handleClientMove(conn *RRConn, reader *byter.Byter) {
 			if logging.LoggingOpts.LogMoves {
 				fmt.Println("player started moving")
 			}
-			conn.Client.CurrentCharacter.IsMoving = true
+			managers.Players.Players[conn.GetID()].CurrentCharacter.IsMoving = true
 			//conn.Player.SendPosition(0x02)
 		}
 
@@ -145,12 +145,12 @@ func handleClientMove(conn *RRConn, reader *byter.Byter) {
 			if logging.LoggingOpts.LogMoves {
 				fmt.Println("player finished moving")
 			}
-			conn.Client.CurrentCharacter.IsMoving = false
-			conn.Client.CurrentCharacter.SendPosition()
+			managers.Players.Players[conn.GetID()].CurrentCharacter.IsMoving = false
+			managers.Players.Players[conn.GetID()].CurrentCharacter.SendPosition()
 		}
 	}
 
-	if conn.Client.CurrentCharacter.MoveUpdate >= 0x2D {
+	if managers.Players.Players[conn.GetID()].CurrentCharacter.MoveUpdate >= 0x2D {
 		//fmt.Printf(
 		//	"sending move update %d, %d || %x, %x!\n",
 		//	pos.X, pos.Y,
@@ -158,7 +158,7 @@ func handleClientMove(conn *RRConn, reader *byter.Byter) {
 		//)
 		//conn.Player.Move(pos.X, pos.Y)
 		//conn.Player.SendFollowClient()
-		conn.Client.CurrentCharacter.MoveUpdate = 0
+		managers.Players.Players[conn.GetID()].CurrentCharacter.MoveUpdate = 0
 	}
 
 	if logging.LoggingOpts.LogMoves {
@@ -166,7 +166,7 @@ func handleClientMove(conn *RRConn, reader *byter.Byter) {
 	}
 }
 
-func handleClientEntityUnk4(conn *RRConn, reader *byter.Byter) {
+func handleClientEntityUnk4(conn *connections.RRConn, reader *byter.Byter) {
 	id := reader.UInt16()
 	event := reader.Byte() // Guessing here
 
@@ -196,10 +196,10 @@ func handleClientEntityUnk4(conn *RRConn, reader *byter.Byter) {
 	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
-func sendCreateNewPlayerEntity(conn *RRConn, body *byter.Byter) {
+func sendCreateNewPlayerEntity(conn *connections.RRConn, body *byter.Byter) {
 	body = byter.NewLEByter(make([]byte, 0, 2048))
 
-	player := conn.Client.CurrentCharacter
+	player := managers.Players.Players[conn.GetID()].CurrentCharacter
 
 	clientEntityWriter := client_entity.NewClientEntityWriter(body)
 
@@ -549,10 +549,10 @@ func sendCreateNewPlayerEntity(conn *RRConn, body *byter.Byter) {
 	}
 
 	if unitReadinitFlag&0x02 > 0 {
-		conn.Client.CurrentCharacter.CurrentHP = 1150 * 256
+		managers.Players.Players[conn.GetID()].CurrentCharacter.CurrentHP = 1150 * 256
 		// 0x02 case
 		// Multiply HP by 256
-		body.WriteUInt32(conn.Client.CurrentCharacter.CurrentHP) // Current HP
+		body.WriteUInt32(managers.Players.Players[conn.GetID()].CurrentCharacter.CurrentHP) // Current HP
 	}
 
 	if unitReadinitFlag&0x04 > 0 {
@@ -644,10 +644,10 @@ func addInitEquipment(body *byter.Byter, componentID uint16) {
 	body.WriteUInt16(componentID) // Parent Entity ID
 }
 
-func AddSynch(conn *RRConn, body *byter.Byter) {
+func AddSynch(conn *connections.RRConn, body *byter.Byter) {
 	// EntitySynchInfo::readFromStream
 	body.WriteByte(0x02)
-	body.WriteUInt32(conn.Client.CurrentCharacter.CurrentHP)
+	body.WriteUInt32(managers.Players.Players[conn.GetID()].CurrentCharacter.CurrentHP)
 }
 
 func AddComponentUpdate(body *byter.Byter, comp components.Component) {
@@ -661,7 +661,7 @@ func AddEntityUpdateStreamEnd(body *byter.Byter) error {
 	return body.WriteByte(0x06)
 }
 
-func SendMoveTo(conn *RRConn, unk uint8, compID uint16, posX, posY int32) {
+func SendMoveTo(conn *connections.RRConn, unk uint8, compID uint16, posX, posY int32) {
 	body := byter.NewLEByter(make([]byte, 0))
 
 	body.WriteByte(byte(messages.ClientEntityChannel))

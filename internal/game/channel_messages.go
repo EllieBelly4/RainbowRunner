@@ -14,7 +14,7 @@ const msgBar = "================================================================
 
 var UnhandledChannelMessageError = errors.New("unhandled channel message")
 
-type ChannelMessageHandler func(conn *RRConn, msgType byte, reader *byter.Byter) error
+type ChannelMessageHandler func(conn *connections.RRConn, msgType byte, reader *byter.Byter) error
 
 var channelMessageHandlers = map[messages.Channel]ChannelMessageHandler{
 	messages.CharacterChannel:    handleCharacterChannelMessages,
@@ -25,7 +25,7 @@ var channelMessageHandlers = map[messages.Channel]ChannelMessageHandler{
 	messages.UserChannel:         handleUserChannelMessages,
 }
 
-func handleUnk2ChannelMessages(conn *RRConn, msgType byte, reader *byter.Byter) error {
+func handleUnk2ChannelMessages(conn *connections.RRConn, msgType byte, reader *byter.Byter) error {
 	log.Info("sending unknown response for Unk2 channel")
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.Unk2)) // Character channel
@@ -34,7 +34,7 @@ func handleUnk2ChannelMessages(conn *RRConn, msgType byte, reader *byter.Byter) 
 	return nil
 }
 
-func handleChannelMessage(conn *RRConn, reader *byter.Byter) {
+func handleChannelMessage(conn *connections.RRConn, reader *byter.Byter) {
 	msgChan := reader.UInt8()   // Channel
 	msgSubType := reader.Byte() // Message Type
 

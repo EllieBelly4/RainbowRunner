@@ -3,6 +3,7 @@ package game
 import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/logging"
+	"RainbowRunner/internal/managers"
 	"RainbowRunner/pkg/byter"
 	"encoding/hex"
 	"fmt"
@@ -10,7 +11,7 @@ import (
 	"net"
 )
 
-var Connections = make(map[int]*RRConn)
+var Connections = make(map[int]*connections.RRConn)
 
 func StartGameServer() {
 	listen, err := net.Listen("tcp", "0.0.0.0:2603")
@@ -42,12 +43,13 @@ func handleConnection(conn net.Conn) {
 	buf := make([]byte, 1024*10)
 
 	fmt.Println("Client connected to gameserver")
-	rrconn := &RRConn{
+	rrconn := &connections.RRConn{
 		NetConn:     conn,
 		IsConnected: true,
 	}
 
-	rrconn.Client = NewRRConnClient(1, rrconn)
+	rrconn.Client = connections.NewRRConnClient(1, rrconn)
+	managers.Players.Register(rrconn)
 
 	Connections[rrconn.Client.ID] = rrconn
 
@@ -79,7 +81,7 @@ func handleConnection(conn net.Conn) {
 	}
 }
 
-func readPacket(conn *RRConn, reader *byter.Byter) {
+func readPacket(conn *connections.RRConn, reader *byter.Byter) {
 	msgType := reader.UInt8() // Message Type?
 
 	if msgType == 0x0a {

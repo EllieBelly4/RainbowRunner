@@ -6,7 +6,7 @@ import (
 	byter "RainbowRunner/pkg/byter"
 )
 
-func handleUserChannelMessages(conn *RRConn, msgSubType byte, reader *byter.Byter) error {
+func handleUserChannelMessages(conn *connections.RRConn, msgSubType byte, reader *byter.Byter) error {
 	switch msgSubType {
 	case 0x00: // Request rosters
 		handleUserUnk0(conn)
@@ -19,14 +19,14 @@ func handleUserChannelMessages(conn *RRConn, msgSubType byte, reader *byter.Byte
 	return nil
 }
 
-func handleUserUnk0(conn *RRConn) {
+func handleUserUnk0(conn *connections.RRConn) {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.UserChannel))
 	body.WriteByte(0x00)
 	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
-func handleUserUnk1(conn *RRConn) {
+func handleUserUnk1(conn *connections.RRConn) {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.UserChannel))
 	body.WriteByte(0x01)

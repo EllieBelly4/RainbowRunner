@@ -20,7 +20,7 @@ const (
 	CharacterPlay
 )
 
-func handleCharacterChannelMessages(conn *RRConn, msgType byte, reader *byter.Byter) error {
+func handleCharacterChannelMessages(conn *connections.RRConn, msgType byte, reader *byter.Byter) error {
 	switch CharacterMessage(msgType) {
 	case CharacterConnected:
 		handleCharacterConnected(conn)
@@ -37,16 +37,16 @@ func handleCharacterChannelMessages(conn *RRConn, msgType byte, reader *byter.By
 	return nil
 }
 
-func handleCharacterList(conn *RRConn) {
+func handleCharacterList(conn *connections.RRConn) {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.CharacterChannel)) // Character channel
 	body.WriteByte(byte(CharacterGetList))          // Get character list (GotCharacter)
 
-	count := len(conn.Client.Characters)
+	count := len(managers.Players.Players[conn.GetID()].Characters)
 
 	body.WriteByte(byte(count))
 
-	for _, character := range conn.Client.Characters {
+	for _, character := range managers.Players.Players[conn.GetID()].Characters {
 		body.WriteUInt32(uint32(character.EntityProperties.ID)) // ID?
 		sendPlayer(character, conn.Client, body)
 	}
@@ -54,7 +54,7 @@ func handleCharacterList(conn *RRConn) {
 	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
-func handleCharacterCreate(conn *RRConn, reader *byter.Byter) {
+func handleCharacterCreate(conn *connections.RRConn, reader *byter.Byter) {
 	name := reader.String()
 	class := reader.String()
 	reader.UInt8() // Unk
@@ -76,11 +76,11 @@ func handleCharacterCreate(conn *RRConn, reader *byter.Byter) {
 	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
-func handleCharacterPlay(conn *RRConn, reader *byter.Byter) {
+func handleCharacterPlay(conn *connections.RRConn, reader *byter.Byter) {
 	reader.UInt8()
 	reader.UInt8()
 	slot := reader.UInt8()
-	conn.Client.CurrentCharacter = conn.Client.Characters[slot]
+	managers.Players.Players[conn.GetID()].CurrentCharacter = managers.Players.Players[conn.GetID()].Characters[slot]
 
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.CharacterChannel))
@@ -88,12 +88,12 @@ func handleCharacterPlay(conn *RRConn, reader *byter.Byter) {
 	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
-func handleCharacterConnected(conn *RRConn) {
+func handleCharacterConnected(conn *connections.RRConn) {
 	count := 2
-	conn.Client.Characters = make([]*objects.Player, 0, count)
+	managers.Players.Players[conn.GetID()].Characters = make([]*objects.Player, 0, count)
 
 	for i := 0; i < count; i++ {
-		conn.Client.Characters = append(conn.Client.Characters, loadPlayer(conn.Client))
+		managers.Players.Players[conn.GetID()].Characters = append(managers.Players.Players[conn.GetID()].Characters, loadPlayer(conn.Client))
 	}
 
 	body := byter.NewLEByter(make([]byte, 0, 1024))
@@ -102,7 +102,7 @@ func handleCharacterConnected(conn *RRConn) {
 	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
-func sendPlayer(character *objects.Player, client *RRConnClient, body *byter.Byter) {
+func sendPlayer(character *objects.Player, client *connections.RRConnClient, body *byter.Byter) {
 	//hero := objects.NewGCObject("Hero")
 	//hero.ID = 0xBABAF00B
 	//hero.Name = "EllieHero"
@@ -179,7 +179,7 @@ func loadAvatar(player *objects.Player) *objects.GCObject {
 	return avatar
 }
 
-func loadPlayer(client *RRConnClient) *objects.Player {
+func loadPlayer(client *connections.RRConnClient) *objects.Player {
 	player := objects.NewPlayer("Ellie")
 	managers.Entities.RegisterAll(client, player)
 	return player

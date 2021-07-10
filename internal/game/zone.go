@@ -3,6 +3,7 @@ package game
 import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
+	"RainbowRunner/internal/managers"
 	byter "RainbowRunner/pkg/byter"
 )
 
@@ -20,7 +21,7 @@ const (
 	ZoneUnk8
 )
 
-func handleZoneChannelMessages(conn *RRConn, msgSubType uint8, reader *byter.Byter) error {
+func handleZoneChannelMessages(conn *connections.RRConn, msgSubType uint8, reader *byter.Byter) error {
 	switch ZoneChannelMessage(msgSubType) {
 	case ZoneUnk6:
 		handleZoneUnk6(conn)
@@ -35,7 +36,7 @@ func handleZoneChannelMessages(conn *RRConn, msgSubType uint8, reader *byter.Byt
 	return nil
 }
 
-func handleZoneUnk6(conn *RRConn) {
+func handleZoneUnk6(conn *connections.RRConn) {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.ZoneChannel))
 	body.WriteByte(0x01)
@@ -87,15 +88,15 @@ func handleZoneUnk6(conn *RRConn) {
 	//06 #end`))
 
 	if conn.Client.Zone == "town" {
-		conn.Client.CurrentCharacter.Warp(106342, -46263, 12778)
-		conn.Client.CurrentCharacter.SendPosition()
+		managers.Players.Players[conn.GetID()].CurrentCharacter.Warp(106342, -46263, 12778)
+		managers.Players.Players[conn.GetID()].CurrentCharacter.SendPosition()
 	} else if conn.Client.Zone == "dungeon16_level00" {
-		conn.Client.CurrentCharacter.Warp(0, 0, 15000)
-		conn.Client.CurrentCharacter.SendPosition()
+		managers.Players.Players[conn.GetID()].CurrentCharacter.Warp(0, 0, 15000)
+		managers.Players.Players[conn.GetID()].CurrentCharacter.SendPosition()
 	}
 
-	conn.Client.CurrentCharacter.SendFollowClient()
-	conn.Client.CurrentCharacter.IsSpawned = true
+	managers.Players.Players[conn.GetID()].CurrentCharacter.SendFollowClient()
+	managers.Players.Players[conn.GetID()].CurrentCharacter.IsSpawned = true
 
 	////	Some client control message
 	//body = byter.NewLEByter(make([]byte, 0, 1024))
@@ -132,7 +133,7 @@ func handleZoneUnk6(conn *RRConn) {
 	//WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
-func sendGoToZone(conn *RRConn, body *byter.Byter, zone string) {
+func sendGoToZone(conn *connections.RRConn, body *byter.Byter, zone string) {
 	conn.Client.Zone = zone
 
 	body = byter.NewLEByter(make([]byte, 0, 1024))

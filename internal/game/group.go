@@ -1,6 +1,7 @@
 package game
 
 import (
+	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
 	byter "RainbowRunner/pkg/byter"
 )
@@ -11,7 +12,7 @@ const (
 	GroupConnected GroupChannelMessage = iota
 )
 
-func handleGroupChannelMessages(conn *RRConn, msgType byte, reader *byter.Byter) error {
+func handleGroupChannelMessages(conn *connections.RRConn, msgType byte, reader *byter.Byter) error {
 	switch GroupChannelMessage(msgType) {
 	case GroupConnected:
 		handleGroupConnected(conn)
@@ -22,7 +23,7 @@ func handleGroupChannelMessages(conn *RRConn, msgType byte, reader *byter.Byter)
 	return nil
 }
 
-func handleGroupConnected(conn *RRConn) {
+func handleGroupConnected(conn *connections.RRConn) {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.GroupChannel))
 	body.WriteByte(48)
