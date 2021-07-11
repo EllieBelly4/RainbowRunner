@@ -2,7 +2,7 @@ package game
 
 import (
 	"RainbowRunner/internal/connections"
-	"RainbowRunner/internal/managers"
+	"RainbowRunner/internal/objects"
 	"time"
 )
 
@@ -15,7 +15,7 @@ func StartGameLoop(conn *connections.RRConn) {
 	for conn.IsConnected {
 		select {
 		case <-ticker.C:
-			managers.Entities.Tick()
+			objects.Entities.Tick()
 
 			conn.Client.Tick()
 

@@ -1,16 +1,16 @@
-package managers
+package objects
 
 import (
 	"RainbowRunner/internal/connections"
-	"RainbowRunner/internal/objects"
 )
 
 var Players = NewPlayerManager()
 
 type RRPlayer struct {
 	Conn             *connections.RRConn
-	CurrentCharacter *objects.Player
-	Characters       []*objects.Player
+	CurrentCharacter *Player
+	Characters       []*Player
+	Zone             *Zone
 }
 
 type PlayerManager struct {

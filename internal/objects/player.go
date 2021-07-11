@@ -2,25 +2,14 @@ package objects
 
 import (
 	"RainbowRunner/internal/connections"
-	"RainbowRunner/internal/game/messages"
-	"RainbowRunner/internal/logging"
-	"RainbowRunner/pkg"
+	"RainbowRunner/internal/game/components/behavior"
 	"RainbowRunner/pkg/byter"
-	"fmt"
-	"time"
 )
 
 type Player struct {
 	*GCObject
-	Name                 string
-	IsMoving             bool
-	Rotation             int32
-	Position             pkg.Vector3
-	ClientUpdateNumber   byte
-	MoveUpdate           int
-	TicksSinceLastUpdate int
-	CurrentHP            uint32
-	IsSpawned            bool
+	Name      string
+	CurrentHP uint32
 }
 
 func (p *Player) WriteInit(b *byter.Byter) {
@@ -70,198 +59,455 @@ func (p *Player) WriteFullGCObject(byter *byter.Byter) {
 	byter.WriteUInt32(0x01)    // Specific to player::readObject
 }
 
-func (p *Player) Tick() {
-	if !p.IsSpawned {
-		return
-	}
-
-	if p.TicksSinceLastUpdate >= 0x2D {
-		p.SendPosition()
-	}
-
-	if p.IsMoving {
-		p.SendPosition()
-	}
-
-	p.TicksSinceLastUpdate++
+func (p *Player) WriteSynch(b *byter.Byter) {
+	b.WriteByte(0x02)
+	b.WriteUInt32(p.CurrentHP)
 }
 
-func (p *Player) updated() {
-	p.TicksSinceLastUpdate = 0
+func (p *Player) OnZoneJoin() {
+	SendCreateNewPlayerEntity(p.RREntityProperties().Conn)
 }
 
-func (p *Player) SendPosition() {
-	//# UnitBehavior - UnitMoverUpdate::read
-	//35 # ComponentUpdate
-	//05 00 # Component ID
-	//# Command
-	//# 05 - Behavior::terminateAllActionsLocal
-	//# 65 - UnitMoverUpdate::read
-	//65 # Command
-	//05 # Unk UnitBehavior::processUpdate
-	//01 # Unk UnitBehavior::processUpdate, if 2 it fails
-	//06 # Unk
-	//10 10 00 00 # PosX?
-	//00 10 10 00 # PosY?
-	//00 10 00 00 # PosZ?
-	//02 00 7e 04 00 # Synch
-	//06 # End
+func SendCreateNewPlayerEntity(conn connections.Connection) {
+	body := byter.NewLEByter(make([]byte, 0, 2048))
 
-	body := byter.NewLEByter(make([]byte, 0))
+	player := Players.Players[conn.GetID()].CurrentCharacter
 
-	body.WriteByte(byte(messages.ClientEntityChannel))
-	body.WriteByte(0x35)                     // ComponentUpdate
-	body.WriteUInt16(p.GetUnitBehaviourID()) // ComponentID
-	body.WriteByte(0x65)                     // UnitMoverUpdate
+	clientEntityWriter := NewClientEntityWriter(body)
 
-	updateCount := 10
+	clientEntityWriter.BeginStream()
 
-	// UnitBehavior::processUpdate
-	body.WriteByte(0xFF)              // Unk
-	body.WriteByte(byte(updateCount)) // Update count
+	clientEntityWriter.Create(player)
+	clientEntityWriter.Init(player)
+	clientEntityWriter.Update(player)
 
-	// UnitMoverUpdate::Read
-	//body.WriteByte(0x08) // Not all values work
-	//body.WriteByte(0x01) // Not all values work
-
-	for i := 0; i < updateCount; i++ {
-		body.WriteByte(0x08) // Not all values work
-		body.WriteInt32(p.Rotation)
-		body.WriteInt32(p.Position.X)
-		body.WriteInt32(p.Position.Y)
+	questManager := player.GetChildByGCType("QuestManager")
+	if questManager == nil {
+		questManager = NewQuestManager()
+		Entities.RegisterAll(conn, questManager)
 	}
+	clientEntityWriter.CreateComponent(questManager, player)
 
-	//body.WriteInt32(0)
-	//body.WriteInt32(0)
-	//body.WriteInt32(0)
-
-	body.WriteByte(0x02)
-	body.WriteUInt32(uint32(time.Now().Unix())) // Random unk value
-
-	//AddSynch(p.Conn, body)
-
-	degrees := float32((float64(p.Rotation) / 0x17000) * 360)
-
-	if logging.LoggingOpts.LogMoves {
-		fmt.Printf(
-			"Sending move rotation 0x%x(%.2fdeg) (%d, %d) Hex (%x, %x)\n",
-			p.Rotation, degrees, p.Position.X, p.Position.Y, p.Position.X, p.Position.Y,
-		)
+	dialogManager := player.GetChildByGCType("DialogManager")
+	if dialogManager == nil {
+		dialogManager = NewDialogManager()
+		Entities.RegisterAll(conn, dialogManager)
 	}
+	clientEntityWriter.CreateComponent(dialogManager, player)
 
-	// Stream end
-	body.WriteByte(0x06)
+	//addCreateComponent(body, 0x01, 0x0C, "AvatarMetrics")
+	//addCreateComponent(body, 0x01, 0x0B, "QuestManager")
+	//addCreateComponent(body, 0x01, 32, "DialogManager")
 
-	p.Send(body)
-	p.updated()
-	//p.RREntityProperties().Conn.Send(body)
-}
+	avatar := player.GetChildByGCNativeType("Avatar")
+	clientEntityWriter.Create(avatar)
 
-func (p *Player) GetUnitBehaviourID() uint16 {
-	avatar := p.GetChildByGCNativeType("Avatar")
-	unitContainer := avatar.GetChildByGCNativeType("UnitBehavior")
-	id := unitContainer.RREntityProperties().ID
-	return id
-}
+	//// CREATE AVATAR /////////////////////////////////////////
+	//body.WriteByte(0x01)     // Create
+	//body.WriteUInt16(0x0002) // Entity ID
+	//body.WriteByte(0xFF)
+	//body.WriteCString("avatar.classes.FighterFemale")
+	//body.WriteCString("avatar.classes.FighterMale")
 
-func (p *Player) Send(body *byter.Byter) {
-	connections.WriteCompressedA(p.RREntityProperties().Conn, 0x01, 0x0f, body)
-}
+	equipment := avatar.GetChildByGCType("avatar.base.Equipment")
+	addCreateComponent(body, avatar.RREntityProperties().ID, equipment.RREntityProperties().ID, "avatar.base.Equipment")
 
-func (p *Player) SendFollowClient() {
-	body := byter.NewLEByter(make([]byte, 0, 128))
-	body.WriteByte(byte(messages.ClientEntityChannel))
-	body.WriteByte(0x35)
+	itemCount := byte(0x01)
+	body.WriteByte(itemCount) // Item Count
 
-	body.WriteUInt16(p.GetUnitBehaviourID())
+	//addEquippedItem(body, "1HAxe1PAL.1HAxe1-1", EquipmentSlotWeapon)
+	AddEquippedItem(
+		body,
+		"ScaleArmor1PAL.ScaleArmor1-1",
+		//"LeatherArmor1PAL.LeatherArmor1-1",
+		EquipmentSlotTorso,
+		true,
+		//"LeatherModPAL.Unique.Mod0",
+		"ScaleModPAL.Rare.Mod0",
+	)
 
-	body.WriteByte(0x64)
+	//addInitEquipment(body, 0x0A)
+
+	// UNITCONTAINER ////////////////////////////////////
+	addCreateComponent(body, avatar.RREntityProperties().ID, NewID(), "UnitContainer")
+
+	// Container::readInit()
+	body.WriteUInt32(1)
+	body.WriteUInt32(1)
+	body.WriteByte(0x03) // Inventory Count?
+
+	body.WriteByte(0xFF)
+	body.WriteCString("avatar.base.Inventory")
+	body.WriteByte(0x01)
 	body.WriteByte(0x01)
 
-	// EntitySynchInfo::readFromStream
-	body.WriteByte(0x02)
-	body.WriteUInt32(p.CurrentHP)
+	// GCObject::ReadChildData<Item>()
+	inventoryItemCount := 0x01
+	body.WriteByte(byte(inventoryItemCount)) // Item count?
+	AddInventoryItem(body, "PlateMythicPAL.PlateMythicBoots1", 0, 0, "PlateMythicPAL.PlateMythicBoots1.Mod1")
 
-	//AddSynch(p.Conn, body)
+	// Items with PAL seem to be for players
+	//for i := 0; i < inventoryItemCount; i++ {
+	//AddInventoryItem(body, "1HAxe2PAL.1HAxe2-1", 0, 0)
+	//AddInventoryItem(body, "LeatherArmor1PAL.LeatherArmor1-1", 2, 0, true)
+	//AddInventoryItem(body, "CrystalHelm1PAL.CrystalHelm1-1", 2, 0)
+	//AddInventoryItem(body, "CrystalMythicPAL.CrystalMythicArmor2", 2, 0)
+	//}
 
-	//body := NewLEByterFromCommandString(`# UnitBehavior - FollowClient
-	//07
-	//35 # ComponentUpdate
-	//05 00 # Component ID
-	//# Command
-	//64
-	//01
-	//
-	//02 00 00 00 00 # Synch
-	//06 # End`)
+	body.WriteByte(0xFF)
+	body.WriteCString("avatar.base.TradeInventory")
+	body.WriteByte(0x01)
+	body.WriteByte(0x01)
+	// GCObject::ReadChildData<Item>()
+	body.WriteByte(0x00) // Item count?
 
-	// End Stream
-	body.WriteByte(0x06)
-	p.Send(body)
-}
+	body.WriteByte(0xFF)
+	body.WriteCString("avatar.base.Bank")
+	body.WriteByte(0x01)
+	body.WriteByte(0x01)
+	// GCObject::ReadChildData<Item>()
+	body.WriteByte(0x00) // Item count?
 
-func (p *Player) Warp(x int32, y int32, z int32) {
-	p.Position.X = x
-	p.Position.Y = x
-	p.Position.Z = x
+	// UnitContainer::readInit()
+	body.WriteByte(0x00) // If >0 it tries to read more, something to do with item
 
-	id := p.GetUnitBehaviourID()
+	// UNITCONTAINER UPDATE
+	//addUnitContainerUpdate(body, 0x01)
 
-	p.SendWarpTo(id, x, y, z)
-	p.updated()
-}
-func (p *Player) SendWarpTo(compID uint16, posX, posY, posZ int32) {
-	body := byter.NewLEByter(make([]byte, 0))
+	// MODIFIERS //////////////////////////////////
+	// Modifiers are for modifying damage and defences
+	addCreateComponent(body, avatar.RREntityProperties().ID, NewID(), "Modifiers")
 
-	body.WriteByte(byte(messages.ClientEntityChannel))
-	body.WriteByte(0x35)
-	body.WriteUInt16(compID) // UnitBehavior
-	body.WriteByte(0x04)     // CreateAction1
-	body.WriteByte(17)
+	// Modifiers::readInit
+	body.WriteUInt32(0x00) //
+	body.WriteUInt32(0x00) //
+
+	// GCObject::readChildData<Modifier>
 	body.WriteByte(0x00)
-	body.WriteInt32(posX)
-	body.WriteInt32(posY)
-	body.WriteInt32(posZ)
 
-	// EntitySynchInfo::readFromStream
-	body.WriteByte(0x02)
-	body.WriteUInt32(p.CurrentHP)
+	// MANIPULATORS //////////////////////////////////
+	addCreateComponent(body, avatar.RREntityProperties().ID, NewID(), "Manipulators")
 
-	// EndStream
-	body.WriteByte(0x06)
+	// Manipulators::readInit
+	body.WriteByte(0x00) // Some count
 
-	connections.WriteCompressedA(p.RREntityProperties().Conn, 0x01, 0x0f, body)
+	// SKILLS //////////////////////////////////
+	addCreateComponent(body, avatar.RREntityProperties().ID, NewID(), "avatar.base.skills")
 
-	p.updated()
-}
+	// Skills::readInit()
+	body.WriteUInt32(0xFFFFFFFF)
 
-func (p *Player) SendMoveTo(unk uint8, compID uint16, posX, posY int32) {
-	body := byter.NewLEByter(make([]byte, 0))
+	// GCObject::readChildData<Skill>
+	body.WriteByte(0x04) // Count
 
-	body.WriteByte(byte(messages.ClientEntityChannel))
-	body.WriteByte(0x35)
-	body.WriteUInt16(compID) // UnitBehavior
-	body.WriteByte(0x04)     // CreateAction1
-	body.WriteByte(0x01)     // MoveTo
-	body.WriteByte(unk)
-	body.WriteInt32(posX)
-	body.WriteInt32(posY)
+	body.WriteByte(0xFF)
+	body.WriteCString("skills.generic.Butcher")
+	body.WriteUInt32(0x02)
+	body.WriteByte(0x03) // Level
 
-	body.WriteByte(0x02)
-	body.WriteUInt32(0x00)
+	body.WriteByte(0xFF)
+	body.WriteCString("skills.generic.Stomp")
+	body.WriteUInt32(0x04)
+	body.WriteByte(0x05) // Level
 
-	//AddSynch(conn, body)
+	body.WriteByte(0xFF)
+	body.WriteCString("skills.generic.FighterClassPassive")
+	body.WriteUInt32(0x06)
+	body.WriteByte(0x07) // Level
 
-	// EndStream
-	body.WriteByte(0x06)
+	body.WriteByte(0xFF)
+	body.WriteCString("skills.generic.MeleeAttackSpeedModPassive")
+	body.WriteUInt32(0x08)
+	body.WriteByte(0x09) // Level
 
-	connections.WriteCompressedA(p.RREntityProperties().Conn, 0x01, 0x0f, body)
+	// GCObject::readChildData<SkillProfession>
+	body.WriteByte(0x01)
+	body.WriteByte(0xFF)
+	body.WriteCString("skills.professions.Warrior")
 
-	if logging.LoggingOpts.LogMoves {
-		fmt.Printf("Send MoveTo %x (%d, %d) (%x, %x)\n", unk, posX, posY, posX, posY)
+	// UnitBehaviour//////////////////////////////////
+	behaviorName := "avatar.base.UnitBehavior"
+
+	unitBehaviour := avatar.GetChildByGCNativeType("UnitBehavior")
+
+	if behaviorName == "avatar.base.UnitBehavior" {
+		addCreateComponent(body, avatar.RREntityProperties().ID, unitBehaviour.RREntityProperties().ID, "avatar.base.UnitBehavior")
+
+		behav := behavior.NewBehavior()
+		behav.Init(body, nil, nil)
+
+		// UnitMover::readInit()
+		// Flags
+		// 0x04
+		// 0x01
+		unitMover := byte(0x00)
+		body.WriteByte(unitMover)
+
+		if unitMover&0x04 > 0 {
+			body.WriteByte(0xFF)
+		}
+
+		if unitMover&0x01 > 0 {
+			// 0x01 case
+			body.WriteUInt32(0x01)
+			body.WriteUInt32(0x01)
+		}
+
+		body.WriteUInt32(0x00)
+		body.WriteUInt32(0x00)
+
+		if unitMover&0x80 > 0 {
+			body.WriteUInt32(0x00)
+		}
+
+		// Set to 2 for waypoints
+		unitMover2 := byte(0) // Could potentially be waypoints?
+
+		body.WriteByte(unitMover2)
+
+		if unitMover2 == 2 {
+			waypointCount := uint16(0x0002)
+			body.WriteUInt16(waypointCount)
+
+			for i := 0; i < int(waypointCount); i++ {
+				// Vector2
+				body.WriteUInt32(uint32(1000 * i))   // X?
+				body.WriteUInt32(uint32(100000 * i)) // Y?
+			}
+		}
+
+		// UnitBehavior::readInit()
+		body.WriteByte(0xFF)
+		body.WriteByte(0xFF)
+		body.WriteByte(0xFF)
+	} else {
+		// This is a monster behavior
+		addCreateComponent(body, avatar.RREntityProperties().ID, NewID(), "base.MeleeUnit.Behavior")
+
+		behav := behavior.NewBehavior()
+		behav.Init(body, nil, nil)
+
+		// UnitMover::readInit()
+		// Flags
+		// 0x04
+		// 0x01
+		unitMover := byte(0x00)
+		body.WriteByte(unitMover)
+
+		if unitMover&0x04 > 0 {
+			body.WriteByte(0xFF)
+		}
+
+		if unitMover&0x01 > 0 {
+			// 0x01 case
+			body.WriteUInt32(0x01)
+			body.WriteUInt32(0x01)
+		}
+
+		body.WriteUInt32(0x00)
+		body.WriteUInt32(0x00)
+
+		if unitMover&0x80 > 0 {
+			body.WriteUInt32(0x00)
+		}
+
+		// Set to 2 for waypoints
+		unitMover2 := byte(0) // Could potentially be waypoints?
+
+		body.WriteByte(unitMover2)
+
+		if unitMover2 == 2 {
+			waypointCount := uint16(0x0002)
+			body.WriteUInt16(waypointCount)
+
+			for i := 0; i < int(waypointCount); i++ {
+				// Vector2
+				body.WriteUInt32(uint32(1000 * i))   // X?
+				body.WriteUInt32(uint32(100000 * i)) // Y?
+			}
+		}
+
+		// UnitBehavior::readInit()
+		body.WriteByte(0xFF)
+		body.WriteByte(0xFF)
+		body.WriteByte(0xFF)
 	}
 
-	p.updated()
+	// AVATAR ////////////////////////////////////////
+
+	// Init
+	body.WriteByte(0x02)
+	body.WriteUInt16(avatar.RREntityProperties().ID)
+
+	//WorldEntity::readInit
+	// Flags
+	// 0x01 Static object?
+	// 0x02 Unk
+	// 0x04 Makes character appear
+	// 0x08 Unk
+	// 0x10 Unk
+	// 0x20 Unk
+	// 0x40 Unk
+	// 0x80 Unk
+	// 0x100 Unk
+	// 0x200 Unk
+	// 0x400 Unk
+	// 0x800 Breaks everything
+	// 0x1000 Makes the character invisible
+	// 0x2000 Makes movement very jumpy
+	// 0x4000 Unk
+	// 0x8000 Unk
+	// 0x10000 Unk
+	// One of these flags stops the below positions from working
+	// With only 0x04 the character can be moved and is the least broken
+	body.WriteUInt32(
+		0x04, // With this one alone it was working
+	)
+	// These positions stopped working at some point
+	body.WriteInt32(0)    // Pos X
+	body.WriteInt32(0)    // Pos Y
+	body.WriteInt32(0)    // Pos Z
+	body.WriteInt32(0x01) // Unk
+
+	// Flags
+	// Each flag adds one more section of data to read sequentially
+	// 0x01 Has Parent?
+	// 0x02 Unk
+	// 0x04 Makes movement smoother, interpolated position?
+	// 0x08 Unk
+	//body.WriteByte(1 | 2 | 4 | 8)
+	// When this is set to 0 the character is slightly less broken
+	// With 1 | 2 | 4 | 8 it was causing the character to have no animations and
+	// eventually collapse into itself
+	//worldEntityInitFlag := 0x04 | 0x08
+	worldEntityInitFlag := 0xFF
+	body.WriteByte(byte(worldEntityInitFlag))
+
+	if worldEntityInitFlag&0x01 > 0 {
+		// 0x01
+		body.WriteUInt16(0x00)
+	}
+
+	if worldEntityInitFlag&0x02 > 0 {
+		// Ox02
+		body.WriteByte(0xFF)
+	}
+
+	if worldEntityInitFlag&0x04 > 0 {
+		// 0x04
+		body.WriteUInt32(0xFFFFFFFF)
+	}
+
+	if worldEntityInitFlag&0x08 > 0 {
+		// 0x08
+		body.WriteUInt32(0xFFFFFFFF)
+	}
+
+	// Unit::readInit()
+	// Next 4 values always used
+	// Same flag as above? + has extras
+	// 0x01 - has parent/player owner?
+	// 0x02 - add HP
+	// 0x04 -
+	//body.WriteByte(0x07) // HasParent + Unk
+	//unitReadinitFlag := 0x01 | 0x02 | 0x04 | 0x10 | 0x20 | 0x40 | 0x80
+	unitReadinitFlag := 0x01 | 0x02 | 0x04
+	body.WriteByte(byte(unitReadinitFlag))
+	body.WriteByte(50) // Level
+	body.WriteUInt16(0x01)
+	body.WriteUInt16(0x02)
+
+	if unitReadinitFlag&0x01 > 0 {
+		// 0x01 case
+		body.WriteUInt16(0x01) // Parent ID!!!!!
+	}
+
+	if unitReadinitFlag&0x02 > 0 {
+		Players.Players[conn.GetID()].CurrentCharacter.CurrentHP = 1150 * 256
+		// 0x02 case
+		// Multiply HP by 256
+		body.WriteUInt32(Players.Players[conn.GetID()].CurrentCharacter.CurrentHP) // Current HP
+	}
+
+	if unitReadinitFlag&0x04 > 0 {
+		// 0x04 case
+		// Multiply MP by 256
+		body.WriteUInt32(505 * 256) // MP
+	}
+
+	if unitReadinitFlag&0x010 > 0 {
+		// 0x10 case
+		body.WriteByte(0x04) // Unk
+	}
+
+	if unitReadinitFlag&0x020 > 0 {
+		// 0x20 case
+		body.WriteUInt16(0x01) // Entity ID, Includes a call to IsKindOf<EncounterObject,Entity>(Entity *)
+	}
+
+	if unitReadinitFlag&0x040 > 0 {
+		// 0x40 case
+		body.WriteUInt16(0x02) // Unk
+		body.WriteUInt16(0x03) // Unk
+		body.WriteUInt16(0x04) // Unk
+		body.WriteByte(0x02)
+	}
+
+	if unitReadinitFlag&0x080 > 0 {
+		//0x80 case
+		body.WriteByte(0x05)
+	}
+
+	// Hero::readInit()
+	// The actual EXP value you want to add needs to be multiplied by 20
+	body.WriteUInt32(6000 * 20) // Current EXP this level
+
+	// Stats
+	// These stats are added to the base stats (seems to be 10)
+	body.WriteUInt16(0x02) // Strength
+	body.WriteUInt16(0x03) // Agility
+	body.WriteUInt16(0x04) // Endurance
+	body.WriteUInt16(0x05) // Intellect
+	body.WriteUInt16(0x00) // Points remaining
+	body.WriteUInt16(0x07) // Respec something or other
+	body.WriteUInt32(0x01) // Unk
+	body.WriteUInt32(0x01) // Unk
+
+	// Avatar::readInit()
+	body.WriteByte(10)  // Face variant
+	body.WriteByte(10)  // Hair style
+	body.WriteByte(100) // Hair colour
+
+	// AVATAR UPDATE /////////////////////////////////////
+	//body.WriteByte(0x03)     // Update
+	//body.WriteUInt16(0x0002) // ID
+
+	// Avatar::processUpdate
+	// 0x15 is special Avatar::processUpdate case(spawn entity?) anything else goes to Hero::processUpdate
+	// Hero::processUpdate
+	// 0x08 is Unit::processUseItemUpdate
+	// 0x00 Hero::processUpdateAddExperience
+	// 0x01 Hero::processUpdateRemoveExperience
+	// 0x02 Hero::processUpdateSpendAttribPoint
+	// 0x03 Hero::processUpdateReturnAttribPoint
+	// 0x04 Hero::processUpdateRespectAttrbutes
+	//body.WriteByte(0x15)
+	//
+	//// EntitySynchInfo::ReadFromStream
+	//body.WriteByte(0x2)
+	//body.WriteUInt32(147200) // HP
+
+	body.WriteByte(70) // Now connected
+	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
+}
+
+func addCreateComponent(body *byter.Byter, parentID uint16, componentID uint16, typeString string) {
+	body.WriteByte(0x32)          // Create Component
+	body.WriteUInt16(parentID)    // Parent Entity ID
+	body.WriteUInt16(componentID) // Component ID
+	body.WriteByte(0xFF)          // Unk
+	body.WriteCString(typeString) // Component Type
+	body.WriteByte(0x01)          // Unk
 }
 
 func NewPlayer(name string) (p *Player) {
@@ -274,4 +520,115 @@ func NewPlayer(name string) (p *Player) {
 	p.GCType = "player"
 
 	return
+}
+
+func AddEquippedItem(
+	body *byter.Byter,
+	item string,
+	slot EquipmentSlot,
+	armour bool,
+	mod string,
+) {
+	body.WriteByte(0xFF) // GetType
+	body.WriteCString(item)
+
+	// Item::readData
+	body.WriteUInt32(uint32(slot))
+	body.WriteByte(0xF0)
+	body.WriteByte(0xF0)
+	body.WriteByte(0x01)   // Item count
+	body.WriteByte(50 + 5) // Required level + 5
+
+	// Flag?
+	// 0x01 - Soulbound in 9 minutes, no idea where the time comes from
+	// 0x02 - Not Sellable
+	// 0x04 - +0x01 = Soulbound timer
+	// 0x08 - Requires Membership
+	itemFlag := 0x01 | 0x04 | 0x08
+
+	body.WriteByte(byte(itemFlag))
+
+	if itemFlag&0x04 > 0 {
+		// Soulbind time
+		// Minutes * 0x800 max 9
+		body.WriteUInt16(0x800 * 7)
+	}
+
+	if item == "LeatherArmor1PAL.LeatherArmor1-1" || item == "ScaleArmor1PAL.ScaleArmor1-1" {
+		// Required modifiers?
+		// ItemModifier?
+		itemModifierFlag1 := 0x01 | 0x02
+
+		body.WriteByte(byte(itemModifierFlag1))
+
+		if itemModifierFlag1&0x01 > 0 {
+			body.WriteByte(0xFF)
+		}
+
+		if itemModifierFlag1&0x02 > 0 {
+			body.WriteUInt32(0xFFFFFFFF)
+		}
+
+		//if mod != "" {
+		// GCObject::readChildData<ItemModifier>
+		body.WriteByte(0x01) // Count
+
+		body.WriteByte(0xFF)
+		body.WriteCString(mod)
+
+		// ItemModifier?
+		itemModifierFlag := 0x01 | 0x02
+
+		body.WriteByte(byte(itemModifierFlag))
+
+		if itemModifierFlag&0x01 > 0 {
+			body.WriteByte(0x15)
+		}
+
+		if itemModifierFlag&0x02 > 0 {
+			body.WriteUInt32(0x11111111)
+		}
+		//} else {
+		//	body.WriteByte(0x00) // Count
+		//}
+	} else if item == "PlateMythicPAL.PlateMythicArmor1" || item == "PlateMythicPAL.PlateMythicBoots1" {
+		// Required modifiers?
+		// ItemModifier?
+		itemModifierFlag1 := 0x00
+
+		// Each item has different numbers of required modifiers
+		for i := 0; i < 5; i++ {
+			body.WriteByte(byte(itemModifierFlag1))
+
+			if itemModifierFlag1&0x01 > 0 {
+				body.WriteByte(0xFF)
+			}
+
+			if itemModifierFlag1&0x02 > 0 {
+				body.WriteUInt32(0xFFFFFFFF)
+			}
+		}
+
+		//if mod != "" {
+		// GCObject::readChildData<ItemModifier>
+		body.WriteByte(0x01) // Count
+
+		body.WriteByte(0xFF)
+		body.WriteCString(mod)
+
+		// ItemModifier?
+		itemModifierFlag := 0x01 | 0x02
+
+		body.WriteByte(byte(itemModifierFlag))
+
+		if itemModifierFlag&0x01 > 0 {
+			body.WriteByte(0x15)
+		}
+
+		if itemModifierFlag&0x02 > 0 {
+			body.WriteUInt32(0x11111111)
+		}
+	} else {
+		panic("unhandled equipment")
+	}
 }

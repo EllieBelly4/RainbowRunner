@@ -13,6 +13,6 @@ const (
 	ClientEntityUnk7
 	ClientEntityUnk8
 	ClientEntityUnk9
-	ClientEntityThings   = 0x34
-	ClientEntityMovement = 0x35
+	ClientEntityComponentUpdate = 0x34
+	ClientEntityMovement        = 0x35
 )

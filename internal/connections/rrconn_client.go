@@ -7,10 +7,8 @@ import (
 )
 
 type RRConnClient struct {
-	ID        int
-	Conn      *RRConn
-	Zone      string
-	IsSpawned bool
+	ID   int
+	Conn *RRConn
 
 	TicksSinceLastUpdate int
 	MoveQueue            *datatypes.MovementUpdateQueue

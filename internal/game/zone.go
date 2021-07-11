@@ -3,7 +3,7 @@ package game
 import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
-	"RainbowRunner/internal/managers"
+	"RainbowRunner/internal/objects"
 	byter "RainbowRunner/pkg/byter"
 )
 
@@ -16,15 +16,15 @@ const (
 	ZoneUnk3
 	ZoneUnk4
 	ZoneUnk5
-	ZoneUnk6
+	ZoneJoin
 	ZoneUnk7
 	ZoneUnk8
 )
 
 func handleZoneChannelMessages(conn *connections.RRConn, msgSubType uint8, reader *byter.Byter) error {
 	switch ZoneChannelMessage(msgSubType) {
-	case ZoneUnk6:
-		handleZoneUnk6(conn)
+	case ZoneJoin:
+		handleZoneJoin(conn)
 	case ZoneUnk8:
 		body := byter.NewLEByter(make([]byte, 0, 1024))
 		body.WriteByte(byte(messages.ZoneChannel))
@@ -36,7 +36,7 @@ func handleZoneChannelMessages(conn *connections.RRConn, msgSubType uint8, reade
 	return nil
 }
 
-func handleZoneUnk6(conn *connections.RRConn) {
+func handleZoneJoin(conn *connections.RRConn) {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.ZoneChannel))
 	body.WriteByte(0x01)
@@ -64,8 +64,14 @@ func handleZoneUnk6(conn *connections.RRConn) {
 	body.WriteUInt32(0x01)
 	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 
+	//createNPC(conn)
+
+	player := objects.Players.Players[conn.GetID()]
+
+	player.CurrentCharacter.OnZoneJoin()
+
 	// Creating Player Entity
-	sendCreateNewPlayerEntity(conn, body)
+	//objects.SendCreateNewPlayerEntity(conn, body)
 
 	//	WriteCompressedA(conn, 0x01, 0x0f, NewLEByterFromCommandString(`
 	//07
@@ -86,17 +92,19 @@ func handleZoneUnk6(conn *connections.RRConn) {
 	//FF FF # Per Path (idk)
 	//
 	//06 #end`))
+	rrPlayer := objects.Players.Players[conn.GetID()]
 
-	if conn.Client.Zone == "town" {
-		managers.Players.Players[conn.GetID()].CurrentCharacter.Warp(106342, -46263, 12778)
-		managers.Players.Players[conn.GetID()].CurrentCharacter.SendPosition()
-	} else if conn.Client.Zone == "dungeon16_level00" {
-		managers.Players.Players[conn.GetID()].CurrentCharacter.Warp(0, 0, 15000)
-		managers.Players.Players[conn.GetID()].CurrentCharacter.SendPosition()
+	avatar := objects.Players.Players[conn.GetID()].CurrentCharacter.GetChildByGCNativeType("Avatar").(*objects.Avatar)
+	if rrPlayer.Zone.Name == "town" {
+		avatar.Warp(106342, -46263, 12778)
+		avatar.SendPosition()
+	} else if rrPlayer.Zone.Name == "dungeon16_level00" {
+		avatar.Warp(0, 0, 15000)
+		avatar.SendPosition()
 	}
 
-	managers.Players.Players[conn.GetID()].CurrentCharacter.SendFollowClient()
-	managers.Players.Players[conn.GetID()].CurrentCharacter.IsSpawned = true
+	avatar.SendFollowClient()
+	avatar.IsSpawned = true
 
 	////	Some client control message
 	//body = byter.NewLEByter(make([]byte, 0, 1024))
@@ -133,8 +141,38 @@ func handleZoneUnk6(conn *connections.RRConn) {
 	//WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
+func createNPC(conn *connections.RRConn) {
+	npc := objects.NewNPC("world.town.npc.HelperNoobosaur01")
+
+	unitBehavior := objects.NewMonsterBehavior2("npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
+	npc.AddChild(unitBehavior)
+
+	skills := objects.NewSkills("skills")
+	npc.AddChild(skills)
+
+	manipulators := objects.NewManipulators("manipulators")
+	npc.AddChild(manipulators)
+
+	modifiers := objects.NewModifiers("modifiers")
+	npc.AddChild(modifiers)
+
+	objects.Zones.Zone("town").Spawn(npc)
+
+	clientEntityWriter := objects.NewClientEntityWriterWithByter()
+
+	clientEntityWriter.BeginStream()
+	clientEntityWriter.Create(npc)
+	clientEntityWriter.CreateComponent(skills, npc)
+	clientEntityWriter.CreateComponent(manipulators, npc)
+	clientEntityWriter.CreateComponent(modifiers, npc)
+	clientEntityWriter.CreateComponent(unitBehavior, npc)
+	clientEntityWriter.EndStream()
+
+	connections.WriteCompressedASimple(conn, clientEntityWriter.Body)
+}
+
 func sendGoToZone(conn *connections.RRConn, body *byter.Byter, zone string) {
-	conn.Client.Zone = zone
+	objects.Zones.PlayerJoin(zone, objects.Players.Players[conn.GetID()])
 
 	body = byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.ZoneChannel))

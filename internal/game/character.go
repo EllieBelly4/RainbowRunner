@@ -3,7 +3,6 @@ package game
 import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
-	"RainbowRunner/internal/managers"
 	"RainbowRunner/internal/objects"
 	byter "RainbowRunner/pkg/byter"
 	log "github.com/sirupsen/logrus"
@@ -42,11 +41,11 @@ func handleCharacterList(conn *connections.RRConn) {
 	body.WriteByte(byte(messages.CharacterChannel)) // Character channel
 	body.WriteByte(byte(CharacterGetList))          // Get character list (GotCharacter)
 
-	count := len(managers.Players.Players[conn.GetID()].Characters)
+	count := len(objects.Players.Players[conn.GetID()].Characters)
 
 	body.WriteByte(byte(count))
 
-	for _, character := range managers.Players.Players[conn.GetID()].Characters {
+	for _, character := range objects.Players.Players[conn.GetID()].Characters {
 		body.WriteUInt32(uint32(character.EntityProperties.ID)) // ID?
 		sendPlayer(character, conn.Client, body)
 	}
@@ -80,7 +79,7 @@ func handleCharacterPlay(conn *connections.RRConn, reader *byter.Byter) {
 	reader.UInt8()
 	reader.UInt8()
 	slot := reader.UInt8()
-	managers.Players.Players[conn.GetID()].CurrentCharacter = managers.Players.Players[conn.GetID()].Characters[slot]
+	objects.Players.Players[conn.GetID()].CurrentCharacter = objects.Players.Players[conn.GetID()].Characters[slot]
 
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.CharacterChannel))
@@ -90,10 +89,14 @@ func handleCharacterPlay(conn *connections.RRConn, reader *byter.Byter) {
 
 func handleCharacterConnected(conn *connections.RRConn) {
 	count := 2
-	managers.Players.Players[conn.GetID()].Characters = make([]*objects.Player, 0, count)
+	objects.Players.Players[conn.GetID()].Characters = make([]*objects.Player, 0, count)
 
 	for i := 0; i < count; i++ {
-		managers.Players.Players[conn.GetID()].Characters = append(managers.Players.Players[conn.GetID()].Characters, loadPlayer(conn.Client))
+		player := loadPlayer(conn.Client)
+		player.EntityProperties.Conn = conn
+		player.EntityProperties.ID = uint16(i + 1)
+		player.EntityProperties.OwnerID = conn.GetID()
+		objects.Players.Players[conn.GetID()].Characters = append(objects.Players.Players[conn.GetID()].Characters, player)
 	}
 
 	body := byter.NewLEByter(make([]byte, 0, 1024))
@@ -171,24 +174,22 @@ func sendPlayer(character *objects.Player, client *connections.RRConnClient, bod
 	body.WriteUInt32(0x01)
 }
 
-func loadAvatar(player *objects.Player) *objects.GCObject {
+func loadAvatar(player *objects.Player) *objects.Avatar {
 	avatar := getAvatar(player.RREntityProperties().Conn)
 	player.AddChild(avatar)
 
-	managers.Entities.RegisterAll(player.EntityProperties.Conn, player)
+	objects.Entities.RegisterAll(player.EntityProperties.Conn, player.Children()...)
 	return avatar
 }
 
 func loadPlayer(client *connections.RRConnClient) *objects.Player {
 	player := objects.NewPlayer("Ellie")
-	managers.Entities.RegisterAll(client, player)
+	objects.Entities.RegisterAll(client, player.Children()...)
 	return player
 }
 
-func getAvatar(conn connections.Connection) *objects.GCObject {
-	avatar := objects.NewGCObject("Avatar")
-	avatar.GCType = "avatar.classes.FighterMale"
-	//avatar.GCType = "avatar.base.avatar"
+func getAvatar(conn connections.Connection) *objects.Avatar {
+	avatar := objects.NewAvatar("avatar.classes.FighterFemale")
 	avatar.GCName = "Avatar Name"
 	avatar.Properties = []objects.GCObjectProperty{
 		objects.Uint32Prop("Hair", 0x01),
@@ -240,7 +241,7 @@ func getAvatar(conn connections.Connection) *objects.GCObject {
 	weaponDesc.GCType = "1HMace1PAL.1HMace1-1.Description"
 	weaponDesc.GCName = "EllieWeaponDesc"
 	weaponDesc.Properties = []objects.GCObjectProperty{
-		objects.Uint32Prop("SlotType", uint32(EquipmentSlotWeapon)),
+		objects.Uint32Prop("SlotType", uint32(objects.EquipmentSlotWeapon)),
 	}
 
 	//TODO finish
@@ -259,7 +260,7 @@ func getAvatar(conn connections.Connection) *objects.GCObject {
 
 	manipulator := objects.NewGCObject("Manipulator")
 	//manipulator.GCType = "base.MeleeUnit.Manipulators.PrimaryWeapon"
-	managers.Entities.RegisterAll(conn, manipulator)
+	objects.Entities.RegisterAll(conn, manipulator)
 
 	unitContainer := objects.NewUnitContainer(manipulator, "EllieUnitContainer")
 	//unitContainer.GCType = "unitcontainer"
@@ -302,8 +303,8 @@ func getAvatar(conn connections.Connection) *objects.GCObject {
 	slot.GCName = "EllieWeaponSlot"
 
 	slot.Properties = []objects.GCObjectProperty{
-		objects.Uint32Prop("SlotID", uint32(EquipmentSlotWeapon)),
-		objects.Uint32Prop("SlotType", uint32(EquipmentSlotWeapon)),
+		objects.Uint32Prop("SlotID", uint32(objects.EquipmentSlotWeapon)),
+		objects.Uint32Prop("SlotType", uint32(objects.EquipmentSlotWeapon)),
 		objects.Uint32Prop("DefaultItem", 0xAAAABBBB),
 	}
 
@@ -335,8 +336,7 @@ func getAvatar(conn connections.Connection) *objects.GCObject {
 	//worldEntityDesc := objects.NewGCObject("WorldEntityDesc")
 	//worldEntityDesc.Name = "EllieWorldEntityDesc"
 
-	unitBehaviour := objects.NewGCObject("UnitBehavior")
-	unitBehaviour.GCType = "avatar.base.UnitBehavior"
+	unitBehaviour := objects.NewUnitBehavior("avatar.base.UnitBehavior")
 	unitBehaviour.GCName = "EllieBehaviour"
 
 	unitContainer.AddChild(baseInventory)

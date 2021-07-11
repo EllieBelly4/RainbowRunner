@@ -62,12 +62,3 @@ func noticeMessage(s string, a ...interface{}) {
 	msg := fmt.Sprintf(s, a...)
 	fmt.Printf("\n%s%s\n%s", msgBar, msg, msgBar)
 }
-
-func addCreateComponent(body *byter.Byter, parentID uint16, componentID uint16, typeString string) {
-	body.WriteByte(0x32)          // Create Component
-	body.WriteUInt16(parentID)    // Parent Entity ID
-	body.WriteUInt16(componentID) // Component ID
-	body.WriteByte(0xFF)          // Unk
-	body.WriteCString(typeString) // Component Type
-	body.WriteByte(0x01)          // Unk
-}

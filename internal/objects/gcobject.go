@@ -10,6 +10,14 @@ import (
 
 //var currentID = uint32(0)
 
+type EntityMessageHandler interface {
+	WriteInit(b *byter.Byter)
+	WriteUpdate(b *byter.Byter)
+	WriteSynch(b *byter.Byter)
+
+	ReadUpdate(reader *byter.Byter) error
+}
+
 type GCObject struct {
 	EntityProperties RREntityProperties
 	Version          uint8
@@ -18,6 +26,16 @@ type GCObject struct {
 	children         []DRObject
 	GCType           string
 	Properties       []GCObjectProperty
+	EntityHandler    EntityMessageHandler
+}
+
+func (g *GCObject) ReadUpdate(reader *byter.Byter) error {
+	fmt.Printf("Unhandled readupdate for %s (%s : %s) ID: %x\n", g.GCName, g.GCType, g.GCNativeType, g.EntityProperties.ID)
+	return nil
+}
+
+func (g *GCObject) WriteSynch(b *byter.Byter) {
+	b.WriteByte(0x00)
 }
 
 func (g *GCObject) Tick() {

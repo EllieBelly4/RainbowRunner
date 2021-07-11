@@ -10,6 +10,9 @@ type DRObject interface {
 	WriteFullGCObject(b *byter.Byter)
 	WriteInit(b *byter.Byter)
 	WriteUpdate(b *byter.Byter)
+	WriteSynch(b *byter.Byter)
+
+	ReadUpdate(reader *byter.Byter) error
 
 	AddChild(object DRObject)
 	Children() []DRObject

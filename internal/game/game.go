@@ -3,7 +3,7 @@ package game
 import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/logging"
-	"RainbowRunner/internal/managers"
+	"RainbowRunner/internal/objects"
 	"RainbowRunner/pkg/byter"
 	"encoding/hex"
 	"fmt"
@@ -43,13 +43,14 @@ func handleConnection(conn net.Conn) {
 	buf := make([]byte, 1024*10)
 
 	fmt.Println("Client connected to gameserver")
+
 	rrconn := &connections.RRConn{
 		NetConn:     conn,
 		IsConnected: true,
 	}
 
 	rrconn.Client = connections.NewRRConnClient(1, rrconn)
-	managers.Players.Register(rrconn)
+	objects.Players.Register(rrconn)
 
 	Connections[rrconn.Client.ID] = rrconn
 

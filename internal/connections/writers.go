@@ -12,6 +12,10 @@ import (
 	"runtime"
 )
 
+func WriteCompressedASimple(conn Connection, b *byter.Byter) {
+	WriteCompressedA(conn, 0x01, 0x0f, b)
+}
+
 func WriteCompressedA(conn Connection, dest uint8, messageType uint8, body *byter.Byter) {
 	response := byter.NewLEByter(make([]byte, 0, 7))
 
