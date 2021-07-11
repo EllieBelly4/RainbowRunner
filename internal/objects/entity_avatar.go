@@ -57,9 +57,9 @@ func (p *Avatar) Tick() {
 		p.SendPosition()
 	}
 
-	if p.IsMoving {
-		p.SendPosition()
-	}
+	//if p.IsMoving {
+	p.SendPosition()
+	//}
 
 	p.TicksSinceLastUpdate++
 }

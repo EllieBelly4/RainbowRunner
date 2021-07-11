@@ -65,7 +65,11 @@ func (n *MonsterBehavior2) WriteInit(b *byter.Byter) {
 }
 
 func NewMonsterBehavior2(gctype string) *MonsterBehavior2 {
+	unitBehavior := NewUnitBehavior(gctype)
+
+	unitBehavior.UnitMoverFlags = 0x01 | 0x04 | 0x80
+
 	return &MonsterBehavior2{
-		UnitBehavior: NewUnitBehavior(gctype),
+		UnitBehavior: unitBehavior,
 	}
 }

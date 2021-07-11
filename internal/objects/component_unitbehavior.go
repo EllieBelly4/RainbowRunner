@@ -14,9 +14,10 @@ import (
 
 type UnitBehavior struct {
 	*GCObject
-	LastPosition pkg.Vector3
-	Position     pkg.Vector3
-	Rotation     int32
+	LastPosition   pkg.Vector3
+	Position       pkg.Vector3
+	Rotation       int32
+	UnitMoverFlags byte
 }
 
 type UnitBehaviorHandler struct {
@@ -47,7 +48,7 @@ func (n *UnitBehavior) WriteInit(b *byter.Byter) {
 	// Flags
 	// 0x04
 	// 0x01
-	unitMover := byte(0x00)
+	unitMover := n.UnitMoverFlags
 	b.WriteByte(unitMover)
 
 	if unitMover&0x04 > 0 {
@@ -106,7 +107,8 @@ func (g *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 		unk := reader.Byte()       // Unk
 		rotation := reader.Int32() // Seems to be rotation
 
-		degrees := float32((float64(rotation) / 0x17000) * 360)
+		//degrees := float32((float64(rotation) / 0x17000) * 360)
+		degrees := float32(rotation / 256)
 
 		pos.X = reader.Int32()
 		pos.Y = reader.Int32()
@@ -218,29 +220,13 @@ func (n *UnitBehavior) sendWarpTo(posX, posY, posZ int32) {
 }
 
 func (n *UnitBehavior) SendPosition() {
-	//# UnitBehavior - UnitMoverUpdate::read
-	//35 # ComponentUpdate
-	//05 00 # Component ID
-	//# Command
-	//# 05 - Behavior::terminateAllActionsLocal
-	//# 65 - UnitMoverUpdate::read
-	//65 # Command
-	//05 # Unk UnitBehavior::processUpdate
-	//01 # Unk UnitBehavior::processUpdate, if 2 it fails
-	//06 # Unk
-	//10 10 00 00 # PosX?
-	//00 10 10 00 # PosY?
-	//00 10 00 00 # PosZ?
-	//02 00 7e 04 00 # Synch
-	//06 # End
-
 	writer := NewClientEntityWriterWithByter()
 	writer.BeginStream()
 	writer.BeginComponentUpdate(n.RREntityProperties().ID)
 
 	writer.Body.WriteByte(0x65) // UnitMoverUpdate
 
-	updateCount := 10
+	updateCount := 3
 
 	// UnitBehavior::processUpdate
 	writer.Body.WriteByte(0xFF)              // Unk
@@ -277,9 +263,17 @@ func (n *UnitBehavior) SendPosition() {
 
 	writer.EndStream()
 
+	oldLog := logging.LoggingOpts.LogSent
+
+	if !logging.LoggingOpts.LogMoves {
+		logging.LoggingOpts.LogSent = false
+	}
+
 	if n.RREntityProperties().Zone != nil {
 		n.RREntityProperties().Zone.SendToAll(writer.Body)
 	}
+
+	logging.LoggingOpts.LogSent = oldLog
 }
 
 func NewUnitBehavior(gcType string) *UnitBehavior {

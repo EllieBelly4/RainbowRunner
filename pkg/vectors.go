@@ -15,3 +15,8 @@ type Vector3Short struct {
 type Vector3Float32 struct {
 	X, Y, Z float32
 }
+
+type Transform struct {
+	Position Vector3
+	Rotation int
+}

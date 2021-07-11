@@ -4,7 +4,9 @@ import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/objects"
+	"RainbowRunner/pkg"
 	byter "RainbowRunner/pkg/byter"
+	"RainbowRunner/pkg/math"
 )
 
 type ZoneChannelMessage byte
@@ -64,9 +66,27 @@ func handleZoneJoin(conn *connections.RRConn) {
 	body.WriteUInt32(0x01)
 	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 
-	createNPC(conn)
-
 	player := objects.Players.Players[conn.GetID()]
+
+	createNPC(conn, player.Zone, pkg.Transform{
+		Position: pkg.Vector3{0, 0, 15000},
+		Rotation: 180 * math.DRDegToRot,
+	})
+
+	createNPC(conn, player.Zone, pkg.Transform{
+		Position: pkg.Vector3{20 * 256, 20 * 256, 15000},
+		Rotation: 270 * math.DRDegToRot,
+	})
+
+	createNPC(conn, player.Zone, pkg.Transform{
+		Position: pkg.Vector3{0 * 256, 40 * 256, 15000},
+		Rotation: 360 * math.DRDegToRot,
+	})
+
+	createNPC(conn, player.Zone, pkg.Transform{
+		Position: pkg.Vector3{-20 * 256, 20 * 256, 15000},
+		Rotation: 90 * math.DRDegToRot,
+	})
 
 	player.CurrentCharacter.OnZoneJoin()
 
@@ -141,8 +161,11 @@ func handleZoneJoin(conn *connections.RRConn) {
 	//WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
-func createNPC(conn *connections.RRConn) {
+func createNPC(conn *connections.RRConn, zone *objects.Zone, transform pkg.Transform) {
 	npc := objects.NewNPC("world.town.npc.HelperNoobosaur01")
+
+	npc.WorldPosition = transform.Position
+	npc.Rotation = transform.Rotation
 
 	unitBehavior := objects.NewMonsterBehavior2("npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
 	npc.AddChild(unitBehavior)
@@ -156,7 +179,7 @@ func createNPC(conn *connections.RRConn) {
 	modifiers := objects.NewModifiers("modifiers")
 	npc.AddChild(modifiers)
 
-	objects.Zones.Zone("town").Spawn(npc)
+	zone.Spawn(npc)
 
 	clientEntityWriter := objects.NewClientEntityWriterWithByter()
 
@@ -165,13 +188,16 @@ func createNPC(conn *connections.RRConn) {
 	clientEntityWriter.CreateComponent(skills, npc)
 	clientEntityWriter.CreateComponent(manipulators, npc)
 	clientEntityWriter.CreateComponent(modifiers, npc)
-	clientEntityWriter.CreateComponent(unitBehavior, npc)
+	// Adding unit behavior makes the NPC move in a random direction, missing something here
+	//clientEntityWriter.CreateComponent(unitBehavior, npc)
+	clientEntityWriter.Init(npc)
 	clientEntityWriter.EndStream()
 
 	connections.WriteCompressedASimple(conn, clientEntityWriter.Body)
 
-	unitBehavior.Warp(106342, -46263, 12778)
-	unitBehavior.SendPosition()
+	//unitBehavior.Warp(106342, -46263, 12778)
+	//unitBehavior.Warp(0, 0, 0)
+	//unitBehavior.SendPosition()
 }
 
 func sendGoToZone(conn *connections.RRConn, body *byter.Byter, zone string) {
