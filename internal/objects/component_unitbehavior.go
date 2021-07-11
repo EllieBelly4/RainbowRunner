@@ -9,10 +9,14 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"time"
 )
 
 type UnitBehavior struct {
 	*GCObject
+	LastPosition pkg.Vector3
+	Position     pkg.Vector3
+	Rotation     int32
 }
 
 type UnitBehaviorHandler struct {
@@ -85,7 +89,7 @@ func (n *UnitBehavior) WriteInit(b *byter.Byter) {
 	b.WriteByte(0xFF)
 }
 
-func handleClientMove(conn connections.Connection, reader *byter.Byter) {
+func (g *UnitBehavior) handleClientMove(conn connections.Connection, reader *byter.Byter) {
 	// This increments each time the server sends a MoveTo message
 	// The client will then increment by 1 for every individual movement performed (clicking)
 	updateNumber := reader.Byte()
@@ -115,12 +119,15 @@ func handleClientMove(conn connections.Connection, reader *byter.Byter) {
 			)
 		}
 
-		avatar.LastPosition = avatar.Position
+		g.LastPosition = g.Position
 
-		avatar.Position.X = pos.X
-		avatar.Position.Y = pos.Y
-		avatar.Position.Z = 0
-		avatar.Rotation = rotation
+		g.Position.X = pos.X
+		g.Position.Y = pos.Y
+		g.Position.Z = 0
+		g.Rotation = rotation
+
+		avatar.LastPosition = g.LastPosition
+		avatar.Position = g.Position
 
 		//conn.Player.SendPosition(unk)
 
@@ -167,7 +174,7 @@ func (g *UnitBehavior) ReadUpdate(reader *byter.Byter) error {
 	subMessage := reader.Byte()
 	switch subMessage {
 	case 0x65:
-		handleClientMove(g.EntityProperties.Conn, reader)
+		g.handleClientMove(g.EntityProperties.Conn, reader)
 	// Potentially requesting current position because starting a new path
 	case 0x03:
 		fmt.Printf("player sent pre-path")
@@ -178,6 +185,101 @@ func (g *UnitBehavior) ReadUpdate(reader *byter.Byter) error {
 	}
 
 	return nil
+}
+
+func (n *UnitBehavior) Warp(x int32, y int32, z int32) {
+	n.Position.X = x
+	n.Position.Y = y
+	n.Position.Z = z
+
+	if n.RREntityProperties().Conn != nil {
+		n.sendWarpTo(x, y, z)
+	}
+}
+
+func (n *UnitBehavior) sendWarpTo(posX, posY, posZ int32) {
+	writer := NewClientEntityWriterWithByter()
+	writer.BeginStream()
+	writer.BeginComponentUpdate(n.RREntityProperties().ID)
+
+	writer.Body.WriteByte(0x04) // CreateAction1
+	writer.Body.WriteByte(17)
+	writer.Body.WriteByte(0x00)
+	writer.Body.WriteInt32(posX)
+	writer.Body.WriteInt32(posY)
+	writer.Body.WriteInt32(posZ)
+
+	writer.WriteSynch(n)
+	writer.EndStream()
+
+	if n.RREntityProperties().Zone != nil {
+		n.RREntityProperties().Zone.SendToAll(writer.Body)
+	}
+}
+
+func (n *UnitBehavior) SendPosition() {
+	//# UnitBehavior - UnitMoverUpdate::read
+	//35 # ComponentUpdate
+	//05 00 # Component ID
+	//# Command
+	//# 05 - Behavior::terminateAllActionsLocal
+	//# 65 - UnitMoverUpdate::read
+	//65 # Command
+	//05 # Unk UnitBehavior::processUpdate
+	//01 # Unk UnitBehavior::processUpdate, if 2 it fails
+	//06 # Unk
+	//10 10 00 00 # PosX?
+	//00 10 10 00 # PosY?
+	//00 10 00 00 # PosZ?
+	//02 00 7e 04 00 # Synch
+	//06 # End
+
+	writer := NewClientEntityWriterWithByter()
+	writer.BeginStream()
+	writer.BeginComponentUpdate(n.RREntityProperties().ID)
+
+	writer.Body.WriteByte(0x65) // UnitMoverUpdate
+
+	updateCount := 10
+
+	// UnitBehavior::processUpdate
+	writer.Body.WriteByte(0xFF)              // Unk
+	writer.Body.WriteByte(byte(updateCount)) // Update count
+
+	// UnitMoverUpdate::Read
+	//writer.Body.WriteByte(0x08) // Not all values work
+	//writer.Body.WriteByte(0x01) // Not all values work
+
+	for i := 0; i < updateCount; i++ {
+		writer.Body.WriteByte(0x08) // Not all values work
+		writer.Body.WriteInt32(n.Rotation)
+		writer.Body.WriteInt32(n.Position.X)
+		writer.Body.WriteInt32(n.Position.Y)
+	}
+
+	//writer.Body.WriteInt32(0)
+	//writer.Body.WriteInt32(0)
+	//writer.Body.WriteInt32(0)
+
+	writer.Body.WriteByte(0x02)
+	writer.Body.WriteUInt32(uint32(time.Now().Unix())) // Random unk value
+
+	//AddSynch(p.Conn, writer.Body)
+
+	degrees := float32((float64(n.Rotation) / 0x17000) * 360)
+
+	if logging.LoggingOpts.LogMoves {
+		fmt.Printf(
+			"Sending move rotation 0x%x(%.2fdeg) (%d, %d) Hex (%x, %x)\n",
+			n.Rotation, degrees, n.Position.X, n.Position.Y, n.Position.X, n.Position.Y,
+		)
+	}
+
+	writer.EndStream()
+
+	if n.RREntityProperties().Zone != nil {
+		n.RREntityProperties().Zone.SendToAll(writer.Body)
+	}
 }
 
 func NewUnitBehavior(gcType string) *UnitBehavior {

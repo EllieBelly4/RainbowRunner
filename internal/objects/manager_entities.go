@@ -61,6 +61,21 @@ func (m *EntityManager) FindByID(id uint16) DRObject {
 	return nil
 }
 
+func (m *EntityManager) RemoveOwnedBy(id int) {
+	toDelete := make([]uint16, 0, 1024)
+
+	for index, entity := range m.Entities {
+		if entity == nil || entity.RREntityProperties().OwnerID == id {
+			toDelete = append(toDelete, index)
+		}
+	}
+
+	for _, index := range toDelete {
+		m.Entities[index].RREntityProperties().Zone = nil
+		delete(m.Entities, index)
+	}
+}
+
 func NewID() (ID uint16) {
 	ID = currentID
 	currentID++

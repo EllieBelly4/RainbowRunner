@@ -32,7 +32,7 @@ func handleClientEntityChannelMessages(conn *connections.RRConn, msgType byte, r
 			//	fmt.Printf("Component %x does not have an entityHandler!\n", entity.RREntityProperties().ID)
 			//}
 		} else {
-			fmt.Printf("Component %x does not exist!\n", entity.RREntityProperties().ID)
+			fmt.Printf("Component %x does not exist!\n", componentID)
 			return UnhandledChannelMessageError
 		}
 

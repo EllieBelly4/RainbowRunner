@@ -57,6 +57,7 @@ func handleConnection(conn net.Conn) {
 	defer func(conn net.Conn) {
 		rrconn.IsConnected = false
 		err := conn.Close()
+		objects.Players.OnDisconnect(rrconn.Client.ID)
 		if err != nil {
 			panic(err)
 		}

@@ -7,7 +7,6 @@ import (
 	"RainbowRunner/pkg"
 	"RainbowRunner/pkg/byter"
 	"fmt"
-	"time"
 )
 
 type Avatar struct {
@@ -15,11 +14,11 @@ type Avatar struct {
 	IsMoving             bool
 	Rotation             int32
 	Position             pkg.Vector3
+	LastPosition         pkg.Vector3
 	ClientUpdateNumber   byte
 	MoveUpdate           int
 	TicksSinceLastUpdate int
 	IsSpawned            bool
-	LastPosition         pkg.Vector3
 }
 
 func NewAvatar(gcType string) *Avatar {
@@ -70,66 +69,8 @@ func (p *Avatar) updated() {
 }
 
 func (p *Avatar) SendPosition() {
-	//# UnitBehavior - UnitMoverUpdate::read
-	//35 # ComponentUpdate
-	//05 00 # Component ID
-	//# Command
-	//# 05 - Behavior::terminateAllActionsLocal
-	//# 65 - UnitMoverUpdate::read
-	//65 # Command
-	//05 # Unk UnitBehavior::processUpdate
-	//01 # Unk UnitBehavior::processUpdate, if 2 it fails
-	//06 # Unk
-	//10 10 00 00 # PosX?
-	//00 10 10 00 # PosY?
-	//00 10 00 00 # PosZ?
-	//02 00 7e 04 00 # Synch
-	//06 # End
-
-	writer := NewClientEntityWriterWithByter()
-	writer.BeginStream()
-	writer.BeginComponentUpdate(p.GetUnitBehaviourID())
-
-	writer.Body.WriteByte(0x65) // UnitMoverUpdate
-
-	updateCount := 10
-
-	// UnitBehavior::processUpdate
-	writer.Body.WriteByte(0xFF)              // Unk
-	writer.Body.WriteByte(byte(updateCount)) // Update count
-
-	// UnitMoverUpdate::Read
-	//writer.Body.WriteByte(0x08) // Not all values work
-	//writer.Body.WriteByte(0x01) // Not all values work
-
-	for i := 0; i < updateCount; i++ {
-		writer.Body.WriteByte(0x08) // Not all values work
-		writer.Body.WriteInt32(p.Rotation)
-		writer.Body.WriteInt32(p.Position.X)
-		writer.Body.WriteInt32(p.Position.Y)
-	}
-
-	//writer.Body.WriteInt32(0)
-	//writer.Body.WriteInt32(0)
-	//writer.Body.WriteInt32(0)
-
-	writer.Body.WriteByte(0x02)
-	writer.Body.WriteUInt32(uint32(time.Now().Unix())) // Random unk value
-
-	//AddSynch(p.Conn, writer.Body)
-
-	degrees := float32((float64(p.Rotation) / 0x17000) * 360)
-
-	if logging.LoggingOpts.LogMoves {
-		fmt.Printf(
-			"Sending move rotation 0x%x(%.2fdeg) (%d, %d) Hex (%x, %x)\n",
-			p.Rotation, degrees, p.Position.X, p.Position.Y, p.Position.X, p.Position.Y,
-		)
-	}
-
-	writer.EndStream()
-
-	p.Send(writer.Body)
+	unitBehavior := p.GetChildByGCNativeType("UnitBehavior").(*UnitBehavior)
+	unitBehavior.SendPosition()
 	p.updated()
 	//p.RREntityProperties().Conn.Send(body)
 }
@@ -159,30 +100,12 @@ func (p *Avatar) SendFollowClient() {
 }
 
 func (p *Avatar) Warp(x int32, y int32, z int32) {
+	unitBehavior := p.GetChildByGCNativeType("UnitBehavior").(*UnitBehavior)
+	unitBehavior.Warp(x, y, z)
+
 	p.Position.X = x
 	p.Position.Y = x
 	p.Position.Z = x
-
-	p.SendWarpTo(x, y, z)
-	p.updated()
-}
-
-func (p *Avatar) SendWarpTo(posX, posY, posZ int32) {
-	writer := NewClientEntityWriterWithByter()
-	writer.BeginStream()
-	writer.BeginComponentUpdate(p.GetUnitBehaviourID())
-
-	writer.Body.WriteByte(0x04) // CreateAction1
-	writer.Body.WriteByte(17)
-	writer.Body.WriteByte(0x00)
-	writer.Body.WriteInt32(posX)
-	writer.Body.WriteInt32(posY)
-	writer.Body.WriteInt32(posZ)
-
-	writer.WriteSynch(p)
-	writer.EndStream()
-
-	connections.WriteCompressedA(p.RREntityProperties().Conn, 0x01, 0x0f, writer.Body)
 
 	p.updated()
 }

@@ -9,6 +9,7 @@ type RREntityProperties struct {
 	OwnerID int
 	ID      uint16
 	Conn    connections.Connection
+	Zone    *Zone
 }
 
 type RREntity struct {

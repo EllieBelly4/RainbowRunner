@@ -64,7 +64,7 @@ func handleZoneJoin(conn *connections.RRConn) {
 	body.WriteUInt32(0x01)
 	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 
-	//createNPC(conn)
+	createNPC(conn)
 
 	player := objects.Players.Players[conn.GetID()]
 
@@ -169,6 +169,9 @@ func createNPC(conn *connections.RRConn) {
 	clientEntityWriter.EndStream()
 
 	connections.WriteCompressedASimple(conn, clientEntityWriter.Body)
+
+	unitBehavior.Warp(106342, -46263, 12778)
+	unitBehavior.SendPosition()
 }
 
 func sendGoToZone(conn *connections.RRConn, body *byter.Byter, zone string) {

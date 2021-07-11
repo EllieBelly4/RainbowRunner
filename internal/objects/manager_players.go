@@ -2,6 +2,7 @@ package objects
 
 import (
 	"RainbowRunner/internal/connections"
+	"fmt"
 )
 
 var Players = NewPlayerManager()
@@ -25,6 +26,17 @@ func (m *PlayerManager) Register(rrconn *connections.RRConn) *RRPlayer {
 	m.Players[rrconn.Client.ID] = rrPlayer
 
 	return rrPlayer
+}
+
+func (m *PlayerManager) OnDisconnect(id int) {
+	fmt.Printf("Player %d Disconnected\n", id)
+	if player, ok := Players.Players[id]; ok {
+		if player.Zone != nil {
+			player.Zone.RemovePlayer(id)
+		}
+	}
+
+	Entities.RemoveOwnedBy(id)
 }
 
 func NewPlayerManager() *PlayerManager {
