@@ -18,6 +18,8 @@ type UnitBehavior struct {
 	Position       pkg.Vector3
 	Rotation       int32
 	UnitMoverFlags byte
+	Action1        behavior.Action
+	Action2        behavior.Action
 }
 
 type UnitBehaviorHandler struct {
@@ -42,7 +44,7 @@ func (u *UnitBehaviorHandler) ReadUpdate(reader *byter.Byter) error {
 
 func (n *UnitBehavior) WriteInit(b *byter.Byter) {
 	behav := behavior.NewBehavior()
-	behav.Init(b, nil, nil)
+	behav.Init(b, n.Action1, n.Action2)
 
 	// UnitMover::readInit()
 	// Flags

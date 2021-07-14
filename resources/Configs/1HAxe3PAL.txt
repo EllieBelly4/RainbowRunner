@@ -1,0 +1,81 @@
+1HAxe3PAL
+{
+	1HAxe3-1 extends 1HMeleeWeaponPAL.1HAxe3
+	{
+		Description
+		{
+			Label = "Cardboard Kama";
+		}
+	}
+
+	1HAxe3-2 extends 1HMeleeWeaponPAL.1HAxe3
+	{
+		Description
+		{
+			Label = "Wooden Kama";
+		}
+	}
+	1HAxe3-3 extends 1HMeleeWeaponPAL.1HAxe3
+	{
+		Description
+		{
+			Label = "Stone Kama";
+		}
+	}
+	
+	1HAxe3-4 extends 1HMeleeWeaponPAL.1HAxe3
+	{
+		Description
+		{
+			Label = "Tin Kama";
+		}
+	}
+	
+	1HAxe3-5 extends 1HMeleeWeaponPAL.1HAxe3
+	{
+		Description
+		{
+			Label = "Iron Kama";
+		}
+	}
+	
+	1HAxe3-6 extends 1HMeleeWeaponPAL.1HAxe3
+	{
+		Description
+		{
+			Label = "Titanium Kama";
+		}
+	}
+	
+	1HAxe3-7 extends 1HMeleeWeaponPAL.1HAxe3
+	{
+		Description
+		{
+			Label = "Obsidian Kama";
+		}
+	}
+	
+	1HAxe3-8 extends 1HMeleeWeaponPAL.1HAxe3
+	{
+		Description
+		{
+			Label = "Diamond Kama";
+		}
+	}
+	
+	1HAxe3-9 extends 1HMeleeWeaponPAL.1HAxe3
+	{
+		Description
+		{
+			Label = "Celestial Kama";
+		}
+	}
+	
+	1HAxe3-10 extends 1HMeleeWeaponPAL.1HAxe3
+	{
+		Description
+		{
+			Label = "Uber Kama";
+		}
+	}
+}

@@ -15,6 +15,7 @@ func NewUnitBehavior(ID uint16) *UnitBehavior {
 	}
 }
 
+//Deprecated
 func (u *UnitBehavior) AddUpdate(body *byter.Byter) {
 	// UnitBehavior::processUpdate
 	body.WriteUInt16(u.ID) // Component ID?

@@ -2,6 +2,7 @@ package game
 
 import (
 	"RainbowRunner/internal/connections"
+	"RainbowRunner/internal/game/components/behavior"
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/objects"
 	"RainbowRunner/pkg"
@@ -68,25 +69,54 @@ func handleZoneJoin(conn *connections.RRConn) {
 
 	player := objects.Players.Players[conn.GetID()]
 
-	createNPC(conn, player.Zone, pkg.Transform{
-		Position: pkg.Vector3{0, 0, 15000},
-		Rotation: 180 * math.DRDegToRot,
-	})
+	//entitiesToSpawn := [][]string{
+	//	{"npc.Avatar.Female.base.NPC_Amazon1_Base", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+	//	{"npc.Avatar.Female.Basic.Amazon_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+	//	{"npc.Avatar.Female.Basic.Fighter_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+	//	{"npc.Avatar.Female.Basic.Gladiator_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+	//	{"npc.Avatar.Female.Basic.Mage_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+	//	{"npc.Avatar.Female.Basic.Mage_002", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+	//	{"npc.Avatar.Female.Basic.Ninja_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+	//	{"npc.Avatar.Female.Basic.Officer_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+	//	{"npc.Avatar.Female.Basic.Ranger_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+	//	{"npc.Avatar.Female.Basic.Ranger_002", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+	//	{"npc.Avatar.Female.Basic.Ranger_003", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+	//	{"npc.Avatar.Female.Basic.Scout_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+	//	{"world.town.npc.TownCommander", "world.town.npc.TownCommander.Behavior"},
+	//	{"world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior"},
+	//	{"world.dungeon16.mob.boss_manager01", "world.dungeon16.mob.boss_manager01.Behavior"},
+	//	{"world.dungeon15.mob.boss", "world.dungeon15.mob.boss.Behavior"},
+	//}
 
-	createNPC(conn, player.Zone, pkg.Transform{
-		Position: pkg.Vector3{20 * 256, 20 * 256, 15000},
-		Rotation: 270 * math.DRDegToRot,
-	})
+	if player.Zone.Name == "town" {
+		//for i, entityStrings := range entitiesToSpawn {
+		//	createNPC(conn, player.Zone, pkg.Transform{
+		//		Position: pkg.Vector3{106342 + 2048*int32(i), -36000, 12778},
+		//		Rotation: 180 * math.DRDegToRot,
+		//	}, entityStrings[0], entityStrings[1])
+		//}
 
-	createNPC(conn, player.Zone, pkg.Transform{
-		Position: pkg.Vector3{0 * 256, 40 * 256, 15000},
-		Rotation: 360 * math.DRDegToRot,
-	})
+	} else if player.Zone.Name == "dungeon16_level00" {
+		createNPC(conn, player.Zone, pkg.Transform{
+			Position: pkg.Vector3{0, 0, 15000},
+			Rotation: 180 * math.DRDegToRot,
+		}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
 
-	createNPC(conn, player.Zone, pkg.Transform{
-		Position: pkg.Vector3{-20 * 256, 20 * 256, 15000},
-		Rotation: 90 * math.DRDegToRot,
-	})
+		createNPC(conn, player.Zone, pkg.Transform{
+			Position: pkg.Vector3{20 * 256, 20 * 256, 15000},
+			Rotation: 270 * math.DRDegToRot,
+		}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
+
+		createNPC(conn, player.Zone, pkg.Transform{
+			Position: pkg.Vector3{0 * 256, 40 * 256, 15000},
+			Rotation: 360 * math.DRDegToRot,
+		}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
+
+		createNPC(conn, player.Zone, pkg.Transform{
+			Position: pkg.Vector3{-20 * 256, 20 * 256, 15000},
+			Rotation: 90 * math.DRDegToRot,
+		}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
+	}
 
 	player.CurrentCharacter.OnZoneJoin()
 
@@ -161,13 +191,24 @@ func handleZoneJoin(conn *connections.RRConn) {
 	//WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
-func createNPC(conn *connections.RRConn, zone *objects.Zone, transform pkg.Transform) {
-	npc := objects.NewNPC("world.town.npc.HelperNoobosaur01")
+func createNPC(conn *connections.RRConn, zone *objects.Zone, transform pkg.Transform, npcType, behaviourType string) {
+	npc := objects.NewNPC(npcType)
 
 	npc.WorldPosition = transform.Position
 	npc.Rotation = transform.Rotation
 
-	unitBehavior := objects.NewMonsterBehavior2("npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
+	unitBehavior := objects.NewMonsterBehavior2(behaviourType)
+
+	unitBehavior.Action1 = &behavior.MoveTo{
+		PosX: uint32(npc.WorldPosition.X),
+		PosY: uint32(npc.WorldPosition.Y),
+	}
+
+	//unitBehavior.Action2 = &behavior.WarpTo{
+	//	PosX: uint32(npc.WorldPosition.X),
+	//	PosY: uint32(npc.WorldPosition.Y),
+	//}
+
 	npc.AddChild(unitBehavior)
 
 	skills := objects.NewSkills("skills")

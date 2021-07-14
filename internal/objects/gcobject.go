@@ -47,7 +47,7 @@ func (g *GCObject) GetGCObject() *GCObject {
 }
 
 func (g *GCObject) WriteInit(b *byter.Byter) {
-	panic("implement me")
+	fmt.Printf("GCObject init for %s (%s: %s) not implemented but ignoring", g.GCName, g.GCType, g.GCNativeType)
 }
 
 func (g *GCObject) WriteUpdate(b *byter.Byter) {

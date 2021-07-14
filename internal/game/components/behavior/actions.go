@@ -28,7 +28,8 @@ func (a *MoveTo) Init(body *byter.Byter) {
 
 	// MoveTo::readInit
 	// Not used when embedding in Behavior
-	//body.WriteByte(0x05)
+	// ^ doesn't seem to always be true, MonsterBehavior2 seems to require it
+	body.WriteByte(0x05)
 }
 
 type Activate struct {

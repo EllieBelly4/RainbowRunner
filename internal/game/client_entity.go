@@ -2,7 +2,6 @@ package game
 
 import (
 	"RainbowRunner/internal/connections"
-	"RainbowRunner/internal/game/components"
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/logging"
 	"RainbowRunner/internal/objects"
@@ -143,13 +142,6 @@ func AddSynch(conn *connections.RRConn, body *byter.Byter) {
 	// EntitySynchInfo::readFromStream
 	body.WriteByte(0x02)
 	body.WriteUInt32(objects.Players.Players[conn.GetID()].CurrentCharacter.CurrentHP)
-}
-
-func AddComponentUpdate(body *byter.Byter, comp components.Component) {
-	body.WriteByte(byte(messages.ClientEntityChannel))
-	//body.WriteByte(0x36) // UpdateComponent - only synch
-	body.WriteByte(0x35) // ComponentUpdate - component specific handler + synch
-	comp.AddUpdate(body)
 }
 
 func AddEntityUpdateStreamEnd(body *byter.Byter) error {

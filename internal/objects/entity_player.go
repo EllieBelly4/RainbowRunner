@@ -69,17 +69,67 @@ func (p *Player) OnZoneJoin() {
 }
 
 func SendCreateNewPlayerEntity(conn connections.Connection) {
+	equippedItems := []*Equipment{
+		NewEquipment(
+			"PlateMythicPAL.PlateMythicBoots1",
+			"PlateMythicPAL.PlateMythicBoots1.Mod1",
+			EquipmentItemArmour, EquipmentSlotFoot, 5,
+		),
+		NewEquipment(
+			"PlateMythicPAL.PlateMythicArmor1",
+			"PlateMythicPAL.PlateMythicArmor1.Mod1",
+			EquipmentItemArmour, EquipmentSlotTorso, 5,
+		),
+		NewEquipment(
+			"PlateMythicPAL.PlateMythicGloves1",
+			"PlateMythicPAL.PlateMythicGloves1.Mod1",
+			EquipmentItemArmour, EquipmentSlotHand, 5,
+		),
+		NewEquipment(
+			"PlateMythicPAL.PlateMythicHelm1",
+			"PlateMythicPAL.PlateMythicHelm1.Mod1",
+			EquipmentItemArmour, EquipmentSlotHead, 5,
+		),
+		NewEquipment(
+			"PlateMythicPAL.PlateMythicShield1",
+			"PlateMythicPAL.PlateMythicShield1.Mod1",
+			EquipmentItemArmour, EquipmentSlotOffhand, 5,
+		),
+		//NewEquipment(
+		//	"1HSwordMythicPAL.1HSwordMythic1",
+		//	"1HSwordMythicPAL.1HSwordMythic1.Mod1",
+		//	EquipmentItemArmour, EquipmentSlotWeapon, 1,
+		//),
+		//NewEquipment(
+		//	"ScaleArmor1PAL.ScaleArmor1-1",
+		//	"ScaleModPAL.Binder.Mod1",
+		//	EquipmentItemArmour, EquipmentSlotTorso, 1,
+		//),
+
+		//NewEquipment(
+		//	"ScaleArmor2PAL.ScaleArmor2-4",
+		//	"ScaleModPAL.Binder.Mod1",
+		//	EquipmentItemArmour, EquipmentSlotTorso, 1,
+		//),
+	}
+
 	body := byter.NewLEByter(make([]byte, 0, 2048))
 
 	player := Players.Players[conn.GetID()].CurrentCharacter
-
 	clientEntityWriter := NewClientEntityWriter(body)
-
 	clientEntityWriter.BeginStream()
+
+	avatar := player.GetChildByGCNativeType("Avatar")
+	clientEntityWriter.Create(avatar)
 
 	clientEntityWriter.Create(player)
 	clientEntityWriter.Init(player)
 	clientEntityWriter.Update(player)
+
+	// Invalid component type from server
+	//fighterEquipment := NewGCObject("avatar.classes.FighterStartingEquipment")
+	//Entities.RegisterAll(conn, fighterEquipment)
+	//clientEntityWriter.CreateComponent(fighterEquipment, avatar)
 
 	questManager := player.GetChildByGCType("QuestManager")
 	if questManager == nil {
@@ -99,9 +149,6 @@ func SendCreateNewPlayerEntity(conn connections.Connection) {
 	//addCreateComponent(body, 0x01, 0x0B, "QuestManager")
 	//addCreateComponent(body, 0x01, 32, "DialogManager")
 
-	avatar := player.GetChildByGCNativeType("Avatar")
-	clientEntityWriter.Create(avatar)
-
 	//// CREATE AVATAR /////////////////////////////////////////
 	//body.WriteByte(0x01)     // Create
 	//body.WriteUInt16(0x0002) // Entity ID
@@ -112,21 +159,25 @@ func SendCreateNewPlayerEntity(conn connections.Connection) {
 	equipment := avatar.GetChildByGCType("avatar.base.Equipment")
 	addCreateComponent(body, avatar.RREntityProperties().ID, equipment.RREntityProperties().ID, "avatar.base.Equipment")
 
-	itemCount := byte(0x01)
-	body.WriteByte(itemCount) // Item Count
+	//itemCount := byte(0x01)
+	//body.WriteByte(itemCount) // Item Count
 
 	//addEquippedItem(body, "1HAxe1PAL.1HAxe1-1", EquipmentSlotWeapon)
-	AddEquippedItem(
-		body,
-		"ScaleArmor1PAL.ScaleArmor1-1",
-		//"LeatherArmor1PAL.LeatherArmor1-1",
-		EquipmentSlotTorso,
-		true,
-		//"LeatherModPAL.Unique.Mod0",
-		"ScaleModPAL.Rare.Mod0",
-	)
+	//AddEquippedItem(
+	//	body,
+	//	"ScaleArmor1PAL.ScaleArmor1-1",
+	//"LeatherArmor1PAL.LeatherArmor1-1",
+	//EquipmentSlotTorso,
+	//true,
+	//"LeatherModPAL.Unique.Mod0",
+	//"ScaleModPAL.Rare.Mod0",
+	//)
 
-	//addInitEquipment(body, 0x0A)
+	body.WriteByte(byte(len(equippedItems)))
+
+	for _, equippedItem := range equippedItems {
+		equippedItem.WriteInit(body)
+	}
 
 	// UNITCONTAINER ////////////////////////////////////
 	addCreateComponent(body, avatar.RREntityProperties().ID, NewID(), "UnitContainer")
@@ -186,10 +237,25 @@ func SendCreateNewPlayerEntity(conn connections.Connection) {
 	body.WriteByte(0x00)
 
 	// MANIPULATORS //////////////////////////////////
-	addCreateComponent(body, avatar.RREntityProperties().ID, NewID(), "Manipulators")
+	addCreateComponent(body, avatar.RREntityProperties().ID, NewID(), "creatures.humanoid.base.MeleeBase.Manipulators")
 
 	// Manipulators::readInit
-	body.WriteByte(0x00) // Some count
+	//manipCount := byte(0x01)
+	body.WriteByte(byte(len(equippedItems))) // Some count
+
+	for _, equippedItem := range equippedItems {
+		equippedItem.WriteInit(body)
+	}
+
+	//for i := 0; i < int(manipCount); i++ {
+	//	equipBoots := NewEquipment(
+	//		"PlateMythicPAL.PlateMythicBoots1",
+	//		"PlateMythicPAL.PlateMythicBoots1.Mod1",
+	//		EquipmentItemArmour, EquipmentSlotFoot, 5,
+	//	)
+	//
+	//	equipBoots.WriteInit(body)
+	//}
 
 	// SKILLS //////////////////////////////////
 	addCreateComponent(body, avatar.RREntityProperties().ID, NewID(), "avatar.base.skills")

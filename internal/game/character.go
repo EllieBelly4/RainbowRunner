@@ -158,10 +158,13 @@ func sendPlayer(character *objects.Player, client *connections.RRConnClient, bod
 	//player := loadPlayer(conn.Client)
 	avatar := loadAvatar(character)
 
+	character.AddChild(avatar)
+
+	avatar2 := loadAvatar(character)
 	//player.AddChild(avatar)
 
 	character.WriteFullGCObject(body)
-	avatar.WriteFullGCObject(body)
+	avatar2.WriteFullGCObject(body)
 
 	body.WriteByte(0x01)
 	body.WriteByte(0x01)
@@ -176,9 +179,8 @@ func sendPlayer(character *objects.Player, client *connections.RRConnClient, bod
 
 func loadAvatar(player *objects.Player) *objects.Avatar {
 	avatar := getAvatar(player.RREntityProperties().Conn)
-	player.AddChild(avatar)
 
-	objects.Entities.RegisterAll(player.EntityProperties.Conn, player.Children()...)
+	objects.Entities.RegisterAll(player.EntityProperties.Conn, avatar)
 	return avatar
 }
 
@@ -209,9 +211,6 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 		objects.Uint32Prop("IDGenerator", 0x01),
 	}
 
-	manipulators := objects.NewGCObject("Manipulators")
-	manipulators.GCName = "ManipulateMe"
-
 	dialogManager := objects.NewGCObject("DialogManager")
 	dialogManager.GCName = "EllieDialogManager"
 
@@ -234,7 +233,7 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	//.text:0058E550 000 mov     eax, ?Class@Armor@@2PAVDFCClass@@A ; DFCClass * Armor::Class
 
 	weapon := objects.NewGCObject("MeleeWeapon")
-	weapon.GCType = "1HMace1PAL.1HMace1-1"
+	weapon.GCType = "2HSwordMythicPAL.2HSwordMythic1"
 	weapon.GCName = "EllieWeapon"
 
 	weaponDesc := objects.NewGCObject("MeleeWeaponDesc")
@@ -251,7 +250,7 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	//}
 
 	armor := objects.NewGCObject("Armor")
-	armor.GCType = "ScaleArmor1PAL.ScaleArmor1-1"
+	armor.GCType = "PlateMythicPAL.PlateMythicArmor5"
 	armor.GCName = "EllieArmour"
 
 	//armor.Properties = []objects.GCObjectProperty{
@@ -273,6 +272,12 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	bankInventory := objects.NewGCObject("Inventory")
 	bankInventory.GCType = "avatar.base.Bank"
 	bankInventory.GCName = "EllieBankInventory"
+
+	manipulators := objects.NewGCObject("Manipulators")
+	manipulators.GCName = "ManipulateMe"
+
+	manipulators.AddChild(armor)
+	manipulators.AddChild(weapon)
 
 	//armorSlot := objects.NewGCObject("EquipmentSlot")
 	//armorSlot.GCType = "avatar.base.Equipment.Description.Armor"
