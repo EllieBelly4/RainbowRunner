@@ -2,12 +2,11 @@ package main
 
 import (
 	"RainbowRunner/cmd/configparser/parser"
+	"RainbowRunner/internal/database"
 	"encoding/json"
 	"fmt"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
-	"os"
-	"path/filepath"
-	"strings"
+	"io/ioutil"
 )
 
 var successfulParses = []string{
@@ -2854,6 +2853,222 @@ var successfulParses = []string{
 	"D:\\Work\\dungeon-runners\\666 dumps\\tutorial_loot_1w.txt",
 }
 
+var armourFiles = []string{
+	"D:\\Work\\dungeon-runners\\666 dumps\\ChainArmor1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ChainArmor2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ChainArmor3PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ChainBoots1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ChainBoots2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ChainBoots3PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ChainGloves1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ChainGloves2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ChainGloves3PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ChainHelm1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ChainHelm2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ChainHelm3PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ChainModPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ChainMythicPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ChainShield1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ChainShoulders1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ChainShoulders2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ChainShoulders3PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\CrystalArmor1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\CrystalBoots1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\CrystalCraftedModPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\CrystalGloves1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\CrystalHelm1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\CrystalModPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\CrystalMythicPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\CrystalShield1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\CrystalShoulders1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\LeatherArmor1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\LeatherArmor2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\LeatherArmor3PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\LeatherArmor5PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\LeatherBoots1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\LeatherBoots5PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\LeatherGloves1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\LeatherGloves5PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\LeatherHelm1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\LeatherHelm5PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\LeatherModPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\LeatherMythicPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\LeatherShield1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\LeatherShoulders1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\LeatherShoulders5PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\PlateArmor0PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\PlateArmor1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\PlateArmor2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\PlateArmor3PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\PlateBoots0PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\PlateBoots1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\PlateBoots2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\PlateBoots3PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\PlateGloves0PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\PlateGloves1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\PlateGloves2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\PlateGloves3PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\PlateHelm0PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\PlateHelm1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\PlateHelm2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\PlateHelm3PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\PlateModPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\PlateMythicPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\PlateShield1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\PlateShoulders0PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\PlateShoulders1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\PlateShoulders2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\PlateShoulders3PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ScaleArmor1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ScaleArmor2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ScaleBoots1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ScaleBoots2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ScaleGloves1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ScaleGloves2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ScaleHelm1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ScaleHelm2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ScaleModPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ScaleMythicPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ScaleShield1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ScaleShoulders1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\ScaleShoulders2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\SplintArmor1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\SplintBoots1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\SplintCraftedModPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\SplintGloves1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\SplintHelm1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\SplintModPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\SplintMythicPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\SplintShield1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\SplintShoulders1PAL.txt",
+}
+
+var weaponFiles = []string{
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HAxe1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HAxe2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HAxe3PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HAxe4PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HAxe5PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HAxe6PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HAxe7PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HAxeMythicPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HGun1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HGun2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HGunMythicPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HMace1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HMace2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HMace3PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HMace4PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HMace5PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HMace6PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HMace7PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HMace8PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HMaceMythicPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HMeleeWeaponPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HPick1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HPick2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HPick3PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HPick4PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HPick5PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HPick6PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HPick7PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HPickMythicPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HRangedWeaponPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HStaff1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HStaff2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HStaff3PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HStaff4PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HStaff5PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HStaff6PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HStaff7PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HStaffMythicPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HSword10PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HSword11PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HSword12PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HSword13PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HSword14PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HSword1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HSword2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HSword3PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HSword4PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HSword5PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HSword6PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HSword7PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HSword8PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HSword9PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\1HSwordMythicPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HAxe10PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HAxe11PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HAxe1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HAxe2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HAxe3PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HAxe4PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HAxe5PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HAxe6PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HAxe7PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HAxe8PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HAxe9PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HAxeMythicPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HCannon1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HCannon2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HCannon3PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HCannon4PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HCannon5PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HCannonModPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HCannonMythicPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HCrossbow10PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HCrossbow1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HCrossbow2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HCrossbow3PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HCrossbow4PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HCrossbow5PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HCrossbow6PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HCrossbow7PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HCrossbow8PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HCrossbow9PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HCrossbowMythicPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HGun1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HGun2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HGun3PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HGun4PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HGunMythicPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HMace1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HMace2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HMace3PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HMace4PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HMace5PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HMace6PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HMaceMythicPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HMeleeWeaponPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HPick10PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HPick11PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HPick1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HPick2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HPick3PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HPick4PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HPick5PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HPick6PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HPick7PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HPick8PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HPick9PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HPickMythicPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HRangedWeaponPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HStaff1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HStaff2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HStaff3PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HStaff4PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HStaff5PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HStaffMythicPAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HSword1PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HSword2PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HSword3PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HSword4PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HSword5PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HSword6PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HSword7PAL.txt",
+	"D:\\Work\\dungeon-runners\\666 dumps\\2HSwordMythicPAL.txt",
+}
+
 type ErrorListener struct {
 	*antlr.DiagnosticErrorListener
 	Path string
@@ -2886,34 +3101,40 @@ func NewErrorListener(path string) *ErrorListener {
 
 func main() {
 	//parseFile("D:\\Work\\dungeon-runners\\666 dumps\\tutorial_loot_1w.txt")
-	//successfulParses = []string{
-	//	"D:\\Work\\dungeon-runners\\666 dumps\\PlatePAL.txt",
-	//	"D:\\Work\\dungeon-runners\\666 dumps\\BaseArmorClasses.txt",
-	//}
+	successfulParses = []string{
+		//"D:\\Work\\dungeon-runners\\666 dumps\\PlatePAL.txt",
+		//"D:\\Work\\dungeon-runners\\666 dumps\\BaseArmorClasses.txt",
+		//"D:\\Work\\dungeon-runners\\666 dumps\\ChainBoots3PAL.txt",
+		"C:\\Users\\Sophie\\go\\src\\RainbowRunner\\resources\\Configs\\ChainBoots3PAL.txt",
+	}
 
 	//successfulParses = make([]string, 0, 1024)
 
 	//reg := regexp.MustCompile("[0-9]PAL.txt")
 
-	filepath.Walk("D:\\Work\\dungeon-runners\\666 dumps", func(path string, info os.FileInfo, err error) error {
-		if !listContains(successfulParses, path) {
-			return nil
-		}
+	successfulParses = armourFiles
+	successfulParses = weaponFiles
 
-		//if !reg.MatchString(path) {
-		//	return nil
-		//}
-
-		successfulParses = append(successfulParses, path)
-
-		return nil
-	})
+	//filepath.Walk("D:\\Work\\dungeon-runners\\666 dumps", func(path string, info os.FileInfo, err error) error {
+	//	if !listContains(successfulParses, path) {
+	//		return nil
+	//	}
+	//
+	//	//if !reg.MatchString(path) {
+	//	//	return nil
+	//	//}
+	//
+	//	successfulParses = append(successfulParses, path)
+	//
+	//	return nil
+	//})
 
 	//successfulParses = []string{
 	//	"D:\\Work\\dungeon-runners\\666 dumps\\PlateArmor1PAL.txt",
 	//}
 
-	parseAllFiles()
+	parseAllFiles(armourFiles, "resources/Dumps/generated/armour.json")
+	parseAllFiles(weaponFiles, "resources/Dumps/generated/weapons.json")
 }
 
 func listContains(parses []string, path string) bool {
@@ -2926,18 +3147,19 @@ func listContains(parses []string, path string) bool {
 	return false
 }
 
-func parseAllFiles() error {
-	all := make(map[string]interface{})
+func parseAllFiles(files []string, dest string) error {
+	all := make([]*database.DRClass, 0)
 
-	for _, path := range successfulParses {
-		split := strings.Split(path, "\\")
-		fileName := strings.Split(split[len(split)-1], ".")[0]
+	for _, path := range files {
+		//split := strings.Split(path, "\\")
+		//fileName := strings.Split(split[len(split)-1], ".")[0]
 
 		file := parseFile(path)
 
-		all[fileName] = file
+		all = append(all, file)
 	}
-	data, err := json.Marshal(all)
+
+	data, err := json.MarshalIndent(all, "", "  ")
 
 	if err != nil {
 		panic(err)
@@ -2945,10 +3167,16 @@ func parseAllFiles() error {
 
 	fmt.Printf("%s", string(data))
 
+	err = ioutil.WriteFile(dest, data, 0774)
+
+	if err != nil {
+		panic(err)
+	}
+
 	return nil
 }
 
-func parseFile(path string) map[string]interface{} {
+func parseFile(path string) *database.DRClass {
 	input, _ := antlr.NewFileStream(path)
 	lexer := parser.NewDRConfigLexer(input)
 	stream := antlr.NewCommonTokenStream(lexer, 0)
@@ -2958,5 +3186,5 @@ func parseFile(path string) map[string]interface{} {
 	tree := p.ClassDef()
 	listener := NewDRConfigListener(path)
 	antlr.ParseTreeWalkerDefault.Walk(listener, tree)
-	return listener.File
+	return listener.DRClass
 }

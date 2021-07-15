@@ -69,32 +69,32 @@ func handleZoneJoin(conn *connections.RRConn) {
 
 	player := objects.Players.Players[conn.GetID()]
 
-	//entitiesToSpawn := [][]string{
-	//	{"npc.Avatar.Female.base.NPC_Amazon1_Base", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-	//	{"npc.Avatar.Female.Basic.Amazon_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-	//	{"npc.Avatar.Female.Basic.Fighter_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-	//	{"npc.Avatar.Female.Basic.Gladiator_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-	//	{"npc.Avatar.Female.Basic.Mage_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-	//	{"npc.Avatar.Female.Basic.Mage_002", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-	//	{"npc.Avatar.Female.Basic.Ninja_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-	//	{"npc.Avatar.Female.Basic.Officer_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-	//	{"npc.Avatar.Female.Basic.Ranger_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-	//	{"npc.Avatar.Female.Basic.Ranger_002", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-	//	{"npc.Avatar.Female.Basic.Ranger_003", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-	//	{"npc.Avatar.Female.Basic.Scout_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-	//	{"world.town.npc.TownCommander", "world.town.npc.TownCommander.Behavior"},
-	//	{"world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior"},
-	//	{"world.dungeon16.mob.boss_manager01", "world.dungeon16.mob.boss_manager01.Behavior"},
-	//	{"world.dungeon15.mob.boss", "world.dungeon15.mob.boss.Behavior"},
-	//}
+	entitiesToSpawn := [][]string{
+		{"npc.Avatar.Female.base.NPC_Amazon1_Base", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+		{"npc.Avatar.Female.Basic.Amazon_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+		{"npc.Avatar.Female.Basic.Fighter_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+		{"npc.Avatar.Female.Basic.Gladiator_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+		{"npc.Avatar.Female.Basic.Mage_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+		{"npc.Avatar.Female.Basic.Mage_002", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+		{"npc.Avatar.Female.Basic.Ninja_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+		{"npc.Avatar.Female.Basic.Officer_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+		{"npc.Avatar.Female.Basic.Ranger_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+		{"npc.Avatar.Female.Basic.Ranger_002", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+		{"npc.Avatar.Female.Basic.Ranger_003", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+		{"npc.Avatar.Female.Basic.Scout_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+		{"world.town.npc.TownCommander", "world.town.npc.TownCommander.Behavior"},
+		{"world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior"},
+		{"world.dungeon16.mob.boss_manager01", "world.dungeon16.mob.boss_manager01.Behavior"},
+		{"world.dungeon15.mob.boss", "world.dungeon15.mob.boss.Behavior"},
+	}
 
 	if player.Zone.Name == "town" {
-		//for i, entityStrings := range entitiesToSpawn {
-		//	createNPC(conn, player.Zone, pkg.Transform{
-		//		Position: pkg.Vector3{106342 + 2048*int32(i), -36000, 12778},
-		//		Rotation: 180 * math.DRDegToRot,
-		//	}, entityStrings[0], entityStrings[1])
-		//}
+		for i, entityStrings := range entitiesToSpawn {
+			createNPC(conn, player.Zone, pkg.Transform{
+				Position: pkg.Vector3{106342 + 2048*int32(i), -36000, 12778},
+				Rotation: 180 * math.DRDegToRot,
+			}, entityStrings[0], entityStrings[1])
+		}
 
 	} else if player.Zone.Name == "dungeon16_level00" {
 		createNPC(conn, player.Zone, pkg.Transform{

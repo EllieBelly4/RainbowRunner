@@ -4,23 +4,6 @@ import (
 	byter "RainbowRunner/pkg/byter"
 )
 
-type EquipmentSlot uint32
-
-const (
-	EquipmentSlotNone EquipmentSlot = iota
-	EquipmentSlotAmulet
-	EquipmentSlotHand
-	EquipmentSlotLRing
-	EquipmentSlotRRing
-	EquipmentSlotHead
-	EquipmentSlotTorso
-	EquipmentSlotFoot
-	EquipmentSlotShoulder
-	EquipmentSlotNone2
-	EquipmentSlotWeapon
-	EquipmentSlotOffhand
-)
-
 // 0x00 None
 // 0x01 Amulet
 // 0x02 Hand

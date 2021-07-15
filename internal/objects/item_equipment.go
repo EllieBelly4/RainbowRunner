@@ -1,7 +1,10 @@
 package objects
 
 import (
+	"RainbowRunner/internal/database"
+	"RainbowRunner/internal/types"
 	"RainbowRunner/pkg/byter"
+	"fmt"
 )
 
 type ItemType string
@@ -15,7 +18,7 @@ const (
 type Equipment struct {
 	*GCObject
 	Mod      string
-	Slot     EquipmentSlot
+	Slot     types.EquipmentSlot
 	ModCount int
 	ItemType ItemType
 }
@@ -66,7 +69,6 @@ func (n *Equipment) WriteInit(b *byter.Byter) {
 		}
 	}
 
-	//if mod != "" {
 	// GCObject::readChildData<ItemModifier>
 	b.WriteByte(0x01) // Count
 
@@ -87,15 +89,48 @@ func (n *Equipment) WriteInit(b *byter.Byter) {
 	}
 }
 
-func NewEquipment(itemGCType, itemModGCType string, itemType ItemType, slot EquipmentSlot, modCount int) *Equipment {
+func (n *Equipment) WriteManipulatorInit(b *byter.Byter) {
+	// Manipulators::readInit
+	// .text:004FD1AB
+	if n.ItemType == EquipmentItemMeleeWeapon {
+		// MeleeWeapon::readInit
+		// Item::readInit nothing happens
+
+		// MeleeWeapon::readInit
+		b.WriteUInt16(0x01)
+		b.WriteByte(0x02)
+
+		unitIDMaybe := 0x00 // Guessing
+		b.WriteUInt16(uint16(unitIDMaybe))
+
+		// .text:00592438
+		if unitIDMaybe > 0 {
+			// do loads of stuff including checking if a type is a unit
+		}
+	}
+}
+
+func NewEquipment(itemGCType, itemModGCType string, itemType ItemType, slot types.EquipmentSlot) *Equipment {
 	gcObject := NewGCObject(string(itemType))
 	gcObject.GCType = itemGCType
+
+	var drClass *database.DRClass
+
+	if itemType == EquipmentItemArmour {
+		drClass = database.Armour.Find(itemGCType)
+	} else {
+		drClass = database.Weapons.Find(itemGCType)
+	}
+
+	if drClass == nil {
+		panic(fmt.Sprintf("equipment class not found in db %s", itemGCType))
+	}
 
 	return &Equipment{
 		GCObject: gcObject,
 		Mod:      itemModGCType,
 		Slot:     slot,
-		ModCount: modCount,
+		ModCount: drClass.ModCount(),
 		ItemType: itemType,
 	}
 }

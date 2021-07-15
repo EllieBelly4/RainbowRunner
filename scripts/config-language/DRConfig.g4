@@ -2,20 +2,28 @@
 grammar DRConfig;
 
 classDef : STATIC?(classIdentifier) (EXTENDS parentClass)?
-           PARENL
+           classEnter
            (classDef|property)*
-           PARENR
+           classLeave
 ;
+
+classEnter : PARENL ;
+classLeave : PARENR ;
 
 classIdentifier : IDENTIFIER | ASTERISK ;
 
 parentClass : IDENTIFIER ;
 
-property : IDENTIFIER ASSIGN (
+property : propertyName ASSIGN propertyValue SEMI;
+
+propertyValue : (
                 EXCL?IDENTIFIER|
                 (IDENTIFIER COLON IDENTIFIER)|
                 NUMBER|SINGLESTR|DOUBLESTR|VECTOR3
-            )SEMI;
+            ) ;
+
+propertyName : IDENTIFIER ;
+
 
 COMMENT : '//' ~[\r\n]* -> skip;
 MLCOMMENT : '/*' .*? '*/' -> skip;
@@ -45,4 +53,3 @@ ANY: .;
 
 //r  : 'hello' ID ;         // match keyword hello followed by an identifier
 //ID : [a-z]+ ;             // match lower-case identifiers
-

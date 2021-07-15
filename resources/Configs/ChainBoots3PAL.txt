@@ -1,0 +1,19 @@
+ChainBoots3PAL
+{
+	ChainBoots3-1 extends ChainPAL.ChainBoots3
+	{
+		Description
+		{
+			Label = "Scrap Metal Rogue Boots";
+		}
+	}
+
+	ChainBoots3-2 extends ChainPAL.ChainBoots3
+	{
+		Description
+		{
+			Label = "Rusty Rogue Boots";
+		}
+	}
+}
+

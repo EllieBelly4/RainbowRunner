@@ -4,7 +4,9 @@ import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/objects"
+	"RainbowRunner/internal/types"
 	byter "RainbowRunner/pkg/byter"
+	"fmt"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -233,25 +235,21 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	//.text:0058E550 000 mov     eax, ?Class@Armor@@2PAVDFCClass@@A ; DFCClass * Armor::Class
 
 	weapon := objects.NewGCObject("MeleeWeapon")
-	weapon.GCType = "2HSwordMythicPAL.2HSwordMythic1"
+	weapon.GCType = "1HSwordMythicPAL.1HSwordMythic6"
 	weapon.GCName = "EllieWeapon"
 
-	weaponDesc := objects.NewGCObject("MeleeWeaponDesc")
-	weaponDesc.GCType = "1HMace1PAL.1HMace1-1.Description"
-	weaponDesc.GCName = "EllieWeaponDesc"
-	weaponDesc.Properties = []objects.GCObjectProperty{
-		objects.Uint32Prop("SlotType", uint32(objects.EquipmentSlotWeapon)),
-	}
+	//weaponDesc := objects.NewGCObject("MeleeWeaponDesc")
+	//weaponDesc.GCType = "1HMace1PAL.1HMace1-1.Description"
+	//weaponDesc.GCName = "EllieWeaponDesc"
+	//weaponDesc.Properties = []objects.GCObjectProperty{
+	//	objects.Uint32Prop("SlotType", uint32(objects.EquipmentSlotWeapon)),
+	//}
 
 	//TODO finish
 	//weapon.Properties = []objects.GCObjectProperty{
 	////	objects.Uint32Prop("ItemDesc.SlotType", 0x0a),
 	//	objects.Uint32Prop("EquipmentSlot", uint32(EquipmentSlotWeapon)),
 	//}
-
-	armor := objects.NewGCObject("Armor")
-	armor.GCType = "PlateMythicPAL.PlateMythicArmor5"
-	armor.GCName = "EllieArmour"
 
 	//armor.Properties = []objects.GCObjectProperty{
 	//	objects.Uint32Prop("Slot", uint32(EquipmentSlotTorso)),
@@ -276,7 +274,25 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	manipulators := objects.NewGCObject("Manipulators")
 	manipulators.GCName = "ManipulateMe"
 
-	manipulators.AddChild(armor)
+	//r := rand.New(rand.NewSource(time.Now().Unix()))
+
+	AddEquipment(avatarEquipment, manipulators,
+		"PlateArmor3PAL.PlateArmor3-7",
+		//objects.ArmourMap["armor"][int(r.Int63())%len(objects.ArmourMap["armor"])],
+		"PlateBoots3PAL.PlateBoots3-7",
+		//objects.ArmourMap["boots"][int(r.Int63())%len(objects.ArmourMap["boots"])],
+		"PlateHelm3PAL.PlateHelm3-7",
+		//objects.ArmourMap["helm"][int(r.Int63())%len(objects.ArmourMap["helm"])],
+		"PlateGloves3PAL.PlateGloves3-7",
+		//objects.ArmourMap["gloves"][int(r.Int63())%len(objects.ArmourMap["gloves"])],
+		"CrystalMythicPAL.CrystalMythicShield1",
+	)
+
+	//armor := objects.NewGCObject("Armor")
+	//armor.GCType = "PlateMythicPAL.PlateMythicArmor5"
+	//armor.GCName = "EllieArmour"
+
+	//manipulators.AddChild(armor)
 	manipulators.AddChild(weapon)
 
 	//armorSlot := objects.NewGCObject("EquipmentSlot")
@@ -308,8 +324,8 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	slot.GCName = "EllieWeaponSlot"
 
 	slot.Properties = []objects.GCObjectProperty{
-		objects.Uint32Prop("SlotID", uint32(objects.EquipmentSlotWeapon)),
-		objects.Uint32Prop("SlotType", uint32(objects.EquipmentSlotWeapon)),
+		objects.Uint32Prop("SlotID", uint32(types.EquipmentSlotWeapon)),
+		objects.Uint32Prop("SlotType", uint32(types.EquipmentSlotWeapon)),
 		objects.Uint32Prop("DefaultItem", 0xAAAABBBB),
 	}
 
@@ -348,7 +364,7 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	unitContainer.AddChild(bankInventory)
 
 	avatarEquipment.AddChild(weapon)
-	avatarEquipment.AddChild(armor)
+	//avatarEquipment.AddChild(armor)
 
 	//avatar.AddChild(visual)
 	//avatar.AddChild(rpgSettings)
@@ -362,4 +378,49 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	avatar.AddChild(dialogManager)
 	//avatar.AddChild(avatarDesc)
 	return avatar
+}
+
+func AddEquipment(equipment *objects.GCObject, manipulators *objects.GCObject, armour string, boots string, helm string, gloves string, shield string) {
+	randomArmour := objects.NewGCObject("Armor")
+	randomArmour.GCType = armour
+	randomArmour.GCName = "EllieArmour"
+
+	randomBoots := objects.NewGCObject("Armor")
+	randomBoots.GCType = boots
+	randomBoots.GCName = "EllieArmour"
+
+	randomHelm := objects.NewGCObject("Armor")
+	randomHelm.GCType = helm
+	randomHelm.GCName = "EllieArmour"
+
+	randomGloves := objects.NewGCObject("Armor")
+	randomGloves.GCType = gloves
+	randomGloves.GCName = "EllieArmour"
+
+	if len(shield) > 0 {
+		randomShield := objects.NewGCObject("Armor")
+		randomShield.GCType = shield
+		randomShield.GCName = "EllieArmour"
+
+		equipment.AddChild(randomShield)
+		manipulators.AddChild(randomShield)
+	}
+
+	equipment.AddChild(randomGloves)
+	equipment.AddChild(randomBoots)
+	equipment.AddChild(randomHelm)
+	equipment.AddChild(randomArmour)
+
+	manipulators.AddChild(randomGloves)
+	manipulators.AddChild(randomBoots)
+	manipulators.AddChild(randomHelm)
+	manipulators.AddChild(randomArmour)
+
+	fmt.Printf(`Random equipment for today is:
+Helm: %s
+Armour: %s
+Gloves: %s
+Boots: %s
+Shield: %s
+`, helm, armour, gloves, boots, shield)
 }

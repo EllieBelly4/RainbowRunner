@@ -27,6 +27,18 @@ func (s *BaseDRConfigListener) EnterClassDef(ctx *ClassDefContext) {}
 // ExitClassDef is called when production classDef is exited.
 func (s *BaseDRConfigListener) ExitClassDef(ctx *ClassDefContext) {}
 
+// EnterClassEnter is called when production classEnter is entered.
+func (s *BaseDRConfigListener) EnterClassEnter(ctx *ClassEnterContext) {}
+
+// ExitClassEnter is called when production classEnter is exited.
+func (s *BaseDRConfigListener) ExitClassEnter(ctx *ClassEnterContext) {}
+
+// EnterClassLeave is called when production classLeave is entered.
+func (s *BaseDRConfigListener) EnterClassLeave(ctx *ClassLeaveContext) {}
+
+// ExitClassLeave is called when production classLeave is exited.
+func (s *BaseDRConfigListener) ExitClassLeave(ctx *ClassLeaveContext) {}
+
 // EnterClassIdentifier is called when production classIdentifier is entered.
 func (s *BaseDRConfigListener) EnterClassIdentifier(ctx *ClassIdentifierContext) {}
 
@@ -44,3 +56,15 @@ func (s *BaseDRConfigListener) EnterProperty(ctx *PropertyContext) {}
 
 // ExitProperty is called when production property is exited.
 func (s *BaseDRConfigListener) ExitProperty(ctx *PropertyContext) {}
+
+// EnterPropertyValue is called when production propertyValue is entered.
+func (s *BaseDRConfigListener) EnterPropertyValue(ctx *PropertyValueContext) {}
+
+// ExitPropertyValue is called when production propertyValue is exited.
+func (s *BaseDRConfigListener) ExitPropertyValue(ctx *PropertyValueContext) {}
+
+// EnterPropertyName is called when production propertyName is entered.
+func (s *BaseDRConfigListener) EnterPropertyName(ctx *PropertyNameContext) {}
+
+// ExitPropertyName is called when production propertyName is exited.
+func (s *BaseDRConfigListener) ExitPropertyName(ctx *PropertyNameContext) {}

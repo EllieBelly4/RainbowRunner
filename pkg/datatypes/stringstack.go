@@ -22,3 +22,34 @@ func (s *StringStack) Pop() string {
 	res := s.Stack[s.Index]
 	return res
 }
+
+type IntStack struct {
+	Stack []int
+	Index int
+}
+
+func NewIntStack() *IntStack {
+	return &IntStack{
+		Stack: make([]int, 1024),
+		Index: 0,
+	}
+}
+
+func (s *IntStack) Push(str int) {
+	s.Stack[s.Index] = str
+	s.Index = s.Index + 1
+}
+
+func (s *IntStack) Pop() int {
+	s.Index = s.Index - 1
+	res := s.Stack[s.Index]
+	return res
+}
+
+func (s *IntStack) Current() int {
+	return s.Stack[s.Index-1]
+}
+
+func (s *IntStack) SetCurrent(i int) {
+	s.Stack[s.Index-1] = i
+}

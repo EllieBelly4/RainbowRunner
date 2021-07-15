@@ -2,8 +2,13 @@ package objects
 
 import (
 	"RainbowRunner/internal/connections"
+	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/game/components/behavior"
+	"RainbowRunner/internal/types"
 	"RainbowRunner/pkg/byter"
+	"fmt"
+	"math/rand"
+	"time"
 )
 
 type Player struct {
@@ -69,49 +74,7 @@ func (p *Player) OnZoneJoin() {
 }
 
 func SendCreateNewPlayerEntity(conn connections.Connection) {
-	equippedItems := []*Equipment{
-		NewEquipment(
-			"PlateMythicPAL.PlateMythicBoots1",
-			"PlateMythicPAL.PlateMythicBoots1.Mod1",
-			EquipmentItemArmour, EquipmentSlotFoot, 5,
-		),
-		NewEquipment(
-			"PlateMythicPAL.PlateMythicArmor1",
-			"PlateMythicPAL.PlateMythicArmor1.Mod1",
-			EquipmentItemArmour, EquipmentSlotTorso, 5,
-		),
-		NewEquipment(
-			"PlateMythicPAL.PlateMythicGloves1",
-			"PlateMythicPAL.PlateMythicGloves1.Mod1",
-			EquipmentItemArmour, EquipmentSlotHand, 5,
-		),
-		NewEquipment(
-			"PlateMythicPAL.PlateMythicHelm1",
-			"PlateMythicPAL.PlateMythicHelm1.Mod1",
-			EquipmentItemArmour, EquipmentSlotHead, 5,
-		),
-		NewEquipment(
-			"PlateMythicPAL.PlateMythicShield1",
-			"PlateMythicPAL.PlateMythicShield1.Mod1",
-			EquipmentItemArmour, EquipmentSlotOffhand, 5,
-		),
-		//NewEquipment(
-		//	"1HSwordMythicPAL.1HSwordMythic1",
-		//	"1HSwordMythicPAL.1HSwordMythic1.Mod1",
-		//	EquipmentItemArmour, EquipmentSlotWeapon, 1,
-		//),
-		//NewEquipment(
-		//	"ScaleArmor1PAL.ScaleArmor1-1",
-		//	"ScaleModPAL.Binder.Mod1",
-		//	EquipmentItemArmour, EquipmentSlotTorso, 1,
-		//),
-
-		//NewEquipment(
-		//	"ScaleArmor2PAL.ScaleArmor2-4",
-		//	"ScaleModPAL.Binder.Mod1",
-		//	EquipmentItemArmour, EquipmentSlotTorso, 1,
-		//),
-	}
+	equippedItems := getRandomEquipment()
 
 	body := byter.NewLEByter(make([]byte, 0, 2048))
 
@@ -125,6 +88,27 @@ func SendCreateNewPlayerEntity(conn connections.Connection) {
 	clientEntityWriter.Create(player)
 	clientEntityWriter.Init(player)
 	clientEntityWriter.Update(player)
+
+	// MANIPULATORS //////////////////////////////////
+	addCreateComponent(body, avatar.RREntityProperties().ID, NewID(), "creatures.humanoid.base.MeleeBase.Manipulators")
+
+	// Manipulators::readInit
+	//manipCount := byte(0x01)
+	body.WriteByte(byte(len(equippedItems))) // Some count
+
+	for _, equippedItem := range equippedItems {
+		equippedItem.WriteInit(body)
+		equippedItem.WriteManipulatorInit(body)
+	}
+
+	equipment := avatar.GetChildByGCType("avatar.base.Equipment")
+	addCreateComponent(body, avatar.RREntityProperties().ID, equipment.RREntityProperties().ID, "avatar.base.Equipment")
+
+	body.WriteByte(byte(len(equippedItems)))
+
+	for _, equippedItem := range equippedItems {
+		equippedItem.WriteInit(body)
+	}
 
 	// Invalid component type from server
 	//fighterEquipment := NewGCObject("avatar.classes.FighterStartingEquipment")
@@ -143,6 +127,7 @@ func SendCreateNewPlayerEntity(conn connections.Connection) {
 		dialogManager = NewDialogManager()
 		Entities.RegisterAll(conn, dialogManager)
 	}
+
 	clientEntityWriter.CreateComponent(dialogManager, player)
 
 	//addCreateComponent(body, 0x01, 0x0C, "AvatarMetrics")
@@ -155,29 +140,6 @@ func SendCreateNewPlayerEntity(conn connections.Connection) {
 	//body.WriteByte(0xFF)
 	//body.WriteCString("avatar.classes.FighterFemale")
 	//body.WriteCString("avatar.classes.FighterMale")
-
-	equipment := avatar.GetChildByGCType("avatar.base.Equipment")
-	addCreateComponent(body, avatar.RREntityProperties().ID, equipment.RREntityProperties().ID, "avatar.base.Equipment")
-
-	//itemCount := byte(0x01)
-	//body.WriteByte(itemCount) // Item Count
-
-	//addEquippedItem(body, "1HAxe1PAL.1HAxe1-1", EquipmentSlotWeapon)
-	//AddEquippedItem(
-	//	body,
-	//	"ScaleArmor1PAL.ScaleArmor1-1",
-	//"LeatherArmor1PAL.LeatherArmor1-1",
-	//EquipmentSlotTorso,
-	//true,
-	//"LeatherModPAL.Unique.Mod0",
-	//"ScaleModPAL.Rare.Mod0",
-	//)
-
-	body.WriteByte(byte(len(equippedItems)))
-
-	for _, equippedItem := range equippedItems {
-		equippedItem.WriteInit(body)
-	}
 
 	// UNITCONTAINER ////////////////////////////////////
 	addCreateComponent(body, avatar.RREntityProperties().ID, NewID(), "UnitContainer")
@@ -235,17 +197,6 @@ func SendCreateNewPlayerEntity(conn connections.Connection) {
 
 	// GCObject::readChildData<Modifier>
 	body.WriteByte(0x00)
-
-	// MANIPULATORS //////////////////////////////////
-	addCreateComponent(body, avatar.RREntityProperties().ID, NewID(), "creatures.humanoid.base.MeleeBase.Manipulators")
-
-	// Manipulators::readInit
-	//manipCount := byte(0x01)
-	body.WriteByte(byte(len(equippedItems))) // Some count
-
-	for _, equippedItem := range equippedItems {
-		equippedItem.WriteInit(body)
-	}
 
 	//for i := 0; i < int(manipCount); i++ {
 	//	equipBoots := NewEquipment(
@@ -567,6 +518,162 @@ func SendCreateNewPlayerEntity(conn connections.Connection) {
 	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
+func getRandomEquipment() []*Equipment {
+	equippedItems := []*Equipment{
+		//NewEquipment(
+		//	"PlateMythicPAL.PlateMythicBoots1",
+		//	"PlateMythicPAL.PlateMythicBoots1.Mod1",
+		//	EquipmentItemArmour, EquipmentSlotFoot, 5,
+		//),
+		//NewEquipment(
+		//	"PlateMythicPAL.PlateMythicArmor1",
+		//	"PlateMythicPAL.PlateMythicArmor1.Mod1",
+		//	EquipmentItemArmour, EquipmentSlotTorso, 5,
+		//),
+		//NewEquipment(
+		//	"PlateMythicPAL.PlateMythicGloves1",
+		//	"PlateMythicPAL.PlateMythicGloves1.Mod1",
+		//	EquipmentItemArmour, EquipmentSlotHand, 5,
+		//),
+		//NewEquipment(
+		//	"PlateMythicPAL.PlateMythicHelm1",
+		//	"PlateMythicPAL.PlateMythicHelm1.Mod1",
+		//	EquipmentItemArmour, EquipmentSlotHead, 5,
+		//),
+		//NewEquipment(
+		//	"PlateMythicPAL.PlateMythicShield1",
+		//	"PlateMythicPAL.PlateMythicShield1.Mod1",
+		//	EquipmentItemArmour, EquipmentSlotOffhand, 5,
+		//),
+		//NewEquipment(
+		//	"1HSwordMythicPAL.1HSwordMythic6",
+		//	"1HSwordMythicPAL.1HSwordMythic6.Mod1",
+		//	EquipmentItemMeleeWeapon, EquipmentSlotWeapon, 6,
+		//),
+
+		//NewEquipment(
+		//	"1HSwordMythicPAL.1HSwordMythic6",
+		//	"1HSwordMythicPAL.1HSwordMythic6.Mod1",
+		//	EquipmentItemMeleeWeapon, EquipmentSlotWeapon,
+		//),
+
+		//NewEquipment(
+		//	"1HSwordMythicPAL.1HSwordMythic1",
+		//	"1HSwordMythicPAL.1HSwordMythic1.Mod1",
+		//	EquipmentItemMeleeWeapon, EquipmentSlotWeapon, 5,
+		//),
+		//NewEquipment(
+		//	"ScaleArmor1PAL.ScaleArmor1-1",
+		//	"ScaleModPAL.Binder.Mod1",
+		//	EquipmentItemArmour, EquipmentSlotTorso, 1,
+		//),
+
+		//NewEquipment(
+		//	"PlateArmor3PAL.PlateArmor3-7",
+		//	"ScaleModPAL.Rare.Mod1",
+		//	EquipmentItemArmour, EquipmentSlotTorso,
+		//),
+		//
+		//NewEquipment(
+		//	"PlateBoots3PAL.PlateBoots3-7",
+		//	"ScaleModPAL.Rare.Mod1",
+		//	EquipmentItemArmour, EquipmentSlotFoot,
+		//),
+		//
+		//NewEquipment(
+		//	"PlateHelm3PAL.PlateHelm3-7",
+		//	"ScaleModPAL.Rare.Mod1",
+		//	EquipmentItemArmour, EquipmentSlotHead,
+		//),
+		//
+		//NewEquipment(
+		//	"PlateGloves3PAL.PlateGloves3-7",
+		//	"ScaleModPAL.Rare.Mod1",
+		//	EquipmentItemArmour, EquipmentSlotHand,
+		//),
+		//
+		//NewEquipment(
+		//	"CrystalMythicPAL.CrystalMythicShield1",
+		//	"ScaleModPAL.Rare.Mod1",
+		//	EquipmentItemArmour, EquipmentSlotOffhand,
+		//),
+
+		//NewEquipment(
+		//	"ScaleArmor2PAL.ScaleArmor2-4",
+		//	"ScaleModPAL.Binder.Mod1",
+		//	EquipmentItemArmour, EquipmentSlotTorso, 1,
+		//),
+	}
+
+	//return equippedItems
+
+	//PlateHelm1PAL.PlateHelm1-6
+
+	equippedItems = append(equippedItems, addRandomEquipment(database.Helmets, EquipmentItemArmour))
+	equippedItems = append(equippedItems, addRandomEquipment(database.Armours, EquipmentItemArmour))
+	equippedItems = append(equippedItems, addRandomEquipment(database.Gloves, EquipmentItemArmour))
+	equippedItems = append(equippedItems, addRandomEquipment(database.Boots, EquipmentItemArmour))
+
+	equippedItems = append(equippedItems, addRandomEquipment(database.MeleeWeapons, EquipmentItemMeleeWeapon))
+	//equippedItems = append(equippedItems, addRandomEquipment(database.RangedWeapons, EquipmentItemRangedWeapon))
+
+	//randomArmour := database.Armours[int(r.Int63())%len(database.Armours)]
+	//equippedItems = append(equippedItems, NewEquipment(
+	//	randomArmour.Name, "ScaleModPAL.Rare.Mod1",
+	//	EquipmentItemArmour, types.EquipmentSlotTorso,
+	//))
+	//
+	//// failed
+	//// ChainBoots3PAL.ChainBoots3-1 // Rare Only
+	//randomBoots := ArmourMap["boots"][int(r.Int63())%len(ArmourMap["boots"])]
+	//equippedItems = append(equippedItems, NewEquipment(
+	//	randomBoots, "ScaleModPAL.Rare.Mod1",
+	//	EquipmentItemArmour, types.EquipmentSlotFoot,
+	//))
+	//
+	//randomHelm := ArmourMap["helm"][int(r.Int63())%len(ArmourMap["helm"])]
+	//equippedItems = append(equippedItems, NewEquipment(
+	//	randomHelm, "ScaleModPAL.Rare.Mod1",
+	//	EquipmentItemArmour, types.EquipmentSlotHead,
+	//))
+	//
+	//randomGloves := ArmourMap["gloves"][int(r.Int63())%len(ArmourMap["gloves"])]
+	//equippedItems = append(equippedItems, NewEquipment(
+	//	randomGloves, "ScaleModPAL.Rare.Mod1",
+	//	EquipmentItemArmour, types.EquipmentSlotHand,
+	//))
+
+	output := ""
+
+	for _, item := range equippedItems {
+		output += fmt.Sprintf("%s\n", item.GCType)
+	}
+
+	fmt.Printf("Random equipment for today is:\n%s\n", output)
+
+	return equippedItems
+}
+
+var r = rand.New(rand.NewSource(time.Now().Unix()))
+
+func addRandomEquipment(equipment database.EquipmentMap, t ItemType) *Equipment {
+	i := 0
+
+	target := int(r.Int63()) % len(equipment)
+
+	for key, class := range equipment {
+		if i == target {
+			return NewEquipment(
+				key, "ScaleModPAL.Rare.Mod1",
+				t, class.Slot(),
+			)
+		}
+		i++
+	}
+
+	return nil
+}
+
 func addCreateComponent(body *byter.Byter, parentID uint16, componentID uint16, typeString string) {
 	body.WriteByte(0x32)          // Create Component
 	body.WriteUInt16(parentID)    // Parent Entity ID
@@ -591,7 +698,7 @@ func NewPlayer(name string) (p *Player) {
 func AddEquippedItem(
 	body *byter.Byter,
 	item string,
-	slot EquipmentSlot,
+	slot types.EquipmentSlot,
 	armour bool,
 	mod string,
 ) {

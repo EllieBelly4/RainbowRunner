@@ -2,7 +2,11 @@ package objects
 
 import (
 	"RainbowRunner/pkg/byter"
+	"encoding/json"
+	"os"
 )
+
+var ArmourMap map[string][]string
 
 type DRObject interface {
 	RREntityProperties() *RREntityProperties
@@ -21,4 +25,22 @@ type DRObject interface {
 
 	GetGCObject() *GCObject
 	Tick()
+}
+
+func Init() {
+	file, err := os.Open("resources/Dumps/armor_dump.json")
+
+	if err != nil {
+		panic(err)
+	}
+
+	j := json.NewDecoder(file)
+
+	ArmourMap = make(map[string][]string)
+
+	err = j.Decode(&ArmourMap)
+
+	if err != nil {
+		panic(err)
+	}
 }

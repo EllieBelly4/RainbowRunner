@@ -11,7 +11,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
-	"strings"
 )
 
 func main() {
@@ -72,7 +71,7 @@ func main() {
 		strByter := byter.NewLEByter(pki[0x6C+0x2C*0x78AD+4+strOffset:])
 		str := strByter.CString()
 
-		if strings.ToLower(str) != "gcdictionary" {
+		if str != "3EnhancementsPAL" {
 			continue
 		}
 

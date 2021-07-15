@@ -21,7 +21,7 @@ var LoggingOpts = LoggingOptions{
 	LogSent:              true,
 	LogSmallAs:           false,
 	LogHashes:            false,
-	LogGCObjectSerialise: true,
+	LogGCObjectSerialise: false,
 }
 
 func Init() {

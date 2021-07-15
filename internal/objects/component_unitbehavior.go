@@ -181,11 +181,12 @@ func (g *UnitBehavior) ReadUpdate(reader *byter.Byter) error {
 		g.handleClientMove(g.EntityProperties.Conn, reader)
 	// Potentially requesting current position because starting a new path
 	case 0x03:
-		fmt.Printf("player sent pre-path")
-		Players.Players[int(g.EntityProperties.ID)].CurrentCharacter.GetChildByGCNativeType("Avatar").(*Avatar).SendPosition()
+		fmt.Printf("player send move request\n")
+		// This is required to be handled so the player can move after getting stuck due to attacking
+		Players.Players[g.RREntityProperties().Conn.GetID()].CurrentCharacter.GetChildByGCNativeType("Avatar").(*Avatar).SendPosition()
 	default:
-		fmt.Printf("unhandled client entity sub message %x", subMessage)
-		return errors.New("unhandled unitbehavior update")
+		fmt.Printf("unhandled client entity sub message %x\n", subMessage)
+		return errors.New("unhandled unitbehavior update\n")
 	}
 
 	return nil

@@ -16,28 +16,32 @@ var _ = reflect.Copy
 var _ = strconv.Itoa
 
 var parserATN = []uint16{
-	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 24, 50, 4,
-	2, 9, 2, 4, 3, 9, 3, 4, 4, 9, 4, 4, 5, 9, 5, 3, 2, 5, 2, 12, 10, 2, 3,
-	2, 3, 2, 3, 2, 5, 2, 17, 10, 2, 3, 2, 3, 2, 3, 2, 7, 2, 22, 10, 2, 12,
-	2, 14, 2, 25, 11, 2, 3, 2, 3, 2, 3, 3, 3, 3, 3, 4, 3, 4, 3, 5, 3, 5, 3,
-	5, 5, 5, 36, 10, 5, 3, 5, 3, 5, 3, 5, 3, 5, 3, 5, 3, 5, 3, 5, 3, 5, 5,
-	5, 46, 10, 5, 3, 5, 3, 5, 3, 5, 2, 2, 6, 2, 4, 6, 8, 2, 3, 4, 2, 16, 16,
-	22, 22, 2, 55, 2, 11, 3, 2, 2, 2, 4, 28, 3, 2, 2, 2, 6, 30, 3, 2, 2, 2,
-	8, 32, 3, 2, 2, 2, 10, 12, 7, 7, 2, 2, 11, 10, 3, 2, 2, 2, 11, 12, 3, 2,
-	2, 2, 12, 13, 3, 2, 2, 2, 13, 16, 5, 4, 3, 2, 14, 15, 7, 6, 2, 2, 15, 17,
-	5, 6, 4, 2, 16, 14, 3, 2, 2, 2, 16, 17, 3, 2, 2, 2, 17, 18, 3, 2, 2, 2,
-	18, 23, 7, 9, 2, 2, 19, 22, 5, 2, 2, 2, 20, 22, 5, 8, 5, 2, 21, 19, 3,
-	2, 2, 2, 21, 20, 3, 2, 2, 2, 22, 25, 3, 2, 2, 2, 23, 21, 3, 2, 2, 2, 23,
-	24, 3, 2, 2, 2, 24, 26, 3, 2, 2, 2, 25, 23, 3, 2, 2, 2, 26, 27, 7, 10,
-	2, 2, 27, 3, 3, 2, 2, 2, 28, 29, 9, 2, 2, 2, 29, 5, 3, 2, 2, 2, 30, 31,
-	7, 22, 2, 2, 31, 7, 3, 2, 2, 2, 32, 33, 7, 22, 2, 2, 33, 45, 7, 8, 2, 2,
-	34, 36, 7, 11, 2, 2, 35, 34, 3, 2, 2, 2, 35, 36, 3, 2, 2, 2, 36, 37, 3,
-	2, 2, 2, 37, 46, 7, 22, 2, 2, 38, 39, 7, 22, 2, 2, 39, 40, 7, 15, 2, 2,
-	40, 46, 7, 22, 2, 2, 41, 46, 7, 23, 2, 2, 42, 46, 7, 20, 2, 2, 43, 46,
-	7, 21, 2, 2, 44, 46, 7, 5, 2, 2, 45, 35, 3, 2, 2, 2, 45, 38, 3, 2, 2, 2,
-	45, 41, 3, 2, 2, 2, 45, 42, 3, 2, 2, 2, 45, 43, 3, 2, 2, 2, 45, 44, 3,
-	2, 2, 2, 46, 47, 3, 2, 2, 2, 47, 48, 7, 12, 2, 2, 48, 9, 3, 2, 2, 2, 8,
-	11, 16, 21, 23, 35, 45,
+	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 24, 65, 4,
+	2, 9, 2, 4, 3, 9, 3, 4, 4, 9, 4, 4, 5, 9, 5, 4, 6, 9, 6, 4, 7, 9, 7, 4,
+	8, 9, 8, 4, 9, 9, 9, 3, 2, 5, 2, 20, 10, 2, 3, 2, 3, 2, 3, 2, 5, 2, 25,
+	10, 2, 3, 2, 3, 2, 3, 2, 7, 2, 30, 10, 2, 12, 2, 14, 2, 33, 11, 2, 3, 2,
+	3, 2, 3, 3, 3, 3, 3, 4, 3, 4, 3, 5, 3, 5, 3, 6, 3, 6, 3, 7, 3, 7, 3, 7,
+	3, 7, 3, 7, 3, 8, 5, 8, 51, 10, 8, 3, 8, 3, 8, 3, 8, 3, 8, 3, 8, 3, 8,
+	3, 8, 3, 8, 5, 8, 61, 10, 8, 3, 9, 3, 9, 3, 9, 2, 2, 10, 2, 4, 6, 8, 10,
+	12, 14, 16, 2, 3, 4, 2, 16, 16, 22, 22, 2, 66, 2, 19, 3, 2, 2, 2, 4, 36,
+	3, 2, 2, 2, 6, 38, 3, 2, 2, 2, 8, 40, 3, 2, 2, 2, 10, 42, 3, 2, 2, 2, 12,
+	44, 3, 2, 2, 2, 14, 60, 3, 2, 2, 2, 16, 62, 3, 2, 2, 2, 18, 20, 7, 7, 2,
+	2, 19, 18, 3, 2, 2, 2, 19, 20, 3, 2, 2, 2, 20, 21, 3, 2, 2, 2, 21, 24,
+	5, 8, 5, 2, 22, 23, 7, 6, 2, 2, 23, 25, 5, 10, 6, 2, 24, 22, 3, 2, 2, 2,
+	24, 25, 3, 2, 2, 2, 25, 26, 3, 2, 2, 2, 26, 31, 5, 4, 3, 2, 27, 30, 5,
+	2, 2, 2, 28, 30, 5, 12, 7, 2, 29, 27, 3, 2, 2, 2, 29, 28, 3, 2, 2, 2, 30,
+	33, 3, 2, 2, 2, 31, 29, 3, 2, 2, 2, 31, 32, 3, 2, 2, 2, 32, 34, 3, 2, 2,
+	2, 33, 31, 3, 2, 2, 2, 34, 35, 5, 6, 4, 2, 35, 3, 3, 2, 2, 2, 36, 37, 7,
+	9, 2, 2, 37, 5, 3, 2, 2, 2, 38, 39, 7, 10, 2, 2, 39, 7, 3, 2, 2, 2, 40,
+	41, 9, 2, 2, 2, 41, 9, 3, 2, 2, 2, 42, 43, 7, 22, 2, 2, 43, 11, 3, 2, 2,
+	2, 44, 45, 5, 16, 9, 2, 45, 46, 7, 8, 2, 2, 46, 47, 5, 14, 8, 2, 47, 48,
+	7, 12, 2, 2, 48, 13, 3, 2, 2, 2, 49, 51, 7, 11, 2, 2, 50, 49, 3, 2, 2,
+	2, 50, 51, 3, 2, 2, 2, 51, 52, 3, 2, 2, 2, 52, 61, 7, 22, 2, 2, 53, 54,
+	7, 22, 2, 2, 54, 55, 7, 15, 2, 2, 55, 61, 7, 22, 2, 2, 56, 61, 7, 23, 2,
+	2, 57, 61, 7, 20, 2, 2, 58, 61, 7, 21, 2, 2, 59, 61, 7, 5, 2, 2, 60, 50,
+	3, 2, 2, 2, 60, 53, 3, 2, 2, 2, 60, 56, 3, 2, 2, 2, 60, 57, 3, 2, 2, 2,
+	60, 58, 3, 2, 2, 2, 60, 59, 3, 2, 2, 2, 61, 15, 3, 2, 2, 2, 62, 63, 7,
+	22, 2, 2, 63, 17, 3, 2, 2, 2, 8, 19, 24, 29, 31, 50, 60,
 }
 var literalNames = []string{
 	"", "", "", "", "'extends'", "'static'", "'='", "'{'", "'}'", "'!'", "';'",
@@ -50,7 +54,8 @@ var symbolicNames = []string{
 }
 
 var ruleNames = []string{
-	"classDef", "classIdentifier", "parentClass", "property",
+	"classDef", "classEnter", "classLeave", "classIdentifier", "parentClass",
+	"property", "propertyValue", "propertyName",
 }
 
 type DRConfigParser struct {
@@ -112,9 +117,13 @@ const (
 // DRConfigParser rules.
 const (
 	DRConfigParserRULE_classDef        = 0
-	DRConfigParserRULE_classIdentifier = 1
-	DRConfigParserRULE_parentClass     = 2
-	DRConfigParserRULE_property        = 3
+	DRConfigParserRULE_classEnter      = 1
+	DRConfigParserRULE_classLeave      = 2
+	DRConfigParserRULE_classIdentifier = 3
+	DRConfigParserRULE_parentClass     = 4
+	DRConfigParserRULE_property        = 5
+	DRConfigParserRULE_propertyValue   = 6
+	DRConfigParserRULE_propertyName    = 7
 )
 
 // IClassDefContext is an interface to support dynamic dispatch.
@@ -155,12 +164,24 @@ func NewClassDefContext(parser antlr.Parser, parent antlr.ParserRuleContext, inv
 
 func (s *ClassDefContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *ClassDefContext) PARENL() antlr.TerminalNode {
-	return s.GetToken(DRConfigParserPARENL, 0)
+func (s *ClassDefContext) ClassEnter() IClassEnterContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IClassEnterContext)(nil)).Elem(), 0)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IClassEnterContext)
 }
 
-func (s *ClassDefContext) PARENR() antlr.TerminalNode {
-	return s.GetToken(DRConfigParserPARENR, 0)
+func (s *ClassDefContext) ClassLeave() IClassLeaveContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IClassLeaveContext)(nil)).Elem(), 0)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IClassLeaveContext)
 }
 
 func (s *ClassDefContext) ClassIdentifier() IClassIdentifierContext {
@@ -289,70 +310,272 @@ func (p *DRConfigParser) ClassDef() (localctx IClassDefContext) {
 	}()
 
 	p.EnterOuterAlt(localctx, 1)
-	p.SetState(9)
+	p.SetState(17)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	if _la == DRConfigParserSTATIC {
 		{
-			p.SetState(8)
+			p.SetState(16)
 			p.Match(DRConfigParserSTATIC)
 		}
 
 	}
 
 	{
-		p.SetState(11)
+		p.SetState(19)
 		p.ClassIdentifier()
 	}
 
-	p.SetState(14)
+	p.SetState(22)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	if _la == DRConfigParserEXTENDS {
 		{
-			p.SetState(12)
+			p.SetState(20)
 			p.Match(DRConfigParserEXTENDS)
 		}
 		{
-			p.SetState(13)
+			p.SetState(21)
 			p.ParentClass()
 		}
 
 	}
 	{
-		p.SetState(16)
-		p.Match(DRConfigParserPARENL)
+		p.SetState(24)
+		p.ClassEnter()
 	}
-	p.SetState(21)
+	p.SetState(29)
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
 	for ((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<DRConfigParserSTATIC)|(1<<DRConfigParserASTERISK)|(1<<DRConfigParserIDENTIFIER))) != 0 {
-		p.SetState(19)
+		p.SetState(27)
 		p.GetErrorHandler().Sync(p)
 		switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 2, p.GetParserRuleContext()) {
 		case 1:
 			{
-				p.SetState(17)
+				p.SetState(25)
 				p.ClassDef()
 			}
 
 		case 2:
 			{
-				p.SetState(18)
+				p.SetState(26)
 				p.Property()
 			}
 
 		}
 
-		p.SetState(23)
+		p.SetState(31)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 	}
 	{
-		p.SetState(24)
+		p.SetState(32)
+		p.ClassLeave()
+	}
+
+	return localctx
+}
+
+// IClassEnterContext is an interface to support dynamic dispatch.
+type IClassEnterContext interface {
+	antlr.ParserRuleContext
+
+	// GetParser returns the parser.
+	GetParser() antlr.Parser
+
+	// IsClassEnterContext differentiates from other interfaces.
+	IsClassEnterContext()
+}
+
+type ClassEnterContext struct {
+	*antlr.BaseParserRuleContext
+	parser antlr.Parser
+}
+
+func NewEmptyClassEnterContext() *ClassEnterContext {
+	var p = new(ClassEnterContext)
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
+	p.RuleIndex = DRConfigParserRULE_classEnter
+	return p
+}
+
+func (*ClassEnterContext) IsClassEnterContext() {}
+
+func NewClassEnterContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *ClassEnterContext {
+	var p = new(ClassEnterContext)
+
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
+
+	p.parser = parser
+	p.RuleIndex = DRConfigParserRULE_classEnter
+
+	return p
+}
+
+func (s *ClassEnterContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *ClassEnterContext) PARENL() antlr.TerminalNode {
+	return s.GetToken(DRConfigParserPARENL, 0)
+}
+
+func (s *ClassEnterContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *ClassEnterContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
+func (s *ClassEnterContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(DRConfigListener); ok {
+		listenerT.EnterClassEnter(s)
+	}
+}
+
+func (s *ClassEnterContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(DRConfigListener); ok {
+		listenerT.ExitClassEnter(s)
+	}
+}
+
+func (s *ClassEnterContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case DRConfigVisitor:
+		return t.VisitClassEnter(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+func (p *DRConfigParser) ClassEnter() (localctx IClassEnterContext) {
+	localctx = NewClassEnterContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 2, DRConfigParserRULE_classEnter)
+
+	defer func() {
+		p.ExitRule()
+	}()
+
+	defer func() {
+		if err := recover(); err != nil {
+			if v, ok := err.(antlr.RecognitionException); ok {
+				localctx.SetException(v)
+				p.GetErrorHandler().ReportError(p, v)
+				p.GetErrorHandler().Recover(p, v)
+			} else {
+				panic(err)
+			}
+		}
+	}()
+
+	p.EnterOuterAlt(localctx, 1)
+	{
+		p.SetState(34)
+		p.Match(DRConfigParserPARENL)
+	}
+
+	return localctx
+}
+
+// IClassLeaveContext is an interface to support dynamic dispatch.
+type IClassLeaveContext interface {
+	antlr.ParserRuleContext
+
+	// GetParser returns the parser.
+	GetParser() antlr.Parser
+
+	// IsClassLeaveContext differentiates from other interfaces.
+	IsClassLeaveContext()
+}
+
+type ClassLeaveContext struct {
+	*antlr.BaseParserRuleContext
+	parser antlr.Parser
+}
+
+func NewEmptyClassLeaveContext() *ClassLeaveContext {
+	var p = new(ClassLeaveContext)
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
+	p.RuleIndex = DRConfigParserRULE_classLeave
+	return p
+}
+
+func (*ClassLeaveContext) IsClassLeaveContext() {}
+
+func NewClassLeaveContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *ClassLeaveContext {
+	var p = new(ClassLeaveContext)
+
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
+
+	p.parser = parser
+	p.RuleIndex = DRConfigParserRULE_classLeave
+
+	return p
+}
+
+func (s *ClassLeaveContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *ClassLeaveContext) PARENR() antlr.TerminalNode {
+	return s.GetToken(DRConfigParserPARENR, 0)
+}
+
+func (s *ClassLeaveContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *ClassLeaveContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
+func (s *ClassLeaveContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(DRConfigListener); ok {
+		listenerT.EnterClassLeave(s)
+	}
+}
+
+func (s *ClassLeaveContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(DRConfigListener); ok {
+		listenerT.ExitClassLeave(s)
+	}
+}
+
+func (s *ClassLeaveContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case DRConfigVisitor:
+		return t.VisitClassLeave(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+func (p *DRConfigParser) ClassLeave() (localctx IClassLeaveContext) {
+	localctx = NewClassLeaveContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 4, DRConfigParserRULE_classLeave)
+
+	defer func() {
+		p.ExitRule()
+	}()
+
+	defer func() {
+		if err := recover(); err != nil {
+			if v, ok := err.(antlr.RecognitionException); ok {
+				localctx.SetException(v)
+				p.GetErrorHandler().ReportError(p, v)
+				p.GetErrorHandler().Recover(p, v)
+			} else {
+				panic(err)
+			}
+		}
+	}()
+
+	p.EnterOuterAlt(localctx, 1)
+	{
+		p.SetState(36)
 		p.Match(DRConfigParserPARENR)
 	}
 
@@ -437,7 +660,7 @@ func (s *ClassIdentifierContext) Accept(visitor antlr.ParseTreeVisitor) interfac
 
 func (p *DRConfigParser) ClassIdentifier() (localctx IClassIdentifierContext) {
 	localctx = NewClassIdentifierContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 2, DRConfigParserRULE_classIdentifier)
+	p.EnterRule(localctx, 6, DRConfigParserRULE_classIdentifier)
 	var _la int
 
 	defer func() {
@@ -458,7 +681,7 @@ func (p *DRConfigParser) ClassIdentifier() (localctx IClassIdentifierContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(26)
+		p.SetState(38)
 		_la = p.GetTokenStream().LA(1)
 
 		if !(_la == DRConfigParserASTERISK || _la == DRConfigParserIDENTIFIER) {
@@ -546,7 +769,7 @@ func (s *ParentClassContext) Accept(visitor antlr.ParseTreeVisitor) interface{} 
 
 func (p *DRConfigParser) ParentClass() (localctx IParentClassContext) {
 	localctx = NewParentClassContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 4, DRConfigParserRULE_parentClass)
+	p.EnterRule(localctx, 8, DRConfigParserRULE_parentClass)
 
 	defer func() {
 		p.ExitRule()
@@ -566,7 +789,7 @@ func (p *DRConfigParser) ParentClass() (localctx IParentClassContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(28)
+		p.SetState(40)
 		p.Match(DRConfigParserIDENTIFIER)
 	}
 
@@ -611,44 +834,32 @@ func NewPropertyContext(parser antlr.Parser, parent antlr.ParserRuleContext, inv
 
 func (s *PropertyContext) GetParser() antlr.Parser { return s.parser }
 
-func (s *PropertyContext) AllIDENTIFIER() []antlr.TerminalNode {
-	return s.GetTokens(DRConfigParserIDENTIFIER)
-}
+func (s *PropertyContext) PropertyName() IPropertyNameContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IPropertyNameContext)(nil)).Elem(), 0)
 
-func (s *PropertyContext) IDENTIFIER(i int) antlr.TerminalNode {
-	return s.GetToken(DRConfigParserIDENTIFIER, i)
+	if t == nil {
+		return nil
+	}
+
+	return t.(IPropertyNameContext)
 }
 
 func (s *PropertyContext) ASSIGN() antlr.TerminalNode {
 	return s.GetToken(DRConfigParserASSIGN, 0)
 }
 
+func (s *PropertyContext) PropertyValue() IPropertyValueContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IPropertyValueContext)(nil)).Elem(), 0)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IPropertyValueContext)
+}
+
 func (s *PropertyContext) SEMI() antlr.TerminalNode {
 	return s.GetToken(DRConfigParserSEMI, 0)
-}
-
-func (s *PropertyContext) NUMBER() antlr.TerminalNode {
-	return s.GetToken(DRConfigParserNUMBER, 0)
-}
-
-func (s *PropertyContext) SINGLESTR() antlr.TerminalNode {
-	return s.GetToken(DRConfigParserSINGLESTR, 0)
-}
-
-func (s *PropertyContext) DOUBLESTR() antlr.TerminalNode {
-	return s.GetToken(DRConfigParserDOUBLESTR, 0)
-}
-
-func (s *PropertyContext) VECTOR3() antlr.TerminalNode {
-	return s.GetToken(DRConfigParserVECTOR3, 0)
-}
-
-func (s *PropertyContext) COLON() antlr.TerminalNode {
-	return s.GetToken(DRConfigParserCOLON, 0)
-}
-
-func (s *PropertyContext) EXCL() antlr.TerminalNode {
-	return s.GetToken(DRConfigParserEXCL, 0)
 }
 
 func (s *PropertyContext) GetRuleContext() antlr.RuleContext {
@@ -683,8 +894,7 @@ func (s *PropertyContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
 
 func (p *DRConfigParser) Property() (localctx IPropertyContext) {
 	localctx = NewPropertyContext(p, p.GetParserRuleContext(), p.GetState())
-	p.EnterRule(localctx, 6, DRConfigParserRULE_property)
-	var _la int
+	p.EnterRule(localctx, 10, DRConfigParserRULE_property)
 
 	defer func() {
 		p.ExitRule()
@@ -704,75 +914,306 @@ func (p *DRConfigParser) Property() (localctx IPropertyContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(30)
-		p.Match(DRConfigParserIDENTIFIER)
+		p.SetState(42)
+		p.PropertyName()
 	}
 	{
-		p.SetState(31)
+		p.SetState(43)
 		p.Match(DRConfigParserASSIGN)
 	}
-	p.SetState(43)
+	{
+		p.SetState(44)
+		p.PropertyValue()
+	}
+	{
+		p.SetState(45)
+		p.Match(DRConfigParserSEMI)
+	}
+
+	return localctx
+}
+
+// IPropertyValueContext is an interface to support dynamic dispatch.
+type IPropertyValueContext interface {
+	antlr.ParserRuleContext
+
+	// GetParser returns the parser.
+	GetParser() antlr.Parser
+
+	// IsPropertyValueContext differentiates from other interfaces.
+	IsPropertyValueContext()
+}
+
+type PropertyValueContext struct {
+	*antlr.BaseParserRuleContext
+	parser antlr.Parser
+}
+
+func NewEmptyPropertyValueContext() *PropertyValueContext {
+	var p = new(PropertyValueContext)
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
+	p.RuleIndex = DRConfigParserRULE_propertyValue
+	return p
+}
+
+func (*PropertyValueContext) IsPropertyValueContext() {}
+
+func NewPropertyValueContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *PropertyValueContext {
+	var p = new(PropertyValueContext)
+
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
+
+	p.parser = parser
+	p.RuleIndex = DRConfigParserRULE_propertyValue
+
+	return p
+}
+
+func (s *PropertyValueContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *PropertyValueContext) AllIDENTIFIER() []antlr.TerminalNode {
+	return s.GetTokens(DRConfigParserIDENTIFIER)
+}
+
+func (s *PropertyValueContext) IDENTIFIER(i int) antlr.TerminalNode {
+	return s.GetToken(DRConfigParserIDENTIFIER, i)
+}
+
+func (s *PropertyValueContext) NUMBER() antlr.TerminalNode {
+	return s.GetToken(DRConfigParserNUMBER, 0)
+}
+
+func (s *PropertyValueContext) SINGLESTR() antlr.TerminalNode {
+	return s.GetToken(DRConfigParserSINGLESTR, 0)
+}
+
+func (s *PropertyValueContext) DOUBLESTR() antlr.TerminalNode {
+	return s.GetToken(DRConfigParserDOUBLESTR, 0)
+}
+
+func (s *PropertyValueContext) VECTOR3() antlr.TerminalNode {
+	return s.GetToken(DRConfigParserVECTOR3, 0)
+}
+
+func (s *PropertyValueContext) COLON() antlr.TerminalNode {
+	return s.GetToken(DRConfigParserCOLON, 0)
+}
+
+func (s *PropertyValueContext) EXCL() antlr.TerminalNode {
+	return s.GetToken(DRConfigParserEXCL, 0)
+}
+
+func (s *PropertyValueContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *PropertyValueContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
+func (s *PropertyValueContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(DRConfigListener); ok {
+		listenerT.EnterPropertyValue(s)
+	}
+}
+
+func (s *PropertyValueContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(DRConfigListener); ok {
+		listenerT.ExitPropertyValue(s)
+	}
+}
+
+func (s *PropertyValueContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case DRConfigVisitor:
+		return t.VisitPropertyValue(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+func (p *DRConfigParser) PropertyValue() (localctx IPropertyValueContext) {
+	localctx = NewPropertyValueContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 12, DRConfigParserRULE_propertyValue)
+	var _la int
+
+	defer func() {
+		p.ExitRule()
+	}()
+
+	defer func() {
+		if err := recover(); err != nil {
+			if v, ok := err.(antlr.RecognitionException); ok {
+				localctx.SetException(v)
+				p.GetErrorHandler().ReportError(p, v)
+				p.GetErrorHandler().Recover(p, v)
+			} else {
+				panic(err)
+			}
+		}
+	}()
+
+	p.EnterOuterAlt(localctx, 1)
+	p.SetState(58)
 	p.GetErrorHandler().Sync(p)
 	switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 5, p.GetParserRuleContext()) {
 	case 1:
-		p.SetState(33)
+		p.SetState(48)
 		p.GetErrorHandler().Sync(p)
 		_la = p.GetTokenStream().LA(1)
 
 		if _la == DRConfigParserEXCL {
 			{
-				p.SetState(32)
+				p.SetState(47)
 				p.Match(DRConfigParserEXCL)
 			}
 
 		}
 		{
-			p.SetState(35)
+			p.SetState(50)
 			p.Match(DRConfigParserIDENTIFIER)
 		}
 
 	case 2:
 		{
-			p.SetState(36)
+			p.SetState(51)
 			p.Match(DRConfigParserIDENTIFIER)
 		}
 		{
-			p.SetState(37)
+			p.SetState(52)
 			p.Match(DRConfigParserCOLON)
 		}
 		{
-			p.SetState(38)
+			p.SetState(53)
 			p.Match(DRConfigParserIDENTIFIER)
 		}
 
 	case 3:
 		{
-			p.SetState(39)
+			p.SetState(54)
 			p.Match(DRConfigParserNUMBER)
 		}
 
 	case 4:
 		{
-			p.SetState(40)
+			p.SetState(55)
 			p.Match(DRConfigParserSINGLESTR)
 		}
 
 	case 5:
 		{
-			p.SetState(41)
+			p.SetState(56)
 			p.Match(DRConfigParserDOUBLESTR)
 		}
 
 	case 6:
 		{
-			p.SetState(42)
+			p.SetState(57)
 			p.Match(DRConfigParserVECTOR3)
 		}
 
 	}
+
+	return localctx
+}
+
+// IPropertyNameContext is an interface to support dynamic dispatch.
+type IPropertyNameContext interface {
+	antlr.ParserRuleContext
+
+	// GetParser returns the parser.
+	GetParser() antlr.Parser
+
+	// IsPropertyNameContext differentiates from other interfaces.
+	IsPropertyNameContext()
+}
+
+type PropertyNameContext struct {
+	*antlr.BaseParserRuleContext
+	parser antlr.Parser
+}
+
+func NewEmptyPropertyNameContext() *PropertyNameContext {
+	var p = new(PropertyNameContext)
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(nil, -1)
+	p.RuleIndex = DRConfigParserRULE_propertyName
+	return p
+}
+
+func (*PropertyNameContext) IsPropertyNameContext() {}
+
+func NewPropertyNameContext(parser antlr.Parser, parent antlr.ParserRuleContext, invokingState int) *PropertyNameContext {
+	var p = new(PropertyNameContext)
+
+	p.BaseParserRuleContext = antlr.NewBaseParserRuleContext(parent, invokingState)
+
+	p.parser = parser
+	p.RuleIndex = DRConfigParserRULE_propertyName
+
+	return p
+}
+
+func (s *PropertyNameContext) GetParser() antlr.Parser { return s.parser }
+
+func (s *PropertyNameContext) IDENTIFIER() antlr.TerminalNode {
+	return s.GetToken(DRConfigParserIDENTIFIER, 0)
+}
+
+func (s *PropertyNameContext) GetRuleContext() antlr.RuleContext {
+	return s
+}
+
+func (s *PropertyNameContext) ToStringTree(ruleNames []string, recog antlr.Recognizer) string {
+	return antlr.TreesStringTree(s, ruleNames, recog)
+}
+
+func (s *PropertyNameContext) EnterRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(DRConfigListener); ok {
+		listenerT.EnterPropertyName(s)
+	}
+}
+
+func (s *PropertyNameContext) ExitRule(listener antlr.ParseTreeListener) {
+	if listenerT, ok := listener.(DRConfigListener); ok {
+		listenerT.ExitPropertyName(s)
+	}
+}
+
+func (s *PropertyNameContext) Accept(visitor antlr.ParseTreeVisitor) interface{} {
+	switch t := visitor.(type) {
+	case DRConfigVisitor:
+		return t.VisitPropertyName(s)
+
+	default:
+		return t.VisitChildren(s)
+	}
+}
+
+func (p *DRConfigParser) PropertyName() (localctx IPropertyNameContext) {
+	localctx = NewPropertyNameContext(p, p.GetParserRuleContext(), p.GetState())
+	p.EnterRule(localctx, 14, DRConfigParserRULE_propertyName)
+
+	defer func() {
+		p.ExitRule()
+	}()
+
+	defer func() {
+		if err := recover(); err != nil {
+			if v, ok := err.(antlr.RecognitionException); ok {
+				localctx.SetException(v)
+				p.GetErrorHandler().ReportError(p, v)
+				p.GetErrorHandler().Recover(p, v)
+			} else {
+				panic(err)
+			}
+		}
+	}()
+
+	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(45)
-		p.Match(DRConfigParserSEMI)
+		p.SetState(60)
+		p.Match(DRConfigParserIDENTIFIER)
 	}
 
 	return localctx

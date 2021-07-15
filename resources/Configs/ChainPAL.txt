@@ -1,0 +1,15 @@
+ChainPAL
+{
+// RARE ONLY
+	ChainBoots3 extends BaseBootsClasses.Chain
+	{
+		Description
+		{
+			Label = "Rogue Boots";
+
+			Visual = OBJECT_VISUAL:ChainBoots3;
+			InventoryIcon = Chain_3_Boot_Icon;
+			GroundObject = GroundObjects_Chain_3_Boots;
+		}
+	}
+}

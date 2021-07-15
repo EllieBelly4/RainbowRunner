@@ -5,6 +5,7 @@ import (
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/logging"
 	"RainbowRunner/internal/objects"
+	"RainbowRunner/internal/types"
 	"RainbowRunner/pkg/byter"
 	"encoding/hex"
 	"fmt"
@@ -81,7 +82,7 @@ func handleSelectEquipment(conn *connections.RRConn, reader *byter.Byter) {
 	body.WriteUInt16(equipID) // Equipment ComponentID
 	body.WriteByte(0x28)      // Add item
 
-	objects.AddEquippedItem(body, "PlateMythicPAL.PlateMythicBoots1", objects.EquipmentSlotFoot, true, "PlateMythicPAL.PlateMythicBoots1.Mod1")
+	objects.AddEquippedItem(body, "PlateMythicPAL.PlateMythicBoots1", types.EquipmentSlotFoot, true, "PlateMythicPAL.PlateMythicBoots1.Mod1")
 
 	AddSynch(conn, body)
 	AddEntityUpdateStreamEnd(body)

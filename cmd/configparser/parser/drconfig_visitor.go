@@ -11,6 +11,12 @@ type DRConfigVisitor interface {
 	// Visit a parse tree produced by DRConfigParser#classDef.
 	VisitClassDef(ctx *ClassDefContext) interface{}
 
+	// Visit a parse tree produced by DRConfigParser#classEnter.
+	VisitClassEnter(ctx *ClassEnterContext) interface{}
+
+	// Visit a parse tree produced by DRConfigParser#classLeave.
+	VisitClassLeave(ctx *ClassLeaveContext) interface{}
+
 	// Visit a parse tree produced by DRConfigParser#classIdentifier.
 	VisitClassIdentifier(ctx *ClassIdentifierContext) interface{}
 
@@ -19,4 +25,10 @@ type DRConfigVisitor interface {
 
 	// Visit a parse tree produced by DRConfigParser#property.
 	VisitProperty(ctx *PropertyContext) interface{}
+
+	// Visit a parse tree produced by DRConfigParser#propertyValue.
+	VisitPropertyValue(ctx *PropertyValueContext) interface{}
+
+	// Visit a parse tree produced by DRConfigParser#propertyName.
+	VisitPropertyName(ctx *PropertyNameContext) interface{}
 }
