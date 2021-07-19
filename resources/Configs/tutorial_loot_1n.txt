@@ -1,0 +1,801 @@
+* extends base.world
+{
+	Entities
+	{
+		Name = GCObject;
+
+		* extends base.encounter
+		{
+			Heading = -180;
+			Position = 200,80,10;
+		}
+
+		* extends terrain.misc.interactives.chest
+		{
+			Position = 195,130,10;
+
+		}
+
+		* extends terrain.misc.interactives.chest
+		{
+			Position = 235,120,10;
+
+		}
+
+	}
+
+	Map
+	{
+		* extends worldobjectgroup
+		{
+			Name = terrain;
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_6
+			{
+				Heading = 270;
+				Position = 20,260,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_6
+			{
+				Heading = 270;
+				Position = 20,220,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_6
+			{
+				Heading = 270;
+				Position = 20,180,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_6
+			{
+				Heading = 270;
+				Position = 20,380,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_6
+			{
+				Heading = 270;
+				Position = 20,60,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_6
+			{
+				Heading = 270;
+				Position = 20,20,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_6
+			{
+				Heading = 270;
+				Position = 20,140,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_6
+			{
+				Heading = 270;
+				Position = 380,380,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_6
+			{
+				Heading = 270;
+				Position = 380,60,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_6
+			{
+				Heading = 270;
+				Position = 380,20,50;
+			}
+
+			* extends terrain.elmforest.walls.elmforest_4_straight_2
+			{
+				Heading = 90;
+				Position = 100,20,10;
+			}
+
+			* extends terrain.elmforest.walls.elmforest_4_incorner_1
+			{
+				Heading = 90;
+				Position = 100,60,10;
+			}
+
+			* extends terrain.elmforest.walls.elmforest_4_outcorner_1
+			{
+				Position = 140,60,10;
+			}
+
+			* extends terrain.elmforest.walls.elmforest_2_incorner_1
+			{
+				Heading = 90;
+				Position = 140,140,10;
+			}
+
+			* extends terrain.elmforest.walls.elmforest_2_outcorner_1
+			{
+				Heading = 360;
+				Position = 180,140,10;
+			}
+
+			* extends terrain.elmforest.walls.elmforest_4_incorner_1
+			{
+				Heading = 90;
+				Position = 300,140,10;
+			}
+
+			* extends terrain.elmforest.walls.elmforest_4_incorner_1
+			{
+				Position = 340,140,10;
+			}
+
+			* extends terrain.elmforest.walls.elmforest_4_straight_1
+			{
+				Heading = 270;
+				Position = 340,100,10;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_grass_1
+			{
+				Heading = 270;
+				Position = 80,240,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_grass_1
+			{
+				Heading = 270;
+				Position = 320,320,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_grass_2
+			{
+				Heading = 270;
+				Position = 320,240,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_grass_1
+			{
+				Heading = 270;
+				Position = 240,320,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_grass_2
+			{
+				Heading = 270;
+				Position = 160,320,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_grass_1
+			{
+				Heading = 270;
+				Position = 80,320,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_6
+			{
+				Heading = 270;
+				Position = 380,100,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_1
+			{
+				Heading = 270;
+				Position = 380,140,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_2
+			{
+				Heading = 270;
+				Position = 380,180,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_3
+			{
+				Heading = 270;
+				Position = 340,180,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_4
+			{
+				Heading = 270;
+				Position = 300,180,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_5
+			{
+				Heading = 270;
+				Position = 260,180,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_6
+			{
+				Heading = 270;
+				Position = 380,220,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_1
+			{
+				Heading = 270;
+				Position = 380,260,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_2
+			{
+				Heading = 270;
+				Position = 380,300,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_3
+			{
+				Heading = 270;
+				Position = 380,340,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_3
+			{
+				Heading = 270;
+				Position = 340,380,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_4
+			{
+				Heading = 270;
+				Position = 300,380,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_5
+			{
+				Heading = 270;
+				Position = 260,380,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_6
+			{
+				Heading = 270;
+				Position = 220,380,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_6
+			{
+				Heading = 270;
+				Position = 180,380,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_1
+			{
+				Heading = 270;
+				Position = 140,380,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_2
+			{
+				Heading = 270;
+				Position = 100,380,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_3
+			{
+				Heading = 270;
+				Position = 60,380,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_3
+			{
+				Heading = 270;
+				Position = 20,340,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_4
+			{
+				Heading = 270;
+				Position = 20,300,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_4
+			{
+				Heading = 270;
+				Position = 60,180,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_5
+			{
+				Heading = 270;
+				Position = 60,140,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_6
+			{
+				Heading = 270;
+				Position = 60,100,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_1
+			{
+				Heading = 270;
+				Position = 20,100,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_4
+			{
+				Heading = 270;
+				Position = 140,20,10;
+			}
+
+			* extends terrain.elmforest.walls.elmforest_4_outcorner_1
+			{
+				Heading = -180;
+				Position = 300,20,10;
+			}
+
+			* extends terrain.elmforest.walls.elmforest_4_incorner_1
+			{
+				Heading = -90;
+				Position = 340,20,10;
+			}
+
+			* extends terrain.elmforest.walls.elmforest_4_straight_1
+			{
+				Heading = 270;
+				Position = 340,60,10;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_1
+			{
+				Heading = 270;
+				Position = 260,20,10;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_4
+			{
+				Heading = 270;
+				Position = 60,60,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_4
+			{
+				Heading = 180;
+				Position = 60,20,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_dirtdeadend_2
+			{
+				Heading = -90;
+				Position = 200,40,10;
+			}
+
+			* extends terrain.elmforest.walls.elmforest_4_incorner_1
+			{
+				Position = 260,140,10;
+			}
+
+			* extends terrain.elmforest.walls.elmforest_4_outcorner_1
+			{
+				Heading = -90;
+				Position = 220,140,10;
+			}
+
+			* extends terrain.elmforest.walls.elmforest_4_incorner_1
+			{
+				Heading = 90;
+				Position = 180,220,10;
+			}
+
+			* extends terrain.elmforest.walls.elmforest_4_incorner_1
+			{
+				Position = 220,220,10;
+			}
+
+			* extends terrain.elmforest.walls.elmforest_4_straight_2
+			{
+				Heading = -90;
+				Position = 220,180,10;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_6
+			{
+				Position = 180,100,10;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_1
+			{
+				Position = 220,100,10;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_1
+			{
+				Position = 140,220,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_2
+			{
+				Position = 140,260,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_3
+			{
+				Position = 180,260,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_4
+			{
+				Position = 220,260,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_5
+			{
+				Position = 260,260,50;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_6
+			{
+				Position = 260,220,50;
+			}
+
+			* extends terrain.elmforest.decor.trees.elmforest_tree_12
+			{
+				Position = 120,160,30;
+			}
+
+			* extends terrain.elmforest.decor.trees.elmforest_tree_14
+			{
+				Heading = -90;
+				Position = 140,40,10;
+			}
+
+			* extends terrain.elmforest.decor.trees.elmforest_tree_1
+			{
+				Heading = -180;
+				Position = 330,105,10;
+			}
+
+			* extends terrain.elmforest.decor.trees.elmforest_tree_1
+			{
+				Heading = -180;
+				Position = 260,160,50;
+			}
+
+			* extends terrain.elmforest.decor.trees.elmforest_tree_10
+			{
+				Heading = -180;
+				Position = 360,130,50;
+			}
+
+			* extends terrain.elmforest.decor.trees.elmforest_tree_10
+			{
+				Heading = -180;
+				Position = 60,30,50;
+			}
+
+			* extends terrain.elmforest.decor.trees.elmforest_tree_11
+			{
+				Heading = -180;
+				Position = 40,130,50;
+			}
+
+			* extends terrain.elmforest.decor.trees.elmforest_tree_13
+			{
+				Heading = -180;
+				Position = 40,350,50;
+			}
+
+			* extends terrain.elmforest.decor.trees.elmforest_tree_15
+			{
+				Heading = -180;
+				Position = 120,240,50;
+			}
+
+			* extends terrain.elmforest.decor.trees.elmforest_tree_7
+			{
+				Heading = -180;
+				Position = 220,250,50;
+			}
+
+			* extends terrain.elmforest.decor.trees.elmforest_tree_10
+			{
+				Heading = -180;
+				Position = 340,310,50;
+			}
+
+			* extends terrain.elmforest.decor.trees.elmforest_tree_12
+			{
+				Heading = -180;
+				Position = 360,220,50;
+			}
+
+			* extends terrain.elmforest.walls_nominimap.elmforest_nm_2_incorner_1
+			{
+				Heading = 90;
+				Position = 100,180,30;
+			}
+
+			* extends terrain.elmforest.walls_nominimap.elmforest_nm_2_straight_2
+			{
+				Position = 140,180,30;
+			}
+
+			* extends terrain.elmforest.walls_nominimap.elmforest_nm_2_straight_1
+			{
+				Heading = 90;
+				Position = 100,140,30;
+			}
+
+			* extends terrain.elmforest.walls_nominimap.elmforest_nm_2_incorner_1
+			{
+				Heading = 180;
+				Position = 100,100,30;
+			}
+
+			* extends terrain.elmforest.walls_nominimap.elmforest_s_2-4_trans_2
+			{
+				Heading = 90;
+				Position = 140,100,10;
+			}
+
+			* extends terrain.elmforest.walls_nominimap.elmforest_s_2-4_trans_1
+			{
+				Heading = 90;
+				Position = 180,180,10;
+			}
+
+			* extends terrain.elmforest.walls.elmforest_4_outcorner_1
+			{
+				Heading = -90;
+				Position = 260,100,10;
+			}
+
+			* extends terrain.elmforest.walls.elmforest_4_outcorner_1
+			{
+				Position = 300,100,10;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_1
+			{
+				Heading = 270;
+				Position = 260,60,10;
+			}
+
+			* extends terrain.elmforest.floor.elmforest_floor_40_1
+			{
+				Heading = 270;
+				Position = 300,60,10;
+			}
+
+		}
+
+		* extends worldobjectgroup
+		{
+			Name = lights;
+
+			* extends misc.light
+			{
+				AttenEnd = 100;
+				Color = 0xFFFF8F0A;
+				Range = 100;
+				Position = 190,70,60;
+			}
+
+		}
+
+		* extends worldobjectgroup
+		{
+			Name = grass;
+
+			* extends terrain.elmforest.fx.elmforest_grass_big
+			{
+				Position = 200,70,10;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_big
+			{
+				Position = 250,30,10;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_big
+			{
+				Position = 110,130,30;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_big
+			{
+				Position = 140,150,30;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_yellowgrass_big
+			{
+				Position = 150,50,10;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_yellowgrass_big
+			{
+				Position = 130,10,10;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_yellowgrass_big
+			{
+				Position = 150,10,10;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_yellowgrass_big
+			{
+				Position = 250,70,10;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_yellowgrass_big
+			{
+				Position = 150,110,10;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_reallybig_sparse
+			{
+				Position = 30,60,50;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_reallybig_sparse
+			{
+				Position = 90,80,50;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_reallybig_sparse
+			{
+				Position = 40,120,50;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_reallybig_sparse
+			{
+				Position = 30,190,50;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_reallybig_sparse
+			{
+				Position = 90,210,50;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_reallybig_sparse
+			{
+				Position = 50,270,50;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_reallybig_sparse
+			{
+				Position = 100,300,50;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_reallybig_sparse
+			{
+				Position = 50,340,50;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_reallybig_sparse
+			{
+				Position = 120,350,50;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_reallybig_sparse
+			{
+				Position = 170,340,50;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_reallybig_sparse
+			{
+				Position = 160,260,50;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_reallybig_sparse
+			{
+				Position = 150,220,50;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_reallybig_sparse
+			{
+				Position = 210,350,50;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_reallybig_sparse
+			{
+				Position = 240,280,50;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_reallybig_sparse
+			{
+				Position = 260,360,50;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_reallybig_sparse
+			{
+				Position = 280,300,50;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_reallybig_sparse
+			{
+				Position = 330,350,50;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_reallybig_sparse
+			{
+				Position = 370,360,50;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_reallybig_sparse
+			{
+				Position = 350,260,50;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_reallybig_sparse
+			{
+				Position = 270,230,50;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_reallybig_sparse
+			{
+				Position = 300,170,50;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_reallybig_sparse
+			{
+				Position = 350,180,50;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_reallybig_sparse
+			{
+				Position = 360,20,50;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_grass_reallybig_sparse
+			{
+				Position = 370,110,50;
+			}
+
+		}
+
+		* extends worldobjectgroup
+		{
+			Name = fx_fallingleaves;
+
+			* extends terrain.elmforest.fx.elmforest_fallingleaves
+			{
+				Position = 130,20,10;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_fallingleaves
+			{
+				Position = 240,100,10;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_lightray_3
+			{
+				Position = 210,50,10;
+			}
+
+			* extends terrain.elmforest.fx.elmforest_lightray_1
+			{
+				Position = 180,90,10;
+			}
+
+		}
+
+		* extends worldobjectgroup
+		{
+			Name = fireflies;
+
+			* extends effects.fireflies_2
+			{
+				Position = 230,40,10;
+			}
+
+			* extends effects.fireflies_2
+			{
+				Position = 130,50,10;
+			}
+
+			* extends effects.fireflies_2
+			{
+				Position = 190,160,10;
+			}
+
+		}
+
+	}
+
+}
+

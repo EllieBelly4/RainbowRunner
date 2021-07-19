@@ -29,6 +29,10 @@ type GCObject struct {
 	EntityHandler    EntityMessageHandler
 }
 
+func (g *GCObject) ID() uint16 {
+	return g.EntityProperties.ID
+}
+
 func (g *GCObject) ReadUpdate(reader *byter.Byter) error {
 	fmt.Printf("Unhandled readupdate for %s (%s : %s) ID: %x\n", g.GCName, g.GCType, g.GCNativeType, g.EntityProperties.ID)
 	return nil
@@ -67,20 +71,6 @@ type GCObjectProperty struct {
 	Value interface{}
 }
 
-//func Uint8Prop(name string, val uint8) GCObjectProperty {
-//	return GCObjectProperty{
-//		Name:  name,
-//		Value: val,
-//	}
-//}
-//
-//func Uint16Prop(name string, val uint16) GCObjectProperty {
-//	return GCObjectProperty{
-//		Name:  name,
-//		Value: val,
-//	}
-//}
-
 func Uint32Prop(name interface{}, val uint32) GCObjectProperty {
 	return GCObjectProperty{
 		Name:  name,
@@ -94,12 +84,6 @@ func StringProp(name interface{}, val string) GCObjectProperty {
 		Value: val,
 	}
 }
-
-//func NewID() (ID uint32) {
-//	ID = currentID
-//	currentID++
-//	return ID
-//}
 
 func NewGCObject(nativeType string) *GCObject {
 	return &GCObject{

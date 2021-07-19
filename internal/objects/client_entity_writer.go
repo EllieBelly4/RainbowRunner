@@ -62,9 +62,13 @@ func (w *ClientEntityWriter) Update(object DRObject) {
 	w.Body.WriteByte(0x0)
 }
 
-func (w *ClientEntityWriter) BeginComponentUpdate(id uint16) {
-	w.Body.WriteByte(0x35) // ComponentUpdate
-	w.Body.WriteUInt16(id) // ComponentID
+func (w *ClientEntityWriter) BeginComponentUpdate(object DRObject) {
+	w.Body.WriteByte(0x35)                             // ComponentUpdate
+	w.Body.WriteUInt16(object.RREntityProperties().ID) // ComponentID
+}
+
+func (w *ClientEntityWriter) EndComponentUpdate(object DRObject) {
+	w.WriteSynch(object)
 }
 
 func (w *ClientEntityWriter) EndStream() {

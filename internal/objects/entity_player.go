@@ -609,6 +609,13 @@ func getRandomEquipment() []*Equipment {
 
 	//PlateHelm1PAL.PlateHelm1-6
 
+	// One of these failed
+	//PlateHelm1PAL.PlateHelm1-7
+	//ChainArmor3PAL.ChainArmor3-4
+	//ScaleGloves2PAL.ScaleGloves2-6
+	//LeatherBoots1PAL.LeatherBoots1-10
+	//2HPickMythicPAL.2HPickMythic1
+
 	equippedItems = append(equippedItems, addRandomEquipment(database.Helmets, EquipmentItemArmour))
 	equippedItems = append(equippedItems, addRandomEquipment(database.Armours, EquipmentItemArmour))
 	equippedItems = append(equippedItems, addRandomEquipment(database.Gloves, EquipmentItemArmour))

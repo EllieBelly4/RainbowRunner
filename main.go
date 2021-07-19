@@ -2,6 +2,7 @@ package main
 
 import (
 	"RainbowRunner/internal/admin"
+	"RainbowRunner/internal/api"
 	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/game"
 	"RainbowRunner/internal/logging"
@@ -19,6 +20,8 @@ func main() {
 	go login.StartLoginServer()
 	go game.StartGameServer()
 	go admin.StartAdminServer()
+	go api.StartGraphqlAPI()
+
 	objects.Init()
 
 	for !<-done {

@@ -177,6 +177,8 @@ func (g *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 func (g *UnitBehavior) ReadUpdate(reader *byter.Byter) error {
 	subMessage := reader.Byte()
 	switch subMessage {
+	case 0x01:
+		g.handleClientAttack(reader)
 	case 0x65:
 		g.handleClientMove(g.EntityProperties.Conn, reader)
 	// Potentially requesting current position because starting a new path
@@ -205,7 +207,7 @@ func (n *UnitBehavior) Warp(x int32, y int32, z int32) {
 func (n *UnitBehavior) sendWarpTo(posX, posY, posZ int32) {
 	writer := NewClientEntityWriterWithByter()
 	writer.BeginStream()
-	writer.BeginComponentUpdate(n.RREntityProperties().ID)
+	writer.BeginComponentUpdate(n)
 
 	writer.Body.WriteByte(0x04) // CreateAction1
 	writer.Body.WriteByte(17)
@@ -225,7 +227,7 @@ func (n *UnitBehavior) sendWarpTo(posX, posY, posZ int32) {
 func (n *UnitBehavior) SendPosition() {
 	writer := NewClientEntityWriterWithByter()
 	writer.BeginStream()
-	writer.BeginComponentUpdate(n.RREntityProperties().ID)
+	writer.BeginComponentUpdate(n)
 
 	writer.Body.WriteByte(0x65) // UnitMoverUpdate
 
@@ -277,6 +279,25 @@ func (n *UnitBehavior) SendPosition() {
 	}
 
 	logging.LoggingOpts.LogSent = oldLog
+}
+
+func (n *UnitBehavior) handleClientAttack(reader *byter.Byter) {
+	reader.DumpRemaining()
+
+	writer := NewClientEntityWriterWithByter()
+
+	writer.BeginStream()
+	writer.BeginComponentUpdate(n)
+
+	//00000000  07 34 b4 00 01 02 51 01  0a 76 b9 01 00 3d 4e ff  |.4....Q..v...=N.|
+	//00000010  ff ec 31 00 00                                    |..1..|
+
+	//00000000  02 51 01 0a 0b 90 01 00  88 4d ff ff ec 31 00 00  |.Q.......M...1..|
+
+	writer.EndComponentUpdate(n)
+	writer.EndStream()
+
+	connections.WriteCompressedASimple(n.RREntityProperties().Conn, writer.Body)
 }
 
 func NewUnitBehavior(gcType string) *UnitBehavior {

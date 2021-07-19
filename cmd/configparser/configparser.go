@@ -3133,8 +3133,11 @@ func main() {
 	//	"D:\\Work\\dungeon-runners\\666 dumps\\PlateArmor1PAL.txt",
 	//}
 
-	parseAllFiles(armourFiles, "resources/Dumps/generated/armour.json")
-	parseAllFiles(weaponFiles, "resources/Dumps/generated/weapons.json")
+	parseAllFiles(
+		[]string{"C:\\Users\\Sophie\\go\\src\\RainbowRunner\\resources\\Configs\\tutorial_loot_1n.txt"},
+		"resources/Dumps/generated/tutorial_loot_1n.json")
+	//parseAllFiles(armourFiles, "resources/Dumps/generated/armourtest.json")
+	//parseAllFiles(weaponFiles, "resources/Dumps/generated/weapons.json")
 }
 
 func listContains(parses []string, path string) bool {

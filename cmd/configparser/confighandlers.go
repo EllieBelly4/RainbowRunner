@@ -3,7 +3,6 @@ package main
 import (
 	"RainbowRunner/cmd/configparser/parser"
 	"RainbowRunner/internal/database"
-	"RainbowRunner/pkg/datatypes"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"os"
 	"path/filepath"
@@ -21,11 +20,11 @@ type DRArmourParser struct {
 
 	classStack          *DRClassStack
 	currentClass        string
-	currentHierarchy    *datatypes.StringStack
 	currentPropertyName string
 	basePath            string
 
-	depth int
+	depth          int
+	IsGenericClass bool
 }
 
 func NewDRConfigListener(filePath string) *DRArmourParser {
@@ -33,12 +32,11 @@ func NewDRConfigListener(filePath string) *DRArmourParser {
 	fileName := strings.Split(split[len(split)-1], ".")[0]
 
 	return &DRArmourParser{
-		filePath:         filePath,
-		fileClassName:    fileName,
-		currentHierarchy: datatypes.NewStringStack(),
-		DRClass:          nil,
-		classStack:       NewDRClassStack(),
-		basePath:         filepath.Dir(filePath),
+		filePath:      filePath,
+		fileClassName: fileName,
+		DRClass:       nil,
+		classStack:    NewDRClassStack(),
+		basePath:      filepath.Dir(filePath),
 	}
 }
 
@@ -70,28 +68,10 @@ func (t *DRArmourParser) EnterEveryRule(ctx antlr.ParserRuleContext) {
 		className := ctx.GetText()
 
 		if className == "*" {
-			if t.currentHierarchy.Index > 0 {
-				className = t.currentHierarchy.Stack[t.currentHierarchy.Index-1]
-			} else {
-				className = t.fileClassName
-			}
-		}
-
-		//t.currentClass = className
-		t.currentHierarchy.Push(className)
-
-		newClass := database.NewDRClass(className)
-
-		t.classStack.Push(newClass)
-
-		if t.DRClass != nil {
-			mergeChildInto(t.DRClass, newClass, true)
-			//t.DRClass.Children = append(t.DRClass.Children, newClass)
+			t.IsGenericClass = true
 		} else {
-			t.classStack.Push(newClass)
+			t.pushNewClass(className)
 		}
-
-		t.DRClass = newClass
 
 		//t.DRClass.Children = append(t.DRClass.Children, t.DRClass)
 
@@ -116,6 +96,10 @@ func (t *DRArmourParser) EnterEveryRule(ctx antlr.ParserRuleContext) {
 
 	if ctx.GetRuleIndex() == parser.DRConfigParserRULE_parentClass {
 		fqParent := ctx.GetText()
+
+		if t.IsGenericClass {
+			t.pushNewClass(fqParent)
+		}
 
 		split := strings.SplitN(fqParent, ".", 2)
 		parentFile := split[0]
@@ -167,6 +151,21 @@ func (t *DRArmourParser) EnterEveryRule(ctx antlr.ParserRuleContext) {
 	}
 }
 
+func (t *DRArmourParser) pushNewClass(className string) {
+	newClass := database.NewDRClass(className)
+
+	t.classStack.Push(newClass)
+
+	if t.DRClass != nil {
+		mergeChildInto(t.DRClass, newClass, true)
+		//t.DRClass.Children = append(t.DRClass.Children, newClass)
+	} else {
+		t.classStack.Push(newClass)
+	}
+
+	t.DRClass = newClass
+}
+
 func mergeChildInto(base *database.DRClass, newChild *database.DRClass, rightPriority bool) {
 	foundChild := base.Find([]string{newChild.Name})
 
@@ -191,7 +190,6 @@ func mergeProperties(base *database.DRClass, child *database.DRClass) {
 
 func (t *DRArmourParser) ExitEveryRule(ctx antlr.ParserRuleContext) {
 	if ctx.GetRuleIndex() == parser.DRConfigParserRULE_classDef {
-		t.currentHierarchy.Pop()
 	}
 }
 

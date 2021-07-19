@@ -88,7 +88,7 @@ func (p *Avatar) Send(body *byter.Byter) {
 func (p *Avatar) SendFollowClient() {
 	writer := NewClientEntityWriterWithByter()
 	writer.BeginStream()
-	writer.BeginComponentUpdate(p.GetUnitBehaviourID())
+	writer.BeginComponentUpdate(p.GetChildByGCNativeType("UnitBehavior"))
 
 	writer.Body.WriteByte(0x64)
 	writer.Body.WriteByte(0x01)

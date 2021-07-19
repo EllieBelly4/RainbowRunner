@@ -355,6 +355,10 @@ func (b *Byter) Dump() {
 	fmt.Printf("%s\n", hex.Dump(b.Data()))
 }
 
+func (b *Byter) DumpRemaining() {
+	fmt.Printf("%s\n", hex.Dump(b.RemainingBytes()))
+}
+
 func NewByter(buffer []byte) *Byter {
 	return &Byter{
 		Buffer: buffer,
