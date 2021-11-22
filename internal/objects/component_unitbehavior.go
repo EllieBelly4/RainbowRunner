@@ -13,6 +13,7 @@ import (
 )
 
 type UnitBehavior struct {
+	Component
 	*GCObject
 	LastPosition   pkg.Vector3
 	Position       pkg.Vector3
@@ -176,7 +177,7 @@ func (g *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 
 func (g *UnitBehavior) ReadUpdate(reader *byter.Byter) error {
 	subMessage := reader.Byte()
-	switch subMessage {
+	switch int(subMessage) {
 	case 0x01:
 		g.handleClientAttack(reader)
 	case 0x65:

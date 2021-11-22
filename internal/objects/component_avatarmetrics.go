@@ -5,6 +5,7 @@ import (
 )
 
 type AvatarMetrics struct {
+	Component
 	*GCObject
 }
 

@@ -5,6 +5,7 @@ import (
 )
 
 type MonsterBehavior2 struct {
+	Component
 	*UnitBehavior
 }
 

@@ -35,6 +35,11 @@ func (e *Entity) Id() *int32 {
 	return &id
 }
 
+func (e *Entity) OwnerId() *int32 {
+	id := int32(e.obj.RREntityProperties().OwnerID)
+	return &id
+}
+
 func (e *Entity) Children() *[]*Entity {
 	//list := make([]*EntityChildResolver, 0)
 	//

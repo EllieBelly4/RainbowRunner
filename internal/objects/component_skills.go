@@ -5,6 +5,7 @@ import (
 )
 
 type Skills struct {
+	Component
 	*GCObject
 }
 

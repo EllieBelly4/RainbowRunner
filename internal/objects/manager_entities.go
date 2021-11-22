@@ -80,6 +80,19 @@ func (m *EntityManager) RemoveOwnedBy(id int) {
 	m.Unlock()
 }
 
+func (m *EntityManager) GetEntities() []DRObject {
+	m.RLock()
+	defer m.RUnlock()
+
+	list := make([]DRObject, 0)
+
+	for _, entity := range m.Entities {
+		list = append(list, entity)
+	}
+
+	return list
+}
+
 func NewID() (ID uint16) {
 	ID = currentID
 	currentID++

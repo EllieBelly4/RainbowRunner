@@ -5,6 +5,7 @@ import (
 )
 
 type UnitContainer struct {
+	Component
 	*GCObject
 
 	Manipulator DRObject

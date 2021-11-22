@@ -5,6 +5,7 @@ import (
 )
 
 type Manipulators struct {
+	Component
 	*GCObject
 }
 

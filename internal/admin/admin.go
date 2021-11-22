@@ -53,20 +53,20 @@ func HandleRequest(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		var conn *connections.RRConn
-		var ok bool
-
-		if conn, ok = game.Connections[0]; !ok {
-			fmt.Printf("[commander][error] no clients\n")
-			w.WriteHeader(500)
-			return
-		}
+		//var conn *connections.RRConn
+		//var ok bool
+		//
+		//if conn, ok = game.Connections[1]; !ok {
+		//	fmt.Printf("[commander][error] no clients\n")
+		//	w.WriteHeader(500)
+		//	return
+		//}
 
 		var buf []byte
 
 		channel, err := strconv.Atoi(commandRequest.Channel)
 
-		if conn, ok = game.Connections[0]; !ok {
+		if err != nil {
 			fmt.Printf("[commander][error] invalid channel %v\n", channel)
 			w.WriteHeader(500)
 			return
@@ -82,7 +82,10 @@ func HandleRequest(w http.ResponseWriter, req *http.Request) {
 
 		body := byter.NewLEByter(buf)
 		body.WriteBytes(hexData)
-		connections.WriteCompressedA(conn, 0x01, 0x0f, body)
+
+		for _, conn := range game.Connections {
+			connections.WriteCompressedA(conn, 0x01, 0x0f, body)
+		}
 	} else if commandRequest.Type == "cmd" {
 		SendCommand(commandRequest.Command)
 	}

@@ -27,6 +27,10 @@ func (e *Player) Zone() *Zone {
 }
 
 func (e *Player) Name() *string {
+	if e.obj.CurrentCharacter == nil {
+		return nil
+	}
+
 	return &e.obj.CurrentCharacter.Name
 }
 

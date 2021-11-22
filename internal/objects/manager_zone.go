@@ -11,38 +11,64 @@ var Zones = NewZoneManager()
 type Zone struct {
 	sync.RWMutex
 	Name     string
-	Entities map[uint16]DRObject
-	Players  map[uint16]*RRPlayer
+	entities map[uint16]DRObject
+	players  map[uint16]*RRPlayer
+}
+
+func (z *Zone) Entities() []DRObject {
+	z.RLock()
+	defer z.RUnlock()
+
+	l := make([]DRObject, 0)
+
+	for _, drObject := range z.entities {
+		l = append(l, drObject)
+	}
+
+	return l
+}
+
+func (z *Zone) Players() []*RRPlayer {
+	z.RLock()
+	defer z.RUnlock()
+
+	l := make([]*RRPlayer, 0)
+
+	for _, player := range z.players {
+		l = append(l, player)
+	}
+
+	return l
 }
 
 func (z *Zone) RemovePlayer(id int) {
 	z.Lock()
 	defer z.Unlock()
 
-	delete(z.Players, uint16(id))
+	delete(z.players, uint16(id))
 
 	toDelete := make([]uint16, 0, 1024)
 
-	for index, entity := range z.Entities {
+	for index, entity := range z.entities {
 		if entity == nil || entity.RREntityProperties().OwnerID == id {
 			toDelete = append(toDelete, index)
 		}
 	}
 
 	for _, index := range toDelete {
-		z.Entities[index].RREntityProperties().Zone = nil
-		delete(z.Entities, index)
+		z.entities[index].RREntityProperties().Zone = nil
+		delete(z.entities, index)
 	}
 }
 
 func (z *Zone) AddEntity(entity DRObject) {
 	z.setZone(entity)
 
-	z.Entities[entity.RREntityProperties().ID] = entity
+	z.entities[entity.RREntityProperties().ID] = entity
 }
 
 func (z *Zone) AddPlayer(player *RRPlayer) {
-	z.Players[uint16(player.Conn.GetID())] = player
+	z.players[uint16(player.Conn.GetID())] = player
 }
 
 func (z *Zone) Spawn(entity DRObject) {
@@ -58,12 +84,13 @@ func (z *Zone) setZone(entities ...DRObject) {
 }
 
 func (z *Zone) SendToAll(body *byter.Byter) {
-	for _, player := range z.Players {
+	for _, player := range z.players {
 		connections.WriteCompressedASimple(player.Conn, body)
 	}
 }
 
 type ZoneManager struct {
+	sync.RWMutex
 	Zones map[string]*Zone
 }
 
@@ -90,8 +117,8 @@ func (m *ZoneManager) getOrCreateZone(zoneName string) *Zone {
 func (m *ZoneManager) CreateZone(name string) {
 	m.Zones[name] = &Zone{
 		Name:     name,
-		Entities: make(map[uint16]DRObject),
-		Players:  make(map[uint16]*RRPlayer),
+		entities: make(map[uint16]DRObject),
+		players:  make(map[uint16]*RRPlayer),
 	}
 }
 
@@ -102,6 +129,19 @@ func (m *ZoneManager) Spawn(npc *GCObject) {
 
 func (m *ZoneManager) Zone(s string) *Zone {
 	return m.getOrCreateZone(s)
+}
+
+func (m *ZoneManager) GetZones() []*Zone {
+	m.RLock()
+	defer m.RUnlock()
+
+	list := make([]*Zone, 0)
+
+	for _, zone := range m.Zones {
+		list = append(list, zone)
+	}
+
+	return list
 }
 
 func NewZoneManager() *ZoneManager {

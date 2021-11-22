@@ -5,6 +5,7 @@ import (
 )
 
 type Modifiers struct {
+	Component
 	*GCObject
 }
 

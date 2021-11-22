@@ -1,4 +1,3 @@
-// Define a grammar called Hello
 grammar DRConfig;
 
 classDef : STATIC?(classIdentifier) (EXTENDS parentClass)?
@@ -51,5 +50,3 @@ IDENTIFIER : ([a-zA-Z0-9_-]|DOT)+;
 NUMBER : [-]?[0-9.]+;
 ANY: .;
 
-//r  : 'hello' ID ;         // match keyword hello followed by an identifier
-//ID : [a-z]+ ;             // match lower-case identifiers
