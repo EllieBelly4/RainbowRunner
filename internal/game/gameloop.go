@@ -3,10 +3,9 @@ package game
 import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/objects"
+	"RainbowRunner/internal/state"
 	"time"
 )
-
-var Tick = uint(0)
 
 func StartGameLoop(conn *connections.RRConn) {
 	ticker := time.NewTicker(33 * time.Millisecond)
@@ -33,7 +32,7 @@ func StartGameLoop(conn *connections.RRConn) {
 			//mov := conn.Player.LastMovementRequest
 			//SendMoveTo(conn, 0x05, mov.X, mov.Y)
 
-			Tick++
+			state.Tick++
 		}
 	}
 }

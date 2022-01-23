@@ -3,6 +3,8 @@ package game
 import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
+	"RainbowRunner/internal/helpers"
+	"RainbowRunner/internal/logging"
 	"RainbowRunner/internal/objects"
 	"RainbowRunner/internal/types"
 	byter "RainbowRunner/pkg/byter"
@@ -52,7 +54,7 @@ func handleCharacterList(conn *connections.RRConn) {
 		sendPlayer(character, conn.Client, body)
 	}
 
-	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
+	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
 func handleCharacterCreate(conn *connections.RRConn, reader *byter.Byter) {
@@ -74,7 +76,7 @@ func handleCharacterCreate(conn *connections.RRConn, reader *byter.Byter) {
 
 	sendPlayer(loadPlayer(conn.Client), conn.Client, body)
 
-	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
+	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
 func handleCharacterPlay(conn *connections.RRConn, reader *byter.Byter) {
@@ -86,7 +88,7 @@ func handleCharacterPlay(conn *connections.RRConn, reader *byter.Byter) {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.CharacterChannel))
 	body.WriteByte(byte(CharacterPlay))
-	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
+	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
 func handleCharacterConnected(conn *connections.RRConn) {
@@ -104,7 +106,7 @@ func handleCharacterConnected(conn *connections.RRConn) {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.CharacterChannel)) // Character channel
 	body.WriteByte(byte(CharacterConnected))        // Connected
-	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
+	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
 func sendPlayer(character *objects.Player, client *connections.RRConnClient, body *byter.Byter) {
@@ -416,11 +418,14 @@ func AddEquipment(equipment *objects.GCObject, manipulators *objects.GCObject, a
 	manipulators.AddChild(randomHelm)
 	manipulators.AddChild(randomArmour)
 
-	fmt.Printf(`Random equipment for today is:
+	if logging.LoggingOpts.LogRandomEquipment {
+
+		fmt.Printf(`Random equipment for today is:
 Helm: %s
 Armour: %s
 Gloves: %s
 Boots: %s
 Shield: %s
 `, helm, armour, gloves, boots, shield)
+	}
 }

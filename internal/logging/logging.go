@@ -14,14 +14,16 @@ type LoggingOptions struct {
 	LogSmallAs           bool
 	LogHashes            bool
 	LogGCObjectSerialise bool
+	LogRandomEquipment   bool
 }
 
 var LoggingOpts = LoggingOptions{
-	LogMoves:             false,
+	LogMoves:             true,
 	LogSent:              true,
 	LogSmallAs:           false,
 	LogHashes:            false,
 	LogGCObjectSerialise: false,
+	LogRandomEquipment:   false,
 }
 
 func Init() {

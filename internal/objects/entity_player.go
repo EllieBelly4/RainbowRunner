@@ -4,6 +4,7 @@ import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/game/components/behavior"
+	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/types"
 	"RainbowRunner/pkg/byter"
 	"fmt"
@@ -515,7 +516,7 @@ func SendCreateNewPlayerEntity(conn connections.Connection) {
 	//body.WriteUInt32(147200) // HP
 
 	body.WriteByte(70) // Now connected
-	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
+	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
 func getRandomEquipment() []*Equipment {

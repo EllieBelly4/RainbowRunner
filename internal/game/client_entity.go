@@ -3,8 +3,10 @@ package game
 import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
+	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/logging"
 	"RainbowRunner/internal/objects"
+	"RainbowRunner/internal/state"
 	"RainbowRunner/internal/types"
 	"RainbowRunner/pkg/byter"
 	"encoding/hex"
@@ -87,7 +89,7 @@ func handleSelectEquipment(conn *connections.RRConn, reader *byter.Byter) {
 	AddSynch(conn, body)
 	AddEntityUpdateStreamEnd(body)
 
-	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
+	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
 
 	fmt.Printf("Player tried to select equipment in inventory\n%s", hex.Dump(reader.Data()))
 }
@@ -119,7 +121,7 @@ func handleClientEntityUnk4(conn *connections.RRConn, reader *byter.Byter) {
 
 	AddEntityUpdateStreamEnd(body)
 
-	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
+	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
 func addUnitContainerUpdate(body *byter.Byter, ID uint16) {
@@ -153,7 +155,7 @@ func SendMoveTo(conn *connections.RRConn, unk uint8, compID uint16, posX, posY i
 	body := byter.NewLEByter(make([]byte, 0))
 
 	body.WriteByte(byte(messages.ClientEntityChannel))
-	body.WriteByte(0x35)
+	body.WriteByte(0x35)     // MoveTo
 	body.WriteUInt16(compID) // UnitBehavior
 	body.WriteByte(0x04)     // CreateAction1
 	body.WriteByte(0x01)     // MoveTo
@@ -167,9 +169,44 @@ func SendMoveTo(conn *connections.RRConn, unk uint8, compID uint16, posX, posY i
 	//AddSynch(conn, body)
 	AddEntityUpdateStreamEnd(body)
 
-	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
+	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
 
 	if logging.LoggingOpts.LogMoves {
 		fmt.Printf("Send MoveTo %x (%d, %d) (%x, %x)\n", unk, posX, posY, posX, posY)
 	}
+}
+
+// Interval does not seem to be specific to an entity because it sets some global values
+func SendInterval(conn *connections.RRConn) {
+	body := byter.NewLEByter(make([]byte, 0))
+
+	body.WriteByte(byte(messages.ClientEntityChannel))
+	body.WriteByte(0x0D) // IntervalMessage
+
+	// ClientEntityManager::processInterval
+	// Current Server Tick
+	body.WriteInt32(int32(state.Tick)) // Unk - Stored in ClientEntityManager::vftable + 0xa94
+
+	//movement speed increases the lower this is, could be ticks between updates?
+	// Probably tick interval
+	body.WriteInt32(33) // Unk - Stored in ClientEntityManager::vftable + 0xa80 - Affects Frame_or_RNG - tick rate?
+
+	// Seems to be a message queue limit? If this is too low it seems to break smooth movement
+	// 10 = 8 moves per message
+	// 11 = 8 moves per message
+	// 12 = 9 moves per message
+	// 13 = 9 moves per message
+	// 15 = 10 moves per message
+	// 2 = 3 moves per message
+	// Moves per message = max(thisNumber / 3, 3)
+	body.WriteInt32(3) // Unk - Stored in ClientEntityManager::vftable + 0xa84 - Movement prediction buffer/ticks ahead of server?/max ticks behind server
+
+	// PathManager::readBudget
+	body.WriteInt32(0x44444444) // Unk
+	body.WriteUInt16(100)       // Budget Per Update
+	body.WriteUInt16(20)        // Budget Per Path
+
+	AddEntityUpdateStreamEnd(body)
+
+	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
 }

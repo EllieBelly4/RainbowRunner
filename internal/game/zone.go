@@ -4,6 +4,7 @@ import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/components/behavior"
 	"RainbowRunner/internal/game/messages"
+	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/objects"
 	"RainbowRunner/pkg"
 	byter "RainbowRunner/pkg/byter"
@@ -32,7 +33,7 @@ func handleZoneChannelMessages(conn *connections.RRConn, msgSubType uint8, reade
 		body := byter.NewLEByter(make([]byte, 0, 1024))
 		body.WriteByte(byte(messages.ZoneChannel))
 		body.WriteByte(0x08)
-		connections.WriteCompressedA(conn, 0x01, 0x0f, body)
+		helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
 	default:
 		return UnhandledChannelMessageError
 	}
@@ -56,7 +57,7 @@ func handleZoneJoin(conn *connections.RRConn) {
 		body.WriteUInt32(0x01)
 	}
 
-	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
+	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
 
 	body = byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.ZoneChannel))
@@ -65,27 +66,27 @@ func handleZoneJoin(conn *connections.RRConn) {
 	// Adds two separate values into the ZoneClient
 	body.WriteUInt32(0x01)
 	body.WriteUInt32(0x01)
-	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
+	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
 
 	player := objects.Players.Players[conn.GetID()]
 
 	entitiesToSpawn := [][]string{
-		{"npc.Avatar.Female.base.NPC_Amazon1_Base", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-		{"npc.Avatar.Female.Basic.Amazon_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-		{"npc.Avatar.Female.Basic.Fighter_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-		{"npc.Avatar.Female.Basic.Gladiator_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-		{"npc.Avatar.Female.Basic.Mage_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-		{"npc.Avatar.Female.Basic.Mage_002", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-		{"npc.Avatar.Female.Basic.Ninja_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-		{"npc.Avatar.Female.Basic.Officer_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-		{"npc.Avatar.Female.Basic.Ranger_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-		{"npc.Avatar.Female.Basic.Ranger_002", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-		{"npc.Avatar.Female.Basic.Ranger_003", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-		{"npc.Avatar.Female.Basic.Scout_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-		{"world.town.npc.TownCommander", "world.town.npc.TownCommander.Behavior"},
-		{"world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior"},
-		{"world.dungeon16.mob.boss_manager01", "world.dungeon16.mob.boss_manager01.Behavior"},
-		{"world.dungeon15.mob.boss", "world.dungeon15.mob.boss.Behavior"},
+		//{"npc.Avatar.Female.base.NPC_Amazon1_Base", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+		//{"npc.Avatar.Female.Basic.Amazon_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+		//{"npc.Avatar.Female.Basic.Fighter_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+		//{"npc.Avatar.Female.Basic.Gladiator_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+		//{"npc.Avatar.Female.Basic.Mage_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+		//{"npc.Avatar.Female.Basic.Mage_002", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+		//{"npc.Avatar.Female.Basic.Ninja_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+		//{"npc.Avatar.Female.Basic.Officer_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+		//{"npc.Avatar.Female.Basic.Ranger_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+		//{"npc.Avatar.Female.Basic.Ranger_002", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+		//{"npc.Avatar.Female.Basic.Ranger_003", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+		//{"npc.Avatar.Female.Basic.Scout_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+		//{"world.town.npc.TownCommander", "world.town.npc.TownCommander.Behavior"},
+		//{"world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior"},
+		//{"world.dungeon16.mob.boss_manager01", "world.dungeon16.mob.boss_manager01.Behavior"},
+		//{"world.dungeon15.mob.boss", "world.dungeon15.mob.boss.Behavior"},
 	}
 
 	if player.Zone.Name == "town" {
@@ -117,6 +118,8 @@ func handleZoneJoin(conn *connections.RRConn) {
 			Rotation: 90 * math.DRDegToRot,
 		}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
 	}
+
+	SendInterval(conn)
 
 	player.CurrentCharacter.OnZoneJoin()
 
@@ -234,7 +237,7 @@ func createNPC(conn *connections.RRConn, zone *objects.Zone, transform pkg.Trans
 	clientEntityWriter.Init(npc)
 	clientEntityWriter.EndStream()
 
-	connections.WriteCompressedASimple(conn, clientEntityWriter.Body)
+	helpers.WriteCompressedASimple(conn, clientEntityWriter.Body)
 
 	//unitBehavior.Warp(106342, -46263, 12778)
 	//unitBehavior.Warp(0, 0, 0)
@@ -250,5 +253,5 @@ func sendGoToZone(conn *connections.RRConn, body *byter.Byter, zone string) {
 	//body.WriteCString("TheHub")
 	//body.WriteCString("Tutorial")
 	body.WriteCString(zone)
-	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
+	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
 }

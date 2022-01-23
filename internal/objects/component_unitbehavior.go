@@ -3,13 +3,14 @@ package objects
 import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/components/behavior"
+	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/logging"
+	"RainbowRunner/internal/state"
 	"RainbowRunner/pkg"
 	"RainbowRunner/pkg/byter"
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"time"
 )
 
 type UnitBehavior struct {
@@ -72,6 +73,7 @@ func (n *UnitBehavior) WriteInit(b *byter.Byter) {
 	}
 
 	// Set to 2 for waypoints
+	// TODO look into waypoints as movement targets, RTS movement would always be based on waypoints
 	unitMover2 := byte(0) // Could potentially be waypoints?
 
 	b.WriteByte(unitMover2)
@@ -93,6 +95,11 @@ func (n *UnitBehavior) WriteInit(b *byter.Byter) {
 	b.WriteByte(0xFF)
 }
 
+type UnitPathPosition struct {
+	Position pkg.Vector2
+	Rotation int32
+}
+
 func (g *UnitBehavior) handleClientMove(conn connections.Connection, reader *byter.Byter) {
 	// This increments each time the server sends a MoveTo message
 	// The client will then increment by 1 for every individual movement performed (clicking)
@@ -104,11 +111,13 @@ func (g *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 		fmt.Printf("Received %d player moves unk val: %x\n", count, updateNumber)
 	}
 
+	responseMoves := make([]UnitPathPosition, 0)
+
 	avatar := Players.Players[conn.GetID()].CurrentCharacter.GetChildByGCNativeType("Avatar").(*Avatar)
 
 	for i := 0; i < count; i++ {
-		unk := reader.Byte()       // Unk
-		rotation := reader.Int32() // Seems to be rotation
+		moveUpdateType := reader.Byte() // Unk
+		rotation := reader.Int32()      // Seems to be rotation
 
 		//degrees := float32((float64(rotation) / 0x17000) * 360)
 		degrees := float32(rotation / 256)
@@ -120,7 +129,7 @@ func (g *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 		if logging.LoggingOpts.LogMoves {
 			fmt.Printf(
 				"Player move 0x%x rotation 0x%x(%.2fdeg) (%d, %d) Hex (%x, %x)\n",
-				unk, rotation, degrees, pos.X, pos.Y, pos.X, pos.Y,
+				moveUpdateType, rotation, degrees, pos.X, pos.Y, pos.X, pos.Y,
 			)
 		}
 
@@ -134,7 +143,7 @@ func (g *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 		avatar.LastPosition = g.LastPosition
 		avatar.Position = g.Position
 
-		//conn.Player.SendPosition(unk)
+		//conn.Player.SendPosition(moveUpdateType)
 
 		//conn.Player.MoveQueue.Add(MovementUpdate{
 		//	Position: pos,
@@ -142,22 +151,30 @@ func (g *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 		//	Tick:     Tick,
 		//})
 
-		if unk&0x02 > 0 {
+		if moveUpdateType&0x02 > 0 {
 			if logging.LoggingOpts.LogMoves {
 				fmt.Println("player started moving")
 			}
 			avatar.IsMoving = true
 			//conn.Player.SendPosition(0x02)
-		}
-
-		if unk&0x01 > 0 {
+		} else if moveUpdateType&0x01 > 0 {
 			if logging.LoggingOpts.LogMoves {
 				fmt.Println("player finished moving")
 			}
 			avatar.IsMoving = false
-			avatar.SendPosition()
+			//avatar.SendPosition()
 		}
+
+		responseMoves = append(responseMoves, UnitPathPosition{
+			Rotation: rotation,
+			Position: pkg.Vector2{
+				X: pos.X,
+				Y: pos.Y,
+			},
+		})
 	}
+
+	avatar.SendPositions(responseMoves)
 
 	if avatar.MoveUpdate >= 0x2D {
 		//fmt.Printf(
@@ -225,47 +242,57 @@ func (n *UnitBehavior) sendWarpTo(posX, posY, posZ int32) {
 	}
 }
 
-func (n *UnitBehavior) SendPosition() {
+func (n *UnitBehavior) SendPositions(positions []UnitPathPosition) {
+	if len(positions) > 0xFF {
+		panic("cannot send more than 255 position updates in a single message")
+	}
+
 	writer := NewClientEntityWriterWithByter()
 	writer.BeginStream()
 	writer.BeginComponentUpdate(n)
 
 	writer.Body.WriteByte(0x65) // UnitMoverUpdate
 
-	updateCount := 3
-
 	// UnitBehavior::processUpdate
-	writer.Body.WriteByte(0xFF)              // Unk
-	writer.Body.WriteByte(byte(updateCount)) // Update count
+	// Potentially move type? only 0xFF works with players?
+	writer.Body.WriteByte(0xFF) // Unk
+
+	updateCount := byte(len(positions))
+	writer.Body.WriteByte(updateCount) // Update count
 
 	// UnitMoverUpdate::Read
-	//writer.Body.WriteByte(0x08) // Not all values work
-	//writer.Body.WriteByte(0x01) // Not all values work
 
-	for i := 0; i < updateCount; i++ {
-		writer.Body.WriteByte(0x08) // Not all values work
-		writer.Body.WriteInt32(n.Rotation)
-		writer.Body.WriteInt32(n.Position.X)
-		writer.Body.WriteInt32(n.Position.Y)
+	for _, position := range positions {
+		// 0x08 - does not hit any flags
+		// 0x01 - hits 1 flag
+		// 0x02 - hits 1 flag
+		// 0x04 - hits 1 flag BROKEN
+		//
+		// What does it do with this value?
+		// var a = 0x08
+		// var someVal = 0x78 (dynamic?)
+		//
+		// var result = a ^ someVal // 0x70
+		// result = result & 0x07 // 0x00
+		// result = result ^ someVal // 0x78
+		//
+		writer.Body.WriteByte(0x01 | 0x02) // Not all values work
+		writer.Body.WriteInt32(position.Rotation)
+		writer.Body.WriteInt32(position.Position.X)
+		writer.Body.WriteInt32(position.Position.Y)
+
+		degrees := float32((float64(n.Rotation) / 0x17000) * 360)
+
+		if logging.LoggingOpts.LogMoves {
+			fmt.Printf(
+				"Sending move rotation 0x%x(%.2fdeg) (%d, %d) Hex (%x, %x)\n",
+				n.Rotation, degrees, n.Position.X, n.Position.Y, n.Position.X, n.Position.Y,
+			)
+		}
 	}
-
-	//writer.Body.WriteInt32(0)
-	//writer.Body.WriteInt32(0)
-	//writer.Body.WriteInt32(0)
 
 	writer.Body.WriteByte(0x02)
-	writer.Body.WriteUInt32(uint32(time.Now().Unix())) // Random unk value
-
-	//AddSynch(p.Conn, writer.Body)
-
-	degrees := float32((float64(n.Rotation) / 0x17000) * 360)
-
-	if logging.LoggingOpts.LogMoves {
-		fmt.Printf(
-			"Sending move rotation 0x%x(%.2fdeg) (%d, %d) Hex (%x, %x)\n",
-			n.Rotation, degrees, n.Position.X, n.Position.Y, n.Position.X, n.Position.Y,
-		)
-	}
+	writer.Body.WriteUInt32(uint32(state.Tick)) // Random unk value
 
 	writer.EndStream()
 
@@ -298,7 +325,7 @@ func (n *UnitBehavior) handleClientAttack(reader *byter.Byter) {
 	writer.EndComponentUpdate(n)
 	writer.EndStream()
 
-	connections.WriteCompressedASimple(n.RREntityProperties().Conn, writer.Body)
+	helpers.WriteCompressedASimple(n.RREntityProperties().Conn, writer.Body)
 }
 
 func NewUnitBehavior(gcType string) *UnitBehavior {

@@ -1,8 +1,8 @@
 package objects
 
 import (
-	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
+	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/logging"
 	"RainbowRunner/pkg"
 	"RainbowRunner/pkg/byter"
@@ -53,7 +53,8 @@ func (p *Avatar) Tick() {
 		return
 	}
 
-	if p.TicksSinceLastUpdate >= 0x2D {
+	//if p.TicksSinceLastUpdate >= 0x2D {
+	if p.TicksSinceLastUpdate >= 30 {
 		p.SendPosition()
 	}
 
@@ -70,7 +71,12 @@ func (p *Avatar) updated() {
 
 func (p *Avatar) SendPosition() {
 	unitBehavior := p.GetChildByGCNativeType("UnitBehavior").(*UnitBehavior)
-	unitBehavior.SendPosition()
+	unitBehavior.SendPositions([]UnitPathPosition{
+		{
+			Position: p.Position.ToVector2(),
+			Rotation: p.Rotation,
+		},
+	})
 	p.updated()
 	//p.RREntityProperties().Conn.Send(body)
 }
@@ -82,7 +88,7 @@ func (p *Avatar) GetUnitBehaviourID() uint16 {
 }
 
 func (p *Avatar) Send(body *byter.Byter) {
-	connections.WriteCompressedA(p.RREntityProperties().Conn, 0x01, 0x0f, body)
+	helpers.WriteCompressedA(p.RREntityProperties().Conn, 0x01, 0x0f, body)
 }
 
 func (p *Avatar) SendFollowClient() {
@@ -130,11 +136,18 @@ func (p *Avatar) SendMoveTo(unk uint8, compID uint16, posX, posY int32) {
 	// EndStream
 	body.WriteByte(0x06)
 
-	connections.WriteCompressedA(p.RREntityProperties().Conn, 0x01, 0x0f, body)
+	helpers.WriteCompressedA(p.RREntityProperties().Conn, 0x01, 0x0f, body)
 
 	if logging.LoggingOpts.LogMoves {
 		fmt.Printf("Send MoveTo %x (%d, %d) (%x, %x)\n", unk, posX, posY, posX, posY)
 	}
 
 	p.updated()
+}
+
+func (p *Avatar) SendPositions(positions []UnitPathPosition) {
+	unitBehavior := p.GetChildByGCNativeType("UnitBehavior").(*UnitBehavior)
+	unitBehavior.SendPositions(positions)
+	p.updated()
+	//p.RREntityProperties().Conn.Send(body)
 }

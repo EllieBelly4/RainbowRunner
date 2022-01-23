@@ -1,7 +1,7 @@
 package objects
 
 import (
-	"RainbowRunner/internal/connections"
+	"RainbowRunner/internal/helpers"
 	"RainbowRunner/pkg/byter"
 	"sync"
 )
@@ -85,7 +85,7 @@ func (z *Zone) setZone(entities ...DRObject) {
 
 func (z *Zone) SendToAll(body *byter.Byter) {
 	for _, player := range z.players {
-		connections.WriteCompressedASimple(player.Conn, body)
+		helpers.WriteCompressedASimple(player.Conn, body)
 	}
 }
 

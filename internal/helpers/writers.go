@@ -1,6 +1,7 @@
-package connections
+package helpers
 
 import (
+	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/logging"
 	"RainbowRunner/pkg/byter"
@@ -12,11 +13,11 @@ import (
 	"runtime"
 )
 
-func WriteCompressedASimple(conn Connection, b *byter.Byter) {
+func WriteCompressedASimple(conn connections.Connection, b *byter.Byter) {
 	WriteCompressedA(conn, 0x01, 0x0f, b)
 }
 
-func WriteCompressedA(conn Connection, dest uint8, messageType uint8, body *byter.Byter) {
+func WriteCompressedA(conn connections.Connection, dest uint8, messageType uint8, body *byter.Byter) {
 	response := byter.NewLEByter(make([]byte, 0, 7))
 
 	var b bytes.Buffer

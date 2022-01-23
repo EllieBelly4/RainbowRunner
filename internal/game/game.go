@@ -2,6 +2,7 @@ package game
 
 import (
 	"RainbowRunner/internal/connections"
+	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/logging"
 	"RainbowRunner/internal/objects"
 	"RainbowRunner/pkg/byter"
@@ -116,10 +117,10 @@ func readPacket(conn *connections.RRConn, reader *byter.Byter) {
 			body.WriteUInt24(0xB2B3B4)
 			// Unk
 			body.WriteByte(0x00)
-			connections.WriteCompressedA(conn, 0x00, 0x03, body)
+			helpers.WriteCompressedA(conn, 0x00, 0x03, body)
 		} else if msgTypeA == 0x02 {
 			body := byter.NewLEByter(make([]byte, 0, 1024))
-			connections.WriteCompressedA(conn, 0x00, 0x02, body)
+			helpers.WriteCompressedA(conn, 0x00, 0x02, body)
 		} else {
 			panic(fmt.Sprintf("Unhandled 0x0a message type %x", msgTypeA))
 		}
