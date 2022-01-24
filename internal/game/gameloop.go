@@ -1,26 +1,28 @@
 package game
 
 import (
-	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/objects"
 	"RainbowRunner/internal/state"
 	"time"
 )
 
-// TODO fix this so we dont have 1 loop per person
-func StartGameLoop(conn *connections.RRConn) {
+func StartGameLoop() {
 	ticker := time.NewTicker(33 * time.Millisecond)
 	defer ticker.Stop()
 
-	for conn.IsConnected {
+	for {
 		select {
 		case <-ticker.C:
+			objects.Players.RLock()
 			objects.Players.BeforeTick()
-
 			objects.Entities.Tick()
-			conn.Client.Tick()
+
+			for _, player := range objects.Players.Players {
+				player.Conn.Client.Tick()
+			}
 
 			objects.Players.AfterTick()
+			objects.Players.RUnlock()
 
 			//if conn.Player.IsMoving {
 			//	conn.Player.SendPosition()

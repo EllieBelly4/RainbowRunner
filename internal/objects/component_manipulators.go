@@ -5,8 +5,7 @@ import (
 )
 
 type Manipulators struct {
-	Component
-	*GCObject
+	*Component
 }
 
 func (n *Manipulators) WriteInit(b *byter.Byter) {
@@ -15,10 +14,9 @@ func (n *Manipulators) WriteInit(b *byter.Byter) {
 }
 
 func NewManipulators(gcType string) *Manipulators {
-	gcObject := NewGCObject("Manipulators")
-	gcObject.GCType = gcType
+	component := NewComponent(gcType, "Manipulators")
 
 	return &Manipulators{
-		GCObject: gcObject,
+		Component: component,
 	}
 }

@@ -30,6 +30,8 @@ func StartGameServer() {
 		}
 	}()
 
+	go StartGameLoop()
+
 	for {
 		conn, err := listen.Accept()
 
@@ -68,8 +70,6 @@ func handleConnection(conn net.Conn) {
 			panic(err)
 		}
 	}(conn)
-
-	go StartGameLoop(rrconn)
 
 	for {
 		read, err := conn.Read(buf)

@@ -6,6 +6,10 @@ type QuestManager struct {
 	*GCObject
 }
 
+func (q QuestManager) Type() DRObjectType {
+	return DRObjectManager
+}
+
 func NewQuestManager() *QuestManager {
 	q := &QuestManager{
 		GCObject: NewGCObject("QuestManager"),

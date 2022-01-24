@@ -21,6 +21,10 @@ type Avatar struct {
 	IsSpawned            bool
 }
 
+func (p *Avatar) Type() DRObjectType {
+	return DRObjectOther
+}
+
 func NewAvatar(gcType string) *Avatar {
 	a := &Avatar{
 		GCObject: NewGCObject("Avatar"),

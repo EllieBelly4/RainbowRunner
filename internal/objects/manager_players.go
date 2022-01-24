@@ -36,6 +36,9 @@ func (m *PlayerManager) GetPlayers() []*RRPlayer {
 }
 
 func (m *PlayerManager) Register(rrconn *connections.RRConn) *RRPlayer {
+	m.Lock()
+	defer m.Unlock()
+
 	rrPlayer := &RRPlayer{
 		Conn:               rrconn,
 		ClientEntityWriter: NewClientEntityWriterWithByter(),
@@ -47,8 +50,8 @@ func (m *PlayerManager) Register(rrconn *connections.RRConn) *RRPlayer {
 }
 
 func (m *PlayerManager) OnDisconnect(id int) {
-	m.RLock()
-	defer m.RUnlock()
+	m.Lock()
+	defer m.Unlock()
 
 	fmt.Printf("Player %d Disconnected\n", id)
 	if player, ok := Players.Players[id]; ok {
@@ -68,6 +71,7 @@ func (m *PlayerManager) GetPlayer(id uint16) *RRPlayer {
 
 func (m *PlayerManager) AfterTick() {
 	for _, player := range m.Players {
+		//TODO improve this it's horrible but it works
 		if player.ClientEntityWriter.IsDirty() {
 			player.ClientEntityWriter.EndStream()
 			helpers.WriteCompressedASimple(player.Conn, player.ClientEntityWriter.GetBody())

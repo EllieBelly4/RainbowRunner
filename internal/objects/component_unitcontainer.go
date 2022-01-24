@@ -5,8 +5,7 @@ import (
 )
 
 type UnitContainer struct {
-	Component
-	*GCObject
+	*Component
 
 	Manipulator DRObject
 }
@@ -18,7 +17,7 @@ func (a UnitContainer) WriteFullGCObject(byter *byter.Byter) {
 }
 
 func NewUnitContainer(manipulator DRObject, name string) *UnitContainer {
-	container := NewGCObject("UnitContainer")
+	container := NewComponent("unitcontainer", "UnitContainer")
 	container.GCName = name
 
 	if manipulator.RREntityProperties().ID == 0 {
@@ -26,7 +25,7 @@ func NewUnitContainer(manipulator DRObject, name string) *UnitContainer {
 	}
 
 	return &UnitContainer{
-		GCObject:    container,
+		Component:   container,
 		Manipulator: manipulator,
 	}
 }

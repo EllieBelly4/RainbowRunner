@@ -5,8 +5,7 @@ import (
 )
 
 type Skills struct {
-	Component
-	*GCObject
+	*Component
 }
 
 func (n *Skills) WriteInit(b *byter.Byter) {
@@ -43,10 +42,9 @@ func (n *Skills) WriteInit(b *byter.Byter) {
 }
 
 func NewSkills(gcType string) *Skills {
-	gcObject := NewGCObject("Skills")
-	gcObject.GCType = gcType
+	component := NewComponent(gcType, "Skills")
 
 	return &Skills{
-		GCObject: gcObject,
+		Component: component,
 	}
 }

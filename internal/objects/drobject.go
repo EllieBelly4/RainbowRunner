@@ -4,6 +4,16 @@ import (
 	"RainbowRunner/pkg/byter"
 )
 
+type DRObjectType int
+
+const (
+	DRObjectEntity DRObjectType = iota
+	DRObjectComponent
+	DRObjectOther
+	DRObjectManager
+	DRObjectUnknown
+)
+
 type DRObject interface {
 	RREntityProperties() *RREntityProperties
 
@@ -18,6 +28,8 @@ type DRObject interface {
 	Children() []DRObject
 	GetChildByGCType(s string) DRObject
 	GetChildByGCNativeType(s string) DRObject
+
+	Type() DRObjectType
 
 	GetGCObject() *GCObject
 	Tick()

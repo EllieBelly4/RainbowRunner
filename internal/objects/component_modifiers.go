@@ -5,8 +5,7 @@ import (
 )
 
 type Modifiers struct {
-	Component
-	*GCObject
+	*Component
 }
 
 func (n *Modifiers) WriteInit(b *byter.Byter) {
@@ -19,10 +18,9 @@ func (n *Modifiers) WriteInit(b *byter.Byter) {
 }
 
 func NewModifiers(gcType string) *Modifiers {
-	gcObject := NewGCObject("Modifiers")
-	gcObject.GCType = gcType
+	component := NewComponent(gcType, "Modifiers")
 
 	return &Modifiers{
-		GCObject: gcObject,
+		Component: component,
 	}
 }

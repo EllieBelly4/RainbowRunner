@@ -5,8 +5,7 @@ import (
 )
 
 type AvatarMetrics struct {
-	Component
-	*GCObject
+	*Component
 }
 
 func (a AvatarMetrics) WriteFullGCObject(byter *byter.Byter) {
@@ -46,10 +45,10 @@ func (a AvatarMetrics) WriteFullGCObject(byter *byter.Byter) {
 }
 
 func NewAvatarMetrics(id uint32, name string) *AvatarMetrics {
-	metrics := NewGCObject("AvatarMetrics")
-	metrics.GCName = name
+	component := NewComponent("avatarmetrics", "AvatarMetrics")
+	component.GCName = name
 
 	return &AvatarMetrics{
-		GCObject: metrics,
+		Component: component,
 	}
 }

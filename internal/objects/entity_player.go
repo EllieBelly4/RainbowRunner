@@ -18,6 +18,10 @@ type Player struct {
 	CurrentHP uint32
 }
 
+func (p *Player) Type() DRObjectType {
+	return DRObjectOther
+}
+
 func (p *Player) WriteInit(b *byter.Byter) {
 	// Init PLAYER /////////////////////////////////////////
 	b.WriteCString("Ellie")

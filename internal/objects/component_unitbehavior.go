@@ -13,8 +13,7 @@ import (
 )
 
 type UnitBehavior struct {
-	Component
-	*GCObject
+	*Component
 	LastPosition   pkg.Vector3
 	Position       pkg.Vector3
 	Rotation       int32
@@ -339,11 +338,10 @@ func (n *UnitBehavior) handleClientAttack(reader *byter.Byter) {
 }
 
 func NewUnitBehavior(gcType string) *UnitBehavior {
-	gcObject := NewGCObject("UnitBehavior")
-	gcObject.GCType = gcType
-	gcObject.EntityHandler = &UnitBehaviorHandler{}
+	component := NewComponent(gcType, "UnitBehavior")
+	component.EntityHandler = &UnitBehaviorHandler{}
 
 	return &UnitBehavior{
-		GCObject: gcObject,
+		Component: component,
 	}
 }

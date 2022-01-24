@@ -71,7 +71,7 @@ func handleZoneJoin(conn *connections.RRConn) {
 	player := objects.Players.Players[conn.GetID()]
 
 	entitiesToSpawn := [][]string{
-		//{"npc.Avatar.Female.base.NPC_Amazon1_Base", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+		{"npc.Avatar.Female.base.NPC_Amazon1_Base", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
 		//{"npc.Avatar.Female.Basic.Amazon_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
 		//{"npc.Avatar.Female.Basic.Fighter_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
 		//{"npc.Avatar.Female.Basic.Gladiator_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
@@ -195,7 +195,7 @@ func handleZoneJoin(conn *connections.RRConn) {
 }
 
 func createNPC(conn *connections.RRConn, zone *objects.Zone, transform pkg.Transform, npcType, behaviourType string) {
-	npc := objects.NewNPC(npcType)
+	npc := objects.NewNPC(npcType, behaviourType, transform.Position, transform.Rotation)
 
 	npc.WorldPosition = transform.Position
 	npc.Rotation = transform.Rotation

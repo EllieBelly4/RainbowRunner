@@ -34,6 +34,14 @@ func (w *ClientEntityWriter) Create(object DRObject) {
 	w.Body.WriteUInt16(object.RREntityProperties().ID) // Entity ID
 	w.Body.WriteByte(byte(GCObjectLookupTypeString))
 	w.Body.WriteCString(object.GetGCObject().GCType)
+
+	//TODO get this to work, it's a good idea I think but it causes errors
+	//for _, child := range object.Children() {
+	//	if child.Type() == DRObjectComponent {
+	//		fmt.Printf(child.GetGCObject().GCType + "\n")
+	//		w.CreateComponent(child, object)
+	//	}
+	//}
 }
 
 func (w *ClientEntityWriter) Init(object DRObject) {

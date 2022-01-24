@@ -13,13 +13,17 @@ import (
 
 type query struct{}
 
-func (_ *query) GetZones() *types.ZoneCollection {
-	//zone := &objects.Zone{
-	//	Name: "townston",
-	//}
-	//
-	//zones := types.NewZoneCollection([]*types.Zone{types.NewZone(zone)})
+//
+//func (_ *query) CreateEntity() *types.Entity {
+//	createNPC(conn, player.Zone, pkg.Transform{
+//		Position: pkg.Vector3{106342 + 2048*int32(i), -36000, 12778},
+//		Rotation: 180 * math.DRDegToRot,
+//	}, entityStrings[0], entityStrings[1])
+//
+//	return types.NewEntity()
+//}
 
+func (_ *query) GetZones() *types.ZoneCollection {
 	list := make([]*types.Zone, 0)
 
 	for _, zone := range objects.Zones.GetZones() {
@@ -30,16 +34,6 @@ func (_ *query) GetZones() *types.ZoneCollection {
 }
 
 func (_ *query) GetEntities() *types.EntityCollection {
-	//avatar := objects.NewAvatar("avatar")
-	//
-	//avatar.RREntityProperties().ID = 12
-	//avatar.RREntityProperties().OwnerID = 1
-	//avatar.RREntityProperties().Zone = &objects.Zone{
-	//	Name: "townston",
-	//}
-	//
-	//return types.NewEntityCollection([]*types.Entity{types.NewEntity(avatar)})
-
 	list := make([]*types.Entity, 0)
 
 	for _, entity := range objects.Entities.GetEntities() {
@@ -50,34 +44,6 @@ func (_ *query) GetEntities() *types.EntityCollection {
 }
 
 func (_ *query) GetPlayers() *types.PlayerCollection {
-	//player := objects.NewPlayer("Ellie")
-	//
-	//player.RREntityProperties().ID = 12
-	//
-	//zone := &objects.Zone{
-	//	Name: "townston",
-	//}
-	//
-	//player.RREntityProperties().Zone = zone
-	//
-	//avatar := objects.NewAvatar("avatar")
-	//
-	//component := objects.NewUnitBehavior("unitbehavior")
-	//avatar.AddChild(component)
-	//
-	//player.AddChild(avatar)
-	//
-	//rrPlayer := &objects.RRPlayer{
-	//	Conn: &connections.RRConn{
-	//		Client: &connections.RRConnClient{
-	//			ID: 1,
-	//		},
-	//	},
-	//	CurrentCharacter: player,
-	//	Zone:             zone,
-	//}
-	//
-	//return types.NewPlayerCollection([]*types.Player{types.NewPlayer(rrPlayer)})
 	list := make([]*types.Player, 0)
 
 	for _, p := range objects.Players.GetPlayers() {
@@ -93,6 +59,10 @@ type Query {
 	getEntities: EntityCollection
 	getPlayers: PlayerCollection
 }
+
+//type Mutation {
+//	createEntity() : Entity
+//}
 
 type EntityCollection {
 	entities: [Entity]
@@ -175,9 +145,17 @@ func NewMyHandler(s *graphql.Schema) *MyHandler {
 	return h
 }
 
+type SchemaHandler struct {
+}
+
+func (s SchemaHandler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
+	writer.Write([]byte(schema))
+}
+
 func StartGraphqlAPI() {
 	opts := []graphql.SchemaOpt{graphql.UseFieldResolvers()}
 	schema := graphql.MustParseSchema(schema, &query{}, opts...)
 	http.Handle("/query", NewMyHandler(schema))
+	http.Handle("/schema", SchemaHandler{})
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

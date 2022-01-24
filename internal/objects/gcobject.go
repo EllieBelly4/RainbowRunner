@@ -29,6 +29,10 @@ type GCObject struct {
 	EntityHandler    EntityMessageHandler
 }
 
+func (g *GCObject) Type() DRObjectType {
+	return DRObjectUnknown
+}
+
 func (g *GCObject) ID() uint16 {
 	return g.EntityProperties.ID
 }
@@ -51,7 +55,7 @@ func (g *GCObject) GetGCObject() *GCObject {
 }
 
 func (g *GCObject) WriteInit(b *byter.Byter) {
-	fmt.Printf("GCObject init for %s (%s: %s) not implemented but ignoring", g.GCName, g.GCType, g.GCNativeType)
+	fmt.Printf("GCObject init for %s (%s: %s) not implemented but ignoring\n", g.GCName, g.GCType, g.GCNativeType)
 }
 
 func (g *GCObject) WriteUpdate(b *byter.Byter) {

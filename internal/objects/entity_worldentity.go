@@ -13,6 +13,10 @@ type WorldEntity struct {
 	WorldEntityInitFlags byte
 }
 
+func (n *WorldEntity) Type() DRObjectType {
+	return DRObjectEntity
+}
+
 func (n *WorldEntity) WriteInit(b *byter.Byter) {
 	//WorldEntity::readInit
 	// Flags
