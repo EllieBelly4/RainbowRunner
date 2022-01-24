@@ -58,6 +58,10 @@ func (g *GCObject) WriteUpdate(b *byter.Byter) {
 	panic("implement me")
 }
 
+func (g *GCObject) OwnerID() int {
+	return g.EntityProperties.OwnerID
+}
+
 func (g *GCObject) Children() []DRObject {
 	return g.children
 }

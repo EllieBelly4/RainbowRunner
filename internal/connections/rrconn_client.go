@@ -25,11 +25,13 @@ func (p *RRConnClient) Send(b *byter.Byter) error {
 	return err
 }
 
-func NewRRConnClient(ID int, conn *RRConn) (p *RRConnClient) {
+func NewRRConnClient(
+	ID int,
+	conn *RRConn,
+) (p *RRConnClient) {
 	p = &RRConnClient{
-		ID:        ID,
-		Conn:      conn,
-		MoveQueue: datatypes.NewMovementUpdateQueue(1024),
+		ID:   ID,
+		Conn: conn,
 	}
 
 	return
@@ -38,4 +40,5 @@ func NewRRConnClient(ID int, conn *RRConn) (p *RRConnClient) {
 //CrashLog: ClientEntityManager::processComponentUpdate ERROR: Invalid ComponentID(5) from server. UpdateID(100)
 
 func (p *RRConnClient) Tick() {
+
 }

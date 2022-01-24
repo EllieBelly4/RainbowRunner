@@ -6,7 +6,7 @@ import (
 	"sync"
 )
 
-var Entities = NewEntityManager()
+var Entities *EntityManager
 
 // Reserving 10 IDs for player characters
 var currentID = uint16(10)
@@ -45,6 +45,7 @@ func (m *EntityManager) RegisterAll(owner connections.Connection, objects ...DRO
 func (m *EntityManager) Tick() {
 	m.RLock()
 	defer m.RUnlock()
+
 	for _, entity := range m.Entities {
 		entity.Tick()
 	}

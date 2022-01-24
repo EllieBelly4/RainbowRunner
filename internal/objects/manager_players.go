@@ -2,6 +2,7 @@ package objects
 
 import (
 	"RainbowRunner/internal/connections"
+	"RainbowRunner/internal/helpers"
 	"fmt"
 	"sync"
 )
@@ -9,10 +10,11 @@ import (
 var Players = NewPlayerManager()
 
 type RRPlayer struct {
-	Conn             *connections.RRConn
-	CurrentCharacter *Player
-	Characters       []*Player
-	Zone             *Zone
+	Conn               *connections.RRConn
+	CurrentCharacter   *Player
+	Characters         []*Player
+	Zone               *Zone
+	ClientEntityWriter *ClientEntityWriter
 }
 
 type PlayerManager struct {
@@ -35,7 +37,8 @@ func (m *PlayerManager) GetPlayers() []*RRPlayer {
 
 func (m *PlayerManager) Register(rrconn *connections.RRConn) *RRPlayer {
 	rrPlayer := &RRPlayer{
-		Conn: rrconn,
+		Conn:               rrconn,
+		ClientEntityWriter: NewClientEntityWriterWithByter(),
 	}
 
 	m.Players[rrconn.Client.ID] = rrPlayer
@@ -57,6 +60,27 @@ func (m *PlayerManager) OnDisconnect(id int) {
 	Entities.RemoveOwnedBy(id)
 
 	delete(Players.Players, id)
+}
+
+func (m *PlayerManager) GetPlayer(id uint16) *RRPlayer {
+	return m.Players[int(id)]
+}
+
+func (m *PlayerManager) AfterTick() {
+	for _, player := range m.Players {
+		if player.ClientEntityWriter.IsDirty() {
+			player.ClientEntityWriter.EndStream()
+			helpers.WriteCompressedASimple(player.Conn, player.ClientEntityWriter.GetBody())
+		}
+
+		player.ClientEntityWriter.Clear()
+	}
+}
+
+func (m *PlayerManager) BeforeTick() {
+	for _, player := range m.Players {
+		player.ClientEntityWriter.BeginStream()
+	}
 }
 
 func NewPlayerManager() *PlayerManager {

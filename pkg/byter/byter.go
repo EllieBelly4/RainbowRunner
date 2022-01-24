@@ -297,6 +297,10 @@ func (b *Byter) RemainingBytes() []byte {
 	return b.Bytes(len(b.Buffer) - b.I)
 }
 
+func (b *Byter) HasWrittenData() bool {
+	return len(b.Buffer) > 0
+}
+
 func (b *Byter) HasRemainingData() bool {
 	return len(b.Buffer)-b.I > 1
 }

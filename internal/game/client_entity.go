@@ -187,9 +187,7 @@ func SendInterval(conn *connections.RRConn) {
 	// Current Server Tick
 	body.WriteInt32(int32(state.Tick)) // Unk - Stored in ClientEntityManager::vftable + 0xa94
 
-	//movement speed increases the lower this is, could be ticks between updates?
-	// Probably tick interval
-	body.WriteInt32(33) // Unk - Stored in ClientEntityManager::vftable + 0xa80 - Affects Frame_or_RNG - tick rate?
+	body.WriteInt32(33) // TickInterval - Stored in ClientEntityManager::vftable + 0xa80
 
 	// Seems to be a message queue limit? If this is too low it seems to break smooth movement
 	// 10 = 8 moves per message
@@ -199,12 +197,12 @@ func SendInterval(conn *connections.RRConn) {
 	// 15 = 10 moves per message
 	// 2 = 3 moves per message
 	// Moves per message = max(thisNumber / 3, 3)
-	body.WriteInt32(3) // Unk - Stored in ClientEntityManager::vftable + 0xa84 - Movement prediction buffer/ticks ahead of server?/max ticks behind server
+	body.WriteInt32(0) // Unk - Stored in ClientEntityManager::vftable + 0xa84 - Movement prediction buffer/ticks ahead of server?/max ticks behind server
 
 	// PathManager::readBudget
-	body.WriteInt32(0x44444444) // Unk
-	body.WriteUInt16(100)       // Budget Per Update
-	body.WriteUInt16(20)        // Budget Per Path
+	body.WriteInt32(0)    // Unk
+	body.WriteUInt16(100) // Budget Per Update
+	body.WriteUInt16(20)  // Budget Per Path
 
 	AddEntityUpdateStreamEnd(body)
 

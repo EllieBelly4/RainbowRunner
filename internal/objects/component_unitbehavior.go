@@ -5,7 +5,6 @@ import (
 	"RainbowRunner/internal/game/components/behavior"
 	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/logging"
-	"RainbowRunner/internal/state"
 	"RainbowRunner/pkg"
 	"RainbowRunner/pkg/byter"
 	"encoding/hex"
@@ -25,7 +24,7 @@ type UnitBehavior struct {
 }
 
 type UnitBehaviorHandler struct {
-	Behaviour *UnitBehavior
+	*UnitBehavior
 }
 
 func (u *UnitBehaviorHandler) WriteInit(b *byter.Byter) {
@@ -34,6 +33,78 @@ func (u *UnitBehaviorHandler) WriteInit(b *byter.Byter) {
 
 func (u *UnitBehaviorHandler) WriteUpdate(b *byter.Byter) {
 	u.WriteUpdate(b)
+}
+
+func (u *UnitBehavior) WriteMoveUpdate(b *byter.Byter) {
+	positions := []UnitPathPosition{
+		{
+			Position: u.Position.ToVector2(),
+			Rotation: u.Rotation,
+		},
+	}
+
+	if len(positions) > 0xFF {
+		panic("cannot send more than 255 position updates in a single message")
+	}
+
+	//writer := NewClientEntityWriterWithByter()
+	//writer.BeginStream()
+	//writer.BeginComponentUpdate(n)
+
+	b.WriteByte(0x65) // UnitMoverUpdate
+
+	// UnitBehavior::processUpdate
+	// Potentially move type? only 0xFF works with players?
+	b.WriteByte(0xFF) // Unk
+
+	updateCount := byte(len(positions))
+	b.WriteByte(updateCount) // Update count
+
+	// UnitMoverUpdate::Read
+
+	for _, position := range positions {
+		// 0x08 - does not hit any flags
+		// 0x01 - hits 1 flag
+		// 0x02 - hits 1 flag
+		// 0x04 - hits 1 flag BROKEN
+		//
+		// What does it do with this value?
+		// var a = 0x08
+		// var someVal = 0x78 (dynamic?)
+		//
+		// var result = a ^ someVal // 0x70
+		// result = result & 0x07 // 0x00
+		// result = result ^ someVal // 0x78
+		//
+		b.WriteByte(0x01 | 0x02) // Not all values work
+		b.WriteInt32(position.Rotation)
+		b.WriteInt32(position.Position.X)
+		b.WriteInt32(position.Position.Y)
+
+		degrees := float32((float64(position.Rotation) / 0x17000) * 360)
+
+		if logging.LoggingOpts.LogMoves && logging.LoggingOpts.LogSent {
+			fmt.Printf(
+				"Sending move rotation 0x%x(%.2fdeg) (%d, %d) Hex (%x, %x)\n",
+				position.Rotation, degrees, position.Position.X, position.Position.Y, position.Position.X, position.Position.Y,
+			)
+		}
+	}
+
+	//b.WriteByte(0x02)
+	//b.WriteUInt32(uint32(state.Tick)) // Random unk value
+
+	oldLog := logging.LoggingOpts.LogSent
+
+	if !logging.LoggingOpts.LogMoves {
+		logging.LoggingOpts.LogSent = false
+	}
+
+	//if n.RREntityProperties().Zone != nil {
+	//	n.RREntityProperties().Zone.SendToAll(b)
+	//}
+
+	logging.LoggingOpts.LogSent = oldLog
 }
 
 func (u *UnitBehaviorHandler) WriteSynch(b *byter.Byter) {
@@ -174,7 +245,8 @@ func (g *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 		})
 	}
 
-	avatar.SendPositions(responseMoves)
+	//TODO replace this
+	//avatar.SendPositions(responseMoves)
 
 	if avatar.MoveUpdate >= 0x2D {
 		//fmt.Printf(
@@ -203,7 +275,8 @@ func (g *UnitBehavior) ReadUpdate(reader *byter.Byter) error {
 	case 0x03:
 		fmt.Printf("player send move request\n")
 		// This is required to be handled so the player can move after getting stuck due to attacking
-		Players.Players[g.RREntityProperties().Conn.GetID()].CurrentCharacter.GetChildByGCNativeType("Avatar").(*Avatar).SendPosition()
+		// TODO investigate this behaviour
+		//Players.Players[g.RREntityProperties().Conn.GetID()].CurrentCharacter.GetChildByGCNativeType("Avatar").(*Avatar).SendPosition()
 	default:
 		fmt.Printf("unhandled client entity sub message %x\n", subMessage)
 		return errors.New("unhandled unitbehavior update\n")
@@ -242,72 +315,9 @@ func (n *UnitBehavior) sendWarpTo(posX, posY, posZ int32) {
 	}
 }
 
-func (n *UnitBehavior) SendPositions(positions []UnitPathPosition) {
-	if len(positions) > 0xFF {
-		panic("cannot send more than 255 position updates in a single message")
-	}
-
-	writer := NewClientEntityWriterWithByter()
-	writer.BeginStream()
-	writer.BeginComponentUpdate(n)
-
-	writer.Body.WriteByte(0x65) // UnitMoverUpdate
-
-	// UnitBehavior::processUpdate
-	// Potentially move type? only 0xFF works with players?
-	writer.Body.WriteByte(0xFF) // Unk
-
-	updateCount := byte(len(positions))
-	writer.Body.WriteByte(updateCount) // Update count
-
-	// UnitMoverUpdate::Read
-
-	for _, position := range positions {
-		// 0x08 - does not hit any flags
-		// 0x01 - hits 1 flag
-		// 0x02 - hits 1 flag
-		// 0x04 - hits 1 flag BROKEN
-		//
-		// What does it do with this value?
-		// var a = 0x08
-		// var someVal = 0x78 (dynamic?)
-		//
-		// var result = a ^ someVal // 0x70
-		// result = result & 0x07 // 0x00
-		// result = result ^ someVal // 0x78
-		//
-		writer.Body.WriteByte(0x01 | 0x02) // Not all values work
-		writer.Body.WriteInt32(position.Rotation)
-		writer.Body.WriteInt32(position.Position.X)
-		writer.Body.WriteInt32(position.Position.Y)
-
-		degrees := float32((float64(n.Rotation) / 0x17000) * 360)
-
-		if logging.LoggingOpts.LogMoves {
-			fmt.Printf(
-				"Sending move rotation 0x%x(%.2fdeg) (%d, %d) Hex (%x, %x)\n",
-				n.Rotation, degrees, n.Position.X, n.Position.Y, n.Position.X, n.Position.Y,
-			)
-		}
-	}
-
-	writer.Body.WriteByte(0x02)
-	writer.Body.WriteUInt32(uint32(state.Tick)) // Random unk value
-
-	writer.EndStream()
-
-	oldLog := logging.LoggingOpts.LogSent
-
-	if !logging.LoggingOpts.LogMoves {
-		logging.LoggingOpts.LogSent = false
-	}
-
-	if n.RREntityProperties().Zone != nil {
-		n.RREntityProperties().Zone.SendToAll(writer.Body)
-	}
-
-	logging.LoggingOpts.LogSent = oldLog
-}
+//func (n *UnitBehavior) SendPositions(positions []UnitPathPosition) {
+//
+//}
 
 func (n *UnitBehavior) handleClientAttack(reader *byter.Byter) {
 	reader.DumpRemaining()

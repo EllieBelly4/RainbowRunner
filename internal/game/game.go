@@ -15,6 +15,8 @@ import (
 var Connections = make(map[int]*connections.RRConn)
 
 func StartGameServer() {
+	objects.Entities = objects.NewEntityManager()
+
 	listen, err := net.Listen("tcp", "0.0.0.0:2603")
 
 	if err != nil {
@@ -50,7 +52,10 @@ func handleConnection(conn net.Conn) {
 		IsConnected: true,
 	}
 
-	rrconn.Client = connections.NewRRConnClient(1, rrconn)
+	rrconn.Client = connections.NewRRConnClient(
+		1,
+		rrconn,
+	)
 	objects.Players.Register(rrconn)
 
 	Connections[rrconn.Client.ID] = rrconn

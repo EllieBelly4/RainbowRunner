@@ -32,19 +32,19 @@ func NewAvatar(gcType string) *Avatar {
 	return a
 }
 
-func (a *Avatar) WriteFullGCObject(byter *byter.Byter) {
+func (p *Avatar) WriteFullGCObject(byter *byter.Byter) {
 	//p.Properties = []GCObjectProperty{
 	//	StringProp("Name", p.Name),
 	//}
 
-	a.GCObject.WriteFullGCObject(byter)
+	p.GCObject.WriteFullGCObject(byter)
 }
 
-func (a Avatar) WriteInit(b *byter.Byter) {
+func (p Avatar) WriteInit(b *byter.Byter) {
 	panic("implement me")
 }
 
-func (a Avatar) WriteUpdate(b *byter.Byter) {
+func (p Avatar) WriteUpdate(b *byter.Byter) {
 	panic("implement me")
 }
 
@@ -54,13 +54,19 @@ func (p *Avatar) Tick() {
 	}
 
 	//if p.TicksSinceLastUpdate >= 0x2D {
-	if p.TicksSinceLastUpdate >= 30 {
-		p.SendPosition()
-	}
+	//if p.TicksSinceLastUpdate >= 30 {
+	//	p.SendPosition()
+	//}
 
 	//if p.IsMoving {
 	//p.SendPosition()
 	//}
+
+	player := Players.GetPlayer(uint16(p.OwnerID()))
+	unitBehavior := p.GetChildByGCNativeType("UnitBehavior").(*UnitBehavior)
+	player.ClientEntityWriter.BeginComponentUpdate(unitBehavior)
+	unitBehavior.WriteMoveUpdate(player.ClientEntityWriter.GetBody())
+	player.ClientEntityWriter.EndComponentUpdate(unitBehavior)
 
 	p.TicksSinceLastUpdate++
 }
@@ -69,17 +75,17 @@ func (p *Avatar) updated() {
 	p.TicksSinceLastUpdate = 0
 }
 
-func (p *Avatar) SendPosition() {
-	unitBehavior := p.GetChildByGCNativeType("UnitBehavior").(*UnitBehavior)
-	unitBehavior.SendPositions([]UnitPathPosition{
-		{
-			Position: p.Position.ToVector2(),
-			Rotation: p.Rotation,
-		},
-	})
-	p.updated()
-	//p.RREntityProperties().Conn.Send(body)
-}
+//func (p *Avatar) SendPosition() {
+//	unitBehavior := p.GetChildByGCNativeType("UnitBehavior").(*UnitBehavior)
+//	unitBehavior.SendPositions([]UnitPathPosition{
+//		{
+//			Position: p.Position.ToVector2(),
+//			Rotation: p.Rotation,
+//		},
+//	})
+//	p.updated()
+//	//p.RREntityProperties().Conn.Send(body)
+//}
 
 func (p *Avatar) GetUnitBehaviourID() uint16 {
 	unitContainer := p.GetChildByGCNativeType("UnitBehavior")
@@ -145,9 +151,9 @@ func (p *Avatar) SendMoveTo(unk uint8, compID uint16, posX, posY int32) {
 	p.updated()
 }
 
-func (p *Avatar) SendPositions(positions []UnitPathPosition) {
-	unitBehavior := p.GetChildByGCNativeType("UnitBehavior").(*UnitBehavior)
-	unitBehavior.SendPositions(positions)
-	p.updated()
-	//p.RREntityProperties().Conn.Send(body)
-}
+//func (p *Avatar) SendPositions(positions []UnitPathPosition) {
+//	unitBehavior := p.GetChildByGCNativeType("UnitBehavior").(*UnitBehavior)
+//	unitBehavior.SendPositions(positions)
+//	p.updated()
+//	//p.RREntityProperties().Conn.Send(body)
+//}

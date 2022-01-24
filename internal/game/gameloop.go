@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// TODO fix this so we dont have 1 loop per person
 func StartGameLoop(conn *connections.RRConn) {
 	ticker := time.NewTicker(33 * time.Millisecond)
 	defer ticker.Stop()
@@ -14,9 +15,12 @@ func StartGameLoop(conn *connections.RRConn) {
 	for conn.IsConnected {
 		select {
 		case <-ticker.C:
-			objects.Entities.Tick()
+			objects.Players.BeforeTick()
 
+			objects.Entities.Tick()
 			conn.Client.Tick()
+
+			objects.Players.AfterTick()
 
 			//if conn.Player.IsMoving {
 			//	conn.Player.SendPosition()

@@ -1,6 +1,8 @@
 package types
 
-import "RainbowRunner/internal/objects"
+import (
+	"RainbowRunner/internal/objects"
+)
 
 type EntityCollection struct {
 	entities []*Entity

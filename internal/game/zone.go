@@ -150,10 +150,10 @@ func handleZoneJoin(conn *connections.RRConn) {
 	avatar := objects.Players.Players[conn.GetID()].CurrentCharacter.GetChildByGCNativeType("Avatar").(*objects.Avatar)
 	if rrPlayer.Zone.Name == "town" {
 		avatar.Warp(106342, -46263, 12778)
-		avatar.SendPosition()
+		//avatar.SendPosition()
 	} else if rrPlayer.Zone.Name == "dungeon16_level00" {
 		avatar.Warp(0, 0, 15000)
-		avatar.SendPosition()
+		//avatar.SendPosition()
 	}
 
 	avatar.SendFollowClient()

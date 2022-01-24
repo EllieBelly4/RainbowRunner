@@ -18,7 +18,8 @@ const (
 )
 
 type ClientEntityWriter struct {
-	Body *byter.Byter
+	Body  *byter.Byter
+	dirty bool
 }
 
 func (w *ClientEntityWriter) BeginStream() {
@@ -26,6 +27,8 @@ func (w *ClientEntityWriter) BeginStream() {
 }
 
 func (w *ClientEntityWriter) Create(object DRObject) {
+	w.dirty = true
+
 	w.Body.WriteByte(0x01) // Create
 
 	w.Body.WriteUInt16(object.RREntityProperties().ID) // Entity ID
@@ -34,6 +37,8 @@ func (w *ClientEntityWriter) Create(object DRObject) {
 }
 
 func (w *ClientEntityWriter) Init(object DRObject) {
+	w.dirty = true
+
 	w.Body.WriteByte(0x02) // Init
 	w.Body.WriteUInt16(object.RREntityProperties().ID)
 
@@ -41,6 +46,8 @@ func (w *ClientEntityWriter) Init(object DRObject) {
 }
 
 func (w *ClientEntityWriter) CreateComponent(component DRObject, targetEntity DRObject) {
+	w.dirty = true
+
 	w.Body.WriteByte(0x32)                                   // Create Component
 	w.Body.WriteUInt16(targetEntity.RREntityProperties().ID) // Parent Entity ID
 	w.Body.WriteUInt16(component.RREntityProperties().ID)    // Component ID
@@ -52,6 +59,8 @@ func (w *ClientEntityWriter) CreateComponent(component DRObject, targetEntity DR
 }
 
 func (w *ClientEntityWriter) Update(object DRObject) {
+	w.dirty = true
+
 	w.Body.WriteByte(0x03)                             // MsgType Update
 	w.Body.WriteUInt16(object.RREntityProperties().ID) // Entity ID
 
@@ -63,11 +72,15 @@ func (w *ClientEntityWriter) Update(object DRObject) {
 }
 
 func (w *ClientEntityWriter) BeginComponentUpdate(object DRObject) {
+	w.dirty = true
+
 	w.Body.WriteByte(0x35)                             // ComponentUpdate
 	w.Body.WriteUInt16(object.RREntityProperties().ID) // ComponentID
 }
 
 func (w *ClientEntityWriter) EndComponentUpdate(object DRObject) {
+	w.dirty = true
+
 	w.WriteSynch(object)
 }
 
@@ -76,7 +89,27 @@ func (w *ClientEntityWriter) EndStream() {
 }
 
 func (w *ClientEntityWriter) WriteSynch(object DRObject) {
+	w.dirty = true
+
 	object.WriteSynch(w.Body)
+}
+
+func (w *ClientEntityWriter) Clear() {
+	w.dirty = false
+
+	w.Body.Clear()
+}
+
+func (w *ClientEntityWriter) HasData() bool {
+	return w.Body.HasWrittenData()
+}
+
+func (w *ClientEntityWriter) GetBody() *byter.Byter {
+	return w.Body
+}
+
+func (w *ClientEntityWriter) IsDirty() bool {
+	return w.dirty
 }
 
 func NewClientEntityWriter(b *byter.Byter) *ClientEntityWriter {
