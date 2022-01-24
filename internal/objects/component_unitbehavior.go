@@ -91,7 +91,7 @@ func (u *UnitBehavior) WriteMoveUpdate(b *byter.Byter) {
 	}
 
 	//b.WriteByte(0x02)
-	//b.WriteUInt32(uint32(state.Tick)) // Random unk value
+	//b.WriteUInt32(uint32(global.Tick)) // Random unk value
 
 	oldLog := logging.LoggingOpts.LogSent
 

@@ -1,7 +1,6 @@
 package objects
 
 import (
-	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/game/components/behavior"
 	"RainbowRunner/internal/helpers"
@@ -74,15 +73,17 @@ func (p *Player) WriteSynch(b *byter.Byter) {
 	b.WriteUInt32(p.CurrentHP)
 }
 
-func (p *Player) OnZoneJoin() {
-	SendCreateNewPlayerEntity(p.RREntityProperties().Conn)
+func (p *Player) OnZoneJoin(rrPlayer *RRPlayer) {
+	SendCreateNewPlayerEntity(rrPlayer, p)
 }
 
-func SendCreateNewPlayerEntity(conn connections.Connection) {
+func SendCreateNewPlayerEntity(rrplayer *RRPlayer, p *Player) {
+	//clientEntityWriter := rrplayer.ClientEntityWriter
 	equippedItems := getRandomEquipment()
 
 	body := byter.NewLEByter(make([]byte, 0, 2048))
 
+	conn := p.RREntityProperties().Conn
 	player := Players.Players[conn.GetID()].CurrentCharacter
 	clientEntityWriter := NewClientEntityWriter(body)
 	clientEntityWriter.BeginStream()

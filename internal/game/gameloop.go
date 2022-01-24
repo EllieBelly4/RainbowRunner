@@ -1,10 +1,14 @@
 package game
 
 import (
+	"RainbowRunner/internal/global"
 	"RainbowRunner/internal/objects"
-	"RainbowRunner/internal/state"
+	"RainbowRunner/pkg"
+	"RainbowRunner/pkg/math"
 	"time"
 )
+
+var i = 1
 
 func StartGameLoop() {
 	ticker := time.NewTicker(33 * time.Millisecond)
@@ -15,7 +19,24 @@ func StartGameLoop() {
 		case <-ticker.C:
 			objects.Players.RLock()
 			objects.Players.BeforeTick()
+
+			for !global.JobQueue.Empty() {
+				job := global.JobQueue.Dequeue()
+				job()
+			}
+
 			objects.Entities.Tick()
+
+			if global.Tick%150 == 0 {
+				for _, player := range objects.Players.Players {
+					objects.CreateNPC(player, player.Zone, pkg.Transform{
+						Position: pkg.Vector3{106342 + 2048*int32(i), -36000, 12778},
+						Rotation: 180 * math.DRDegToRot,
+					}, "npc.Avatar.Female.base.NPC_Amazon1_Base", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior")
+				}
+
+				i++
+			}
 
 			for _, player := range objects.Players.Players {
 				player.Conn.Client.Tick()
@@ -38,7 +59,7 @@ func StartGameLoop() {
 			//mov := conn.Player.LastMovementRequest
 			//SendMoveTo(conn, 0x05, mov.X, mov.Y)
 
-			state.Tick++
+			global.Tick++
 		}
 	}
 }

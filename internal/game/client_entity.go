@@ -3,10 +3,10 @@ package game
 import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
+	"RainbowRunner/internal/global"
 	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/logging"
 	"RainbowRunner/internal/objects"
-	"RainbowRunner/internal/state"
 	"RainbowRunner/internal/types"
 	"RainbowRunner/pkg/byter"
 	"encoding/hex"
@@ -185,7 +185,7 @@ func SendInterval(conn *connections.RRConn) {
 
 	// ClientEntityManager::processInterval
 	// Current Server Tick
-	body.WriteInt32(int32(state.Tick)) // Unk - Stored in ClientEntityManager::vftable + 0xa94
+	body.WriteInt32(int32(global.Tick)) // Unk - Stored in ClientEntityManager::vftable + 0xa94
 
 	body.WriteInt32(33) // TickInterval - Stored in ClientEntityManager::vftable + 0xa80
 
