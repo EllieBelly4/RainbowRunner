@@ -4,7 +4,6 @@ import (
 	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/game/components/behavior"
 	"RainbowRunner/internal/helpers"
-	"RainbowRunner/internal/types"
 	"RainbowRunner/pkg/byter"
 	"fmt"
 	"math/rand"
@@ -97,6 +96,10 @@ func SendCreateNewPlayerEntity(rrplayer *RRPlayer, p *Player) {
 	clientEntityWriter.Init(p)
 	clientEntityWriter.Update(p)
 
+	//creatures.humanoid.base.MeleeBase.Manipulators
+	//avatar.base.Equipment
+	//2HMace5PAL.2HMace5-7
+	//ScaleModPAL.Rare.Mod1
 	// MANIPULATORS //////////////////////////////////
 	addCreateComponent(body, avatar.RREntityProperties().ID, NewID(), "creatures.humanoid.base.MeleeBase.Manipulators")
 
@@ -159,15 +162,14 @@ func SendCreateNewPlayerEntity(rrplayer *RRPlayer, p *Player) {
 	body.WriteUInt32(1)
 	body.WriteByte(0x03) // Inventory Count?
 
-	body.WriteByte(0xFF)
-	body.WriteCString("avatar.base.Inventory")
-	body.WriteByte(0x01)
-	body.WriteByte(0x01)
+	baseInventory := unitContainer.GetChildByGCType("avatar.base.Inventory")
+	baseInventory.WriteInit(clientEntityWriter.Body)
 
-	// GCObject::ReadChildData<Item>()
-	inventoryItemCount := 0x01
-	body.WriteByte(byte(inventoryItemCount)) // Item count?
-	AddInventoryItem(body, "PlateMythicPAL.PlateMythicBoots1", 0, 0, "PlateMythicPAL.PlateMythicBoots1.Mod1")
+	bankInventory := unitContainer.GetChildByGCType("avatar.base.Bank")
+	bankInventory.WriteInit(clientEntityWriter.Body)
+
+	tradeInventory := unitContainer.GetChildByGCType("avatar.base.TradeInventory")
+	tradeInventory.WriteInit(clientEntityWriter.Body)
 
 	// Items with PAL seem to be for players
 	//for i := 0; i < inventoryItemCount; i++ {
@@ -176,20 +178,6 @@ func SendCreateNewPlayerEntity(rrplayer *RRPlayer, p *Player) {
 	//AddInventoryItem(body, "CrystalHelm1PAL.CrystalHelm1-1", 2, 0)
 	//AddInventoryItem(body, "CrystalMythicPAL.CrystalMythicArmor2", 2, 0)
 	//}
-
-	body.WriteByte(0xFF)
-	body.WriteCString("avatar.base.TradeInventory")
-	body.WriteByte(0x01)
-	body.WriteByte(0x01)
-	// GCObject::ReadChildData<Item>()
-	body.WriteByte(0x00) // Item count?
-
-	body.WriteByte(0xFF)
-	body.WriteCString("avatar.base.Bank")
-	body.WriteByte(0x01)
-	body.WriteByte(0x01)
-	// GCObject::ReadChildData<Item>()
-	body.WriteByte(0x00) // Item count?
 
 	// UnitContainer::readInit()
 	body.WriteByte(0x00) // If >0 it tries to read more, something to do with item
@@ -626,12 +614,12 @@ func getRandomEquipment() []*Equipment {
 	//LeatherBoots1PAL.LeatherBoots1-10
 	//2HPickMythicPAL.2HPickMythic1
 
-	equippedItems = append(equippedItems, AddRandomEquipment(database.Helmets, EquipmentItemArmour))
-	equippedItems = append(equippedItems, AddRandomEquipment(database.Armours, EquipmentItemArmour))
-	equippedItems = append(equippedItems, AddRandomEquipment(database.Gloves, EquipmentItemArmour))
-	equippedItems = append(equippedItems, AddRandomEquipment(database.Boots, EquipmentItemArmour))
+	equippedItems = append(equippedItems, AddRandomEquipment(database.Helmets, ItemArmour))
+	equippedItems = append(equippedItems, AddRandomEquipment(database.Armours, ItemArmour))
+	equippedItems = append(equippedItems, AddRandomEquipment(database.Gloves, ItemArmour))
+	equippedItems = append(equippedItems, AddRandomEquipment(database.Boots, ItemArmour))
 
-	equippedItems = append(equippedItems, AddRandomEquipment(database.MeleeWeapons, EquipmentItemMeleeWeapon))
+	equippedItems = append(equippedItems, AddRandomEquipment(database.MeleeWeapons, ItemMeleeWeapon))
 	//equippedItems = append(equippedItems, addRandomEquipment(database.RangedWeapons, EquipmentItemRangedWeapon))
 
 	//randomArmour := database.Armours[int(r.Int63())%len(database.Armours)]
@@ -712,113 +700,113 @@ func NewPlayer(name string) (p *Player) {
 	return
 }
 
-func AddEquippedItem(
-	body *byter.Byter,
-	item string,
-	slot types.EquipmentSlot,
-	armour bool,
-	mod string,
-) {
-	body.WriteByte(0xFF) // GetType
-	body.WriteCString(item)
-
-	// Item::readData
-	body.WriteUInt32(uint32(slot))
-	body.WriteByte(0xF0)
-	body.WriteByte(0xF0)
-	body.WriteByte(0x01)   // Item count
-	body.WriteByte(50 + 5) // Required level + 5
-
-	// Flag?
-	// 0x01 - Soulbound in 9 minutes, no idea where the time comes from
-	// 0x02 - Not Sellable
-	// 0x04 - +0x01 = Soulbound timer
-	// 0x08 - Requires Membership
-	itemFlag := 0x01 | 0x04 | 0x08
-
-	body.WriteByte(byte(itemFlag))
-
-	if itemFlag&0x04 > 0 {
-		// Soulbind time
-		// Minutes * 0x800 max 9
-		body.WriteUInt16(0x800 * 7)
-	}
-
-	if item == "LeatherArmor1PAL.LeatherArmor1-1" || item == "ScaleArmor1PAL.ScaleArmor1-1" {
-		// Required modifiers?
-		// ItemModifier?
-		itemModifierFlag1 := 0x01 | 0x02
-
-		body.WriteByte(byte(itemModifierFlag1))
-
-		if itemModifierFlag1&0x01 > 0 {
-			body.WriteByte(0xFF)
-		}
-
-		if itemModifierFlag1&0x02 > 0 {
-			body.WriteUInt32(0xFFFFFFFF)
-		}
-
-		//if mod != "" {
-		// GCObject::readChildData<ItemModifier>
-		body.WriteByte(0x01) // Count
-
-		body.WriteByte(0xFF)
-		body.WriteCString(mod)
-
-		// ItemModifier?
-		itemModifierFlag := 0x01 | 0x02
-
-		body.WriteByte(byte(itemModifierFlag))
-
-		if itemModifierFlag&0x01 > 0 {
-			body.WriteByte(0x15)
-		}
-
-		if itemModifierFlag&0x02 > 0 {
-			body.WriteUInt32(0x11111111)
-		}
-		//} else {
-		//	body.WriteByte(0x00) // Count
-		//}
-	} else if item == "PlateMythicPAL.PlateMythicArmor1" || item == "PlateMythicPAL.PlateMythicBoots1" {
-		// Required modifiers?
-		// ItemModifier?
-		itemModifierFlag1 := 0x00
-
-		// Each item has different numbers of required modifiers
-		for i := 0; i < 5; i++ {
-			body.WriteByte(byte(itemModifierFlag1))
-
-			if itemModifierFlag1&0x01 > 0 {
-				body.WriteByte(0xFF)
-			}
-
-			if itemModifierFlag1&0x02 > 0 {
-				body.WriteUInt32(0xFFFFFFFF)
-			}
-		}
-
-		//if mod != "" {
-		// GCObject::readChildData<ItemModifier>
-		body.WriteByte(0x01) // Count
-
-		body.WriteByte(0xFF)
-		body.WriteCString(mod)
-
-		// ItemModifier?
-		itemModifierFlag := 0x01 | 0x02
-
-		body.WriteByte(byte(itemModifierFlag))
-
-		if itemModifierFlag&0x01 > 0 {
-			body.WriteByte(0x15)
-		}
-
-		if itemModifierFlag&0x02 > 0 {
-			body.WriteUInt32(0x11111111)
-		}
-	} else {
-		panic("unhandled equipment")
-	}
-}
+//func AddEquippedItem(
+//	body *byter.Byter,
+//	item string,
+//	slot types.EquipmentSlot,
+//	armour bool,
+//	mod string,
+//) {
+//	body.WriteByte(0xFF) // GetType
+//	body.WriteCString(item)
+//
+//	// Item::readData
+//	body.WriteUInt32(uint32(slot))
+//	body.WriteByte(0xF0)
+//	body.WriteByte(0xF0)
+//	body.WriteByte(0x01)   // Item count
+//	body.WriteByte(50 + 5) // Required level + 5
+//
+//	// Flag?
+//	// 0x01 - Soulbound in 9 minutes, no idea where the time comes from
+//	// 0x02 - Not Sellable
+//	// 0x04 - +0x01 = Soulbound timer
+//	// 0x08 - Requires Membership
+//	itemFlag := 0x01 | 0x04 | 0x08
+//
+//	body.WriteByte(byte(itemFlag))
+//
+//	if itemFlag&0x04 > 0 {
+//		// Soulbind time
+//		// Minutes * 0x800 max 9
+//		body.WriteUInt16(0x800 * 7)
+//	}
+//
+//	if item == "LeatherArmor1PAL.LeatherArmor1-1" || item == "ScaleArmor1PAL.ScaleArmor1-1" {
+//		// Required modifiers?
+//		// ItemModifier?
+//		itemModifierFlag1 := 0x01 | 0x02
+//
+//		body.WriteByte(byte(itemModifierFlag1))
+//
+//		if itemModifierFlag1&0x01 > 0 {
+//			body.WriteByte(0xFF)
+//		}
+//
+//		if itemModifierFlag1&0x02 > 0 {
+//			body.WriteUInt32(0xFFFFFFFF)
+//		}
+//
+//		//if mod != "" {
+//		// GCObject::readChildData<ItemModifier>
+//		body.WriteByte(0x01) // Count
+//
+//		body.WriteByte(0xFF)
+//		body.WriteCString(mod)
+//
+//		// ItemModifier?
+//		itemModifierFlag := 0x01 | 0x02
+//
+//		body.WriteByte(byte(itemModifierFlag))
+//
+//		if itemModifierFlag&0x01 > 0 {
+//			body.WriteByte(0x15)
+//		}
+//
+//		if itemModifierFlag&0x02 > 0 {
+//			body.WriteUInt32(0x11111111)
+//		}
+//		//} else {
+//		//	body.WriteByte(0x00) // Count
+//		//}
+//	} else if item == "PlateMythicPAL.PlateMythicArmor1" || item == "PlateMythicPAL.PlateMythicBoots1" {
+//		// Required modifiers?
+//		// ItemModifier?
+//		itemModifierFlag1 := 0x00
+//
+//		// Each item has different numbers of required modifiers
+//		for i := 0; i < 5; i++ {
+//			body.WriteByte(byte(itemModifierFlag1))
+//
+//			if itemModifierFlag1&0x01 > 0 {
+//				body.WriteByte(0xFF)
+//			}
+//
+//			if itemModifierFlag1&0x02 > 0 {
+//				body.WriteUInt32(0xFFFFFFFF)
+//			}
+//		}
+//
+//		//if mod != "" {
+//		// GCObject::readChildData<ItemModifier>
+//		body.WriteByte(0x01) // Count
+//
+//		body.WriteByte(0xFF)
+//		body.WriteCString(mod)
+//
+//		// ItemModifier?
+//		itemModifierFlag := 0x01 | 0x02
+//
+//		body.WriteByte(byte(itemModifierFlag))
+//
+//		if itemModifierFlag&0x01 > 0 {
+//			body.WriteByte(0x15)
+//		}
+//
+//		if itemModifierFlag&0x02 > 0 {
+//			body.WriteUInt32(0x11111111)
+//		}
+//	} else {
+//		panic("unhandled equipment")
+//	}
+//}

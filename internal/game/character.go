@@ -240,9 +240,9 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	//.text:0058E550     ; struct DFCClass *__thiscall Armor::getClass(Armor *__hidden this)
 	//.text:0058E550 000 mov     eax, ?Class@Armor@@2PAVDFCClass@@A ; DFCClass * Armor::Class
 
-	weapon := objects.NewGCObject("MeleeWeapon")
-	weapon.GCType = "1HSwordMythicPAL.1HSwordMythic6"
-	weapon.GCName = "EllieWeapon"
+	//weapon := objects.NewGCObject("MeleeWeapon")
+	//weapon.GCType = "1HSwordMythicPAL.1HSwordMythic6"
+	//weapon.GCName = "EllieWeapon"
 
 	//weaponDesc := objects.NewGCObject("MeleeWeaponDesc")
 	//weaponDesc.GCType = "1HMace1PAL.1HMace1-1.Description"
@@ -269,13 +269,20 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	//unitContainer.GCType = "unitcontainer"
 	//unitContainer.Name = "EllieUnitContainer"
 
-	baseInventory := objects.NewGCObject("Inventory")
+	baseInventory := objects.NewInventory("Inventory")
 	baseInventory.GCType = "avatar.base.Inventory"
 	baseInventory.GCName = "EllieBaseInventory"
 
-	bankInventory := objects.NewGCObject("Inventory")
+	randomItem := objects.NewEquipment("PlateMythicPAL.PlateMythicBoots1", "PlateMythicPAL.PlateMythicBoots1.Mod1", objects.ItemArmour, types.EquipmentSlotFoot)
+	baseInventory.AddChild(randomItem)
+
+	bankInventory := objects.NewInventory("Inventory")
 	bankInventory.GCType = "avatar.base.Bank"
 	bankInventory.GCName = "EllieBankInventory"
+
+	tradeInventory := objects.NewInventory("Inventory")
+	tradeInventory.GCType = "avatar.base.TradeInventory"
+	tradeInventory.GCName = "EllieTradeInventory"
 
 	manipulators := objects.NewGCObject("Manipulators")
 	manipulators.GCName = "ManipulateMe"
@@ -294,36 +301,8 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 		"CrystalMythicPAL.CrystalMythicShield1",
 	)
 
-	//armor := objects.NewGCObject("Armor")
-	//armor.GCType = "PlateMythicPAL.PlateMythicArmor5"
-	//armor.GCName = "EllieArmour"
-
 	//manipulators.AddChild(armor)
-	manipulators.AddChild(weapon)
-
-	//armorSlot := objects.NewGCObject("EquipmentSlot")
-	//armorSlot.GCType = "avatar.base.Equipment.Description.Armor"
-	//armorSlot.Name = "EquipmentSlot6"
-	//
-	//armorSlot.Properties = []objects.GCObjectProperty{
-	//	objects.Uint32Prop("SlotID", uint32(EquipmentSlotTorso)),
-	//}
-
-	//armorSlotDesc := objects.NewGCObject("equipmentdesc")
-	//armorSlotDesc.GCType = "avatar.base.Equipment.Description.Armor"
-	//armorSlotDesc.Name = "EquipmentSlot6Desc"
-	//
-	//armorSlot.AddChild(armorSlotDesc)
-	//armorSlot.AddChild(armor)
-	//armor.AddChild(armorSlot)
-
-	//avatarEquipment.AddChild(armor)
-
-	//armorVisual := objects.NewGCObject("MountedVisual")
-	//armorVisual.GCType = "avatar.races.humanfemale.HumanFemaleVisuals.ChainArmor1.Torso"
-	//armorVisual.Name = "EllieArmorVisual"
-	//
-	//avatar.AddChild(armorVisual)
+	//manipulators.AddChild(weapon)
 
 	slot := objects.NewGCObject("EquipmentSlot")
 	slot.GCType = "avatar.base.Equipment.Description.PrimaryWeaponSlot"
@@ -334,27 +313,6 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 		objects.Uint32Prop("SlotType", uint32(types.EquipmentSlotWeapon)),
 		objects.Uint32Prop("DefaultItem", 0xAAAABBBB),
 	}
-
-	//0xbbc86ef4
-	//slot6 := objects.NewGCObject("EquipmentSlot")
-	//slot6.GCType = "avatar.base.Equipment.Description.Armor"
-	//slot6.Name = "EllieArmorSlot"
-
-	//slot6.Properties = []objects.GCObjectProperty{
-	//	objects.Uint32Prop("SlotID", uint32(EquipmentSlotTorso)),
-	//	objects.Uint32Prop("SlotType", uint32(EquipmentSlotTorso)),
-	//	//objects.Uint32Prop("DefaultItem", 0x01),
-	//}
-	//
-
-	//slot6.AddChild(armor)
-	//slot.AddChild(weapon)
-	//
-	//avatarEquipment.AddChild(weapon)
-	//avatar.AddChild(slot6)
-
-	//avatar.AddChild(slot)
-	//avatar.AddChild(slot6)
 
 	//avatarDesc.Properties = []objects.GCObjectProperty{
 	//	objects.StringProp("PVEStartSpawnPoint", "Start"),
@@ -368,8 +326,9 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 
 	unitContainer.AddChild(baseInventory)
 	unitContainer.AddChild(bankInventory)
+	unitContainer.AddChild(tradeInventory)
 
-	avatarEquipment.AddChild(weapon)
+	//avatarEquipment.AddChild(weapon)
 	//avatarEquipment.AddChild(armor)
 
 	//avatar.AddChild(visual)
@@ -387,19 +346,19 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 }
 
 func AddEquipment(equipment objects.DRObject, manipulators *objects.GCObject, armour string, boots string, helm string, gloves string, shield string) {
-	randomArmour := objects.AddRandomEquipment(database.Armours, objects.EquipmentItemArmour)
+	randomArmour := objects.AddRandomEquipment(database.Armours, objects.ItemArmour)
 	randomArmour.GCName = "EllieArmour"
 
-	randomBoots := objects.AddRandomEquipment(database.Boots, objects.EquipmentItemArmour)
+	randomBoots := objects.AddRandomEquipment(database.Boots, objects.ItemArmour)
 	randomBoots.GCName = "EllieArmour"
 
-	randomHelm := objects.AddRandomEquipment(database.Helmets, objects.EquipmentItemArmour)
+	randomHelm := objects.AddRandomEquipment(database.Helmets, objects.ItemArmour)
 	randomHelm.GCName = "EllieArmour"
 
-	randomGloves := objects.AddRandomEquipment(database.Gloves, objects.EquipmentItemArmour)
+	randomGloves := objects.AddRandomEquipment(database.Gloves, objects.ItemArmour)
 	randomGloves.GCName = "EllieArmour"
 
-	randomWeapon := objects.AddRandomEquipment(database.MeleeWeapons, objects.EquipmentItemMeleeWeapon)
+	randomWeapon := objects.AddRandomEquipment(database.MeleeWeapons, objects.ItemMeleeWeapon)
 	randomWeapon.GCName = "EllieWeapon"
 
 	//if len(shield) > 0 {
@@ -424,7 +383,6 @@ func AddEquipment(equipment objects.DRObject, manipulators *objects.GCObject, ar
 	manipulators.AddChild(randomWeapon)
 
 	if logging.LoggingOpts.LogRandomEquipment {
-
 		fmt.Printf(`Random equipment for today is:
 Helm: %s
 Armour: %s

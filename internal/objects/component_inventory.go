@@ -4,6 +4,35 @@ import (
 	byter "RainbowRunner/pkg/byter"
 )
 
+type Inventory struct {
+	*GCObject
+}
+
+func (i *Inventory) WriteInit(body *byter.Byter) {
+	body.WriteByte(0xFF)
+	body.WriteCString(i.GCType)
+	body.WriteByte(0x01)
+	body.WriteByte(0x01)
+
+	// GCObject::ReadChildData<Item>()
+	body.WriteByte(byte(len(i.Children())))
+
+	for _, item := range i.Children() {
+		item.WriteInit(body)
+	}
+
+	//AddInventoryItem(body, "PlateMythicPAL.PlateMythicBoots1", 0, 0, "PlateMythicPAL.PlateMythicBoots1.Mod1")
+}
+
+func NewInventory(gcType string) *Inventory {
+	gcObject := NewGCObject("Inventory")
+	gcObject.GCType = gcType
+
+	return &Inventory{
+		GCObject: gcObject,
+	}
+}
+
 // 0x00 None
 // 0x01 Amulet
 // 0x02 Hand

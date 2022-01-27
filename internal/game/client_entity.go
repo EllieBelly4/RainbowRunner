@@ -7,9 +7,7 @@ import (
 	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/logging"
 	"RainbowRunner/internal/objects"
-	"RainbowRunner/internal/types"
 	"RainbowRunner/pkg/byter"
-	"encoding/hex"
 	"fmt"
 )
 
@@ -78,26 +76,26 @@ func handleClientEntityChannelMessages(conn *connections.RRConn, msgType byte, r
 	return nil
 }
 
-func handleSelectEquipment(conn *connections.RRConn, reader *byter.Byter) {
-	body := byter.NewLEByter(make([]byte, 0, 1024))
-
-	body.WriteByte(byte(messages.ClientEntityChannel))
-	body.WriteByte(0x35) // ComponentUpdate
-
-	equipID := objects.Players.Players[conn.GetID()].CurrentCharacter.GetChildByGCNativeType("Avatar").GetChildByGCNativeType("Equipment").RREntityProperties().ID
-
-	body.WriteUInt16(equipID) // Equipment ComponentID
-	body.WriteByte(0x28)      // Add item
-
-	objects.AddEquippedItem(body, "PlateMythicPAL.PlateMythicBoots1", types.EquipmentSlotFoot, true, "PlateMythicPAL.PlateMythicBoots1.Mod1")
-
-	AddSynch(conn, body)
-	AddEntityUpdateStreamEnd(body)
-
-	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
-
-	fmt.Printf("Player tried to select equipment in inventory\n%s", hex.Dump(reader.Data()))
-}
+//func handleSelectEquipment(conn *connections.RRConn, reader *byter.Byter) {
+//	body := byter.NewLEByter(make([]byte, 0, 1024))
+//
+//	body.WriteByte(byte(messages.ClientEntityChannel))
+//	body.WriteByte(0x35) // ComponentUpdate
+//
+//	equipID := objects.Players.Players[conn.GetID()].CurrentCharacter.GetChildByGCNativeType("Avatar").GetChildByGCNativeType("Equipment").RREntityProperties().ID
+//
+//	body.WriteUInt16(equipID) // Equipment ComponentID
+//	body.WriteByte(0x28)      // Add item
+//
+//	objects.AddEquippedItem(body, "PlateMythicPAL.PlateMythicBoots1", types.EquipmentSlotFoot, true, "PlateMythicPAL.PlateMythicBoots1.Mod1")
+//
+//	AddSynch(conn, body)
+//	AddEntityUpdateStreamEnd(body)
+//
+//	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
+//
+//	fmt.Printf("Player tried to select equipment in inventory\n%s", hex.Dump(reader.Data()))
+//}
 
 func handleClientEntityUnk4(conn *connections.RRConn, reader *byter.Byter) {
 	id := reader.UInt16()
