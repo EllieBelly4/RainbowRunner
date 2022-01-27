@@ -10,6 +10,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"github.com/sirupsen/logrus"
 )
 
 type UnitBehavior struct {
@@ -82,7 +83,7 @@ func (u *UnitBehavior) WriteMoveUpdate(b *byter.Byter) {
 
 		degrees := float32((float64(position.Rotation) / 0x17000) * 360)
 
-		if logging.LoggingOpts.LogMoves && logging.LoggingOpts.LogGenericSent {
+		if logging.LoggingOpts.LogMoves {
 			fmt.Printf(
 				"Sending move rotation 0x%x(%.2fdeg) (%d, %d) Hex (%x, %x)\n",
 				position.Rotation, degrees, position.Position.X, position.Position.Y, position.Position.X, position.Position.Y,
@@ -259,7 +260,7 @@ func (g *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 	}
 
 	if logging.LoggingOpts.LogMoves {
-		fmt.Printf("%s\n", hex.Dump(reader.Data()))
+		logrus.Infof("\n%s\n", hex.Dump(reader.Data()))
 	}
 }
 

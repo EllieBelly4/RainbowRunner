@@ -79,21 +79,23 @@ func (p *Player) OnZoneJoin(rrPlayer *RRPlayer) {
 
 func SendCreateNewPlayerEntity(rrplayer *RRPlayer, p *Player) {
 	//clientEntityWriter := rrplayer.ClientEntityWriter
-	equippedItems := getRandomEquipment()
+	//equippedItems := getRandomEquipment()
+	avatar := p.GetChildByGCNativeType("Avatar")
+	inventoryEquipment := avatar.GetChildByGCNativeType("Equipment")
 
+	equippedItems := inventoryEquipment.(*InventoryEquipment).GetEquipment()
+	fmt.Printf("%+v\n", inventoryEquipment)
 	body := byter.NewLEByter(make([]byte, 0, 2048))
 
 	conn := p.RREntityProperties().Conn
-	player := Players.Players[conn.GetID()].CurrentCharacter
 	clientEntityWriter := NewClientEntityWriter(body)
 	clientEntityWriter.BeginStream()
 
-	avatar := player.GetChildByGCNativeType("Avatar")
 	clientEntityWriter.Create(avatar)
 
-	clientEntityWriter.Create(player)
-	clientEntityWriter.Init(player)
-	clientEntityWriter.Update(player)
+	clientEntityWriter.Create(p)
+	clientEntityWriter.Init(p)
+	clientEntityWriter.Update(p)
 
 	// MANIPULATORS //////////////////////////////////
 	addCreateComponent(body, avatar.RREntityProperties().ID, NewID(), "creatures.humanoid.base.MeleeBase.Manipulators")
@@ -121,20 +123,20 @@ func SendCreateNewPlayerEntity(rrplayer *RRPlayer, p *Player) {
 	//Entities.RegisterAll(conn, fighterEquipment)
 	//clientEntityWriter.CreateComponent(fighterEquipment, avatar)
 
-	questManager := player.GetChildByGCType("QuestManager")
+	questManager := p.GetChildByGCType("QuestManager")
 	if questManager == nil {
 		questManager = NewQuestManager()
 		Entities.RegisterAll(conn, questManager)
 	}
-	clientEntityWriter.CreateComponent(questManager, player)
+	clientEntityWriter.CreateComponent(questManager, p)
 
-	dialogManager := player.GetChildByGCType("DialogManager")
+	dialogManager := p.GetChildByGCType("DialogManager")
 	if dialogManager == nil {
 		dialogManager = NewDialogManager()
 		Entities.RegisterAll(conn, dialogManager)
 	}
 
-	clientEntityWriter.CreateComponent(dialogManager, player)
+	clientEntityWriter.CreateComponent(dialogManager, p)
 
 	//addCreateComponent(body, 0x01, 0x0C, "AvatarMetrics")
 	//addCreateComponent(body, 0x01, 0x0B, "QuestManager")
@@ -148,7 +150,9 @@ func SendCreateNewPlayerEntity(rrplayer *RRPlayer, p *Player) {
 	//body.WriteCString("avatar.classes.FighterMale")
 
 	// UNITCONTAINER ////////////////////////////////////
-	addCreateComponent(body, avatar.RREntityProperties().ID, NewID(), "UnitContainer")
+	unitContainer := avatar.(*Avatar).GetUnitContainer()
+	clientEntityWriter.CreateComponent(unitContainer, avatar)
+	//addCreateComponent(body, avatar.RREntityProperties().ID, NewID(), "UnitContainer")
 
 	// Container::readInit()
 	body.WriteUInt32(1)
@@ -622,12 +626,12 @@ func getRandomEquipment() []*Equipment {
 	//LeatherBoots1PAL.LeatherBoots1-10
 	//2HPickMythicPAL.2HPickMythic1
 
-	equippedItems = append(equippedItems, addRandomEquipment(database.Helmets, EquipmentItemArmour))
-	equippedItems = append(equippedItems, addRandomEquipment(database.Armours, EquipmentItemArmour))
-	equippedItems = append(equippedItems, addRandomEquipment(database.Gloves, EquipmentItemArmour))
-	equippedItems = append(equippedItems, addRandomEquipment(database.Boots, EquipmentItemArmour))
+	equippedItems = append(equippedItems, AddRandomEquipment(database.Helmets, EquipmentItemArmour))
+	equippedItems = append(equippedItems, AddRandomEquipment(database.Armours, EquipmentItemArmour))
+	equippedItems = append(equippedItems, AddRandomEquipment(database.Gloves, EquipmentItemArmour))
+	equippedItems = append(equippedItems, AddRandomEquipment(database.Boots, EquipmentItemArmour))
 
-	equippedItems = append(equippedItems, addRandomEquipment(database.MeleeWeapons, EquipmentItemMeleeWeapon))
+	equippedItems = append(equippedItems, AddRandomEquipment(database.MeleeWeapons, EquipmentItemMeleeWeapon))
 	//equippedItems = append(equippedItems, addRandomEquipment(database.RangedWeapons, EquipmentItemRangedWeapon))
 
 	//randomArmour := database.Armours[int(r.Int63())%len(database.Armours)]
@@ -669,7 +673,7 @@ func getRandomEquipment() []*Equipment {
 
 var r = rand.New(rand.NewSource(time.Now().Unix()))
 
-func addRandomEquipment(equipment database.EquipmentMap, t ItemType) *Equipment {
+func AddRandomEquipment(equipment database.EquipmentMap, t ItemType) *Equipment {
 	i := 0
 
 	target := int(r.Int63()) % len(equipment)

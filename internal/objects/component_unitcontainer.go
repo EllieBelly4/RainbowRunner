@@ -8,12 +8,17 @@ type UnitContainer struct {
 	*Component
 
 	Manipulator DRObject
+	ActiveItem  *Equipment
 }
 
 func (a UnitContainer) WriteFullGCObject(byter *byter.Byter) {
 	a.GCObject.WriteFullGCObject(byter)
 
 	a.Manipulator.WriteFullGCObject(byter)
+}
+
+func (a *UnitContainer) SetActiveItem(item *Equipment) {
+	a.ActiveItem = item
 }
 
 func NewUnitContainer(manipulator DRObject, name string) *UnitContainer {

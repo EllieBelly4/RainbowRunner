@@ -23,7 +23,12 @@ func handleClientEntityChannelMessages(conn *connections.RRConn, msgType byte, r
 		entity := objects.Entities.FindByID(componentID)
 
 		if entity != nil {
-			entity.ReadUpdate(reader)
+			err := entity.ReadUpdate(reader)
+
+			if err != nil {
+				fmt.Printf("failed to ReadUpdate for component:\n%s", err.Error())
+				return UnhandledChannelMessageError
+			}
 			//if entity.GetGCObject().EntityHandler != nil {
 			//	err := entity.GetGCObject().EntityHandler.ReadUpdate(reader)
 			//
@@ -187,7 +192,7 @@ func SendInterval(conn *connections.RRConn) {
 	// Current Server Tick
 	body.WriteInt32(int32(global.Tick)) // Unk - Stored in ClientEntityManager::vftable + 0xa94
 
-	body.WriteInt32(33) // TickInterval - Stored in ClientEntityManager::vftable + 0xa80
+	body.WriteInt32(global.TickInterval) // TickInterval - Stored in ClientEntityManager::vftable + 0xa80
 
 	// Seems to be a message queue limit? If this is too low it seems to break smooth movement
 	// 10 = 8 moves per message

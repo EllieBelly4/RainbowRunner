@@ -90,7 +90,7 @@ func (m *PlayerManager) AfterTick() {
 			body.Write(item.Data)
 
 			if logging.LoggingOpts.LogSentMessages {
-				if logIt, ok := logging.LoggingOpts.LogSentMessageTypes[item.OpType]; !ok || logIt {
+				if logIt, ok := logging.LoggingOpts.LogSentMessageTypes[item.OpType]; ok && logIt {
 					logrus.Info(fmt.Sprintf("Sent Message:\n%s", hex.Dump(item.Data.Data())))
 				}
 			}

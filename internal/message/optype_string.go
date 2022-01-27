@@ -10,12 +10,13 @@ func _() {
 	var x [1]struct{}
 	_ = x[OpTypeAvatarMovement-0]
 	_ = x[OpTypeCreateNPC-1]
-	_ = x[OpTypeOther-2]
+	_ = x[OpTypeEquippedItemClickResponse-2]
+	_ = x[OpTypeOther-3]
 }
 
-const _OpType_name = "OpTypeAvatarMovementOpTypeCreateNPCOpTypeOther"
+const _OpType_name = "OpTypeAvatarMovementOpTypeCreateNPCOpTypeEquippedItemClickResponseOpTypeOther"
 
-var _OpType_index = [...]uint8{0, 20, 35, 46}
+var _OpType_index = [...]uint8{0, 20, 35, 66, 77}
 
 func (i OpType) String() string {
 	if i < 0 || i >= OpType(len(_OpType_index)-1) {

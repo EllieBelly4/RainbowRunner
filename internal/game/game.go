@@ -105,8 +105,6 @@ func readPacket(conn *connections.RRConn, reader *byter.Byter) {
 
 		reader = ReadCompressedA(reader, packetLength)
 
-		log.Infof("Received A:\n%s", hex.Dump(reader.Buffer))
-
 		if msgTypeA == 0x00 {
 			reader.UInt8()      // Some type?
 			_ = reader.UInt32() // One Time Key
@@ -132,7 +130,9 @@ func readPacket(conn *connections.RRConn, reader *byter.Byter) {
 	} else if msgType == 0x0e {
 		msgReader := ReadCompressedE(reader)
 
-		log.Infof("Received E:\n%s", hex.Dump(msgReader.Buffer))
+		if logging.LoggingOpts.LogEMessages {
+			log.Infof("Received E:\n%s", hex.Dump(msgReader.Buffer))
+		}
 
 		handleChannelMessage(conn, msgReader)
 	} else if msgType == 0x06 {

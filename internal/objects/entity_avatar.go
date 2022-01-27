@@ -4,7 +4,6 @@ import (
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/logging"
-	"RainbowRunner/internal/message"
 	"RainbowRunner/pkg"
 	"RainbowRunner/pkg/byter"
 	"fmt"
@@ -67,16 +66,17 @@ func (p *Avatar) Tick() {
 	//p.SendPosition()
 	//}
 
-	player := Players.GetPlayer(uint16(p.OwnerID()))
-	unitBehavior := p.GetChildByGCNativeType("UnitBehavior").(*UnitBehavior)
+	// TODO renable movement
+	//player := Players.GetPlayer(uint16(p.OwnerID()))
+	//unitBehavior := p.GetChildByGCNativeType("UnitBehavior").(*UnitBehavior)
 
-	CEWriter := NewClientEntityWriterWithByter()
-
-	CEWriter.BeginComponentUpdate(unitBehavior)
-	unitBehavior.WriteMoveUpdate(CEWriter.GetBody())
-	CEWriter.EndComponentUpdate(unitBehavior)
-
-	player.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeAvatarMovement)
+	//CEWriter := NewClientEntityWriterWithByter()
+	//
+	//CEWriter.BeginComponentUpdate(unitBehavior)
+	//unitBehavior.WriteMoveUpdate(CEWriter.GetBody())
+	//CEWriter.EndComponentUpdate(unitBehavior)
+	//
+	//player.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeAvatarMovement)
 
 	p.TicksSinceLastUpdate++
 }
@@ -159,6 +159,10 @@ func (p *Avatar) SendMoveTo(unk uint8, compID uint16, posX, posY int32) {
 	}
 
 	p.updated()
+}
+
+func (p *Avatar) GetUnitContainer() *UnitContainer {
+	return p.GetChildByGCNativeType("UnitContainer").(*UnitContainer)
 }
 
 //func (p *Avatar) SendPositions(positions []UnitPathPosition) {

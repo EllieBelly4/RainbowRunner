@@ -20,6 +20,7 @@ type LoggingOptions struct {
 	LogSentMessageTypes  map[message.OpType]bool
 	LogFileName          string
 	LogTruncate          bool
+	LogEMessages         bool
 }
 
 var LoggingOpts = LoggingOptions{
@@ -27,14 +28,17 @@ var LoggingOpts = LoggingOptions{
 	LogMoves:             false,
 	LogGenericSent:       false,
 	LogSmallAs:           false,
+	LogEMessages:         false,
 	LogHashes:            false,
 	LogGCObjectSerialise: false,
 	LogRandomEquipment:   false,
 	LogFileName:          "inventory_logs",
 	LogTruncate:          true,
 	LogSentMessageTypes: map[message.OpType]bool{
-		message.OpTypeAvatarMovement: false,
-		message.OpTypeCreateNPC:      true,
+		message.OpTypeAvatarMovement:            false,
+		message.OpTypeCreateNPC:                 true,
+		message.OpTypeEquippedItemClickResponse: true,
+		message.OpTypeOther:                     false,
 	},
 }
 

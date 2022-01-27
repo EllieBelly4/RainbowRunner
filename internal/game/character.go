@@ -2,6 +2,7 @@ package game
 
 import (
 	"RainbowRunner/internal/connections"
+	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/logging"
@@ -164,11 +165,11 @@ func sendPlayer(character *objects.Player, client *connections.RRConnClient, bod
 
 	character.AddChild(avatar)
 
-	avatar2 := loadAvatar(character)
+	//avatar2 := loadAvatar(character)
 	//player.AddChild(avatar)
 
 	character.WriteFullGCObject(body)
-	avatar2.WriteFullGCObject(body)
+	avatar.WriteFullGCObject(body)
 
 	body.WriteByte(0x01)
 	body.WriteByte(0x01)
@@ -229,8 +230,11 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	//avatarDesc.GCType = "avatar.classes.fighterfemale.description"
 	//avatarDesc.Name = "EllieAvatarDesc"
 
-	avatarEquipment := objects.NewGCObject("Equipment")
-	avatarEquipment.GCType = "avatar.base.Equipment"
+	//avatarEquipment := objects.NewGCObject("Equipment")
+	//avatarEquipment.GCType = "avatar.base.Equipment"
+	//avatarEquipment.GCName = "EllieEquipment"
+
+	avatarEquipment := objects.NewInventoryEquipment("avatar.base.Equipment", avatar)
 	avatarEquipment.GCName = "EllieEquipment"
 
 	//.text:0058E550     ; struct DFCClass *__thiscall Armor::getClass(Armor *__hidden this)
@@ -382,41 +386,42 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	return avatar
 }
 
-func AddEquipment(equipment *objects.GCObject, manipulators *objects.GCObject, armour string, boots string, helm string, gloves string, shield string) {
-	randomArmour := objects.NewGCObject("Armor")
-	randomArmour.GCType = armour
+func AddEquipment(equipment objects.DRObject, manipulators *objects.GCObject, armour string, boots string, helm string, gloves string, shield string) {
+	randomArmour := objects.AddRandomEquipment(database.Armours, objects.EquipmentItemArmour)
 	randomArmour.GCName = "EllieArmour"
 
-	randomBoots := objects.NewGCObject("Armor")
-	randomBoots.GCType = boots
+	randomBoots := objects.AddRandomEquipment(database.Boots, objects.EquipmentItemArmour)
 	randomBoots.GCName = "EllieArmour"
 
-	randomHelm := objects.NewGCObject("Armor")
-	randomHelm.GCType = helm
+	randomHelm := objects.AddRandomEquipment(database.Helmets, objects.EquipmentItemArmour)
 	randomHelm.GCName = "EllieArmour"
 
-	randomGloves := objects.NewGCObject("Armor")
-	randomGloves.GCType = gloves
+	randomGloves := objects.AddRandomEquipment(database.Gloves, objects.EquipmentItemArmour)
 	randomGloves.GCName = "EllieArmour"
 
-	if len(shield) > 0 {
-		randomShield := objects.NewGCObject("Armor")
-		randomShield.GCType = shield
-		randomShield.GCName = "EllieArmour"
+	randomWeapon := objects.AddRandomEquipment(database.MeleeWeapons, objects.EquipmentItemMeleeWeapon)
+	randomWeapon.GCName = "EllieWeapon"
 
-		equipment.AddChild(randomShield)
-		manipulators.AddChild(randomShield)
-	}
+	//if len(shield) > 0 {
+	//	randomShield := objects.NewEquipment(gloves, "ScaleModPAL.Rare.Mod1", "Armor", types.EquipmentSlotOffhand)
+	//	randomShield.GCType = shield
+	//	randomShield.GCName = "EllieArmour"
+	//
+	//	equipment.AddChild(randomShield)
+	//	manipulators.AddChild(randomShield)
+	//}
 
 	equipment.AddChild(randomGloves)
 	equipment.AddChild(randomBoots)
 	equipment.AddChild(randomHelm)
 	equipment.AddChild(randomArmour)
+	equipment.AddChild(randomWeapon)
 
 	manipulators.AddChild(randomGloves)
 	manipulators.AddChild(randomBoots)
 	manipulators.AddChild(randomHelm)
 	manipulators.AddChild(randomArmour)
+	manipulators.AddChild(randomWeapon)
 
 	if logging.LoggingOpts.LogRandomEquipment {
 

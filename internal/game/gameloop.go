@@ -3,15 +3,13 @@ package game
 import (
 	"RainbowRunner/internal/global"
 	"RainbowRunner/internal/objects"
-	"RainbowRunner/pkg"
-	"RainbowRunner/pkg/math"
 	"time"
 )
 
 var i = 1
 
 func StartGameLoop() {
-	ticker := time.NewTicker(33 * time.Millisecond)
+	ticker := time.NewTicker(global.TickInterval * time.Millisecond)
 	defer ticker.Stop()
 
 	for {
@@ -27,16 +25,19 @@ func StartGameLoop() {
 
 			objects.Entities.Tick()
 
-			if global.Tick%150 == 0 {
-				for _, player := range objects.Players.Players {
-					objects.CreateNPC(player, player.Zone, pkg.Transform{
-						Position: pkg.Vector3{106342 + 2048*int32(i), -36000, 12778},
-						Rotation: 180 * math.DRDegToRot,
-					}, "npc.Avatar.Female.base.NPC_Amazon1_Base", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior")
-				}
-
-				i++
-			}
+			//if global.Tick%150 == 0 {
+			//	for _, player := range objects.Players.Players {
+			//		if player.Zone != nil {
+			//
+			//			objects.CreateNPC(player, player.Zone, pkg.Transform{
+			//				Position: pkg.Vector3{106342 + 2048*int32(i), -36000, 12778},
+			//				Rotation: 180 * math.DRDegToRot,
+			//			}, "npc.Avatar.Female.base.NPC_Amazon1_Base", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior")
+			//		}
+			//	}
+			//
+			//	i++
+			//}
 
 			for _, player := range objects.Players.Players {
 				player.Conn.Client.Tick()
