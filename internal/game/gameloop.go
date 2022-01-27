@@ -20,7 +20,7 @@ func StartGameLoop() {
 			objects.Players.RLock()
 			objects.Players.BeforeTick()
 
-			for !global.JobQueue.Empty() {
+			for !global.JobQueue.IsEmpty() {
 				job := global.JobQueue.Dequeue()
 				job()
 			}

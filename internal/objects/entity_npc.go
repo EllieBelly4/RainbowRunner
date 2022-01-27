@@ -3,6 +3,7 @@ package objects
 import (
 	"RainbowRunner/internal/game/components/behavior"
 	"RainbowRunner/internal/global"
+	"RainbowRunner/internal/message"
 	"RainbowRunner/pkg"
 	"RainbowRunner/pkg/byter"
 )
@@ -101,13 +102,15 @@ func CreateNPC(player *RRPlayer, zone *Zone, transform pkg.Transform, npcType, b
 	//clientEntityWriter.BeginStream()
 
 	global.JobQueue.Enqueue(func() {
-		player.ClientEntityWriter.Create(npc)
-		player.ClientEntityWriter.CreateComponent(skills, npc)
-		player.ClientEntityWriter.CreateComponent(manipulators, npc)
-		player.ClientEntityWriter.CreateComponent(modifiers, npc)
+		CEWriter := NewClientEntityWriterWithByter()
+		CEWriter.Create(npc)
+		CEWriter.CreateComponent(skills, npc)
+		CEWriter.CreateComponent(manipulators, npc)
+		CEWriter.CreateComponent(modifiers, npc)
 		// Adding unit behavior makes the NPC move in a random direction, missing something here
 		//player.ClientEntityWriter.CreateComponent(unitBehavior, npc)
-		player.ClientEntityWriter.Init(npc)
+		CEWriter.Init(npc)
+		player.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeCreateNPC)
 	})
 
 	//player.ClientEntityWriter.EndStream()

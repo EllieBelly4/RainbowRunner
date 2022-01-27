@@ -4,6 +4,7 @@ import (
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/logging"
+	"RainbowRunner/internal/message"
 	"RainbowRunner/pkg"
 	"RainbowRunner/pkg/byter"
 	"fmt"
@@ -68,9 +69,14 @@ func (p *Avatar) Tick() {
 
 	player := Players.GetPlayer(uint16(p.OwnerID()))
 	unitBehavior := p.GetChildByGCNativeType("UnitBehavior").(*UnitBehavior)
-	player.ClientEntityWriter.BeginComponentUpdate(unitBehavior)
-	unitBehavior.WriteMoveUpdate(player.ClientEntityWriter.GetBody())
-	player.ClientEntityWriter.EndComponentUpdate(unitBehavior)
+
+	CEWriter := NewClientEntityWriterWithByter()
+
+	CEWriter.BeginComponentUpdate(unitBehavior)
+	unitBehavior.WriteMoveUpdate(CEWriter.GetBody())
+	CEWriter.EndComponentUpdate(unitBehavior)
+
+	player.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeAvatarMovement)
 
 	p.TicksSinceLastUpdate++
 }

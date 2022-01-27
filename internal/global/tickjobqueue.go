@@ -25,7 +25,7 @@ func (q *TickJobQueue) Dequeue() func() {
 	return job
 }
 
-func (q *TickJobQueue) Empty() bool {
+func (q *TickJobQueue) IsEmpty() bool {
 	q.RLock()
 	defer q.RUnlock()
 

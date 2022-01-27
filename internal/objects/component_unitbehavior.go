@@ -82,7 +82,7 @@ func (u *UnitBehavior) WriteMoveUpdate(b *byter.Byter) {
 
 		degrees := float32((float64(position.Rotation) / 0x17000) * 360)
 
-		if logging.LoggingOpts.LogMoves && logging.LoggingOpts.LogSent {
+		if logging.LoggingOpts.LogMoves && logging.LoggingOpts.LogGenericSent {
 			fmt.Printf(
 				"Sending move rotation 0x%x(%.2fdeg) (%d, %d) Hex (%x, %x)\n",
 				position.Rotation, degrees, position.Position.X, position.Position.Y, position.Position.X, position.Position.Y,
@@ -93,17 +93,17 @@ func (u *UnitBehavior) WriteMoveUpdate(b *byter.Byter) {
 	//b.WriteByte(0x02)
 	//b.WriteUInt32(uint32(global.Tick)) // Random unk value
 
-	oldLog := logging.LoggingOpts.LogSent
+	oldLog := logging.LoggingOpts.LogGenericSent
 
 	if !logging.LoggingOpts.LogMoves {
-		logging.LoggingOpts.LogSent = false
+		logging.LoggingOpts.LogGenericSent = false
 	}
 
 	//if n.RREntityProperties().Zone != nil {
 	//	n.RREntityProperties().Zone.SendToAll(b)
 	//}
 
-	logging.LoggingOpts.LogSent = oldLog
+	logging.LoggingOpts.LogGenericSent = oldLog
 }
 
 func (u *UnitBehaviorHandler) WriteSynch(b *byter.Byter) {

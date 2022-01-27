@@ -14,6 +14,18 @@ import (
 )
 
 func WriteCompressedASimple(conn connections.Connection, b *byter.Byter) {
+	pc, file, line, ok := runtime.Caller(1)
+	callerInfo := "unk"
+
+	if logging.LoggingOpts.LogGenericSent {
+		if ok {
+			details := runtime.FuncForPC(pc)
+			callerInfo = fmt.Sprintf("%s() %s:%d", details.Name(), file, line)
+		}
+
+		logrus.Infof("WriteCompressedA: %s", callerInfo)
+	}
+
 	WriteCompressedA(conn, 0x01, 0x0f, b)
 }
 
@@ -34,7 +46,7 @@ func WriteCompressedA(conn connections.Connection, dest uint8, messageType uint8
 	response.WriteByte(0x00)
 	response.WriteUInt32(uint32(len(body.Data())))
 
-	if len(body.Buffer) >= 2 && logging.LoggingOpts.LogSent {
+	if len(body.Buffer) >= 2 && logging.LoggingOpts.LogGenericSent {
 		fmt.Printf(">>>>> send [%s-%d] len %d\n", messages.Channel(body.Data()[0]).String(), body.Data()[1], len(body.Buffer))
 	} else {
 		//fmt.Printf(">>>>> send [nochannel] len %d\n", len(body.Buffer))
@@ -49,13 +61,15 @@ func WriteCompressedA(conn connections.Connection, dest uint8, messageType uint8
 		return
 	}
 
-	pc, file, line, ok := runtime.Caller(1)
-	callerInfo := "unk"
+	if logging.LoggingOpts.LogGenericSent {
+		pc, file, line, ok := runtime.Caller(1)
+		callerInfo := "unk"
 
-	if ok {
-		details := runtime.FuncForPC(pc)
-		callerInfo = fmt.Sprintf("%s() %s:%d", details.Name(), file, line)
+		if ok {
+			details := runtime.FuncForPC(pc)
+			callerInfo = fmt.Sprintf("%s() %s:%d", details.Name(), file, line)
+		}
+
+		logrus.Info(fmt.Sprintf("Sent: %s\n%s", callerInfo, hex.Dump(body.Data())))
 	}
-
-	logrus.Info(fmt.Sprintf("Sent:\n%s\n%s", callerInfo, hex.Dump(body.Data())))
 }

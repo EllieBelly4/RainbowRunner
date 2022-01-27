@@ -3,7 +3,12 @@ package objects
 import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/helpers"
+	"RainbowRunner/internal/logging"
+	"RainbowRunner/internal/message"
+	"RainbowRunner/pkg/byter"
+	"encoding/hex"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"sync"
 )
 
@@ -15,6 +20,7 @@ type RRPlayer struct {
 	Characters         []*Player
 	Zone               *Zone
 	ClientEntityWriter *ClientEntityWriter
+	MessageQueue       *message.Queue
 }
 
 type PlayerManager struct {
@@ -42,6 +48,7 @@ func (m *PlayerManager) Register(rrconn *connections.RRConn) *RRPlayer {
 	rrPlayer := &RRPlayer{
 		Conn:               rrconn,
 		ClientEntityWriter: NewClientEntityWriterWithByter(),
+		MessageQueue:       message.NewQueue(),
 	}
 
 	m.Players[rrconn.Client.ID] = rrPlayer
@@ -70,11 +77,31 @@ func (m *PlayerManager) GetPlayer(id uint16) *RRPlayer {
 }
 
 func (m *PlayerManager) AfterTick() {
+	body := byter.NewByter(make([]byte, 0, 1024*1024))
+	clientEntityWriter := NewClientEntityWriter(body)
+
 	for _, player := range m.Players {
-		//TODO improve this it's horrible but it works
-		if player.ClientEntityWriter.IsDirty() {
-			player.ClientEntityWriter.EndStream()
-			helpers.WriteCompressedASimple(player.Conn, player.ClientEntityWriter.GetBody())
+		clientEntitySend := false
+
+		clientEntityWriter.BeginStream()
+
+		for !player.MessageQueue.IsEmpty(message.QueueTypeClientEntity) {
+			item := player.MessageQueue.Dequeue(message.QueueTypeClientEntity)
+			body.Write(item.Data)
+
+			if logging.LoggingOpts.LogSentMessages {
+				if logIt, ok := logging.LoggingOpts.LogSentMessageTypes[item.OpType]; !ok || logIt {
+					logrus.Info(fmt.Sprintf("Sent Message:\n%s", hex.Dump(item.Data.Data())))
+				}
+			}
+
+			clientEntitySend = true
+		}
+
+		clientEntityWriter.EndStream()
+
+		if clientEntitySend {
+			helpers.WriteCompressedASimple(player.Conn, body)
 		}
 
 		player.ClientEntityWriter.Clear()

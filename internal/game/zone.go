@@ -88,6 +88,10 @@ func handleZoneJoin(conn *connections.RRConn) {
 		//{"world.dungeon15.mob.boss", "world.dungeon15.mob.boss.Behavior"},
 	}
 
+	SendInterval(conn)
+
+	player.CurrentCharacter.OnZoneJoin(player)
+
 	if player.Zone.Name == "town" {
 		for i, entityStrings := range entitiesToSpawn {
 			objects.CreateNPC(player, player.Zone, pkg.Transform{
@@ -117,10 +121,6 @@ func handleZoneJoin(conn *connections.RRConn) {
 			Rotation: 90 * math.DRDegToRot,
 		}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
 	}
-
-	SendInterval(conn)
-
-	player.CurrentCharacter.OnZoneJoin(player)
 
 	// Creating Player Entity
 	//objects.SendCreateNewPlayerEntity(conn, body)

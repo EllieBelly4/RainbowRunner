@@ -1,6 +1,7 @@
 package logging
 
 import (
+	"RainbowRunner/internal/message"
 	log "github.com/sirupsen/logrus"
 	"io"
 	"os"
@@ -10,27 +11,48 @@ import (
 
 type LoggingOptions struct {
 	LogMoves             bool
-	LogSent              bool
+	LogGenericSent       bool
 	LogSmallAs           bool
 	LogHashes            bool
 	LogGCObjectSerialise bool
 	LogRandomEquipment   bool
+	LogSentMessages      bool
+	LogSentMessageTypes  map[message.OpType]bool
+	LogFileName          string
+	LogTruncate          bool
 }
 
 var LoggingOpts = LoggingOptions{
+	LogSentMessages:      true,
 	LogMoves:             false,
-	LogSent:              true,
+	LogGenericSent:       false,
 	LogSmallAs:           false,
 	LogHashes:            false,
 	LogGCObjectSerialise: false,
 	LogRandomEquipment:   false,
+	LogFileName:          "inventory_logs",
+	LogTruncate:          true,
+	LogSentMessageTypes: map[message.OpType]bool{
+		message.OpTypeAvatarMovement: false,
+		message.OpTypeCreateNPC:      true,
+	},
 }
 
 func Init() {
 	timestamp := time.Now().Format(time.RFC3339)
-	safeTime := strings.Replace(timestamp, ":", "_", -1)
+	safeName := strings.Replace(timestamp, ":", "_", -1)
 
-	logFile, err := os.OpenFile("resources\\Logs\\"+safeTime+".txt", os.O_APPEND|os.O_CREATE, 0755)
+	if len(LoggingOpts.LogFileName) > 0 {
+		safeName = LoggingOpts.LogFileName
+	}
+
+	flag := os.O_APPEND | os.O_CREATE
+
+	if LoggingOpts.LogTruncate {
+		flag |= os.O_TRUNC
+	}
+
+	logFile, err := os.OpenFile("resources\\Logs\\"+safeName+".txt", flag, 0755)
 
 	if err != nil {
 		panic(err)
