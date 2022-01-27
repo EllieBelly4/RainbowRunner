@@ -44,7 +44,7 @@ func (n *InventoryEquipment) ReadUpdate(reader *byter.Byter) error {
 			return err
 		}
 
-		n.addClearActiveItemMessage(CEWriter, unitContainer)
+		unitContainer.WriteClearActiveItem(CEWriter.Body)
 		//n.addSetActiveItemMessage(CEWriter, unitContainer, slot)
 
 		Players.GetPlayer(uint16(n.OwnerID())).MessageQueue.Enqueue(
@@ -71,7 +71,7 @@ func (n *InventoryEquipment) ReadUpdate(reader *byter.Byter) error {
 		}
 
 		unitContainer.SetActiveItem(item)
-		n.addSetActiveItemMessage(CEWriter, unitContainer, slot, item)
+		unitContainer.WriteSetActiveItem(CEWriter.Body)
 
 		Players.GetPlayer(uint16(n.OwnerID())).MessageQueue.Enqueue(
 			message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeEquippedItemClickResponse,
@@ -80,17 +80,6 @@ func (n *InventoryEquipment) ReadUpdate(reader *byter.Byter) error {
 		return errors.New(fmt.Sprintf("Unknown inventory equipment message subtype %x", subType))
 	}
 	return nil
-}
-
-func (n *InventoryEquipment) addSetActiveItemMessage(CEWriter *ClientEntityWriter, unitContainer *UnitContainer, slot uint32, item *Equipment) {
-	CEWriter.BeginComponentUpdate(unitContainer)
-	// 0x29 clear item
-	// 0x28 set active item
-	CEWriter.Body.WriteByte(0x28)
-
-	item.WriteInit(CEWriter.Body)
-
-	CEWriter.EndComponentUpdate(unitContainer)
 }
 
 func (n *InventoryEquipment) addRemoveItemMessage(CEWriter *ClientEntityWriter, item *Equipment) error {
@@ -148,15 +137,6 @@ func (n *InventoryEquipment) addAddItemMessage(CEWriter *ClientEntityWriter, ite
 	item.WriteInit(CEWriter.Body)
 	CEWriter.EndComponentUpdate(n)
 	return nil
-}
-
-func (n *InventoryEquipment) addClearActiveItemMessage(CEWriter *ClientEntityWriter, container *UnitContainer) {
-	CEWriter.BeginComponentUpdate(container)
-	// 0x28 Add
-	// 0x29 Remove
-	CEWriter.Body.WriteByte(0x29)
-
-	CEWriter.EndComponentUpdate(container)
 }
 
 func NewInventoryEquipment(gcType string, avatar *Avatar) *InventoryEquipment {
