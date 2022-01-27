@@ -1,18 +1,17 @@
 package objects
 
 import (
-	"RainbowRunner/internal/types"
 	"RainbowRunner/pkg"
 	"RainbowRunner/pkg/byter"
 )
 
 type Item struct {
 	*GCObject
-	Slot              types.EquipmentSlot
 	ModCount          int
 	Mod               string
 	ItemType          ItemType
 	InventoryPosition pkg.Vector2
+	Index             int
 }
 
 func (n *Item) WriteInit(b *byter.Byter) {
@@ -20,7 +19,11 @@ func (n *Item) WriteInit(b *byter.Byter) {
 	b.WriteCString(n.GCType)
 
 	// Item::readData
-	b.WriteUInt32(uint32(n.Slot))
+	// This is the item index within the specific inventory
+	// Equipment = Slots
+	// Inventory = unique ID
+	// TODO extract this into InventoryItem/EquippedItem
+	b.WriteUInt32(uint32(n.Index))
 
 	b.WriteByte(byte(n.InventoryPosition.X))
 	b.WriteByte(byte(n.InventoryPosition.Y))

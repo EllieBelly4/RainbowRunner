@@ -8,12 +8,29 @@ import (
 	"fmt"
 )
 
-type InventoryEquipment struct {
+type EquipmentInventory struct {
 	*Component
 	Avatar *Avatar
+	Slots  map[types.EquipmentSlot]*Equipment
 }
 
-func (n *InventoryEquipment) ReadUpdate(reader *byter.Byter) error {
+func (n *EquipmentInventory) AddChild(child DRObject) {
+	if _, ok := child.(*Equipment); !ok {
+		panic(fmt.Sprintf("cannot add non-equipment item to EquipmentInventory: %s", child.GetGCObject().GCType))
+	}
+
+	equip := child.(*Equipment)
+
+	if existing, ok := n.Slots[equip.Slot]; ok {
+		panic(fmt.Sprintf("cannot add equipment '%s' to slot '%s' because '%s' is already equipped", equip.GCType, equip.Slot.String(), existing.GCType))
+	}
+
+	child.(*Equipment).Index = int(equip.Slot)
+
+	n.GCObject.AddChild(child)
+}
+
+func (n *EquipmentInventory) ReadUpdate(reader *byter.Byter) error {
 	reader.Dump()
 
 	subType := reader.UInt8()
@@ -34,17 +51,24 @@ func (n *InventoryEquipment) ReadUpdate(reader *byter.Byter) error {
 			return errors.New(fmt.Sprintf("cannot equip, no active item"))
 		}
 
-		if slot != uint32(unitContainer.ActiveItem.Slot) {
+		equipment, ok := unitContainer.ActiveItem.(*Equipment)
+
+		if !ok {
+			return errors.New(fmt.Sprintf("cannot equip, active item '%s' is not Equipment", equipment.GCType))
+		}
+
+		if slot != uint32(equipment.Slot) {
 			return errors.New(fmt.Sprintf("cannot equip item, wrong slot"))
 		}
 
-		err := n.addAddItemMessage(CEWriter, unitContainer.ActiveItem)
+		err := n.addAddItemMessage(CEWriter, equipment)
 
 		if err != nil {
 			return err
 		}
 
 		unitContainer.WriteClearActiveItem(CEWriter.Body)
+		unitContainer.SetActiveItem(nil)
 		//n.addSetActiveItemMessage(CEWriter, unitContainer, slot)
 
 		Players.GetPlayer(uint16(n.OwnerID())).MessageQueue.Enqueue(
@@ -82,7 +106,7 @@ func (n *InventoryEquipment) ReadUpdate(reader *byter.Byter) error {
 	return nil
 }
 
-func (n *InventoryEquipment) addRemoveItemMessage(CEWriter *ClientEntityWriter, item *Equipment) error {
+func (n *EquipmentInventory) addRemoveItemMessage(CEWriter *ClientEntityWriter, item *Equipment) error {
 	CEWriter.BeginComponentUpdate(n)
 	// 0x28 Add
 	// 0x29 Remove
@@ -97,7 +121,7 @@ func (n *InventoryEquipment) addRemoveItemMessage(CEWriter *ClientEntityWriter, 
 	return nil
 }
 
-func (n *InventoryEquipment) GetEquipmentBySlot(slot types.EquipmentSlot) *Equipment {
+func (n *EquipmentInventory) GetEquipmentBySlot(slot types.EquipmentSlot) *Equipment {
 	for _, child := range n.Children() {
 		switch child.(type) {
 		case *Equipment:
@@ -111,7 +135,7 @@ func (n *InventoryEquipment) GetEquipmentBySlot(slot types.EquipmentSlot) *Equip
 	return nil
 }
 
-func (n *InventoryEquipment) GetEquipment() []*Equipment {
+func (n *EquipmentInventory) GetEquipment() []*Equipment {
 	items := make([]*Equipment, 0)
 
 	for _, child := range n.Children() {
@@ -124,7 +148,7 @@ func (n *InventoryEquipment) GetEquipment() []*Equipment {
 	return items
 }
 
-func (n *InventoryEquipment) addAddItemMessage(CEWriter *ClientEntityWriter, item *Equipment) error {
+func (n *EquipmentInventory) addAddItemMessage(CEWriter *ClientEntityWriter, item *Equipment) error {
 	CEWriter.BeginComponentUpdate(n)
 	// 0x28 Add
 	// 0x29 Remove
@@ -139,10 +163,10 @@ func (n *InventoryEquipment) addAddItemMessage(CEWriter *ClientEntityWriter, ite
 	return nil
 }
 
-func NewInventoryEquipment(gcType string, avatar *Avatar) *InventoryEquipment {
+func NewInventoryEquipment(gcType string, avatar *Avatar) *EquipmentInventory {
 	component := NewComponent(gcType, "Equipment")
 
-	return &InventoryEquipment{
+	return &EquipmentInventory{
 		Component: component,
 		Avatar:    avatar,
 	}

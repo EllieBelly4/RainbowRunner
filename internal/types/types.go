@@ -1,5 +1,6 @@
 package types
 
+//go:generate stringer -type=EquipmentSlot
 type EquipmentSlot uint32
 
 const (

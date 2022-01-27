@@ -17,6 +17,7 @@ const (
 
 type Equipment struct {
 	*Item
+	Slot types.EquipmentSlot
 }
 
 func (n *Equipment) WriteInit(b *byter.Byter) {
@@ -59,7 +60,6 @@ func NewEquipment(itemGCType, itemModGCType string, itemType ItemType, slot type
 	}
 
 	item.Mod = itemModGCType
-	item.Slot = slot
 	item.ModCount = drClass.ModCount()
 	item.ItemType = itemType
 
@@ -69,5 +69,6 @@ func NewEquipment(itemGCType, itemModGCType string, itemType ItemType, slot type
 
 	return &Equipment{
 		Item: item,
+		Slot: slot,
 	}
 }

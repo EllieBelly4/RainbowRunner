@@ -82,7 +82,7 @@ func SendCreateNewPlayerEntity(rrplayer *RRPlayer, p *Player) {
 	avatar := p.GetChildByGCNativeType("Avatar")
 	inventoryEquipment := avatar.GetChildByGCNativeType("Equipment")
 
-	equippedItems := inventoryEquipment.(*InventoryEquipment).GetEquipment()
+	equippedItems := inventoryEquipment.(*EquipmentInventory).GetEquipment()
 	fmt.Printf("%+v\n", inventoryEquipment)
 	body := byter.NewLEByter(make([]byte, 0, 2048))
 

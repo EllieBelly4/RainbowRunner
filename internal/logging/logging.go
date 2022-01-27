@@ -21,9 +21,11 @@ type LoggingOptions struct {
 	LogFileName          string
 	LogTruncate          bool
 	LogEMessages         bool
+	LogIDs               bool
 }
 
 var LoggingOpts = LoggingOptions{
+	LogIDs:               true,
 	LogSentMessages:      true,
 	LogMoves:             false,
 	LogGenericSent:       false,

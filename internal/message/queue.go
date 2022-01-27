@@ -18,6 +18,7 @@ const (
 	OpTypeAvatarMovement OpType = iota
 	OpTypeCreateNPC
 	OpTypeEquippedItemClickResponse
+	OpTypeInventoryItemClickResponse
 	OpTypeOther
 )
 

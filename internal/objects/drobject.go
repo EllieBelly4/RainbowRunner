@@ -35,3 +35,8 @@ type DRObject interface {
 	Tick()
 	OwnerID() int
 }
+
+type DRItem interface {
+	GetIndex() int
+	SetIndex(index int)
+}

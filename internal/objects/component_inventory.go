@@ -2,10 +2,26 @@ package objects
 
 import (
 	byter "RainbowRunner/pkg/byter"
+	"fmt"
 )
 
 type Inventory struct {
 	*GCObject
+
+	itemID int
+}
+
+func (i *Inventory) AddChild(child DRObject) {
+	switch child.(type) {
+	case *Equipment:
+		child.(*Equipment).Index = i.itemID
+	case *Item:
+		child.(*Item).Index = i.itemID
+	default:
+		panic(fmt.Sprintf("cannot add non-item to Inventory: %s", child.GetGCObject().GCType))
+	}
+
+	i.GCObject.AddChild(child)
 }
 
 func (i *Inventory) WriteInit(body *byter.Byter) {
@@ -22,6 +38,27 @@ func (i *Inventory) WriteInit(body *byter.Byter) {
 	}
 
 	//AddInventoryItem(body, "PlateMythicPAL.PlateMythicBoots1", 0, 0, "PlateMythicPAL.PlateMythicBoots1.Mod1")
+}
+
+func (i *Inventory) GetItemByIndex(index int) DRObject {
+	for _, child := range i.Children() {
+		foundIndex := 0
+
+		switch child.(type) {
+		case *Equipment:
+			foundIndex = child.(*Equipment).Index
+		case *Item:
+			foundIndex = child.(*Item).Index
+		default:
+			panic(fmt.Sprintf("cannot add non-item to Inventory: %s", child.GetGCObject().GCType))
+		}
+
+		if foundIndex == index {
+			return child
+		}
+	}
+
+	return nil
 }
 
 func NewInventory(gcType string) *Inventory {
