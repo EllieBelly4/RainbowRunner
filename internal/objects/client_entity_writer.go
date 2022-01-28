@@ -53,7 +53,7 @@ func (w *ClientEntityWriter) Init(object DRObject) {
 	object.WriteInit(w.Body)
 }
 
-func (w *ClientEntityWriter) CreateComponent(component DRObject, targetEntity DRObject) {
+func (w *ClientEntityWriter) CreateComponentAndInit(component DRObject, targetEntity DRObject) {
 	w.dirty = true
 
 	w.Body.WriteByte(0x32)                                   // Create Component

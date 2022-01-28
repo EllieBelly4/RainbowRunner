@@ -101,16 +101,9 @@ func SendCreateNewPlayerEntity(rrplayer *RRPlayer, p *Player) {
 	//2HMace5PAL.2HMace5-7
 	//ScaleModPAL.Rare.Mod1
 	// MANIPULATORS //////////////////////////////////
-	addCreateComponent(body, avatar.RREntityProperties().ID, NewID(), "creatures.humanoid.base.MeleeBase.Manipulators")
-
-	// Manipulators::readInit
-	//manipCount := byte(0x01)
-	body.WriteByte(byte(len(equippedItems))) // Some count
-
-	for _, equippedItem := range equippedItems {
-		equippedItem.WriteInit(body)
-		equippedItem.WriteManipulatorInit(body)
-	}
+	//addCreateComponent(body, avatar.RREntityProperties().ID, NewID(), "Manipulators")
+	manipulators := avatar.GetChildByGCNativeType("Manipulators")
+	clientEntityWriter.CreateComponentAndInit(manipulators, avatar)
 
 	equipment := avatar.GetChildByGCType("avatar.base.Equipment")
 	addCreateComponent(body, avatar.RREntityProperties().ID, equipment.RREntityProperties().ID, "avatar.base.Equipment")
@@ -131,7 +124,7 @@ func SendCreateNewPlayerEntity(rrplayer *RRPlayer, p *Player) {
 		questManager = NewQuestManager()
 		Entities.RegisterAll(conn, questManager)
 	}
-	clientEntityWriter.CreateComponent(questManager, p)
+	clientEntityWriter.CreateComponentAndInit(questManager, p)
 
 	dialogManager := p.GetChildByGCType("DialogManager")
 	if dialogManager == nil {
@@ -139,7 +132,7 @@ func SendCreateNewPlayerEntity(rrplayer *RRPlayer, p *Player) {
 		Entities.RegisterAll(conn, dialogManager)
 	}
 
-	clientEntityWriter.CreateComponent(dialogManager, p)
+	clientEntityWriter.CreateComponentAndInit(dialogManager, p)
 
 	//addCreateComponent(body, 0x01, 0x0C, "AvatarMetrics")
 	//addCreateComponent(body, 0x01, 0x0B, "QuestManager")
@@ -154,7 +147,7 @@ func SendCreateNewPlayerEntity(rrplayer *RRPlayer, p *Player) {
 
 	// UNITCONTAINER ////////////////////////////////////
 	unitContainer := avatar.(*Avatar).GetUnitContainer()
-	clientEntityWriter.CreateComponent(unitContainer, avatar)
+	clientEntityWriter.CreateComponentAndInit(unitContainer, avatar)
 	//addCreateComponent(body, avatar.RREntityProperties().ID, NewID(), "UnitContainer")
 
 	// Container::readInit()
@@ -699,114 +692,3 @@ func NewPlayer(name string) (p *Player) {
 
 	return
 }
-
-//func AddEquippedItem(
-//	body *byter.Byter,
-//	item string,
-//	slot types.EquipmentSlot,
-//	armour bool,
-//	mod string,
-//) {
-//	body.WriteByte(0xFF) // GetType
-//	body.WriteCString(item)
-//
-//	// Item::readData
-//	body.WriteUInt32(uint32(slot))
-//	body.WriteByte(0xF0)
-//	body.WriteByte(0xF0)
-//	body.WriteByte(0x01)   // Item count
-//	body.WriteByte(50 + 5) // Required level + 5
-//
-//	// Flag?
-//	// 0x01 - Soulbound in 9 minutes, no idea where the time comes from
-//	// 0x02 - Not Sellable
-//	// 0x04 - +0x01 = Soulbound timer
-//	// 0x08 - Requires Membership
-//	itemFlag := 0x01 | 0x04 | 0x08
-//
-//	body.WriteByte(byte(itemFlag))
-//
-//	if itemFlag&0x04 > 0 {
-//		// Soulbind time
-//		// Minutes * 0x800 max 9
-//		body.WriteUInt16(0x800 * 7)
-//	}
-//
-//	if item == "LeatherArmor1PAL.LeatherArmor1-1" || item == "ScaleArmor1PAL.ScaleArmor1-1" {
-//		// Required modifiers?
-//		// ItemModifier?
-//		itemModifierFlag1 := 0x01 | 0x02
-//
-//		body.WriteByte(byte(itemModifierFlag1))
-//
-//		if itemModifierFlag1&0x01 > 0 {
-//			body.WriteByte(0xFF)
-//		}
-//
-//		if itemModifierFlag1&0x02 > 0 {
-//			body.WriteUInt32(0xFFFFFFFF)
-//		}
-//
-//		//if mod != "" {
-//		// GCObject::readChildData<ItemModifier>
-//		body.WriteByte(0x01) // Count
-//
-//		body.WriteByte(0xFF)
-//		body.WriteCString(mod)
-//
-//		// ItemModifier?
-//		itemModifierFlag := 0x01 | 0x02
-//
-//		body.WriteByte(byte(itemModifierFlag))
-//
-//		if itemModifierFlag&0x01 > 0 {
-//			body.WriteByte(0x15)
-//		}
-//
-//		if itemModifierFlag&0x02 > 0 {
-//			body.WriteUInt32(0x11111111)
-//		}
-//		//} else {
-//		//	body.WriteByte(0x00) // Count
-//		//}
-//	} else if item == "PlateMythicPAL.PlateMythicArmor1" || item == "PlateMythicPAL.PlateMythicBoots1" {
-//		// Required modifiers?
-//		// ItemModifier?
-//		itemModifierFlag1 := 0x00
-//
-//		// Each item has different numbers of required modifiers
-//		for i := 0; i < 5; i++ {
-//			body.WriteByte(byte(itemModifierFlag1))
-//
-//			if itemModifierFlag1&0x01 > 0 {
-//				body.WriteByte(0xFF)
-//			}
-//
-//			if itemModifierFlag1&0x02 > 0 {
-//				body.WriteUInt32(0xFFFFFFFF)
-//			}
-//		}
-//
-//		//if mod != "" {
-//		// GCObject::readChildData<ItemModifier>
-//		body.WriteByte(0x01) // Count
-//
-//		body.WriteByte(0xFF)
-//		body.WriteCString(mod)
-//
-//		// ItemModifier?
-//		itemModifierFlag := 0x01 | 0x02
-//
-//		body.WriteByte(byte(itemModifierFlag))
-//
-//		if itemModifierFlag&0x01 > 0 {
-//			body.WriteByte(0x15)
-//		}
-//
-//		if itemModifierFlag&0x02 > 0 {
-//			body.WriteUInt32(0x11111111)
-//		}
-//	} else {
-//		panic("unhandled equipment")
-//	}
-//}

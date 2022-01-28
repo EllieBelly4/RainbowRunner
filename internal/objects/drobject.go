@@ -1,6 +1,7 @@
 package objects
 
 import (
+	"RainbowRunner/pkg"
 	"RainbowRunner/pkg/byter"
 )
 
@@ -37,6 +38,5 @@ type DRObject interface {
 }
 
 type DRItem interface {
-	GetIndex() int
-	SetIndex(index int)
+	SetInventoryPosition(vector2 pkg.Vector2)
 }

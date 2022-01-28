@@ -7,7 +7,6 @@ import (
 	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/logging"
 	"RainbowRunner/internal/objects"
-	"RainbowRunner/internal/types"
 	byter "RainbowRunner/pkg/byter"
 	"fmt"
 	log "github.com/sirupsen/logrus"
@@ -269,23 +268,21 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	//unitContainer.GCType = "unitcontainer"
 	//unitContainer.Name = "EllieUnitContainer"
 
-	baseInventory := objects.NewInventory("Inventory")
-	baseInventory.GCType = "avatar.base.Inventory"
+	baseInventory := objects.NewInventory("avatar.base.Inventory", 11)
 	baseInventory.GCName = "EllieBaseInventory"
 
-	randomItem := objects.NewEquipment("PlateMythicPAL.PlateMythicBoots1", "PlateMythicPAL.PlateMythicBoots1.Mod1", objects.ItemArmour, types.EquipmentSlotFoot)
-	baseInventory.AddChild(randomItem)
-
-	bankInventory := objects.NewInventory("Inventory")
-	bankInventory.GCType = "avatar.base.Bank"
+	bankInventory := objects.NewInventory("avatar.base.Bank", 12)
 	bankInventory.GCName = "EllieBankInventory"
 
-	tradeInventory := objects.NewInventory("Inventory")
-	tradeInventory.GCType = "avatar.base.TradeInventory"
+	tradeInventory := objects.NewInventory("avatar.base.TradeInventory", 13)
 	tradeInventory.GCName = "EllieTradeInventory"
 
-	manipulators := objects.NewGCObject("Manipulators")
+	manipulators := objects.NewManipulators("Manipulators")
 	manipulators.GCName = "ManipulateMe"
+
+	// Items in inventories
+	//randomItem := objects.NewEquipment("PlateMythicPAL.PlateMythicBoots1", "PlateMythicPAL.PlateMythicBoots1.Mod1", objects.ItemArmour, types.EquipmentSlotFoot)
+	//baseInventory.AddChild(randomItem)
 
 	//r := rand.New(rand.NewSource(time.Now().Unix()))
 
@@ -304,15 +301,15 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	//manipulators.AddChild(armor)
 	//manipulators.AddChild(weapon)
 
-	slot := objects.NewGCObject("EquipmentSlot")
-	slot.GCType = "avatar.base.Equipment.Description.PrimaryWeaponSlot"
-	slot.GCName = "EllieWeaponSlot"
-
-	slot.Properties = []objects.GCObjectProperty{
-		objects.Uint32Prop("SlotID", uint32(types.EquipmentSlotWeapon)),
-		objects.Uint32Prop("SlotType", uint32(types.EquipmentSlotWeapon)),
-		objects.Uint32Prop("DefaultItem", 0xAAAABBBB),
-	}
+	//slot := objects.NewGCObject("EquipmentSlot")
+	//slot.GCType = "avatar.base.Equipment.Description.PrimaryWeaponSlot"
+	//slot.GCName = "EllieWeaponSlot"
+	//
+	//slot.Properties = []objects.GCObjectProperty{
+	//	objects.Uint32Prop("SlotID", uint32(types.EquipmentSlotWeapon)),
+	//	objects.Uint32Prop("SlotType", uint32(types.EquipmentSlotWeapon)),
+	//	objects.Uint32Prop("DefaultItem", 0xAAAABBBB),
+	//}
 
 	//avatarDesc.Properties = []objects.GCObjectProperty{
 	//	objects.StringProp("PVEStartSpawnPoint", "Start"),
@@ -345,7 +342,7 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	return avatar
 }
 
-func AddEquipment(equipment objects.DRObject, manipulators *objects.GCObject, armour string, boots string, helm string, gloves string, shield string) {
+func AddEquipment(equipment objects.DRObject, manipulators *objects.Manipulators, armour string, boots string, helm string, gloves string, shield string) {
 	randomArmour := objects.AddRandomEquipment(database.Armours, objects.ItemArmour)
 	randomArmour.GCName = "EllieArmour"
 

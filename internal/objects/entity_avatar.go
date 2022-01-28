@@ -165,6 +165,10 @@ func (p *Avatar) GetUnitContainer() *UnitContainer {
 	return p.GetChildByGCNativeType("UnitContainer").(*UnitContainer)
 }
 
+func (p *Avatar) GetManipulators() *Manipulators {
+	return p.GetChildByGCNativeType("Manipulators").(*Manipulators)
+}
+
 //func (p *Avatar) SendPositions(positions []UnitPathPosition) {
 //	unitBehavior := p.GetChildByGCNativeType("UnitBehavior").(*UnitBehavior)
 //	unitBehavior.SendPositions(positions)

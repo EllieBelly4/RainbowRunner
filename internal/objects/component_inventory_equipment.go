@@ -31,78 +31,111 @@ func (n *EquipmentInventory) AddChild(child DRObject) {
 }
 
 func (n *EquipmentInventory) ReadUpdate(reader *byter.Byter) error {
-	reader.Dump()
-
 	subType := reader.UInt8()
 	switch subType {
 	// Add equipped item
 	case 0x28:
-		slot := reader.UInt32()
-		fmt.Printf("%d\n", slot)
-		CEWriter := NewClientEntityWriterWithByter()
-
-		unitContainer := n.Avatar.GetUnitContainer()
-
-		if unitContainer == nil {
-			return errors.New(fmt.Sprintf("could not find unit container for player"))
-		}
-
-		if unitContainer.ActiveItem == nil {
-			return errors.New(fmt.Sprintf("cannot equip, no active item"))
-		}
-
-		equipment, ok := unitContainer.ActiveItem.(*Equipment)
-
-		if !ok {
-			return errors.New(fmt.Sprintf("cannot equip, active item '%s' is not Equipment", equipment.GCType))
-		}
-
-		if slot != uint32(equipment.Slot) {
-			return errors.New(fmt.Sprintf("cannot equip item, wrong slot"))
-		}
-
-		err := n.addAddItemMessage(CEWriter, equipment)
+		err := n.handleAddEquippedItem(reader)
 
 		if err != nil {
 			return err
 		}
-
-		unitContainer.WriteClearActiveItem(CEWriter.Body)
-		unitContainer.SetActiveItem(nil)
-		//n.addSetActiveItemMessage(CEWriter, unitContainer, slot)
-
-		Players.GetPlayer(uint16(n.OwnerID())).MessageQueue.Enqueue(
-			message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeEquippedItemClickResponse,
-		)
 	// Remove equipped item
 	case 0x29:
-		slot := reader.UInt32()
-		fmt.Printf("%d\n", slot)
-		CEWriter := NewClientEntityWriterWithByter()
-
-		unitContainer := n.Avatar.GetUnitContainer()
-
-		if unitContainer == nil {
-			return errors.New(fmt.Sprintf("could not find unit container for player"))
-		}
-
-		item := n.GetEquipmentBySlot(types.EquipmentSlot(slot))
-
-		err := n.addRemoveItemMessage(CEWriter, item)
-
+		err := n.handleRemoveEquippedItem(reader)
 		if err != nil {
 			return err
 		}
-
-		unitContainer.SetActiveItem(item)
-		unitContainer.WriteSetActiveItem(CEWriter.Body)
-
-		Players.GetPlayer(uint16(n.OwnerID())).MessageQueue.Enqueue(
-			message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeEquippedItemClickResponse,
-		)
 	default:
 		return errors.New(fmt.Sprintf("Unknown inventory equipment message subtype %x", subType))
 	}
+	return nil
+}
+
+func (n *EquipmentInventory) handleRemoveEquippedItem(reader *byter.Byter) error {
+	slot := reader.UInt32()
+	fmt.Printf("%d\n", slot)
+	CEWriter := NewClientEntityWriterWithByter()
+
+	unitContainer := n.Avatar.GetUnitContainer()
+
+	if unitContainer == nil {
+		return errors.New(fmt.Sprintf("could not find unit container for player"))
+	}
+
+	manipulators := n.Avatar.GetManipulators()
+
+	if manipulators == nil {
+		return errors.New(fmt.Sprintf("could not find unit manipulators for player"))
+	}
+
+	item := n.RemoveEquipmentBySlot(types.EquipmentSlot(slot))
+	err := n.addRemoveItemMessage(CEWriter, item)
+
+	if err != nil {
+		return err
+	}
+
+	unitContainer.SetActiveItem(item)
+	unitContainer.WriteSetActiveItem(CEWriter.Body)
+
+	manipulators.RemoveEquipmentByID(item.ID())
+	manipulators.WriteRemoveItem(CEWriter.Body, item.Slot)
+
+	Players.GetPlayer(uint16(n.OwnerID())).MessageQueue.Enqueue(
+		message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeEquippedItemClickResponse,
+	)
+	return nil
+}
+
+func (n *EquipmentInventory) handleAddEquippedItem(reader *byter.Byter) error {
+	slot := reader.UInt32()
+	CEWriter := NewClientEntityWriterWithByter()
+
+	unitContainer := n.Avatar.GetUnitContainer()
+
+	if unitContainer == nil {
+		return errors.New(fmt.Sprintf("could not find unit container for player"))
+	}
+
+	if unitContainer.ActiveItem == nil {
+		return errors.New(fmt.Sprintf("cannot equip, no active item"))
+	}
+
+	manipulators := n.Avatar.GetManipulators()
+
+	if manipulators == nil {
+		return errors.New(fmt.Sprintf("could not find unit manipulators for player"))
+	}
+
+	equipment, ok := unitContainer.ActiveItem.(*Equipment)
+
+	if !ok {
+		return errors.New(fmt.Sprintf("cannot equip, active item '%s' is not Equipment", equipment.GCType))
+	}
+
+	if slot != uint32(equipment.Slot) {
+		return errors.New(fmt.Sprintf("cannot equip item, wrong slot"))
+	}
+
+	n.AddChild(unitContainer.ActiveItem)
+
+	err := n.addAddItemMessage(CEWriter, equipment)
+
+	if err != nil {
+		return err
+	}
+
+	unitContainer.WriteClearActiveItem(CEWriter.Body)
+	unitContainer.SetActiveItem(nil)
+	//n.addSetActiveItemMessage(CEWriter, unitContainer, slot)
+
+	manipulators.AddChild(equipment)
+	manipulators.WriteAddItem(CEWriter.Body, equipment)
+
+	Players.GetPlayer(uint16(n.OwnerID())).MessageQueue.Enqueue(
+		message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeEquippedItemClickResponse,
+	)
 	return nil
 }
 
@@ -121,18 +154,31 @@ func (n *EquipmentInventory) addRemoveItemMessage(CEWriter *ClientEntityWriter, 
 	return nil
 }
 
-func (n *EquipmentInventory) GetEquipmentBySlot(slot types.EquipmentSlot) *Equipment {
-	for _, child := range n.Children() {
+func (n *EquipmentInventory) RemoveEquipmentBySlot(slot types.EquipmentSlot) *Equipment {
+	toRemove := -1
+	var toReturn *Equipment = nil
+
+	for li, child := range n.Children() {
+		foundIndex := types.EquipmentSlot(0)
+
 		switch child.(type) {
 		case *Equipment:
-			equipment := child.(*Equipment)
-			if equipment.Slot == slot {
-				return equipment
-			}
+			foundIndex = child.(*Equipment).Slot
+		default:
+			panic(fmt.Sprintf("cannot add non-item to Inventory: %s", child.GetGCObject().GCType))
+		}
+
+		if foundIndex == slot {
+			toRemove = li
+			toReturn = child.(*Equipment)
 		}
 	}
 
-	return nil
+	if toRemove > -1 {
+		n.children = append(n.children[:toRemove], n.children[toRemove+1:]...)
+	}
+
+	return toReturn
 }
 
 func (n *EquipmentInventory) GetEquipment() []*Equipment {

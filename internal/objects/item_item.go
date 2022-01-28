@@ -14,6 +14,10 @@ type Item struct {
 	Index             int
 }
 
+func (n *Item) SetInventoryPosition(vector2 pkg.Vector2) {
+	n.InventoryPosition = vector2
+}
+
 func (n *Item) WriteInit(b *byter.Byter) {
 	b.WriteByte(0xFF) // GetType
 	b.WriteCString(n.GCType)

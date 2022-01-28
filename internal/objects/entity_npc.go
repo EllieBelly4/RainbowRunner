@@ -104,9 +104,9 @@ func CreateNPC(player *RRPlayer, zone *Zone, transform pkg.Transform, npcType, b
 	global.JobQueue.Enqueue(func() {
 		CEWriter := NewClientEntityWriterWithByter()
 		CEWriter.Create(npc)
-		CEWriter.CreateComponent(skills, npc)
-		CEWriter.CreateComponent(manipulators, npc)
-		CEWriter.CreateComponent(modifiers, npc)
+		CEWriter.CreateComponentAndInit(skills, npc)
+		CEWriter.CreateComponentAndInit(manipulators, npc)
+		CEWriter.CreateComponentAndInit(modifiers, npc)
 		// Adding unit behavior makes the NPC move in a random direction, missing something here
 		//player.ClientEntityWriter.CreateComponent(unitBehavior, npc)
 		CEWriter.Init(npc)

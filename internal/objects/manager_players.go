@@ -89,7 +89,7 @@ func (m *PlayerManager) AfterTick() {
 			item := player.MessageQueue.Dequeue(message.QueueTypeClientEntity)
 			body.Write(item.Data)
 
-			if logging.LoggingOpts.LogSentMessages {
+			if logging.LoggingOpts.LogFilterMessages {
 				if logIt, ok := logging.LoggingOpts.LogSentMessageTypes[item.OpType]; ok && logIt {
 					logrus.Info(fmt.Sprintf("Sent Message:\n%s", hex.Dump(item.Data.Data())))
 				}

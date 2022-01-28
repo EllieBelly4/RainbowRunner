@@ -16,7 +16,7 @@ type LoggingOptions struct {
 	LogHashes            bool
 	LogGCObjectSerialise bool
 	LogRandomEquipment   bool
-	LogSentMessages      bool
+	LogFilterMessages    bool
 	LogSentMessageTypes  map[message.OpType]bool
 	LogFileName          string
 	LogTruncate          bool
@@ -26,7 +26,7 @@ type LoggingOptions struct {
 
 var LoggingOpts = LoggingOptions{
 	LogIDs:               true,
-	LogSentMessages:      true,
+	LogFilterMessages:    true,
 	LogMoves:             false,
 	LogGenericSent:       false,
 	LogSmallAs:           false,
@@ -37,10 +37,11 @@ var LoggingOpts = LoggingOptions{
 	LogFileName:          "inventory_logs",
 	LogTruncate:          true,
 	LogSentMessageTypes: map[message.OpType]bool{
-		message.OpTypeAvatarMovement:            false,
-		message.OpTypeCreateNPC:                 true,
-		message.OpTypeEquippedItemClickResponse: true,
-		message.OpTypeOther:                     false,
+		message.OpTypeAvatarMovement:             false,
+		message.OpTypeCreateNPC:                  false,
+		message.OpTypeEquippedItemClickResponse:  false,
+		message.OpTypeOther:                      false,
+		message.OpTypeInventoryItemClickResponse: true,
 	},
 }
 
