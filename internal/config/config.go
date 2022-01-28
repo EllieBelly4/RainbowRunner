@@ -9,6 +9,7 @@ var Config RRConfig
 
 type LoggingOptions struct {
 	LogMoves             bool            `mapstructure:"log_moves"`
+	LogReceivedMoves     bool            `mapstructure:"log_received_moves"`
 	LogGenericSent       bool            `mapstructure:"log_generic_sent"`
 	LogSmallAs           bool            `mapstructure:"log_small_as"`
 	LogHashes            bool            `mapstructure:"log_hashes"`

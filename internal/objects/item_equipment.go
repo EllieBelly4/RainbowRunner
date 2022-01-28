@@ -59,6 +59,10 @@ func NewEquipment(itemGCType, itemModGCType string, itemType ItemType, slot type
 		drClass = database.Weapons.Find(itemGCType)
 	}
 
+	if drClass == nil {
+		panic(fmt.Sprintf("could not find DRClass for equipment '%s'", itemGCType))
+	}
+
 	item.Mod = itemModGCType
 	item.ModCount = drClass.ModCount()
 	item.ItemType = itemType

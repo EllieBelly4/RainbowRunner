@@ -111,6 +111,29 @@ func (b *Byter) UInt24() uint32 {
 	return result
 }
 
+func (b *Byter) Int24() int32 {
+	i := b.getDataIndex(3)
+
+	result := int32(0)
+
+	if b.littleEndian {
+		result |= int32(b.Buffer[i])
+		i++
+		result |= int32(binary.LittleEndian.Uint16(b.Buffer[i:])) << 8
+	} else {
+		result |= int32(b.Buffer[i]) << 16
+		i++
+		result |= int32(binary.LittleEndian.Uint16(b.Buffer[i:]))
+	}
+
+	if result&(1<<23) > 0 {
+		result = result ^ (1 << 23)
+		result = -result
+	}
+
+	return result
+}
+
 func (b *Byter) UInt64() uint64 {
 	var result uint64 = 0
 
@@ -361,6 +384,25 @@ func (b *Byter) Dump() {
 
 func (b *Byter) DumpRemaining() {
 	fmt.Printf("%s\n", hex.Dump(b.RemainingBytes()))
+}
+
+func (b *Byter) WriteInt24(num int32) {
+	if num < 0 {
+		num = -num
+		num |= 1 << 23
+	}
+
+	if b.littleEndian {
+		b.Buffer = append(b.Buffer, byte(num))
+
+		b.Buffer = append(b.Buffer, []byte{0, 0}...)
+		binary.LittleEndian.PutUint16(b.Buffer[len(b.Buffer)-2:], uint16(num>>8))
+	} else {
+		b.Buffer = append(b.Buffer, byte(num>>16))
+
+		b.Buffer = append(b.Buffer, []byte{0, 0}...)
+		binary.BigEndian.PutUint16(b.Buffer[len(b.Buffer)-2:], uint16(num))
+	}
 }
 
 func NewByter(buffer []byte) *Byter {

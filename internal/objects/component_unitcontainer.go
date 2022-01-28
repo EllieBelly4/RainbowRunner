@@ -13,72 +13,116 @@ type UnitContainer struct {
 
 	Manipulator DRObject
 	ActiveItem  DRObject
+	Avatar      *Avatar
 }
 
 func (u *UnitContainer) ReadUpdate(body *byter.Byter) error {
 	op := body.Byte()
 
 	switch op {
-	// Pickup item in inventory
-	case 0x28:
-		index := body.UInt32()
-		inventory := u.GetChildByGCType("avatar.base.inventory")
-		inventoryCast, ok := inventory.(*Inventory)
-
-		if !ok {
-			return errors.New(fmt.Sprintf("character does not have an inventory"))
-		}
-
-		item := inventoryCast.RemoveItemByIndex(int(index))
-
-		if item == nil {
-			return errors.New(fmt.Sprintf("could not find item in inventory with index '%d'", index))
-		}
-
-		CEWriter := NewClientEntityWriterWithByter()
-
-		// TODO fix this, it does not actually remove the item from inventory
-		// I think it's because Item::GetInventory always returns 0
-		u.WriteRemoveItem(CEWriter.Body, index)
-
-		u.SetActiveItem(item)
-		u.WriteSetActiveItem(CEWriter.Body)
-
-		Players.GetPlayer(uint16(u.OwnerID())).MessageQueue.Enqueue(
-			message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeInventoryItemClickResponse,
-		)
-
-	// Place item in inventory
-	case 0x29:
-		inventoryID := body.Byte()
-		inventory := u.GetInventoryByID(inventoryID)
-
-		if inventory == nil {
-			return errors.New(fmt.Sprintf("character does not have an inventory"))
-		}
-
+	// Drop item on floor
+	case 0x23:
 		CEWriter := NewClientEntityWriterWithByter()
 
 		item := u.ActiveItem
 
 		if item == nil {
-			return errors.New(fmt.Sprintf("character does not have an active item"))
+			return errors.New("cannot drop any item when no active item is selected")
 		}
 
 		u.SetActiveItem(nil)
 		u.WriteClearActiveItem(CEWriter.Body)
 
-		x := body.Byte()
-		y := body.Byte()
+		avatarUnitBehaviour := u.Avatar.GetUnitBehaviour()
 
-		inventory.AddChild(item)
-		u.WriteAddItem(CEWriter.Body, item, inventory, x, y)
+		itemObject := NewItemObject("itemobject", item)
+		itemObject.WorldPosition = avatarUnitBehaviour.Position
+		fmt.Printf("Avatar Pos: %d, %d", avatarUnitBehaviour.Position.X, avatarUnitBehaviour.Position.Y)
+		Entities.RegisterAll(u.RREntityProperties().Conn, itemObject)
+		CEWriter.Create(itemObject)
+		CEWriter.Init(itemObject)
 
 		Players.GetPlayer(uint16(u.OwnerID())).MessageQueue.Enqueue(
-			message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeInventoryItemClickResponse,
+			message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeInventoryItemDropResponse,
 		)
+	// Pickup item in inventory
+	case 0x28:
+		err := u.handlePickupItemFromInventory(body)
+
+		if err != nil {
+			return err
+		}
+
+	// Place item in inventory
+	case 0x29:
+		err := u.handlePlaceItemInInventory(body)
+
+		if err != nil {
+			return err
+		}
+	default:
+		return errors.New(fmt.Sprintf("unhandled unitcontainer message: %d", op))
 	}
 
+	return nil
+}
+
+func (u *UnitContainer) handlePlaceItemInInventory(body *byter.Byter) error {
+	inventoryID := body.Byte()
+	inventory := u.GetInventoryByID(inventoryID)
+
+	if inventory == nil {
+		return errors.New(fmt.Sprintf("character does not have an inventory"))
+	}
+
+	CEWriter := NewClientEntityWriterWithByter()
+
+	item := u.ActiveItem
+
+	if item == nil {
+		return errors.New(fmt.Sprintf("character does not have an active item"))
+	}
+
+	u.SetActiveItem(nil)
+	u.WriteClearActiveItem(CEWriter.Body)
+
+	x := body.Byte()
+	y := body.Byte()
+
+	inventory.AddChild(item)
+	u.WriteAddItem(CEWriter.Body, item, inventory, x, y)
+
+	Players.GetPlayer(uint16(u.OwnerID())).MessageQueue.Enqueue(
+		message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeInventoryItemClickResponse,
+	)
+	return nil
+}
+
+func (u *UnitContainer) handlePickupItemFromInventory(body *byter.Byter) error {
+	index := body.UInt32()
+	inventory := u.GetChildByGCType("avatar.base.inventory")
+	inventoryCast, ok := inventory.(*Inventory)
+
+	if !ok {
+		return errors.New(fmt.Sprintf("character does not have an inventory"))
+	}
+
+	item := inventoryCast.RemoveItemByIndex(int(index))
+
+	if item == nil {
+		return errors.New(fmt.Sprintf("could not find item in inventory with index '%d'", index))
+	}
+
+	CEWriter := NewClientEntityWriterWithByter()
+
+	u.WriteRemoveItem(CEWriter.Body, index)
+
+	u.SetActiveItem(item)
+	u.WriteSetActiveItem(CEWriter.Body)
+
+	Players.GetPlayer(uint16(u.OwnerID())).MessageQueue.Enqueue(
+		message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeInventoryItemClickResponse,
+	)
 	return nil
 }
 
@@ -163,7 +207,7 @@ func (u *UnitContainer) GetInventoryByID(index byte) *Inventory {
 	return nil
 }
 
-func NewUnitContainer(manipulator DRObject, name string) *UnitContainer {
+func NewUnitContainer(manipulator DRObject, name string, avatar *Avatar) *UnitContainer {
 	container := NewComponent("unitcontainer", "UnitContainer")
 	container.GCName = name
 
@@ -174,5 +218,6 @@ func NewUnitContainer(manipulator DRObject, name string) *UnitContainer {
 	return &UnitContainer{
 		Component:   container,
 		Manipulator: manipulator,
+		Avatar:      avatar,
 	}
 }

@@ -197,7 +197,7 @@ func (g *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 		pos.Y = reader.Int32()
 
 		avatar.ClientUpdateNumber = updateNumber
-		if config.Config.Logging.LogMoves {
+		if config.Config.Logging.LogReceivedMoves {
 			fmt.Printf(
 				"Player move 0x%x rotation 0x%x(%.2fdeg) (%d, %d) Hex (%x, %x)\n",
 				moveUpdateType, rotation, degrees, pos.X, pos.Y, pos.X, pos.Y,
@@ -210,9 +210,6 @@ func (g *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 		g.Position.Y = pos.Y
 		g.Position.Z = 0
 		g.Rotation = rotation
-
-		avatar.LastPosition = g.LastPosition
-		avatar.Position = g.Position
 
 		//conn.Player.SendPosition(moveUpdateType)
 

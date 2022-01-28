@@ -19,6 +19,7 @@ const (
 	OpTypeCreateNPC
 	OpTypeEquippedItemClickResponse
 	OpTypeInventoryItemClickResponse
+	OpTypeInventoryItemDropResponse
 	OpTypeOther
 )
 

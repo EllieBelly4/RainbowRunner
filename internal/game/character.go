@@ -264,7 +264,7 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	//manipulator.GCType = "base.MeleeUnit.Manipulators.PrimaryWeapon"
 	objects.Entities.RegisterAll(conn, manipulator)
 
-	unitContainer := objects.NewUnitContainer(manipulator, "EllieUnitContainer")
+	unitContainer := objects.NewUnitContainer(manipulator, "EllieUnitContainer", avatar)
 	//unitContainer.GCType = "unitcontainer"
 	//unitContainer.Name = "EllieUnitContainer"
 

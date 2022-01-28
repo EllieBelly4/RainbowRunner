@@ -5,7 +5,6 @@ import (
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/message"
-	"RainbowRunner/pkg"
 	"RainbowRunner/pkg/byter"
 	"fmt"
 )
@@ -14,8 +13,6 @@ type Avatar struct {
 	*GCObject
 	IsMoving           bool
 	Rotation           int32
-	Position           pkg.Vector3
-	LastPosition       pkg.Vector3
 	ClientUpdateNumber byte
 	MoveUpdate         int
 	IsSpawned          bool
@@ -110,10 +107,6 @@ func (p *Avatar) SendFollowClient() {
 func (p *Avatar) Warp(x int32, y int32, z int32) {
 	unitBehavior := p.GetChildByGCNativeType("UnitBehavior").(*UnitBehavior)
 	unitBehavior.Warp(x, y, z)
-
-	p.Position.X = x
-	p.Position.Y = x
-	p.Position.Z = x
 }
 
 func (p *Avatar) SendMoveTo(unk uint8, compID uint16, posX, posY int32) {
@@ -149,6 +142,11 @@ func (p *Avatar) GetUnitContainer() *UnitContainer {
 
 func (p *Avatar) GetManipulators() *Manipulators {
 	return p.GetChildByGCNativeType("Manipulators").(*Manipulators)
+}
+
+func (p *Avatar) GetUnitBehaviour() *UnitBehavior {
+	unitBehaviour := p.GetChildByGCNativeType("UnitBehavior")
+	return unitBehaviour.(*UnitBehavior)
 }
 
 //func (p *Avatar) SendPositions(positions []UnitPathPosition) {

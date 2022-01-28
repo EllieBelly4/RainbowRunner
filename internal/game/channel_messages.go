@@ -52,7 +52,7 @@ func handleChannelMessage(conn *connections.RRConn, reader *byter.Byter) {
 
 	if err != nil {
 		if errors.Is(err, UnhandledChannelMessageError) {
-			noticeMessage("unhandled channel message chan: %x type: %x", msgChan, msgSubType)
+			noticeMessage("unhandled channel message chan: %x type: %x\n%s", msgChan, msgSubType, hex.Dump(reader.Data()))
 		} else {
 			fmt.Println(err)
 		}

@@ -32,7 +32,8 @@ func (n *Item) WriteInit(b *byter.Byter) {
 	b.WriteByte(byte(n.InventoryPosition.X))
 	b.WriteByte(byte(n.InventoryPosition.Y))
 
-	b.WriteByte(0x01)   // Item count
+	b.WriteByte(0x01) // Item count
+
 	b.WriteByte(50 + 5) // Required level + 5
 
 	// Flag?
@@ -56,6 +57,8 @@ func (n *Item) WriteInit(b *byter.Byter) {
 	// Required modifiers?
 	// ItemModifier?
 	itemModifierFlag1 := 0x00
+
+	//TODO Up to here itemObject is fine, but the required modifiers count is different 5
 
 	// Each item has different numbers of required modifiers
 	for i := 0; i < n.ModCount; i++ {
