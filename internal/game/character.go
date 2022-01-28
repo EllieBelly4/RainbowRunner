@@ -1,11 +1,11 @@
 package game
 
 import (
+	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/helpers"
-	"RainbowRunner/internal/logging"
 	"RainbowRunner/internal/objects"
 	byter "RainbowRunner/pkg/byter"
 	"fmt"
@@ -379,7 +379,7 @@ func AddEquipment(equipment objects.DRObject, manipulators *objects.Manipulators
 	manipulators.AddChild(randomArmour)
 	manipulators.AddChild(randomWeapon)
 
-	if logging.LoggingOpts.LogRandomEquipment {
+	if config.Config.Logging.LogRandomEquipment {
 		fmt.Printf(`Random equipment for today is:
 Helm: %s
 Armour: %s

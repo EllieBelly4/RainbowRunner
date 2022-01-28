@@ -1,3 +1,4 @@
+/config.yaml
 /db
 /resources/Logs/*
 # Created by https://www.toptal.com/developers/gitignore/api/go,jetbrains+all

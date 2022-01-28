@@ -1,9 +1,9 @@
 package game
 
 import (
+	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/helpers"
-	"RainbowRunner/internal/logging"
 	"RainbowRunner/internal/objects"
 	"RainbowRunner/pkg/byter"
 	"encoding/hex"
@@ -99,7 +99,7 @@ func readPacket(conn *connections.RRConn, reader *byter.Byter) {
 		msgTypeA := reader.UInt8()
 		reader.UInt8()
 
-		if logging.LoggingOpts.LogSmallAs {
+		if config.Config.Logging.LogSmallAs {
 			fmt.Printf("Received compressed A:\n%s\n", hex.Dump(reader.Data()))
 		}
 
@@ -130,7 +130,7 @@ func readPacket(conn *connections.RRConn, reader *byter.Byter) {
 	} else if msgType == 0x0e {
 		msgReader := ReadCompressedE(reader)
 
-		if logging.LoggingOpts.LogEMessages {
+		if config.Config.Logging.LogEMessages {
 			log.Infof("Received E:\n%s", hex.Dump(msgReader.Buffer))
 		}
 

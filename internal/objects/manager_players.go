@@ -1,14 +1,15 @@
 package objects
 
 import (
+	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/helpers"
-	"RainbowRunner/internal/logging"
 	"RainbowRunner/internal/message"
 	"RainbowRunner/pkg/byter"
 	"encoding/hex"
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"strings"
 	"sync"
 )
 
@@ -89,8 +90,8 @@ func (m *PlayerManager) AfterTick() {
 			item := player.MessageQueue.Dequeue(message.QueueTypeClientEntity)
 			body.Write(item.Data)
 
-			if logging.LoggingOpts.LogFilterMessages {
-				if logIt, ok := logging.LoggingOpts.LogSentMessageTypes[item.OpType]; ok && logIt {
+			if config.Config.Logging.LogFilterMessages {
+				if logIt, ok := config.Config.Logging.LogSentMessageTypes[strings.ToLower(item.OpType.String())]; ok && logIt {
 					logrus.Info(fmt.Sprintf("Sent Message:\n%s", hex.Dump(item.Data.Data())))
 				}
 			}

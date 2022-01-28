@@ -1,0 +1,19 @@
+send_movement_messages: false
+logging:
+  log_moves: true
+  log_generic_sent: false
+  log_small_as: false
+  log_hashes: false
+  log_gc_object_serialise: false
+  log_random_equipment: false
+  log_filter_messages: true
+  log_file_name: inventory_logs
+  log_truncate: true
+  log_e_messages: false
+  log_ids: true
+  log_sent_message_types:
+    OpTypeAvatarMovement: true
+    OpTypeCreateNPC: true
+    OpTypeEquippedItemClickResponse: true
+    OpTypeOther: true
+    OpTypeInventoryItemClickResponse: true

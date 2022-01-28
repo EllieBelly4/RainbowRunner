@@ -1,9 +1,10 @@
 package objects
 
 import (
+	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/helpers"
-	"RainbowRunner/internal/logging"
+	"RainbowRunner/internal/message"
 	"RainbowRunner/pkg"
 	"RainbowRunner/pkg/byter"
 	"fmt"
@@ -11,14 +12,13 @@ import (
 
 type Avatar struct {
 	*GCObject
-	IsMoving             bool
-	Rotation             int32
-	Position             pkg.Vector3
-	LastPosition         pkg.Vector3
-	ClientUpdateNumber   byte
-	MoveUpdate           int
-	TicksSinceLastUpdate int
-	IsSpawned            bool
+	IsMoving           bool
+	Rotation           int32
+	Position           pkg.Vector3
+	LastPosition       pkg.Vector3
+	ClientUpdateNumber byte
+	MoveUpdate         int
+	IsSpawned          bool
 }
 
 func (p *Avatar) Type() DRObjectType {
@@ -57,32 +57,18 @@ func (p *Avatar) Tick() {
 		return
 	}
 
-	//if p.TicksSinceLastUpdate >= 0x2D {
-	//if p.TicksSinceLastUpdate >= 30 {
-	//	p.SendPosition()
-	//}
+	if config.Config.SendMovementMessages {
+		player := Players.GetPlayer(uint16(p.OwnerID()))
+		unitBehavior := p.GetChildByGCNativeType("UnitBehavior").(*UnitBehavior)
 
-	//if p.IsMoving {
-	//p.SendPosition()
-	//}
+		CEWriter := NewClientEntityWriterWithByter()
 
-	// TODO renable movement
-	//player := Players.GetPlayer(uint16(p.OwnerID()))
-	//unitBehavior := p.GetChildByGCNativeType("UnitBehavior").(*UnitBehavior)
+		CEWriter.BeginComponentUpdate(unitBehavior)
+		unitBehavior.WriteMoveUpdate(CEWriter.GetBody())
+		CEWriter.EndComponentUpdate(unitBehavior)
 
-	//CEWriter := NewClientEntityWriterWithByter()
-	//
-	//CEWriter.BeginComponentUpdate(unitBehavior)
-	//unitBehavior.WriteMoveUpdate(CEWriter.GetBody())
-	//CEWriter.EndComponentUpdate(unitBehavior)
-	//
-	//player.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeAvatarMovement)
-
-	p.TicksSinceLastUpdate++
-}
-
-func (p *Avatar) updated() {
-	p.TicksSinceLastUpdate = 0
+		player.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeAvatarMovement)
+	}
 }
 
 //func (p *Avatar) SendPosition() {
@@ -128,8 +114,6 @@ func (p *Avatar) Warp(x int32, y int32, z int32) {
 	p.Position.X = x
 	p.Position.Y = x
 	p.Position.Z = x
-
-	p.updated()
 }
 
 func (p *Avatar) SendMoveTo(unk uint8, compID uint16, posX, posY int32) {
@@ -154,11 +138,9 @@ func (p *Avatar) SendMoveTo(unk uint8, compID uint16, posX, posY int32) {
 
 	helpers.WriteCompressedA(p.RREntityProperties().Conn, 0x01, 0x0f, body)
 
-	if logging.LoggingOpts.LogMoves {
+	if config.Config.Logging.LogMoves {
 		fmt.Printf("Send MoveTo %x (%d, %d) (%x, %x)\n", unk, posX, posY, posX, posY)
 	}
-
-	p.updated()
 }
 
 func (p *Avatar) GetUnitContainer() *UnitContainer {

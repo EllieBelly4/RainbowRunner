@@ -1,9 +1,9 @@
 package helpers
 
 import (
+	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
-	"RainbowRunner/internal/logging"
 	"RainbowRunner/pkg/byter"
 	"bytes"
 	"compress/zlib"
@@ -17,7 +17,7 @@ func WriteCompressedASimple(conn connections.Connection, b *byter.Byter) {
 	pc, file, line, ok := runtime.Caller(1)
 	callerInfo := "unk"
 
-	if logging.LoggingOpts.LogGenericSent {
+	if config.Config.Logging.LogGenericSent {
 		if ok {
 			details := runtime.FuncForPC(pc)
 			callerInfo = fmt.Sprintf("%s() %s:%d", details.Name(), file, line)
@@ -46,7 +46,7 @@ func WriteCompressedA(conn connections.Connection, dest uint8, messageType uint8
 	response.WriteByte(0x00)
 	response.WriteUInt32(uint32(len(body.Data())))
 
-	if len(body.Buffer) >= 2 && logging.LoggingOpts.LogGenericSent {
+	if len(body.Buffer) >= 2 && config.Config.Logging.LogGenericSent {
 		fmt.Printf(">>>>> send [%s-%d] len %d\n", messages.Channel(body.Data()[0]).String(), body.Data()[1], len(body.Buffer))
 	} else {
 		//fmt.Printf(">>>>> send [nochannel] len %d\n", len(body.Buffer))
@@ -61,7 +61,7 @@ func WriteCompressedA(conn connections.Connection, dest uint8, messageType uint8
 		return
 	}
 
-	if logging.LoggingOpts.LogGenericSent {
+	if config.Config.Logging.LogGenericSent {
 		pc, file, line, ok := runtime.Caller(1)
 		callerInfo := "unk"
 

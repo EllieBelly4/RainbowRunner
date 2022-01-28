@@ -3,6 +3,7 @@ package main
 import (
 	"RainbowRunner/internal/admin"
 	"RainbowRunner/internal/api"
+	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/game"
 	"RainbowRunner/internal/logging"
@@ -13,6 +14,7 @@ import (
 var done = make(chan bool)
 
 func main() {
+	config.Load()
 	logging.Init()
 
 	database.LoadEquipmentFixtures()

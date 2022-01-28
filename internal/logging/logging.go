@@ -1,7 +1,7 @@
 package logging
 
 import (
-	"RainbowRunner/internal/message"
+	"RainbowRunner/internal/config"
 	log "github.com/sirupsen/logrus"
 	"io"
 	"os"
@@ -9,53 +9,17 @@ import (
 	"time"
 )
 
-type LoggingOptions struct {
-	LogMoves             bool
-	LogGenericSent       bool
-	LogSmallAs           bool
-	LogHashes            bool
-	LogGCObjectSerialise bool
-	LogRandomEquipment   bool
-	LogFilterMessages    bool
-	LogSentMessageTypes  map[message.OpType]bool
-	LogFileName          string
-	LogTruncate          bool
-	LogEMessages         bool
-	LogIDs               bool
-}
-
-var LoggingOpts = LoggingOptions{
-	LogIDs:               true,
-	LogFilterMessages:    true,
-	LogMoves:             false,
-	LogGenericSent:       false,
-	LogSmallAs:           false,
-	LogEMessages:         false,
-	LogHashes:            false,
-	LogGCObjectSerialise: false,
-	LogRandomEquipment:   false,
-	LogFileName:          "inventory_logs",
-	LogTruncate:          true,
-	LogSentMessageTypes: map[message.OpType]bool{
-		message.OpTypeAvatarMovement:             false,
-		message.OpTypeCreateNPC:                  false,
-		message.OpTypeEquippedItemClickResponse:  false,
-		message.OpTypeOther:                      false,
-		message.OpTypeInventoryItemClickResponse: true,
-	},
-}
-
 func Init() {
 	timestamp := time.Now().Format(time.RFC3339)
 	safeName := strings.Replace(timestamp, ":", "_", -1)
 
-	if len(LoggingOpts.LogFileName) > 0 {
-		safeName = LoggingOpts.LogFileName
+	if len(config.Config.Logging.LogFileName) > 0 {
+		safeName = config.Config.Logging.LogFileName
 	}
 
 	flag := os.O_APPEND | os.O_CREATE
 
-	if LoggingOpts.LogTruncate {
+	if config.Config.Logging.LogTruncate {
 		flag |= os.O_TRUNC
 	}
 
