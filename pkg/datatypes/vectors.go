@@ -1,4 +1,4 @@
-package pkg
+package datatypes
 
 type Vector2 struct {
 	X, Y int32

@@ -1,6 +1,8 @@
 package objects
 
-import "RainbowRunner/pkg/byter"
+import (
+	"RainbowRunner/pkg/byter"
+)
 
 type DialogManager struct {
 	*GCObject

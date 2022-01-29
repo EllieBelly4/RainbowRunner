@@ -35,14 +35,14 @@ func (m *EntityManager) RegisterAll(owner connections.Connection, objects ...DRO
 				props.OwnerID = owner.GetID()
 			}
 
-			props.ID = NewID()
+			props.ID = uint32(NewID())
 
 			if config.Config.Logging.LogIDs {
 				fmt.Printf("%d - %s(%s)\n", props.ID, object.GetGCObject().GCType, object.GetGCObject().GCName)
 			}
 
 			m.Lock()
-			m.Entities[props.ID] = object
+			m.Entities[uint16(props.ID)] = object
 			m.Unlock()
 		}
 	}
@@ -61,7 +61,7 @@ func (m *EntityManager) FindByID(id uint16) DRObject {
 	m.RLock()
 	defer m.RUnlock()
 	for _, entity := range m.Entities {
-		if entity.RREntityProperties().ID == id {
+		if entity.RREntityProperties().ID == uint32(id) {
 			return entity
 		}
 	}

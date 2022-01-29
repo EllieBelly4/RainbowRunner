@@ -1,8 +1,8 @@
 package objects
 
 import (
-	"RainbowRunner/pkg"
 	"RainbowRunner/pkg/byter"
+	"RainbowRunner/pkg/datatypes"
 )
 
 type DRObjectType int
@@ -35,8 +35,11 @@ type DRObject interface {
 	GetGCObject() *GCObject
 	Tick()
 	OwnerID() int
+	SetVersion(version byte)
+	ReadData(b *byter.Byter)
+	WalkChildren(f func(object DRObject))
 }
 
 type DRItem interface {
-	SetInventoryPosition(vector2 pkg.Vector2)
+	SetInventoryPosition(vector2 datatypes.Vector2)
 }

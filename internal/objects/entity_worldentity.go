@@ -1,13 +1,13 @@
 package objects
 
 import (
-	"RainbowRunner/pkg"
 	"RainbowRunner/pkg/byter"
+	"RainbowRunner/pkg/datatypes"
 )
 
 type WorldEntity struct {
 	*GCObject
-	WorldPosition        pkg.Vector3
+	WorldPosition        datatypes.Vector3
 	Rotation             int
 	WorldEntityFlags     uint32
 	WorldEntityInitFlags byte

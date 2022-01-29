@@ -7,7 +7,7 @@ import (
 
 type RREntityProperties struct {
 	OwnerID int
-	ID      uint16
+	ID      uint32
 	Conn    connections.Connection
 	Zone    *Zone
 }
@@ -15,7 +15,7 @@ type RREntityProperties struct {
 type RREntity struct {
 	Object  DRObject
 	OwnerID int
-	ID      uint16
+	ID      uint32
 }
 
 func (R *RREntity) WriteFullGCObject(b *byter.Byter) {

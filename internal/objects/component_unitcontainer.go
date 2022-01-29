@@ -2,8 +2,8 @@ package objects
 
 import (
 	"RainbowRunner/internal/message"
-	"RainbowRunner/pkg"
 	byter "RainbowRunner/pkg/byter"
+	"RainbowRunner/pkg/datatypes"
 	"errors"
 	"fmt"
 )
@@ -185,7 +185,7 @@ func (u *UnitContainer) WriteAddItem(body *byter.Byter, item DRObject, inventory
 	CEWriter.Body.WriteByte(inventory.InventoryID)
 
 	if drItem, ok := item.(DRItem); ok {
-		drItem.SetInventoryPosition(pkg.Vector2{
+		drItem.SetInventoryPosition(datatypes.Vector2{
 			X: int32(x),
 			Y: int32(y),
 		})

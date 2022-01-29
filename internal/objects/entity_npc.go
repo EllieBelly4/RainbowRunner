@@ -4,8 +4,8 @@ import (
 	"RainbowRunner/internal/game/components/behavior"
 	"RainbowRunner/internal/global"
 	"RainbowRunner/internal/message"
-	"RainbowRunner/pkg"
 	"RainbowRunner/pkg/byter"
+	"RainbowRunner/pkg/datatypes"
 )
 
 type NPC struct {
@@ -19,7 +19,7 @@ func (n *NPC) WriteInit(b *byter.Byter) {
 func NewNPC(
 	gcType,
 	behaviourType string,
-	position pkg.Vector3,
+	position datatypes.Vector3,
 	rotation int,
 ) *NPC {
 	unit := NewStockUnit(gcType)
@@ -67,7 +67,7 @@ func (n *NPC) addBehaviour(behaviourType string) {
 	n.AddChild(unitBehavior)
 }
 
-func CreateNPC(player *RRPlayer, zone *Zone, transform pkg.Transform, npcType, behaviourType string) {
+func CreateNPC(player *RRPlayer, zone *Zone, transform datatypes.Transform, npcType, behaviourType string) {
 	npc := NewNPC(npcType, behaviourType, transform.Position, transform.Rotation)
 
 	npc.WorldPosition = transform.Position

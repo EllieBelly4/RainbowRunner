@@ -1,8 +1,8 @@
 package objects
 
 import (
-	"RainbowRunner/pkg"
 	"RainbowRunner/pkg/byter"
+	"RainbowRunner/pkg/datatypes"
 )
 
 type Item struct {
@@ -10,11 +10,11 @@ type Item struct {
 	ModCount          int
 	Mod               string
 	ItemType          ItemType
-	InventoryPosition pkg.Vector2
+	InventoryPosition datatypes.Vector2
 	Index             int
 }
 
-func (n *Item) SetInventoryPosition(vector2 pkg.Vector2) {
+func (n *Item) SetInventoryPosition(vector2 datatypes.Vector2) {
 	n.InventoryPosition = vector2
 }
 

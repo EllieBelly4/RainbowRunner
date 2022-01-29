@@ -1,6 +1,8 @@
 package objects
 
-import "strings"
+import (
+	"strings"
+)
 
 type Component struct {
 	*GCObject

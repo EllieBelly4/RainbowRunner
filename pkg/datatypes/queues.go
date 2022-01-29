@@ -1,9 +1,7 @@
 package datatypes
 
-import "RainbowRunner/pkg"
-
 type MovementUpdate struct {
-	Position pkg.Vector2
+	Position Vector2
 	Tick     uint
 	Rotation int32
 }

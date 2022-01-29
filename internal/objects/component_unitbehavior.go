@@ -5,8 +5,8 @@ import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/components/behavior"
 	"RainbowRunner/internal/helpers"
-	"RainbowRunner/pkg"
 	"RainbowRunner/pkg/byter"
+	"RainbowRunner/pkg/datatypes"
 	"encoding/hex"
 	"errors"
 	"fmt"
@@ -15,8 +15,8 @@ import (
 
 type UnitBehavior struct {
 	*Component
-	LastPosition   pkg.Vector3
-	Position       pkg.Vector3
+	LastPosition   datatypes.Vector3
+	Position       datatypes.Vector3
 	Rotation       int32
 	UnitMoverFlags byte
 	Action1        behavior.Action
@@ -167,7 +167,7 @@ func (n *UnitBehavior) WriteInit(b *byter.Byter) {
 }
 
 type UnitPathPosition struct {
-	Position pkg.Vector2
+	Position datatypes.Vector2
 	Rotation int32
 }
 
@@ -176,7 +176,7 @@ func (g *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 	// The client will then increment by 1 for every individual movement performed (clicking)
 	updateNumber := reader.Byte()
 	count := int(reader.Byte())
-	pos := pkg.Vector2{}
+	pos := datatypes.Vector2{}
 
 	if config.Config.Logging.LogMoves {
 		fmt.Printf("Received %d player moves unk val: %x\n", count, updateNumber)
@@ -235,7 +235,7 @@ func (g *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 
 		responseMoves = append(responseMoves, UnitPathPosition{
 			Rotation: rotation,
-			Position: pkg.Vector2{
+			Position: datatypes.Vector2{
 				X: pos.X,
 				Y: pos.Y,
 			},

@@ -64,7 +64,7 @@ func (z *Zone) RemovePlayer(id int) {
 func (z *Zone) AddEntity(entity DRObject) {
 	z.setZone(entity)
 
-	z.entities[entity.RREntityProperties().ID] = entity
+	z.entities[uint16(entity.RREntityProperties().ID)] = entity
 }
 
 func (z *Zone) AddPlayer(player *RRPlayer) {

@@ -1,6 +1,7 @@
 package byter
 
 import (
+	"RainbowRunner/pkg/datatypes"
 	"bytes"
 	"encoding/binary"
 	"encoding/hex"
@@ -83,9 +84,9 @@ func (b *Byter) Float32() float32 {
 	i := b.getDataIndex(4)
 
 	if b.littleEndian {
-		return float32(binary.LittleEndian.Uint32(b.Buffer[i:]))
+		return math.Float32frombits(binary.LittleEndian.Uint32(b.Buffer[i:]))
 	} else {
-		return float32(binary.BigEndian.Uint32(b.Buffer[i:]))
+		return math.Float32frombits(binary.BigEndian.Uint32(b.Buffer[i:]))
 	}
 }
 
@@ -402,6 +403,30 @@ func (b *Byter) WriteInt24(num int32) {
 
 		b.Buffer = append(b.Buffer, []byte{0, 0}...)
 		binary.BigEndian.PutUint16(b.Buffer[len(b.Buffer)-2:], uint16(num))
+	}
+}
+
+func (b *Byter) Vector3Float32() datatypes.Vector3Float32 {
+	return datatypes.Vector3Float32{
+		X: b.Float32(),
+		Y: b.Float32(),
+		Z: b.Float32(),
+	}
+}
+
+func (b *Byter) Vector2Float32() datatypes.Vector2Float32 {
+	return datatypes.Vector2Float32{
+		X: b.Float32(),
+		Y: b.Float32(),
+	}
+}
+
+func (b *Byter) RGBA32() datatypes.RGBA32 {
+	return datatypes.RGBA32{
+		R: b.Byte(),
+		G: b.Byte(),
+		B: b.Byte(),
+		A: b.Byte(),
 	}
 }
 

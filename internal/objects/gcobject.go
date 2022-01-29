@@ -2,7 +2,7 @@ package objects
 
 import (
 	"RainbowRunner/internal/config"
-	byter "RainbowRunner/pkg/byter"
+	"RainbowRunner/pkg/byter"
 	"fmt"
 	"regexp"
 	"strings"
@@ -33,7 +33,7 @@ func (g *GCObject) Type() DRObjectType {
 	return DRObjectUnknown
 }
 
-func (g *GCObject) ID() uint16 {
+func (g *GCObject) ID() uint32 {
 	return g.EntityProperties.ID
 }
 
@@ -218,8 +218,8 @@ func GetTypeHash(name string) uint32 {
 	return result
 }
 
-func (p *GCObject) GetChildByGCNativeType(s string) DRObject {
-	for _, child := range p.children {
+func (o *GCObject) GetChildByGCNativeType(s string) DRObject {
+	for _, child := range o.children {
 		if strings.ToLower(child.GetGCObject().GCNativeType) == strings.ToLower(s) {
 			return child
 		}
@@ -228,12 +228,65 @@ func (p *GCObject) GetChildByGCNativeType(s string) DRObject {
 	return nil
 }
 
-func (p *GCObject) GetChildByGCType(s string) DRObject {
-	for _, child := range p.children {
+func (o *GCObject) GetChildByGCType(s string) DRObject {
+	for _, child := range o.children {
 		if strings.ToLower(child.GetGCObject().GCType) == strings.ToLower(s) {
 			return child
 		}
 	}
 
 	return nil
+}
+
+func (o *GCObject) SetVersion(version uint8) {
+	o.Version = version
+}
+
+func (o *GCObject) ReadData(b *byter.Byter) {
+}
+
+func (o *GCObject) WalkChildren(cb func(object DRObject)) {
+	if len(o.Children()) == 0 {
+		return
+	}
+
+	for _, object := range o.Children() {
+		object.WalkChildren(cb)
+
+		cb(object)
+	}
+}
+
+func ReadData(b *byter.Byter) DRObject {
+	version := b.Byte() // Version
+	nativeType := b.CString()
+	id := uint16(b.UInt32())
+
+	var gcObject DRObject
+
+	switch nativeType {
+	case "DFC3DNode":
+		gcObject = NewDFC3DNode()
+	case "DFC3DStaticMeshNode":
+		gcObject = NewDFC3DStaticMeshNode()
+	default:
+		gcObject = NewGCObject(nativeType)
+	}
+
+	gcObject.SetVersion(version)
+	gcObject.RREntityProperties().ID = uint32(id)
+
+	gcObject.GetGCObject().GCName = b.CString()
+
+	childCount := b.UInt32()
+
+	for i := 0; i < int(childCount); i++ {
+		gcObject.AddChild(ReadData(b))
+	}
+
+	b.UInt32() // Unk
+
+	gcObject.ReadData(b)
+
+	return gcObject
 }

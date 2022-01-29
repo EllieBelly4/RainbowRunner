@@ -1,7 +1,6 @@
 package connections
 
 import (
-	"RainbowRunner/pkg"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 )
@@ -12,7 +11,7 @@ type RRConnClient struct {
 
 	TicksSinceLastUpdate int
 	MoveQueue            *datatypes.MovementUpdateQueue
-	LastPosition         pkg.Vector3
+	LastPosition         datatypes.Vector3
 }
 
 func (p *RRConnClient) GetID() int {

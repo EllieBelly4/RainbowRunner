@@ -83,7 +83,7 @@ typedef struct DFC3DStaticMeshNode {
 
     struct {
         uint32 ID; //.text:00654524
-        string unk <fgcolor=cDkRed>; //.text:00654535
+        string Name <fgcolor=cDkRed>; //.text:00654535
     } Material[MaterialCount] <optimize=false>;
 
     uint32 VertCount <bgcolor=cAqua>; //.text:006F4C81

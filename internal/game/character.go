@@ -98,7 +98,7 @@ func handleCharacterConnected(conn *connections.RRConn) {
 	for i := 0; i < count; i++ {
 		player := loadPlayer(conn.Client)
 		player.EntityProperties.Conn = conn
-		player.EntityProperties.ID = uint16(i + 1)
+		player.EntityProperties.ID = uint32(i + 1)
 		player.EntityProperties.OwnerID = conn.GetID()
 		objects.Players.Players[conn.GetID()].Characters = append(objects.Players.Players[conn.GetID()].Characters, player)
 	}

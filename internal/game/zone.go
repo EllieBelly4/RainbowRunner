@@ -5,8 +5,8 @@ import (
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/objects"
-	"RainbowRunner/pkg"
 	byter "RainbowRunner/pkg/byter"
+	"RainbowRunner/pkg/datatypes"
 	"RainbowRunner/pkg/math"
 )
 
@@ -94,30 +94,30 @@ func handleZoneJoin(conn *connections.RRConn) {
 
 	if player.Zone.Name == "town" {
 		for i, entityStrings := range entitiesToSpawn {
-			objects.CreateNPC(player, player.Zone, pkg.Transform{
-				Position: pkg.Vector3{106342 + 2048*int32(i), -36000, 12778},
+			objects.CreateNPC(player, player.Zone, datatypes.Transform{
+				Position: datatypes.Vector3{106342 + 2048*int32(i), -36000, 12778},
 				Rotation: 180 * math.DRDegToRot,
 			}, entityStrings[0], entityStrings[1])
 		}
 
 	} else if player.Zone.Name == "dungeon16_level00" {
-		objects.CreateNPC(player, player.Zone, pkg.Transform{
-			Position: pkg.Vector3{0, 0, 15000},
+		objects.CreateNPC(player, player.Zone, datatypes.Transform{
+			Position: datatypes.Vector3{0, 0, 15000},
 			Rotation: 180 * math.DRDegToRot,
 		}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
 
-		objects.CreateNPC(player, player.Zone, pkg.Transform{
-			Position: pkg.Vector3{20 * 256, 20 * 256, 15000},
+		objects.CreateNPC(player, player.Zone, datatypes.Transform{
+			Position: datatypes.Vector3{20 * 256, 20 * 256, 15000},
 			Rotation: 270 * math.DRDegToRot,
 		}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
 
-		objects.CreateNPC(player, player.Zone, pkg.Transform{
-			Position: pkg.Vector3{0 * 256, 40 * 256, 15000},
+		objects.CreateNPC(player, player.Zone, datatypes.Transform{
+			Position: datatypes.Vector3{0 * 256, 40 * 256, 15000},
 			Rotation: 360 * math.DRDegToRot,
 		}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
 
-		objects.CreateNPC(player, player.Zone, pkg.Transform{
-			Position: pkg.Vector3{-20 * 256, 20 * 256, 15000},
+		objects.CreateNPC(player, player.Zone, datatypes.Transform{
+			Position: datatypes.Vector3{-20 * 256, 20 * 256, 15000},
 			Rotation: 90 * math.DRDegToRot,
 		}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
 	}
