@@ -1,0 +1,151 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+
+typedef struct {
+    byte R <fgcolor=cRed>;
+    byte G <fgcolor=cGreen>;
+    byte B <fgcolor=cBlue>;
+    byte A <fgcolor=cWhite>;
+} RGBA32 <read=readRGBA32>;
+
+string readRGBA32 (RGBA32 &in){
+    local string out;
+    SPrintf(out, "%d,%d,%d,%d", in.R, in.G, in.B, in.A);
+    return out;
+}
+
+typedef struct {
+    float X <fgcolor=cLtRed>;
+    float Y <fgcolor=cLtGreen>;
+    float Z <fgcolor=cLtBlue>;
+} Vector3 <read=readVector3>;
+
+string readVector3 (Vector3 &in){
+    local string out;
+    SPrintf(out, "%f,%f,%f", in.X, in.Y, in.Z);
+    return out;
+}
+
+typedef struct {
+    float X <fgcolor=cLtRed>;
+    float Y <fgcolor=cLtGreen>;
+} Vector2 <read=readVector2>;
+
+string readVector2 (Vector2 &in){
+    local string out;
+    SPrintf(out, "%f,%f", in.X, in.Y);
+    return out;
+}
+
+typedef struct TriangleGroup {
+    uint16 First <fgcolor=cLtRed>;
+    uint16 Second <fgcolor=cLtGreen>;
+    uint16 Third <fgcolor=cLtBlue>;
+};
+
+typedef struct SomeValueGroup {
+    uint32 unkgroup <bgcolor=cLtPurple>;
+    uint32 unkgroup <bgcolor=cPurple>;
+    uint32 unkgroup <bgcolor=cLtPurple>;
+    uint32 unkgroup <bgcolor=cPurple>;
+    uint32 unkgroup <bgcolor=cLtPurple>;
+};
+
+typedef struct DFC3DStaticMeshNode {
+    uint32 unk6;
+    uint32 unka0[7];
+    Vector3 UnkVector;
+
+    uint32 unk4;
+    byte unk5;
+    char exportString[6] <bgcolor=cLtGreen>;
+
+    byte unk11; //no
+    // byte unka1[28];
+    uint32 unk12; //unk flags maybe
+    uint32 unk13; //unk flags maybe
+    uint32 unk14; //unk flags maybe
+    // DFC3DMultiMaterialNode::readObject
+    uint32 MaterialCount; //unk flags maybe, potential .text:006544E5
+
+    local int i = 0;
+
+    struct {
+        uint32 ID; //.text:00654524
+        string unk <fgcolor=cDkRed>; //.text:00654535
+    } Material[MaterialCount] <optimize=false>;
+
+    uint32 VertCount <bgcolor=cAqua>; //.text:006F4C81
+    // 0x02 = normals
+    // 0x04 = has colours
+    // 0x08 and 0x10 seem to be exclusive
+    // 0x08 = 
+    // 0x10 = 
+    uint32 Flags; //unconfirmed, seems to control if normals are added
+    
+    Vector3 Verts[VertCount] <bgcolor=cLtRed>;
+
+    if ((Flags & 0x02) > 0) {
+        Vector3 Normals[VertCount] <bgcolor=cLtGreen>;
+    }
+
+
+    if ((Flags & 0x04) > 0) {
+        RGBA32 VertColours[VertCount];
+    }
+
+    if ((Flags & 0x08) > 0) {
+        Vector2 UVs[VertCount] <bgcolor=cLtBlue>;
+    }
+
+
+    uint32 TriangleCount <bgcolor=cLtYellow>;
+    TriangleGroup Triangles[TriangleCount/3] <bgcolor=cSilver>;
+
+    uint32 SomeValueGroupCount;
+    
+    SomeValueGroup SomeValues[SomeValueGroupCount];
+    
+    Vector3 SomeVectors[3] <bgcolor=cDkBlue>;
+};
+
+
+struct DFC3DNodeHeader;
+
+typedef struct DFC3DNodeHeader {
+    byte Version;
+
+    // version > 0x2a then we need to use hashes instead of strings
+    string Type <bgcolor=cPurple>;
+    uint32 ObjectID <fgcolor=cPurple>;
+    string GCName <bgcolor=cPurple>;
+    uint32 ChildCount;
+    DFC3DNodeHeader Children[ChildCount] <optimize=false>;
+
+    uint32 unk <bgcolor=cGreen>;
+
+    if (Type == "DFC3DStaticMeshNode"){
+        DFC3DStaticMeshNode staticMesh;
+        float unk;
+    } else {
+        float Matrix[16] <bgcolor=cDkPurple>;
+        float unk <bgcolor=cRed>;
+    }
+
+};
+
+DFC3DNodeHeader dfc3DNode;
+
+
+

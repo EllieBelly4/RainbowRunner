@@ -1,6 +1,7 @@
 package main
 
 import (
+	"RainbowRunner/cmd/files"
 	byter "RainbowRunner/pkg/byter"
 	"bytes"
 	"compress/zlib"
@@ -11,10 +12,11 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"strings"
 )
 
 func main() {
-	dest := "D:\\Work\\dungeon-runners\\666 dumps"
+	dest := "D:\\Work\\dungeon-runners\\666 dumps new"
 
 	pki, err := ioutil.ReadFile("D:\\Work\\dungeon-runners\\game_decompressed.pki")
 
@@ -71,9 +73,9 @@ func main() {
 		strByter := byter.NewLEByter(pki[0x6C+0x2C*0x78AD+4+strOffset:])
 		str := strByter.CString()
 
-		if str != "3EnhancementsPAL" {
-			continue
-		}
+		//if str != "00-shadow_EL_Effect_buff" {
+		//	continue
+		//}
 
 		pkg.Seek(int64(fileOffset), 0)
 		pkg.Read(buf[:fileLength])
@@ -110,40 +112,13 @@ func main() {
 			copy(buf, decompressed[:totalBytes])
 		}
 
-		fileType := "unk"
-		ext := ""
-
-		if string(buf[:3]) == "Ogg" {
-			fileType = "ogg"
-			ext = ".ogg"
-		} else if string(buf[:3]) == "DDS" {
-			fileType = "dds"
-			ext = ".dds"
-		} else if string(buf[:8]) == "Material" {
-			fileType = "mat"
-			ext = ".mat"
-		} else {
-			fileType = string(buf[:12])
-		}
-
-		if ext == "" {
-			ascii := true
-			for i := 0; i < int(fileLength); i++ {
-				if buf[i] > 0x7F {
-					ascii = false
-					break
-				}
-			}
-
-			if ascii {
-				fileType = "txt"
-				ext = ".txt"
-			}
-		}
+		fileType, ext := files.GetExtensionForFile(buf, fileLength)
 
 		if isCompressed {
 			fileType = "Z " + fileType
 		}
+
+		str = strings.ReplaceAll(str, "\\", "_")
 
 		ioutil.WriteFile(path.Join(dest, str+ext), buf[:fileLength], 644)
 		fmt.Printf("%d [%s] %s %d %d\n", i, fileType, str, fileOffset, fileLength)
