@@ -100,7 +100,6 @@ typedef struct DFC3DStaticMeshNode {
         Vector3 Normals[VertCount] <bgcolor=cLtGreen>;
     }
 
-
     if ((Flags & 0x04) > 0) {
         RGBA32 VertColours[VertCount];
     }
@@ -118,6 +117,7 @@ typedef struct DFC3DStaticMeshNode {
     SomeValueGroup SomeValues[SomeValueGroupCount];
     
     Vector3 SomeVectors[3] <bgcolor=cDkBlue>;
+    float unk;
 };
 
 
@@ -137,7 +137,6 @@ typedef struct DFC3DNodeHeader {
 
     if (Type == "DFC3DStaticMeshNode"){
         DFC3DStaticMeshNode staticMesh;
-        float unk;
     } else {
         float Matrix[16] <bgcolor=cDkPurple>;
         float unk <bgcolor=cRed>;

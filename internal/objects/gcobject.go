@@ -276,7 +276,8 @@ func ReadData(b *byter.Byter) DRObject {
 	gcObject.SetVersion(version)
 	gcObject.RREntityProperties().ID = uint32(id)
 
-	gcObject.GetGCObject().GCName = b.CString()
+	gcName := b.CString()
+	gcObject.GetGCObject().GCName = gcName
 
 	childCount := b.UInt32()
 

@@ -90,6 +90,11 @@ func (d *DFC3DStaticMeshNode) ReadData(b *byter.Byter) {
 	}
 
 	b.Vector3Float32() // Unk
+	b.Vector3Float32() // Unk
+	b.Vector3Float32() // Unk
+	b.Float32()
+
+	//fmt.Printf("%v, %v, %v, %v\n", av, bv, cv, dv)
 }
 
 func NewDFC3DStaticMeshNode() *DFC3DStaticMeshNode {

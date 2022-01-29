@@ -15,6 +15,13 @@ func main() {
 	outputPath := os.Args[1]
 	files := os.Args[2:]
 
+	files = []string{
+		//"D:\\Work\\dungeon-runners\\666 dumps new\\TownFloor40.3dnode",
+		//"D:\\Work\\dungeon-runners\\666 dumps new\\TownFloor10.3dnode",
+		//"D:\\Work\\dungeon-runners\\666 dumps new\\townExit_1.3dnode",
+		"D:\\Work\\dungeon-runners\\666 dumps new\\Townston_Square.3dnode",
+	}
+
 	outputPath = strings.ReplaceAll(outputPath, "\\", "/")
 
 	for _, file := range files {
@@ -41,7 +48,6 @@ func extract(pathString string, outputPath string) {
 	node.WalkChildren(func(object objects.DRObject) {
 		if mesh, ok := object.(*objects.DFC3DStaticMeshNode); ok {
 			result := convertMeshToObj(mesh)
-			fmt.Println(result)
 			fileNameWithoutExt := strings.Split(path.Base(pathString), ".")[0]
 
 			outputDir := fmt.Sprintf("%s/%s", outputPath, fileNameWithoutExt)
@@ -59,12 +65,13 @@ func extract(pathString string, outputPath string) {
 			}
 
 			fileName := fmt.Sprintf("%s_%x.obj", fileNameWithoutExt, mesh.ID())
-			fmt.Println(fileName)
-			//ioutil.WriteFile()
+			outputFullPath := fmt.Sprintf("%s/%s", outputDir, fileName)
+			err := ioutil.WriteFile(outputFullPath, []byte(result), os.ModePerm)
+			if err != nil {
+				panic(err)
+			}
 		}
 	})
-
-	fmt.Printf("%+v\n", node)
 }
 
 func convertMeshToObj(mesh *objects.DFC3DStaticMeshNode) string {
@@ -72,6 +79,18 @@ func convertMeshToObj(mesh *objects.DFC3DStaticMeshNode) string {
 
 	for _, vert := range mesh.Verts {
 		objBuilder.WriteVert(vert)
+	}
+
+	for _, norm := range mesh.Normals {
+		objBuilder.WriteNormal(norm)
+	}
+
+	for _, uv := range mesh.UVs {
+		objBuilder.WriteTextureCoordinates(uv)
+	}
+
+	for i := 0; i < len(mesh.Triangles); i += 3 {
+		objBuilder.WriteFace(mesh.Triangles[i:i+3], len(mesh.Normals) > 0, len(mesh.UVs) > 0)
 	}
 
 	return objBuilder.String()
