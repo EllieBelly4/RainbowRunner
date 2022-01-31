@@ -27,6 +27,16 @@ func main() {
 			panic(err)
 		}
 
+		fstat, err := file.Stat()
+
+		if err != nil {
+			panic(err)
+		}
+
+		if fstat.IsDir() {
+			return nil
+		}
+
 		data, err := ioutil.ReadAll(file)
 
 		if err != nil {

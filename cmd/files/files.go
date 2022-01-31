@@ -48,6 +48,9 @@ func GetExtensionForFile(buf []byte, fileLength uint32) (string, string) {
 	} else if string(buf[1:13]) == "DFCScrollBar" {
 		fileType = "DFCScrollBar"
 		ext = ".scrollbar"
+	} else if string(buf[1:22]) == "HybridCollisionObject" {
+		fileType = "HybridCollisionObject"
+		ext = ".hybridcollisionobj"
 	} else if bytes.Compare(buf[1:5], []byte{0xEF, 0xE0, 0xFF, 0xD7}) == 0 {
 		fileType = "Effect"
 		ext = ".fx"

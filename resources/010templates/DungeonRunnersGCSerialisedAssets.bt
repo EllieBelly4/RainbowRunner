@@ -63,6 +63,7 @@ typedef struct SomeValueGroup {
 };
 
 typedef struct DFC3DStaticMeshNode {
+    uint32 unk <bgcolor=cGreen>;
     uint32 unk6;
     uint32 unka0[7];
     Vector3 UnkVector;
@@ -123,31 +124,69 @@ typedef struct DFC3DStaticMeshNode {
     float unk;
 };
 
+typedef struct SubStruct {
+    uint16 unk2;
+    uint16 unk2;
+};
+
+typedef struct HybridCollisionObject {
+    uint32 unk <fgcolor=cGreen>;
+    uint32 unk <fgcolor=cLtGreen>;
+    uint32 unk <fgcolor=cGreen>;
+    uint32 SomeCount0 <fgcolor=cLtGreen>;
+    uint32 SomeCountMul <fgcolor=cGreen>;
+
+    uint16 unkNums[SomeCount0 * SomeCountMul] <fgcolor=cLtBlue>;
+
+    uint32 unk <fgcolor=cGreen>;
+    uint32 unk <fgcolor=cLtGreen>;
+    uint32 unk <fgcolor=cGreen>;
+    uint32 unk <fgcolor=cLtGreen>;
+    uint32 SomeCountMul1 <fgcolor=cGreen>;
+    uint32 SomeCount1 <fgcolor=cLtGreen>;
+    uint32 unk <fgcolor=cGreen>;
+
+    struct {
+        uint16 SomeCount2;
+
+        SubStruct UnkStruct [SomeCount2] <bgcolor=cLtBlue, optimize=false>;
+    } unkNums1[SomeCount1 * SomeCountMul1]<fgcolor=cLtRed,optimize=false>;
+};
+
 
 struct DFC3DNodeHeader;
 
 typedef struct DFC3DNodeHeader {
+        uint32 unk <bgcolor=cGreen>;
+        float Matrix[16] <bgcolor=cDkPurple>;
+        float unk <bgcolor=cRed>;
+};
+
+struct GCObject;
+
+typedef struct GCObject {
     byte Version;
 
     // version > 0x2a then we need to use hashes instead of strings
     string Type <bgcolor=cPurple>;
     uint32 ObjectID <fgcolor=cPurple>;
-    string GCName <bgcolor=cPurple>;
-    uint32 ChildCount;
-    DFC3DNodeHeader Children[ChildCount] <optimize=false>;
-
-    uint32 unk <bgcolor=cGreen>;
 
     if (Type == "DFC3DStaticMeshNode"){
+        string Label <bgcolor=cPurple>;
+        uint32 ChildCount;
+        GCObject Children[ChildCount] <optimize=false>;
         DFC3DStaticMeshNode staticMesh;
-    } else {
-        float Matrix[16] <bgcolor=cDkPurple>;
-        float unk <bgcolor=cRed>;
+    } else if (Type == "HybridCollisionObject") {
+        HybridCollisionObject obj;
+    } else if (Type == "DFC3DNode") {       
+        string Label <bgcolor=cPurple>;
+        uint32 ChildCount;
+        GCObject Children[ChildCount] <optimize=false>;
+        DFC3DNodeHeader node;
     }
-
 };
 
-DFC3DNodeHeader dfc3DNode;
+GCObject dfc3DNode;
 
 
 
