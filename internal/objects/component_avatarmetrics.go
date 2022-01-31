@@ -46,7 +46,7 @@ func (a AvatarMetrics) WriteFullGCObject(byter *byter.Byter) {
 
 func NewAvatarMetrics(id uint32, name string) *AvatarMetrics {
 	component := NewComponent("avatarmetrics", "AvatarMetrics")
-	component.GCName = name
+	component.GCLabel = name
 
 	return &AvatarMetrics{
 		Component: component,

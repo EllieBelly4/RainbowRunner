@@ -144,7 +144,7 @@ func sendPlayer(character *objects.Player, client *connections.RRConnClient, bod
 
 	//player := objects.NewPlayer("Ellie")
 	//player := objects.NewGCObject("Player")
-	//player.GCName = "Player Name"
+	//player.GCLabel = "Player Name"
 
 	//player.AddChild(avatar)
 
@@ -196,7 +196,7 @@ func loadPlayer(client *connections.RRConnClient) *objects.Player {
 
 func getAvatar(conn connections.Connection) *objects.Avatar {
 	avatar := objects.NewAvatar("avatar.classes.FighterFemale")
-	avatar.GCName = "Avatar Name"
+	avatar.GCLabel = "Avatar Name"
 	avatar.Properties = []objects.GCObjectProperty{
 		objects.Uint32Prop("Hair", 0x01),
 		objects.Uint32Prop("HairColor", 0x00),
@@ -210,20 +210,20 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 
 	modifiers := objects.NewGCObject("Modifiers")
 	modifiers.GCType = "Modifiers"
-	modifiers.GCName = "Mod Name"
+	modifiers.GCLabel = "Mod Name"
 	modifiers.Properties = []objects.GCObjectProperty{
 		objects.Uint32Prop("IDGenerator", 0x01),
 	}
 
 	dialogManager := objects.NewGCObject("DialogManager")
-	dialogManager.GCName = "EllieDialogManager"
+	dialogManager.GCLabel = "EllieDialogManager"
 
 	//animationList := objects.NewGCObject("AnimationList")
 	//animationList.Name = "EllieAnimations"
 
 	avatarSkills := objects.NewGCObject("Skills")
 	avatarSkills.GCType = "avatar.base.skills"
-	avatarSkills.GCName = "EllieSkills"
+	avatarSkills.GCLabel = "EllieSkills"
 
 	//avatarDesc := objects.NewGCObject("AvatarDesc")
 	//avatarDesc.GCType = "avatar.classes.fighterfemale.description"
@@ -231,21 +231,21 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 
 	//avatarEquipment := objects.NewGCObject("Equipment")
 	//avatarEquipment.GCType = "avatar.base.Equipment"
-	//avatarEquipment.GCName = "EllieEquipment"
+	//avatarEquipment.GCLabel = "EllieEquipment"
 
 	avatarEquipment := objects.NewInventoryEquipment("avatar.base.Equipment", avatar)
-	avatarEquipment.GCName = "EllieEquipment"
+	avatarEquipment.GCLabel = "EllieEquipment"
 
 	//.text:0058E550     ; struct DFCClass *__thiscall Armor::getClass(Armor *__hidden this)
 	//.text:0058E550 000 mov     eax, ?Class@Armor@@2PAVDFCClass@@A ; DFCClass * Armor::Class
 
 	//weapon := objects.NewGCObject("MeleeWeapon")
 	//weapon.GCType = "1HSwordMythicPAL.1HSwordMythic6"
-	//weapon.GCName = "EllieWeapon"
+	//weapon.GCLabel = "EllieWeapon"
 
 	//weaponDesc := objects.NewGCObject("MeleeWeaponDesc")
 	//weaponDesc.GCType = "1HMace1PAL.1HMace1-1.Description"
-	//weaponDesc.GCName = "EllieWeaponDesc"
+	//weaponDesc.GCLabel = "EllieWeaponDesc"
 	//weaponDesc.Properties = []objects.GCObjectProperty{
 	//	objects.Uint32Prop("SlotType", uint32(objects.EquipmentSlotWeapon)),
 	//}
@@ -269,16 +269,16 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	//unitContainer.Name = "EllieUnitContainer"
 
 	baseInventory := objects.NewInventory("avatar.base.Inventory", 11)
-	baseInventory.GCName = "EllieBaseInventory"
+	baseInventory.GCLabel = "EllieBaseInventory"
 
 	bankInventory := objects.NewInventory("avatar.base.Bank", 12)
-	bankInventory.GCName = "EllieBankInventory"
+	bankInventory.GCLabel = "EllieBankInventory"
 
 	tradeInventory := objects.NewInventory("avatar.base.TradeInventory", 13)
-	tradeInventory.GCName = "EllieTradeInventory"
+	tradeInventory.GCLabel = "EllieTradeInventory"
 
 	manipulators := objects.NewManipulators("Manipulators")
-	manipulators.GCName = "ManipulateMe"
+	manipulators.GCLabel = "ManipulateMe"
 
 	// Items in inventories
 	//randomItem := objects.NewEquipment("PlateMythicPAL.PlateMythicBoots1", "PlateMythicPAL.PlateMythicBoots1.Mod1", objects.ItemArmour, types.EquipmentSlotFoot)
@@ -303,7 +303,7 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 
 	//slot := objects.NewGCObject("EquipmentSlot")
 	//slot.GCType = "avatar.base.Equipment.Description.PrimaryWeaponSlot"
-	//slot.GCName = "EllieWeaponSlot"
+	//slot.GCLabel = "EllieWeaponSlot"
 	//
 	//slot.Properties = []objects.GCObjectProperty{
 	//	objects.Uint32Prop("SlotID", uint32(types.EquipmentSlotWeapon)),
@@ -319,7 +319,7 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	//worldEntityDesc.Name = "EllieWorldEntityDesc"
 
 	unitBehaviour := objects.NewUnitBehavior("avatar.base.UnitBehavior")
-	unitBehaviour.GCName = "EllieBehaviour"
+	unitBehaviour.GCLabel = "EllieBehaviour"
 
 	unitContainer.AddChild(baseInventory)
 	unitContainer.AddChild(bankInventory)
@@ -344,24 +344,24 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 
 func AddEquipment(equipment objects.DRObject, manipulators *objects.Manipulators, armour string, boots string, helm string, gloves string, shield string) {
 	randomArmour := objects.AddRandomEquipment(database.Armours, objects.ItemArmour)
-	randomArmour.GCName = "EllieArmour"
+	randomArmour.GCLabel = "EllieArmour"
 
 	randomBoots := objects.AddRandomEquipment(database.Boots, objects.ItemArmour)
-	randomBoots.GCName = "EllieArmour"
+	randomBoots.GCLabel = "EllieArmour"
 
 	randomHelm := objects.AddRandomEquipment(database.Helmets, objects.ItemArmour)
-	randomHelm.GCName = "EllieArmour"
+	randomHelm.GCLabel = "EllieArmour"
 
 	randomGloves := objects.AddRandomEquipment(database.Gloves, objects.ItemArmour)
-	randomGloves.GCName = "EllieArmour"
+	randomGloves.GCLabel = "EllieArmour"
 
 	randomWeapon := objects.AddRandomEquipment(database.MeleeWeapons, objects.ItemMeleeWeapon)
-	randomWeapon.GCName = "EllieWeapon"
+	randomWeapon.GCLabel = "EllieWeapon"
 
 	//if len(shield) > 0 {
 	//	randomShield := objects.NewEquipment(gloves, "ScaleModPAL.Rare.Mod1", "Armor", types.EquipmentSlotOffhand)
 	//	randomShield.GCType = shield
-	//	randomShield.GCName = "EllieArmour"
+	//	randomShield.GCLabel = "EllieArmour"
 	//
 	//	equipment.AddChild(randomShield)
 	//	manipulators.AddChild(randomShield)

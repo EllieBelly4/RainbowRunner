@@ -687,7 +687,7 @@ func NewPlayer(name string) (p *Player) {
 	}
 
 	p.GCObject = NewGCObject("Player")
-	p.GCName = "ElliePlayer"
+	p.GCLabel = "ElliePlayer"
 	p.GCType = "player"
 
 	return

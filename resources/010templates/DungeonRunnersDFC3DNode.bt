@@ -116,7 +116,10 @@ typedef struct DFC3DStaticMeshNode {
     
     SomeValueGroup SomeValues[SomeValueGroupCount];
     
-    Vector3 SomeVectors[3] <bgcolor=cDkBlue>;
+    Vector3 MinBounds;
+    Vector3 MaxBounds;
+    Vector3 Center;
+
     float unk;
 };
 

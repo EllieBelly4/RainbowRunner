@@ -209,7 +209,7 @@ func (u *UnitContainer) GetInventoryByID(index byte) *Inventory {
 
 func NewUnitContainer(manipulator DRObject, name string, avatar *Avatar) *UnitContainer {
 	container := NewComponent("unitcontainer", "UnitContainer")
-	container.GCName = name
+	container.GCLabel = name
 
 	if manipulator.RREntityProperties().ID == 0 {
 		panic("Register component before passing it to unit container")

@@ -38,7 +38,7 @@ func (m *EntityManager) RegisterAll(owner connections.Connection, objects ...DRO
 			props.ID = uint32(NewID())
 
 			if config.Config.Logging.LogIDs {
-				fmt.Printf("%d - %s(%s)\n", props.ID, object.GetGCObject().GCType, object.GetGCObject().GCName)
+				fmt.Printf("%d - %s(%s)\n", props.ID, object.GetGCObject().GCType, object.GetGCObject().GCLabel)
 			}
 
 			m.Lock()

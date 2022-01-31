@@ -28,7 +28,7 @@ func NewAvatar(gcType string) *Avatar {
 	}
 
 	a.GCType = gcType
-	a.GCName = "EllieAvatar"
+	a.GCLabel = "EllieAvatar"
 
 	return a
 }

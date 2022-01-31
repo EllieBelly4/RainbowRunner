@@ -22,7 +22,7 @@ type GCObject struct {
 	EntityProperties RREntityProperties
 	Version          uint8
 	GCNativeType     string
-	GCName           string
+	GCLabel          string
 	children         []DRObject
 	GCType           string
 	Properties       []GCObjectProperty
@@ -38,7 +38,7 @@ func (g *GCObject) ID() uint32 {
 }
 
 func (g *GCObject) ReadUpdate(reader *byter.Byter) error {
-	fmt.Printf("Unhandled readupdate for %s (%s : %s) ID: %x\n", g.GCName, g.GCType, g.GCNativeType, g.EntityProperties.ID)
+	fmt.Printf("Unhandled readupdate for %s (%s : %s) ID: %x\n", g.GCLabel, g.GCType, g.GCNativeType, g.EntityProperties.ID)
 	return nil
 }
 
@@ -55,7 +55,7 @@ func (g *GCObject) GetGCObject() *GCObject {
 }
 
 func (g *GCObject) WriteInit(b *byter.Byter) {
-	fmt.Printf("GCObject init for %s (%s: %s) not implemented but ignoring\n", g.GCName, g.GCType, g.GCNativeType)
+	fmt.Printf("GCObject init for %s (%s: %s) not implemented but ignoring\n", g.GCLabel, g.GCType, g.GCNativeType)
 }
 
 func (g *GCObject) WriteUpdate(b *byter.Byter) {
@@ -115,7 +115,7 @@ func (o *GCObject) WriteFullGCObject(byter *byter.Byter) {
 Name: %s
 NativeClass: %s
 GCType: %s
----`, o.EntityProperties.ID, o.GCName, o.GCNativeType, o.GCType)
+---`, o.EntityProperties.ID, o.GCLabel, o.GCNativeType, o.GCType)
 
 	if useHashes {
 		byter.WriteUInt32(GetTypeHash(o.GCNativeType))
@@ -124,7 +124,7 @@ GCType: %s
 	}
 
 	byter.WriteUInt32(uint32(o.EntityProperties.ID))
-	byter.WriteCString(o.GCName)
+	byter.WriteCString(o.GCLabel)
 
 	byter.WriteUInt32(uint32(len(o.children)))
 
@@ -260,7 +260,7 @@ func (o *GCObject) WalkChildren(cb func(object DRObject)) {
 func ReadData(b *byter.Byter) DRObject {
 	version := b.Byte() // Version
 	nativeType := b.CString()
-	id := uint16(b.UInt32())
+	id := b.UInt32()
 
 	var gcObject DRObject
 
@@ -274,10 +274,10 @@ func ReadData(b *byter.Byter) DRObject {
 	}
 
 	gcObject.SetVersion(version)
-	gcObject.RREntityProperties().ID = uint32(id)
+	gcObject.RREntityProperties().ID = id
 
 	gcName := b.CString()
-	gcObject.GetGCObject().GCName = gcName
+	gcObject.GetGCObject().GCLabel = gcName
 
 	childCount := b.UInt32()
 

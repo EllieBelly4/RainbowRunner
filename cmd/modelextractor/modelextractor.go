@@ -19,7 +19,12 @@ func main() {
 		//"D:\\Work\\dungeon-runners\\666 dumps new\\TownFloor40.3dnode",
 		//"D:\\Work\\dungeon-runners\\666 dumps new\\TownFloor10.3dnode",
 		//"D:\\Work\\dungeon-runners\\666 dumps new\\townExit_1.3dnode",
-		"D:\\Work\\dungeon-runners\\666 dumps new\\Townston_Square.3dnode",
+		//"D:\\Work\\dungeon-runners\\666 dumps new\\Townston_Square.3dnode",
+		//"D:\\Work\\dungeon-runners\\666 dumps new\\AutumnForest_DirtDeadEnd_1.3dnode",
+		//"D:\\Work\\dungeon-runners\\666 dumps new\\Townston_tier_1.3dnode",
+		//"D:\\Work\\dungeon-runners\\666 dumps new\\Townston_bank.3dnode",
+		//"D:\\Work\\dungeon-runners\\666 dumps new\\Townston_graveyard.3dnode",
+		"D:\\Work\\dungeon-runners\\666 dumps new\\town_lower_1.3dnode",
 	}
 
 	outputPath = strings.ReplaceAll(outputPath, "\\", "/")
@@ -63,6 +68,8 @@ func extract(pathString string, outputPath string) {
 					panic(err)
 				}
 			}
+
+			fmt.Println(mesh.ID())
 
 			fileName := fmt.Sprintf("%s_%x.obj", fileNameWithoutExt, mesh.ID())
 			outputFullPath := fmt.Sprintf("%s/%s", outputDir, fileName)
