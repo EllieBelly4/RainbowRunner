@@ -132,6 +132,8 @@ func addMeshToObj(objBuilder *OBJWriter, mesh *objects.DFC3DStaticMeshNode, matr
 		vert.Z += matrix.Values[2]
 
 		vert = vert.DivideByFloat32(10.0)
+		// TODO validate this is correct behaviour, it seems weird but otherwise the town is reversed on x axis and I don't see any obvious scaling
+		vert.X *= -1
 
 		objBuilder.WriteVertSwizzle(vert)
 	}

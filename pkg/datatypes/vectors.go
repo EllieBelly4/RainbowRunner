@@ -57,6 +57,14 @@ func (f Vector3Float32) DivideByFloat32(i float32) Vector3Float32 {
 	}
 }
 
+func (f Vector3Float32) MultiplyByFloat32(i float32) Vector3Float32 {
+	return Vector3Float32{
+		X: f.X * i,
+		Y: f.Y * i,
+		Z: f.Z * i,
+	}
+}
+
 type Transform struct {
 	Position Vector3
 	Rotation int
