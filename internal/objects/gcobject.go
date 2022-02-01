@@ -285,8 +285,6 @@ func ReadData(b *byter.Byter) DRObject {
 		gcObject.AddChild(ReadData(b))
 	}
 
-	b.UInt32() // Unk
-
 	gcObject.ReadData(b)
 
 	return gcObject

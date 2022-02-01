@@ -65,7 +65,9 @@ typedef struct SomeValueGroup {
 typedef struct DFC3DStaticMeshNode {
     uint32 unk <bgcolor=cGreen>;
     uint32 unk6;
-    uint32 unka0[7];
+    uint32 unka0[5]; // I think these were parsed in game as 7 uint32s but some of them look more like floats
+    float unk;
+    float unk;
     Vector3 UnkVector;
 
     uint32 unk4;

@@ -7,11 +7,21 @@ import (
 )
 
 type OBJWriter struct {
-	body strings.Builder
+	body           strings.Builder
+	vertsThisModel int
+	baseFaceIndex  int
 }
 
 func (w *OBJWriter) WriteVert(vert datatypes.Vector3Float32) {
 	w.body.WriteString(fmt.Sprintf("v %f %f %f\n", vert.X, vert.Y, vert.Z))
+
+	w.vertsThisModel++
+}
+
+func (w *OBJWriter) WriteVertSwizzle(vert datatypes.Vector3Float32) {
+	w.body.WriteString(fmt.Sprintf("v %f %f %f\n", vert.X, vert.Z, vert.Y))
+
+	w.vertsThisModel++
 }
 
 func (w *OBJWriter) String() string {
@@ -28,7 +38,7 @@ func (w *OBJWriter) WriteFace(tri []uint16, withNormals, withUVs bool) {
 			str += " "
 		}
 
-		index := fmt.Sprintf("%d", tri[i]+1)
+		index := fmt.Sprintf("%d", int(tri[i])+1+w.baseFaceIndex)
 
 		str += index
 
@@ -52,6 +62,12 @@ func (w *OBJWriter) WriteNormal(norm datatypes.Vector3Float32) {
 
 func (w *OBJWriter) WriteTextureCoordinates(texcoord datatypes.Vector2Float32) {
 	w.body.WriteString(fmt.Sprintf("vt %f %f\n", texcoord.X, texcoord.Y))
+}
+
+func (w *OBJWriter) WriteObject(label string) {
+	w.body.WriteString(fmt.Sprintf("o [%s]\n", label))
+	w.baseFaceIndex += w.vertsThisModel
+	w.vertsThisModel = 0
 }
 
 func NewOBJWriter() *OBJWriter {

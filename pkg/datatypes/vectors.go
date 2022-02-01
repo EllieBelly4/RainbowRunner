@@ -1,5 +1,7 @@
 package datatypes
 
+import "fmt"
+
 type Vector2 struct {
 	X, Y int32
 }
@@ -25,6 +27,34 @@ type Vector3Short struct {
 
 type Vector3Float32 struct {
 	X, Y, Z float32
+}
+
+func (f Vector3Float32) Add(other Vector3Float32) Vector3Float32 {
+	return Vector3Float32{
+		X: f.X + other.X,
+		Y: f.Y + other.Y,
+		Z: f.Z + other.Z,
+	}
+}
+
+func (f Vector3Float32) Sub(other Vector3Float32) Vector3Float32 {
+	return Vector3Float32{
+		X: f.X - other.X,
+		Y: f.Y - other.Y,
+		Z: f.Z - other.Z,
+	}
+}
+
+func (f Vector3Float32) String() string {
+	return fmt.Sprintf("(%f, %f, %f)", f.X, f.Y, f.Z)
+}
+
+func (f Vector3Float32) DivideByFloat32(i float32) Vector3Float32 {
+	return Vector3Float32{
+		X: f.X / i,
+		Y: f.Y / i,
+		Z: f.Z / i,
+	}
 }
 
 type Transform struct {

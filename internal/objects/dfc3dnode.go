@@ -7,10 +7,12 @@ import (
 
 type DFC3DNode struct {
 	*GCObject
-	Matrix types.Matrix324x4
+	Matrix   types.Matrix324x4
+	UnkFlags uint32
 }
 
 func (d *DFC3DNode) ReadData(b *byter.Byter) {
+	d.UnkFlags = b.UInt32()
 	d.Matrix = types.Matrix324x4{
 		Values: [16]float32{
 			b.Float32(),

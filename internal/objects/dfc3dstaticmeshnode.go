@@ -14,6 +14,10 @@ type DFC3DStaticMeshNode struct {
 	Colours   []datatypes.RGBA32
 	UVs       []datatypes.Vector2Float32
 	Triangles []uint16
+	Center    datatypes.Vector3Float32
+	MinBounds datatypes.Vector3Float32
+	MaxBounds datatypes.Vector3Float32
+	Angle     float32
 }
 
 type DFCMeshMaterialRef struct {
@@ -22,6 +26,7 @@ type DFCMeshMaterialRef struct {
 }
 
 func (d *DFC3DStaticMeshNode) ReadData(b *byter.Byter) {
+	b.UInt32() // Unk
 	b.UInt32() // Unk
 
 	for i := 0; i < 7; i++ {
@@ -89,10 +94,10 @@ func (d *DFC3DStaticMeshNode) ReadData(b *byter.Byter) {
 		b.UInt32() // Unk
 	}
 
-	b.Vector3Float32() // Unk
-	b.Vector3Float32() // Unk
-	b.Vector3Float32() // Unk
-	b.Float32()
+	d.MinBounds = b.Vector3Float32() // Min Bounds
+	d.MaxBounds = b.Vector3Float32() // Max Bounds
+	d.Center = b.Vector3Float32()    // Center
+	d.Angle = b.Float32()            // Angle
 
 	//fmt.Printf("%v, %v, %v, %v\n", av, bv, cv, dv)
 }
