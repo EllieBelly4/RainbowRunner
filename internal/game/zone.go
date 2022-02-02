@@ -202,5 +202,10 @@ func sendGoToZone(conn *connections.RRConn, body *byter.Byter, zone string) {
 	//body.WriteCString("TheHub")
 	//body.WriteCString("Tutorial")
 	body.WriteCString(zone)
+	body.WriteUInt32(0x01)
+	body.WriteByte(0x01)
+	body.WriteByte(0xFF)
+	body.WriteCString("world.town.quest.Q01_a1")
+	body.WriteUInt32(0x01)
 	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
