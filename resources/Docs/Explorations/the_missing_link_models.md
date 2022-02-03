@@ -30,3 +30,12 @@ while ( v3 )
 ??_7WorldObjectGroup@@6BDFCNode@@@
 
 WorldObjectGroups seem to contain list of static objects to spawn
+
+WorldEntity::setPosition
+
+.text:004D3293 89 87 90 00 00 00             mov     [edi+90h], eax
+.text:004D3299 8B 4E 04                      mov     ecx, [esi+4]    ; this
+.text:004D329C 89 8F 94 00 00 00             mov     [edi+94h], ecx
+.text:004D32A2 8B 56 08                      mov     edx, [esi+8]
+.text:004D32A5 57                            push    edi
+.text:004D32A6 89 97 98 00 00 00             mov     [edi+98h], edx
