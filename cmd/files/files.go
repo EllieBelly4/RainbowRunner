@@ -54,6 +54,9 @@ func GetExtensionForFile(buf []byte, fileLength uint32) (string, string) {
 	} else if bytes.Compare(buf[1:5], []byte{0xEF, 0xE0, 0xFF, 0xD7}) == 0 {
 		fileType = "Effect"
 		ext = ".fx"
+	} else if string(buf[:4]) == "<xml" {
+		fileType = "XML"
+		ext = ".xml"
 	} else {
 		fileType = string(buf[:12])
 	}

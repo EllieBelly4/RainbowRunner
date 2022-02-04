@@ -1,11 +1,9 @@
 package main
 
 import (
-	"RainbowRunner/cmd/configparser/parser"
-	"RainbowRunner/internal/database"
+	"RainbowRunner/cmd/configparser/configparser"
 	"encoding/json"
 	"fmt"
-	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"io/ioutil"
 )
 
@@ -3069,36 +3067,6 @@ var weaponFiles = []string{
 	"D:\\Work\\dungeon-runners\\666 dumps\\2HSwordMythicPAL.txt",
 }
 
-type ErrorListener struct {
-	*antlr.DiagnosticErrorListener
-	Path string
-}
-
-func (d *ErrorListener) SyntaxError(recognizer antlr.Recognizer, offendingSymbol interface{}, line, column int, msg string, e antlr.RecognitionException) {
-	fmt.Printf("FAILED: %s\n", d.Path)
-	d.DiagnosticErrorListener.SyntaxError(recognizer, offendingSymbol, line, column, msg, e)
-}
-
-//func (d *ErrorListener) ReportAmbiguity(recognizer antlr.Parser, dfa *antlr.DFA, startIndex, stopIndex int, exact bool, ambigAlts *antlr.BitSet, configs antlr.ATNConfigSet) {
-//}
-//
-//func (d *ErrorListener) ReportAttemptingFullContext(recognizer antlr.Parser, dfa *antlr.DFA, startIndex, stopIndex int, conflictingAlts *antlr.BitSet, configs antlr.ATNConfigSet) {
-//}
-//
-//func (d *ErrorListener) ReportContextSensitivity(recognizer antlr.Parser, dfa *antlr.DFA, startIndex, stopIndex, prediction int, configs antlr.ATNConfigSet) {
-//}
-
-func NewErrorListener(path string) *ErrorListener {
-	originalListener := antlr.NewDiagnosticErrorListener(true)
-
-	listener := &ErrorListener{
-		DiagnosticErrorListener: originalListener,
-		Path:                    path,
-	}
-
-	return listener
-}
-
 func main() {
 	//parseFile("D:\\Work\\dungeon-runners\\666 dumps\\tutorial_loot_1w.txt")
 	successfulParses = []string{
@@ -3133,34 +3101,9 @@ func main() {
 	//	"D:\\Work\\dungeon-runners\\666 dumps\\PlateArmor1PAL.txt",
 	//}
 
-	parseAllFiles(
+	all, err := configparser.ParseAllFiles(
 		[]string{"C:\\Users\\Sophie\\go\\src\\RainbowRunner\\resources\\Configs\\tutorial_loot_1n.txt"},
-		"resources/Dumps/generated/tutorial_loot_1n.json")
-	//parseAllFiles(armourFiles, "resources/Dumps/generated/armourtest.json")
-	//parseAllFiles(weaponFiles, "resources/Dumps/generated/weapons.json")
-}
-
-func listContains(parses []string, path string) bool {
-	for _, pars := range parses {
-		if pars == path {
-			return true
-		}
-	}
-
-	return false
-}
-
-func parseAllFiles(files []string, dest string) error {
-	all := make([]*database.DRClass, 0)
-
-	for _, path := range files {
-		//split := strings.Split(path, "\\")
-		//fileName := strings.Split(split[len(split)-1], ".")[0]
-
-		file := parseFile(path)
-
-		all = append(all, file)
-	}
+	)
 
 	data, err := json.MarshalIndent(all, "", "  ")
 
@@ -3170,24 +3113,12 @@ func parseAllFiles(files []string, dest string) error {
 
 	fmt.Printf("%s", string(data))
 
-	err = ioutil.WriteFile(dest, data, 0774)
+	err = ioutil.WriteFile("resources/Dumps/generated/tutorial_loot_1n.json", data, 0774)
 
 	if err != nil {
 		panic(err)
 	}
 
-	return nil
-}
-
-func parseFile(path string) *database.DRClass {
-	input, _ := antlr.NewFileStream(path)
-	lexer := parser.NewDRConfigLexer(input)
-	stream := antlr.NewCommonTokenStream(lexer, 0)
-	p := parser.NewDRConfigParser(stream)
-	p.AddErrorListener(NewErrorListener(path))
-	p.BuildParseTrees = true
-	tree := p.ClassDef()
-	listener := NewDRConfigListener(path)
-	antlr.ParseTreeWalkerDefault.Walk(listener, tree)
-	return listener.DRClass
+	//parseAllFiles(armourFiles, "resources/Dumps/generated/armourtest.json")
+	//parseAllFiles(weaponFiles, "resources/Dumps/generated/weapons.json")
 }

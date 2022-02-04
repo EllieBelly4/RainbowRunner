@@ -9,8 +9,9 @@ import (
 
 type DRClass struct {
 	Name       string
+	Extends    string
 	Properties map[string]string
-	Children   []*DRClass
+	Children   map[string]*DRClass
 }
 
 func (c *DRClass) Find(class []string) *DRClass {
@@ -66,6 +67,6 @@ func NewDRClass(className string) *DRClass {
 	return &DRClass{
 		Name:       className,
 		Properties: make(map[string]string),
-		Children:   make([]*DRClass, 0),
+		Children:   make(map[string]*DRClass),
 	}
 }

@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func main() {
@@ -53,7 +54,13 @@ func main() {
 			return nil
 		}
 
-		newPath := fmt.Sprintf("%s%s", path, ext)
+		extensionlessPath := path
+
+		if filepath.Ext(extensionlessPath) != "" {
+			extensionlessPath = filepath.Dir(extensionlessPath) + "\\" + strings.SplitN(filepath.Base(path), ".", 2)[0]
+		}
+
+		newPath := fmt.Sprintf("%s%s", extensionlessPath, ext)
 
 		//fmt.Printf("%s -> %s\n", path, ext)
 

@@ -138,6 +138,11 @@ func main() {
 
 		fileType, ext := files.GetExtensionForFile(buf, fileLength)
 
+		if ext != ".txt" {
+			fmt.Println("Skipping " + str)
+			continue
+		}
+
 		if isCompressed {
 			fileType = "Z " + fileType
 		}

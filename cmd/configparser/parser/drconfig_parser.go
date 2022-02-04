@@ -1,7 +1,6 @@
-// Code generated from C:/Users/Sophie/go/src/RainbowRunner/scripts/config-language\DRConfig.g4 by ANTLR 4.9.1. DO NOT EDIT.
+// Code generated from C:/Users/Sophie/go/src/RainbowRunner/antlr\DRConfig.g4 by ANTLR 4.9.2. DO NOT EDIT.
 
 package parser // DRConfig
-
 import (
 	"fmt"
 	"reflect"
@@ -16,41 +15,44 @@ var _ = reflect.Copy
 var _ = strconv.Itoa
 
 var parserATN = []uint16{
-	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 24, 65, 4,
+	3, 24715, 42794, 33075, 47597, 16764, 15335, 30598, 22884, 3, 25, 69, 4,
 	2, 9, 2, 4, 3, 9, 3, 4, 4, 9, 4, 4, 5, 9, 5, 4, 6, 9, 6, 4, 7, 9, 7, 4,
 	8, 9, 8, 4, 9, 9, 9, 3, 2, 5, 2, 20, 10, 2, 3, 2, 3, 2, 3, 2, 5, 2, 25,
 	10, 2, 3, 2, 3, 2, 3, 2, 7, 2, 30, 10, 2, 12, 2, 14, 2, 33, 11, 2, 3, 2,
 	3, 2, 3, 3, 3, 3, 3, 4, 3, 4, 3, 5, 3, 5, 3, 6, 3, 6, 3, 7, 3, 7, 3, 7,
 	3, 7, 3, 7, 3, 8, 5, 8, 51, 10, 8, 3, 8, 3, 8, 3, 8, 3, 8, 3, 8, 3, 8,
-	3, 8, 3, 8, 5, 8, 61, 10, 8, 3, 9, 3, 9, 3, 9, 2, 2, 10, 2, 4, 6, 8, 10,
-	12, 14, 16, 2, 3, 4, 2, 16, 16, 22, 22, 2, 66, 2, 19, 3, 2, 2, 2, 4, 36,
-	3, 2, 2, 2, 6, 38, 3, 2, 2, 2, 8, 40, 3, 2, 2, 2, 10, 42, 3, 2, 2, 2, 12,
-	44, 3, 2, 2, 2, 14, 60, 3, 2, 2, 2, 16, 62, 3, 2, 2, 2, 18, 20, 7, 7, 2,
-	2, 19, 18, 3, 2, 2, 2, 19, 20, 3, 2, 2, 2, 20, 21, 3, 2, 2, 2, 21, 24,
-	5, 8, 5, 2, 22, 23, 7, 6, 2, 2, 23, 25, 5, 10, 6, 2, 24, 22, 3, 2, 2, 2,
-	24, 25, 3, 2, 2, 2, 25, 26, 3, 2, 2, 2, 26, 31, 5, 4, 3, 2, 27, 30, 5,
-	2, 2, 2, 28, 30, 5, 12, 7, 2, 29, 27, 3, 2, 2, 2, 29, 28, 3, 2, 2, 2, 30,
-	33, 3, 2, 2, 2, 31, 29, 3, 2, 2, 2, 31, 32, 3, 2, 2, 2, 32, 34, 3, 2, 2,
-	2, 33, 31, 3, 2, 2, 2, 34, 35, 5, 6, 4, 2, 35, 3, 3, 2, 2, 2, 36, 37, 7,
-	9, 2, 2, 37, 5, 3, 2, 2, 2, 38, 39, 7, 10, 2, 2, 39, 7, 3, 2, 2, 2, 40,
-	41, 9, 2, 2, 2, 41, 9, 3, 2, 2, 2, 42, 43, 7, 22, 2, 2, 43, 11, 3, 2, 2,
-	2, 44, 45, 5, 16, 9, 2, 45, 46, 7, 8, 2, 2, 46, 47, 5, 14, 8, 2, 47, 48,
-	7, 12, 2, 2, 48, 13, 3, 2, 2, 2, 49, 51, 7, 11, 2, 2, 50, 49, 3, 2, 2,
-	2, 50, 51, 3, 2, 2, 2, 51, 52, 3, 2, 2, 2, 52, 61, 7, 22, 2, 2, 53, 54,
-	7, 22, 2, 2, 54, 55, 7, 15, 2, 2, 55, 61, 7, 22, 2, 2, 56, 61, 7, 23, 2,
-	2, 57, 61, 7, 20, 2, 2, 58, 61, 7, 21, 2, 2, 59, 61, 7, 5, 2, 2, 60, 50,
-	3, 2, 2, 2, 60, 53, 3, 2, 2, 2, 60, 56, 3, 2, 2, 2, 60, 57, 3, 2, 2, 2,
-	60, 58, 3, 2, 2, 2, 60, 59, 3, 2, 2, 2, 61, 15, 3, 2, 2, 2, 62, 63, 7,
-	22, 2, 2, 63, 17, 3, 2, 2, 2, 8, 19, 24, 29, 31, 50, 60,
+	3, 8, 3, 8, 5, 8, 61, 10, 8, 3, 8, 3, 8, 5, 8, 65, 10, 8, 3, 9, 3, 9, 3,
+	9, 2, 2, 10, 2, 4, 6, 8, 10, 12, 14, 16, 2, 4, 3, 2, 7, 8, 4, 2, 17, 17,
+	23, 23, 2, 71, 2, 19, 3, 2, 2, 2, 4, 36, 3, 2, 2, 2, 6, 38, 3, 2, 2, 2,
+	8, 40, 3, 2, 2, 2, 10, 42, 3, 2, 2, 2, 12, 44, 3, 2, 2, 2, 14, 60, 3, 2,
+	2, 2, 16, 66, 3, 2, 2, 2, 18, 20, 9, 2, 2, 2, 19, 18, 3, 2, 2, 2, 19, 20,
+	3, 2, 2, 2, 20, 21, 3, 2, 2, 2, 21, 24, 5, 8, 5, 2, 22, 23, 7, 6, 2, 2,
+	23, 25, 5, 10, 6, 2, 24, 22, 3, 2, 2, 2, 24, 25, 3, 2, 2, 2, 25, 26, 3,
+	2, 2, 2, 26, 31, 5, 4, 3, 2, 27, 30, 5, 2, 2, 2, 28, 30, 5, 12, 7, 2, 29,
+	27, 3, 2, 2, 2, 29, 28, 3, 2, 2, 2, 30, 33, 3, 2, 2, 2, 31, 29, 3, 2, 2,
+	2, 31, 32, 3, 2, 2, 2, 32, 34, 3, 2, 2, 2, 33, 31, 3, 2, 2, 2, 34, 35,
+	5, 6, 4, 2, 35, 3, 3, 2, 2, 2, 36, 37, 7, 10, 2, 2, 37, 5, 3, 2, 2, 2,
+	38, 39, 7, 11, 2, 2, 39, 7, 3, 2, 2, 2, 40, 41, 9, 3, 2, 2, 41, 9, 3, 2,
+	2, 2, 42, 43, 7, 23, 2, 2, 43, 11, 3, 2, 2, 2, 44, 45, 5, 16, 9, 2, 45,
+	46, 7, 9, 2, 2, 46, 47, 5, 14, 8, 2, 47, 48, 7, 13, 2, 2, 48, 13, 3, 2,
+	2, 2, 49, 51, 7, 12, 2, 2, 50, 49, 3, 2, 2, 2, 50, 51, 3, 2, 2, 2, 51,
+	52, 3, 2, 2, 2, 52, 61, 7, 23, 2, 2, 53, 54, 7, 23, 2, 2, 54, 55, 7, 16,
+	2, 2, 55, 61, 7, 23, 2, 2, 56, 61, 7, 24, 2, 2, 57, 61, 7, 21, 2, 2, 58,
+	61, 7, 22, 2, 2, 59, 61, 7, 5, 2, 2, 60, 50, 3, 2, 2, 2, 60, 53, 3, 2,
+	2, 2, 60, 56, 3, 2, 2, 2, 60, 57, 3, 2, 2, 2, 60, 58, 3, 2, 2, 2, 60, 59,
+	3, 2, 2, 2, 61, 64, 3, 2, 2, 2, 62, 63, 7, 15, 2, 2, 63, 65, 5, 14, 8,
+	2, 64, 62, 3, 2, 2, 2, 64, 65, 3, 2, 2, 2, 65, 15, 3, 2, 2, 2, 66, 67,
+	7, 23, 2, 2, 67, 17, 3, 2, 2, 2, 9, 19, 24, 29, 31, 50, 60, 64,
 }
 var literalNames = []string{
-	"", "", "", "", "'extends'", "'static'", "'='", "'{'", "'}'", "'!'", "';'",
-	"'.'", "','", "':'", "'*'", "'//'", "", "'\n'",
+	"", "", "", "", "'extends'", "'static'", "'transient'", "'='", "'{'", "'}'",
+	"'!'", "';'", "'.'", "','", "':'", "'*'", "'//'", "", "'\n'",
 }
 var symbolicNames = []string{
-	"", "COMMENT", "MLCOMMENT", "VECTOR3", "EXTENDS", "STATIC", "ASSIGN", "PARENL",
-	"PARENR", "EXCL", "SEMI", "DOT", "COMMA", "COLON", "ASTERISK", "SLASHSLASH",
-	"WS", "EOL", "SINGLESTR", "DOUBLESTR", "IDENTIFIER", "NUMBER", "ANY",
+	"", "COMMENT", "MLCOMMENT", "VECTOR3", "EXTENDS", "STATIC", "TRANSIENT",
+	"ASSIGN", "PARENL", "PARENR", "EXCL", "SEMI", "DOT", "COMMA", "COLON",
+	"ASTERISK", "SLASHSLASH", "WS", "EOL", "SINGLESTR", "DOUBLESTR", "IDENTIFIER",
+	"NUMBER", "ANY",
 }
 
 var ruleNames = []string{
@@ -95,23 +97,24 @@ const (
 	DRConfigParserVECTOR3    = 3
 	DRConfigParserEXTENDS    = 4
 	DRConfigParserSTATIC     = 5
-	DRConfigParserASSIGN     = 6
-	DRConfigParserPARENL     = 7
-	DRConfigParserPARENR     = 8
-	DRConfigParserEXCL       = 9
-	DRConfigParserSEMI       = 10
-	DRConfigParserDOT        = 11
-	DRConfigParserCOMMA      = 12
-	DRConfigParserCOLON      = 13
-	DRConfigParserASTERISK   = 14
-	DRConfigParserSLASHSLASH = 15
-	DRConfigParserWS         = 16
-	DRConfigParserEOL        = 17
-	DRConfigParserSINGLESTR  = 18
-	DRConfigParserDOUBLESTR  = 19
-	DRConfigParserIDENTIFIER = 20
-	DRConfigParserNUMBER     = 21
-	DRConfigParserANY        = 22
+	DRConfigParserTRANSIENT  = 6
+	DRConfigParserASSIGN     = 7
+	DRConfigParserPARENL     = 8
+	DRConfigParserPARENR     = 9
+	DRConfigParserEXCL       = 10
+	DRConfigParserSEMI       = 11
+	DRConfigParserDOT        = 12
+	DRConfigParserCOMMA      = 13
+	DRConfigParserCOLON      = 14
+	DRConfigParserASTERISK   = 15
+	DRConfigParserSLASHSLASH = 16
+	DRConfigParserWS         = 17
+	DRConfigParserEOL        = 18
+	DRConfigParserSINGLESTR  = 19
+	DRConfigParserDOUBLESTR  = 20
+	DRConfigParserIDENTIFIER = 21
+	DRConfigParserNUMBER     = 22
+	DRConfigParserANY        = 23
 )
 
 // DRConfigParser rules.
@@ -194,10 +197,6 @@ func (s *ClassDefContext) ClassIdentifier() IClassIdentifierContext {
 	return t.(IClassIdentifierContext)
 }
 
-func (s *ClassDefContext) STATIC() antlr.TerminalNode {
-	return s.GetToken(DRConfigParserSTATIC, 0)
-}
-
 func (s *ClassDefContext) EXTENDS() antlr.TerminalNode {
 	return s.GetToken(DRConfigParserEXTENDS, 0)
 }
@@ -258,6 +257,14 @@ func (s *ClassDefContext) Property(i int) IPropertyContext {
 	return t.(IPropertyContext)
 }
 
+func (s *ClassDefContext) TRANSIENT() antlr.TerminalNode {
+	return s.GetToken(DRConfigParserTRANSIENT, 0)
+}
+
+func (s *ClassDefContext) STATIC() antlr.TerminalNode {
+	return s.GetToken(DRConfigParserSTATIC, 0)
+}
+
 func (s *ClassDefContext) GetRuleContext() antlr.RuleContext {
 	return s
 }
@@ -314,10 +321,17 @@ func (p *DRConfigParser) ClassDef() (localctx IClassDefContext) {
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
-	if _la == DRConfigParserSTATIC {
+	if _la == DRConfigParserSTATIC || _la == DRConfigParserTRANSIENT {
 		{
 			p.SetState(16)
-			p.Match(DRConfigParserSTATIC)
+			_la = p.GetTokenStream().LA(1)
+
+			if !(_la == DRConfigParserSTATIC || _la == DRConfigParserTRANSIENT) {
+				p.GetErrorHandler().RecoverInline(p)
+			} else {
+				p.GetErrorHandler().ReportMatch(p)
+				p.Consume()
+			}
 		}
 
 	}
@@ -350,7 +364,7 @@ func (p *DRConfigParser) ClassDef() (localctx IClassDefContext) {
 	p.GetErrorHandler().Sync(p)
 	_la = p.GetTokenStream().LA(1)
 
-	for ((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<DRConfigParserSTATIC)|(1<<DRConfigParserASTERISK)|(1<<DRConfigParserIDENTIFIER))) != 0 {
+	for ((_la)&-(0x1f+1)) == 0 && ((1<<uint(_la))&((1<<DRConfigParserSTATIC)|(1<<DRConfigParserTRANSIENT)|(1<<DRConfigParserASTERISK)|(1<<DRConfigParserIDENTIFIER))) != 0 {
 		p.SetState(27)
 		p.GetErrorHandler().Sync(p)
 		switch p.GetInterpreter().AdaptivePredict(p.GetTokenStream(), 2, p.GetParserRuleContext()) {
@@ -995,6 +1009,20 @@ func (s *PropertyValueContext) VECTOR3() antlr.TerminalNode {
 	return s.GetToken(DRConfigParserVECTOR3, 0)
 }
 
+func (s *PropertyValueContext) COMMA() antlr.TerminalNode {
+	return s.GetToken(DRConfigParserCOMMA, 0)
+}
+
+func (s *PropertyValueContext) PropertyValue() IPropertyValueContext {
+	var t = s.GetTypedRuleContext(reflect.TypeOf((*IPropertyValueContext)(nil)).Elem(), 0)
+
+	if t == nil {
+		return nil
+	}
+
+	return t.(IPropertyValueContext)
+}
+
 func (s *PropertyValueContext) COLON() antlr.TerminalNode {
 	return s.GetToken(DRConfigParserCOLON, 0)
 }
@@ -1114,6 +1142,21 @@ func (p *DRConfigParser) PropertyValue() (localctx IPropertyValueContext) {
 		}
 
 	}
+	p.SetState(62)
+	p.GetErrorHandler().Sync(p)
+	_la = p.GetTokenStream().LA(1)
+
+	if _la == DRConfigParserCOMMA {
+		{
+			p.SetState(60)
+			p.Match(DRConfigParserCOMMA)
+		}
+		{
+			p.SetState(61)
+			p.PropertyValue()
+		}
+
+	}
 
 	return localctx
 }
@@ -1212,7 +1255,7 @@ func (p *DRConfigParser) PropertyName() (localctx IPropertyNameContext) {
 
 	p.EnterOuterAlt(localctx, 1)
 	{
-		p.SetState(60)
+		p.SetState(64)
 		p.Match(DRConfigParserIDENTIFIER)
 	}
 

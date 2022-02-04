@@ -1,6 +1,6 @@
 grammar DRConfig;
 
-classDef : STATIC?(classIdentifier) (EXTENDS parentClass)?
+classDef : (TRANSIENT|STATIC)? (classIdentifier) (EXTENDS parentClass)?
            classEnter
            (classDef|property)*
            classLeave
@@ -16,9 +16,9 @@ parentClass : IDENTIFIER ;
 property : propertyName ASSIGN propertyValue SEMI;
 
 propertyValue : (
-                EXCL?IDENTIFIER|
+                (EXCL?IDENTIFIER|
                 (IDENTIFIER COLON IDENTIFIER)|
-                NUMBER|SINGLESTR|DOUBLESTR|VECTOR3
+                NUMBER|SINGLESTR|DOUBLESTR|VECTOR3) (COMMA propertyValue)?
             ) ;
 
 propertyName : IDENTIFIER ;
@@ -30,6 +30,7 @@ VECTOR3 : NUMBER COMMA NUMBER COMMA NUMBER;
 
 EXTENDS : 'extends';
 STATIC : 'static';
+TRANSIENT : 'transient';
 ASSIGN : '=';
 PARENL : '{';
 PARENR : '}';
@@ -46,7 +47,7 @@ EOL: '\n';
 
 SINGLESTR : ['].*?['];
 DOUBLESTR : ["].*?["];
-IDENTIFIER : ([a-zA-Z0-9_-]|DOT)+;
+IDENTIFIER : (['a-zA-Z0-9_-]|DOT)+;
 NUMBER : [-]?[0-9.]+;
 ANY: .;
 
