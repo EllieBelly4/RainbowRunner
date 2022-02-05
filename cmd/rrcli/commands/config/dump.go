@@ -1,7 +1,7 @@
-package commands
+package config
 
 import (
-	"RainbowRunner/cmd/configurator/configurator"
+	"RainbowRunner/cmd/rrcli/configurator"
 	"encoding/json"
 	"github.com/spf13/cobra"
 	"io/ioutil"
@@ -34,7 +34,7 @@ var dumpCommand = &cobra.Command{
 	},
 }
 
-func initDumpCommand() {
+func InitDumpCommand() {
 	dumpCommand.PersistentFlags().StringVarP(&rootDir, "config-root-dir", "d", "", "-d D:\\Work\\DungeonRunners\\ConfigFiles")
 
 	err := cobra.MarkFlagRequired(dumpCommand.PersistentFlags(), "config-root-dir")

@@ -1,7 +1,7 @@
-package commands
+package config
 
 import (
-	"RainbowRunner/cmd/configurator/configurator"
+	"RainbowRunner/cmd/rrcli/configurator"
 	"encoding/json"
 	"fmt"
 	"github.com/spf13/cobra"
@@ -45,7 +45,7 @@ var categoriseCommand = &cobra.Command{
 	},
 }
 
-func initCategoriseCommand() {
+func InitCategoriseCommand() {
 	categoriseCommand.Flags().StringVarP(&categoriseinputFile, "input-config-file", "f", "finalconf.json", "-f config\\finalconf.json")
 
 	err := cobra.MarkFlagRequired(categoriseCommand.Flags(), "input-config-file")

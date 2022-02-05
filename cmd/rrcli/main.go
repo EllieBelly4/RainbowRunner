@@ -1,6 +1,6 @@
 package main
 
-import "RainbowRunner/cmd/configurator/commands"
+import "RainbowRunner/cmd/rrcli/commands"
 
 func main() {
 	commands.Init()

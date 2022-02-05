@@ -1,23 +1,18 @@
 package commands
 
 import (
+	"RainbowRunner/cmd/rrcli/commands/config"
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
 )
 
 var rootCmd = &cobra.Command{
-	Use: "configurator",
+	Use: "rrcli",
 }
 
 func Init() {
-	initDumpCommand()
-	initGetCommand()
-	initCategoriseCommand()
-
-	rootCmd.AddCommand(dumpCommand)
-	rootCmd.AddCommand(getCommand)
-	rootCmd.AddCommand(categoriseCommand)
+	config.Init(rootCmd)
 }
 
 func Execute() {

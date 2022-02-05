@@ -1,8 +1,8 @@
-package commands
+package config
 
 import (
 	"RainbowRunner/cmd/configparser/configparser"
-	"RainbowRunner/cmd/configurator/configurator"
+	"RainbowRunner/cmd/rrcli/configurator"
 	"RainbowRunner/internal/database"
 	"encoding/json"
 	"fmt"
@@ -74,7 +74,7 @@ var getCategoryCommand = &cobra.Command{
 	},
 }
 
-func initGetCategoryCommand() {
+func InitGetCategoryCommand() {
 	getCategoryCommand.PersistentFlags().StringVarP(&categoryInputFile, "category-input-config-file", "c", "drcategories.json", "-f config\\drcategories.json")
 
 	err := cobra.MarkFlagRequired(getCategoryCommand.PersistentFlags(), "category-input-config-file")
