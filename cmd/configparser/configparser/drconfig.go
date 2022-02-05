@@ -56,6 +56,10 @@ func (c *DRConfig) MergeParents(class *database.DRClassChildGroup) {
 			for _, entity := range class.Entities {
 				c.mergeProperties(entity, parentEntity)
 
+				if entity.Children == nil {
+					entity.Children = map[string]*database.DRClassChildGroup{}
+				}
+
 				for parentChildName, parentChild := range parentEntity.Children {
 					c.MergeParents(parentChild)
 
@@ -94,10 +98,10 @@ func (c *DRConfig) mergeProperties(entity *database.DRClass, parentEntity *datab
 func (c *DRConfig) Get(fullgctype string) ([]*database.DRClassChildGroup, error) {
 	splitGCType := strings.Split(fullgctype, ".")
 
-	found := c.getFromGCType(splitGCType, c.Classes.Children)
+	found, err := c.GetSimple(fullgctype)
 
-	if found == nil {
-		return nil, errors.New("child not found")
+	if err != nil {
+		return nil, err
 	}
 
 	for _, child := range found {
@@ -107,6 +111,16 @@ func (c *DRConfig) Get(fullgctype string) ([]*database.DRClassChildGroup, error)
 	}
 
 	return found, nil
+}
+
+func (c *DRConfig) GetSimple(splitGCType string) ([]*database.DRClassChildGroup, error) {
+	found := c.getFromGCType(strings.Split(splitGCType, "."), c.Classes.Children)
+
+	if found == nil {
+		return nil, errors.New("child not found")
+	}
+	return found, nil
+
 }
 
 func (c *DRConfig) getFromGCType(gcType []string, children map[string]*database.DRClassChildGroup) []*database.DRClassChildGroup {
@@ -121,7 +135,9 @@ func (c *DRConfig) getFromGCType(gcType []string, children map[string]*database.
 			foundFromSubChild := c.getFromGCType(gcType[1:], subChild.Children)
 
 			if foundFromSubChild != nil {
-				foundSubChildren = append(foundSubChildren, foundFromSubChild...)
+				for _, singleFoundFromSubChild := range foundFromSubChild {
+					foundSubChildren = append(foundSubChildren, singleFoundFromSubChild)
+				}
 			}
 		}
 
@@ -130,6 +146,111 @@ func (c *DRConfig) getFromGCType(gcType []string, children map[string]*database.
 
 	return nil
 }
+
+type DRCategory struct {
+	Children map[string]*DRCategory
+	Classes  map[string]bool
+}
+
+func NewDRCategory() *DRCategory {
+	return &DRCategory{
+		Children: map[string]*DRCategory{},
+		Classes:  map[string]bool{},
+	}
+}
+
+func (c *DRConfig) GenerateCategoryMap() (map[string]*DRCategory, error) {
+	output := map[string]*DRCategory{}
+
+	c.generateCategoryMap(c.Classes.Children, output, []string{})
+
+	return output, nil
+}
+
+func (c *DRConfig) generateCategoryMap(classes map[string]*database.DRClassChildGroup, output map[string]*DRCategory, gcTypeName []string) {
+	for className, classChildGroup := range classes {
+		for _, entity := range classChildGroup.Entities {
+			c.generateCategoryMap(entity.Children, output, append(gcTypeName, className))
+
+			if entity.Extends != "" {
+				parentsGCTypes := c.getParents(entity.Extends)
+				parentGCType := strings.Join(parentsGCTypes, ".")
+
+				fullGCType := parentGCType + "." + className
+
+				curMap := output
+				var curCategory *DRCategory = nil
+				curGCType := ""
+
+				for i := 0; i < len(parentsGCTypes); i++ {
+					curGCType = parentsGCTypes[i]
+
+					if _, ok := curMap[curGCType]; !ok {
+						curMap[curGCType] = NewDRCategory()
+					}
+
+					curCategory = curMap[curGCType]
+					curMap = curMap[curGCType].Children
+				}
+
+				if curCategory == nil {
+					fmt.Println("nil category " + fullGCType)
+				} else {
+					curCategory.Classes[fullGCType] = true
+				}
+
+				fmt.Println(fullGCType)
+			}
+		}
+	}
+}
+
+func (c *DRConfig) getParents(extends string) []string {
+	splitKey := strings.Split(extends, ".")
+	parent, err := c.GetSimple(extends)
+
+	if err != nil || len(parent) == 0 {
+		return splitKey
+	}
+
+	if len(parent) > 1 {
+		panic("wrong number of parents found")
+	}
+
+	if parent[0].Entities[0].Extends != "" && parent[0].Entities[0].Extends != splitKey[0] {
+		parentTypes := c.getParents(parent[0].Entities[0].Extends)
+		splitKey = append(parentTypes, splitKey...)
+	}
+
+	return splitKey
+}
+
+//func (c *DRConfig) getParentTypes(extends string) []string {
+//	return c.getParentTypesArray(strings.Split(extends, "."))
+//}
+
+/*func (c *DRConfig) getParentTypesArray(gcType []string) []string {
+	result := gcType
+	parent, err := c.Get(strings.Join(gcType, "."))
+
+	if err != nil {
+		return gcType
+	}
+
+	if len(parent) == 0 {
+		return gcType
+	}
+
+	if len(parent) > 1 {
+		panic("wrong number of parents found")
+	}
+
+	if parent[0].Entities[0].Extends != "" {
+		return c.getParentTypesArray(append(result, parent[0].Name))
+	}
+
+	return result
+}*/
 
 func NewDRConfig() *DRConfig {
 	return &DRConfig{

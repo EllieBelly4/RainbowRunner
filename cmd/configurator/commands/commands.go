@@ -13,9 +13,11 @@ var rootCmd = &cobra.Command{
 func Init() {
 	initDumpCommand()
 	initGetCommand()
+	initCategoriseCommand()
 
 	rootCmd.AddCommand(dumpCommand)
 	rootCmd.AddCommand(getCommand)
+	rootCmd.AddCommand(categoriseCommand)
 }
 
 func Execute() {
