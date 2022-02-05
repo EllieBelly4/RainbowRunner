@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-type DRClassCollection []*DRClass
+type DRClassCollection map[string]*DRClass
 
 type EquipmentMap map[string]*DRClass
 
@@ -16,8 +16,8 @@ type DRWeapon struct {
 	*DRClass
 }
 
-var Weapons DRClassCollection
-var Armour DRClassCollection
+var Weapons *DRClass
+var Armour *DRClass
 
 var MeleeWeapons EquipmentMap
 var RangedWeapons EquipmentMap
@@ -25,22 +25,6 @@ var Helmets EquipmentMap
 var Armours EquipmentMap
 var Gloves EquipmentMap
 var Boots EquipmentMap
-
-func (d *DRClassCollection) Find(fqGCType string) *DRClass {
-	split := strings.Split(fqGCType, ".")
-
-	for _, class := range []*DRClass(*d) {
-		if class.Name == split[0] {
-			if len(split) > 1 {
-				return class.Find(split[1:])
-			} else {
-				return class
-			}
-		}
-	}
-
-	return nil
-}
 
 func LoadEquipmentFixtures() {
 	fmt.Println("loading equipment fixtures")
@@ -77,10 +61,11 @@ func LoadEquipmentFixtures() {
 }
 
 func AddWeapons() {
-	for _, weapon := range Weapons {
+	for _, weapon := range Weapons.Children {
 		root := weapon.Name
 
-		for _, subType := range weapon.Children {
+		for _, sub := range weapon.Entities[0].Children {
+			subType := sub.Entities[0]
 			desc := subType.Find([]string{"Description"})
 
 			// Mods do not have descriptions
@@ -88,7 +73,7 @@ func AddWeapons() {
 				continue
 			}
 
-			key := strings.Join([]string{root, subType.Name}, ".")
+			key := strings.Join([]string{root, sub.Name}, ".")
 
 			if strings.HasSuffix(desc.Properties["WeaponClass"], "MELEE") {
 				if MeleeWeapons == nil {
@@ -122,10 +107,11 @@ var armourTypeMap = map[types.EquipmentSlot]*EquipmentMap{
 }
 
 func AddArmours() {
-	for _, armour := range Armour {
+	for _, armour := range Armour.Children {
 		root := armour.Name
 
-		for _, subType := range armour.Children {
+		for _, sub := range armour.Entities[0].Children {
+			subType := sub.Entities[0]
 			desc := subType.Find([]string{"Description"})
 
 			// Mods do not have descriptions
@@ -133,7 +119,7 @@ func AddArmours() {
 				continue
 			}
 
-			key := strings.Join([]string{root, subType.Name}, ".")
+			key := strings.Join([]string{root, sub.Name}, ".")
 
 			if m, ok := armourTypeMap[subType.Slot()]; ok {
 				if *m == nil {

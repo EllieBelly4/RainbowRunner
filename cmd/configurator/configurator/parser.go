@@ -31,9 +31,11 @@ func LoadAllConfigurationFiles(rootDir string) (*configparser.DRConfig, error) {
 	}
 
 	all, err := configparser.ParseAllFilesToDRConfig(
+		//[]string{"D:\\Work\\dungeon-runners\\666 dumps new\\dungeon16_level00_.txt"},
+		//[]string{"D:\\Work\\dungeon-runners\\666 dumps new\\!lib_roomA_test.txt"},
 		//[]string{"D:\\Work\\dungeon-runners\\666 dumps new\\avatar\\base\\Bank.txt"},
-		[]string{"D:\\Work\\dungeon-runners\\666 dumps new\\items\\pal\\MageShieldPAL.txt", "D:\\Work\\dungeon-runners\\666 dumps new\\items\\modpal\\MageModPAL.txt"},
-		//configsToload,
+		//[]string{"D:\\Work\\dungeon-runners\\666 dumps new\\items\\pal\\MageShieldPAL.txt", "D:\\Work\\dungeon-runners\\666 dumps new\\items\\modpal\\MageModPAL.txt"},
+		configsToload,
 		rootDir,
 	)
 

@@ -21,7 +21,7 @@ import "RainbowRunner/internal/database"
 */
 
 type DRConfig struct {
-	Classes *database.DRClass
+	Classes *database.DRClass `json:"classes"`
 }
 
 func (c *DRConfig) MergeParents() {

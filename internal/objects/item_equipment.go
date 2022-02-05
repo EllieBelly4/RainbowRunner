@@ -5,6 +5,7 @@ import (
 	"RainbowRunner/internal/types"
 	"RainbowRunner/pkg/byter"
 	"fmt"
+	"strings"
 )
 
 type ItemType string
@@ -54,9 +55,9 @@ func NewEquipment(itemGCType, itemModGCType string, itemType ItemType, slot type
 	var drClass *database.DRClass
 
 	if itemType == ItemArmour {
-		drClass = database.Armour.Find(itemGCType)
+		drClass = database.Armour.Find(strings.Split(itemGCType, "."))
 	} else {
-		drClass = database.Weapons.Find(itemGCType)
+		drClass = database.Weapons.Find(strings.Split(itemGCType, "."))
 	}
 
 	if drClass == nil {

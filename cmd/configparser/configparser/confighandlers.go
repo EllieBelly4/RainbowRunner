@@ -22,12 +22,10 @@ type DRConfigParser struct {
 	currentPropertyName string
 	basePath            string
 
-	depth            int
-	IsGenericClass   bool
-	gcBaseType       string
-	drConfig         *DRConfig
-	currentNamespace *database.DRNamespace
-	namespaceStack   *DRNamespaceStack
+	depth          int
+	IsGenericClass bool
+	gcBaseType     string
+	drConfig       *DRConfig
 }
 
 func NewDRConfigListener(filePath string, rootPath string, config *DRConfig) *DRConfigParser {
@@ -39,12 +37,14 @@ func NewDRConfigListener(filePath string, rootPath string, config *DRConfig) *DR
 	splitBaseType := strings.Split(gcBaseType, ".")
 	curMap := config.Classes
 
-	for i := 0; i < len(splitBaseType)-1; i++ {
+	for i := 0; i < len(splitBaseType); i++ {
 		if _, ok := curMap.Children[splitBaseType[i]]; !ok {
-			curMap.Children[splitBaseType[i]] = database.NewDRClass(splitBaseType[i])
+			curMap.Children[splitBaseType[i]] = database.NewDRClassChildGroup(splitBaseType[i])
+			curMap.Children[splitBaseType[i]].Entities = make([]*database.DRClass, 0)
+			curMap.Children[splitBaseType[i]].Entities = append(curMap.Children[splitBaseType[i]].Entities, database.NewDRClass(splitBaseType[i]))
 		}
 
-		curMap = curMap.Children[splitBaseType[i]]
+		curMap = curMap.Children[splitBaseType[i]].Entities[0]
 	}
 
 	classStack := NewDRClassStack()
@@ -62,7 +62,10 @@ func NewDRConfigListener(filePath string, rootPath string, config *DRConfig) *DR
 }
 
 func (t *DRConfigParser) EnterEveryRule(ctx antlr.ParserRuleContext) {
+	//fmt.Println(t.classStack.Index)
+
 	if ctx.GetRuleIndex() == parser.DRConfigParserRULE_classEnter {
+		t.IsGenericClass = false
 		t.depth++
 	}
 
@@ -81,26 +84,61 @@ func (t *DRConfigParser) EnterEveryRule(ctx antlr.ParserRuleContext) {
 	}
 
 	if ctx.GetRuleIndex() == parser.DRConfigParserRULE_propertyValue {
-
+		t.classStack.Current().Properties[t.currentPropertyName] = ctx.GetText()
 	}
 
 	if ctx.GetRuleIndex() == parser.DRConfigParserRULE_classIdentifier {
 		className := ctx.GetText()
-
-		if _, ok := t.classStack.Current().Children[className]; !ok {
-			t.classStack.Current().Children[className] = database.NewDRClass(className)
-		}
-
-		newDRClass := database.NewDRClass(className)
+		currentClass := t.classStack.Current()
 
 		if className == "*" {
 			t.IsGenericClass = true
-		} else {
-			t.classStack.Push(newDRClass)
+			className = t.fileClassName
+
+			if t.depth == 0 {
+				t.classStack.Push(currentClass)
+			}
+		}
+
+		if !t.IsGenericClass {
+			newClass := database.NewDRClass(className)
+
+			if _, ok := currentClass.Children[className]; !ok {
+				currentClass.Children[className] = database.NewDRClassChildGroup(className)
+			}
+
+			currentClass.Children[className].Entities = append(currentClass.Children[className].Entities, newClass)
+
+			t.classStack.Push(newClass)
 		}
 	}
 
 	if ctx.GetRuleIndex() == parser.DRConfigParserRULE_parentClass {
+		currentClass := t.classStack.Current()
+		parentClass := ctx.GetText()
+
+		if t.IsGenericClass {
+			if t.depth == 0 {
+				currentClass.Extends = parentClass
+			} else {
+				splitParentClass := strings.Split(parentClass, ".")
+				childParentClass := splitParentClass[len(splitParentClass)-1]
+
+				newClass := database.NewDRClass("*")
+				newClass.Extends = parentClass
+
+				if _, ok := currentClass.Children[childParentClass]; !ok {
+					currentClass.Children[childParentClass] = database.NewDRClassChildGroup(childParentClass)
+				}
+
+				currentClass.Children[childParentClass].Entities = append(currentClass.Children[childParentClass].Entities, newClass)
+
+				t.classStack.Push(newClass)
+			}
+
+		} else {
+			currentClass.Extends = parentClass
+		}
 	}
 }
 
@@ -165,7 +203,7 @@ func ParseAllFilesToDRConfig(files []string, rootPath string) (*DRConfig, error)
 		//split := strings.Split(path, "\\")
 		//fileName := strings.Split(split[len(split)-1], ".")[0]
 
-		//fmt.Println("Parsing " + path)
+		fmt.Println("Parsing " + path)
 
 		parseFile(path, rootPath, drConfig)
 	}

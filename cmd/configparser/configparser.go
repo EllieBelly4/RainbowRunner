@@ -3,7 +3,6 @@ package main
 import (
 	"RainbowRunner/cmd/configparser/configparser"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 )
 
@@ -3101,8 +3100,9 @@ func main() {
 	//	"D:\\Work\\dungeon-runners\\666 dumps\\PlateArmor1PAL.txt",
 	//}
 
-	all, err := configparser.ParseAllFiles(
-		[]string{"C:\\Users\\Sophie\\go\\src\\RainbowRunner\\resources\\Configs\\tutorial_loot_1n.txt"},
+	all, err := configparser.ParseAllFilesToDRConfig(
+		armourFiles,
+		"D:\\Work\\dungeon-runners\\666 dumps",
 	)
 
 	data, err := json.MarshalIndent(all, "", "  ")
@@ -3111,9 +3111,9 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Printf("%s", string(data))
+	//fmt.Printf("%s", string(data))
 
-	err = ioutil.WriteFile("resources/Dumps/generated/tutorial_loot_1n.json", data, 0774)
+	err = ioutil.WriteFile("resources/Dumps/generated/test_armour.json", data, 0774)
 
 	if err != nil {
 		panic(err)

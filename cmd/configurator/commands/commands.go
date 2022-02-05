@@ -21,6 +21,7 @@ func Init() {
 		panic(err)
 	}
 
+	initDumpCommand()
 	rootCmd.AddCommand(dumpCommand)
 }
 
