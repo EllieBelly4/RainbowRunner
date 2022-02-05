@@ -10,7 +10,6 @@ import (
 type DRClassChildGroup struct {
 	Name     string     `json:"name,omitempty"`
 	Entities []*DRClass `json:"entities"`
-	Entity   *DRClass   `json:"entity,omitempty"`
 	GCType   string     `json:"gcType,omitempty"`
 }
 
@@ -45,7 +44,7 @@ func (c *DRClass) ModCount() int {
 		//	modCount++
 		//}
 
-		if childName != "Description" {
+		if childName != "description" {
 			modCount++
 		}
 	}
@@ -54,7 +53,7 @@ func (c *DRClass) ModCount() int {
 }
 
 func (c *DRClass) Slot() types.EquipmentSlot {
-	desc, ok := c.Children["Description"]
+	desc, ok := c.Children["description"]
 
 	// Mods do not have descriptions
 	if !ok {

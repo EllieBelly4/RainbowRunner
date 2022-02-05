@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 	"io/ioutil"
 	"regexp"
+	"strings"
 )
 
 var categoryInputFile string
@@ -28,7 +29,7 @@ var getCategoryCommand = &cobra.Command{
 		regex := regexp.MustCompile(regexpFilter)
 
 		gcTypes, err := configparser.GetGCTypesByCategory(
-			args[0],
+			strings.ToLower(args[0]),
 			categoryConfig,
 			minDepth,
 			regex,

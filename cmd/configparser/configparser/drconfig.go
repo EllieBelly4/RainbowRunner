@@ -92,12 +92,17 @@ func (c *DRConfig) mergeProperties(entity *database.DRClass, parentEntity *datab
 }
 
 func (c *DRConfig) Get(fullgctype string) ([]*database.DRClassChildGroup, error) {
+	fullgctype = strings.ToLower(fullgctype)
 	splitGCType := strings.Split(fullgctype, ".")
 
 	found, err := c.GetSimple(fullgctype)
 
 	if err != nil {
 		return nil, err
+	}
+
+	if len(found) == 0 {
+		return nil, errors.New(fmt.Sprintf("could not find %s", fullgctype))
 	}
 
 	for _, child := range found {
@@ -144,6 +149,7 @@ func (c *DRConfig) getFromGCType(gcType []string, children map[string]*database.
 }
 
 func (c *DRConfig) getParents(extends string) []string {
+	extends = strings.ToLower(extends)
 	splitKey := strings.Split(extends, ".")
 	parent, err := c.GetSimple(extends)
 

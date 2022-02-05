@@ -1,0 +1,7 @@
+2HMace5PAL.2HMace5-4
+items.deprecated.DeprecatedChildArmorPAL.Body014
+
+items.pal.magebodypal.partialbuiltuniqueseasonal001
+dungeon16itempal.d16_q11_a3_01
+
+1hswordmythicpal.1hswordmythic8

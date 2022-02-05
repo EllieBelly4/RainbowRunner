@@ -7,6 +7,7 @@ import (
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/objects"
+	"RainbowRunner/internal/types"
 	byter "RainbowRunner/pkg/byter"
 	"fmt"
 	log "github.com/sirupsen/logrus"
@@ -367,6 +368,42 @@ func AddEquipment(equipment objects.DRObject, manipulators *objects.Manipulators
 	//	manipulators.AddChild(randomShield)
 	//}
 
+	randomArmour = objects.NewEquipment(
+		//"items.deprecated.DeprecatedChildArmorPAL.Body014",
+		"items.pal.magebodypal.partialbuiltuniqueseasonal001",
+		"ScaleModPAL.Rare.Mod1",
+		objects.ItemArmour,
+		types.EquipmentSlotTorso,
+	)
+
+	randomHelm = objects.NewEquipment(
+		"items.pal.rangerhelmpal.partialbuiltmythicseasonal002",
+		"ScaleModPAL.Rare.Mod1",
+		objects.ItemArmour,
+		types.EquipmentSlotHead,
+	)
+
+	randomGloves = objects.NewEquipment(
+		"items.pal.mageglovespal.partialbuiltmythicseasonal001",
+		"ScaleModPAL.Rare.Mod1",
+		objects.ItemArmour,
+		types.EquipmentSlotHand,
+	)
+
+	randomBoots = objects.NewEquipment(
+		"items.pal.magebootspal.partialbuiltmythicseasonal001",
+		"ScaleModPAL.Rare.Mod1",
+		objects.ItemArmour,
+		types.EquipmentSlotFoot,
+	)
+
+	randomWeapon = objects.NewEquipment(
+		"items.pal.1hswordpal.mythicprebuiltboss001",
+		"ScaleModPAL.Rare.Mod1",
+		objects.ItemMeleeWeapon,
+		types.EquipmentSlotWeapon,
+	)
+
 	equipment.AddChild(randomGloves)
 	equipment.AddChild(randomBoots)
 	equipment.AddChild(randomHelm)
@@ -385,7 +422,7 @@ Helm: %s
 Armour: %s
 Gloves: %s
 Boots: %s
-Shield: %s
-`, helm, armour, gloves, boots, shield)
+Weapon: %s
+`, randomHelm.GCType, randomArmour.GCType, randomGloves.GCType, randomBoots.GCType, randomWeapon.GCType)
 	}
 }

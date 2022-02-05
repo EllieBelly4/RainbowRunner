@@ -96,12 +96,14 @@ func LoadAllConfigurationFiles(rootDir string) (*configparser.DRConfig, error) {
 		//[]string{"D:\\Work\\dungeon-runners\\666 dumps new\\world\\test\\world_questcells\\data\\NCI_Teleporter_02.txt"},
 		//[]string{"D:\\Work\\dungeon-runners\\666 dumps new\\!lib_roomA_test.txt"},
 		//[]string{"D:\\Work\\dungeon-runners\\666 dumps new\\avatar\\base\\Bank.txt"},
+		//[]string{"D:\\Work\\dungeon-runners\\666 dumps new\\avatar\\base\\Bank.txt"},
+		[]string{"D:\\Work\\dungeon-runners\\666 dumps new\\items\\pal\\MageBodyPAL.txt"},
 		//[]string{"D:\\Work\\dungeon-runners\\666 dumps new\\items\\pal\\MageShieldPAL.txt", "D:\\Work\\dungeon-runners\\666 dumps new\\items\\modpal\\MageModPAL.txt"},
-		[]string{
-			"D:\\Work\\dungeon-runners\\666 dumps new\\1HMeleeWeaponPAL.txt",
-			"D:\\Work\\dungeon-runners\\666 dumps new\\Base1HAxe.txt",
-			"D:\\Work\\dungeon-runners\\666 dumps new\\Base1HMelee.txt",
-		},
+		//[]string{
+		//	"D:\\Work\\dungeon-runners\\666 dumps new\\1HMeleeWeaponPAL.txt",
+		//	"D:\\Work\\dungeon-runners\\666 dumps new\\Base1HAxe.txt",
+		//	"D:\\Work\\dungeon-runners\\666 dumps new\\Base1HMelee.txt",
+		//},
 		//configsToload,
 		rootDir,
 	)

@@ -27,8 +27,9 @@ var Gloves EquipmentMap
 var Boots EquipmentMap
 
 func FindItem(db []*DRClassChildGroup, gcType string) *DRClass {
+	gcType = strings.ToLower(gcType)
 	for _, group := range db {
-		if group.GCType == gcType {
+		if strings.ToLower(group.GCType) == gcType {
 			return group.Entities[0]
 		}
 	}
@@ -73,7 +74,7 @@ func LoadEquipmentFixtures() {
 func AddWeapons() {
 	for _, sub := range Weapons {
 		subType := sub.Entities[0]
-		desc := subType.Find([]string{"Description"})
+		desc := subType.Find([]string{"description"})
 
 		// Mods do not have descriptions
 		if desc == nil {
@@ -113,7 +114,7 @@ var armourTypeMap = map[types.EquipmentSlot]*EquipmentMap{
 func AddArmours() {
 	for _, sub := range Armour {
 		subType := sub.Entities[0]
-		desc := subType.Find([]string{"Description"})
+		desc := subType.Find([]string{"description"})
 
 		// Mods do not have descriptions
 		if desc == nil {

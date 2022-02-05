@@ -38,13 +38,15 @@ func NewDRConfigListener(filePath string, rootPath string, config *DRConfig) *DR
 	curMap := config.Classes
 
 	for i := 0; i < len(splitBaseType)-1; i++ {
-		if _, ok := curMap.Children[splitBaseType[i]]; !ok {
-			curMap.Children[splitBaseType[i]] = database.NewDRClassChildGroup("")
-			curMap.Children[splitBaseType[i]].Entities = make([]*database.DRClass, 0)
-			curMap.Children[splitBaseType[i]].Entities = append(curMap.Children[splitBaseType[i]].Entities, database.NewDRClass(""))
+		gcTypeNameLowercase := strings.ToLower(splitBaseType[i])
+
+		if _, ok := curMap.Children[gcTypeNameLowercase]; !ok {
+			curMap.Children[gcTypeNameLowercase] = database.NewDRClassChildGroup("")
+			curMap.Children[gcTypeNameLowercase].Entities = make([]*database.DRClass, 0)
+			curMap.Children[gcTypeNameLowercase].Entities = append(curMap.Children[gcTypeNameLowercase].Entities, database.NewDRClass(""))
 		}
 
-		curMap = curMap.Children[splitBaseType[i]].Entities[0]
+		curMap = curMap.Children[gcTypeNameLowercase].Entities[0]
 	}
 
 	classStack := NewDRClassStack()
@@ -100,6 +102,8 @@ func (t *DRConfigParser) EnterEveryRule(ctx antlr.ParserRuleContext) {
 			}
 		}
 
+		className = strings.ToLower(className)
+
 		if !t.IsGenericClass {
 			newClass := database.NewDRClass("")
 
@@ -116,6 +120,7 @@ func (t *DRConfigParser) EnterEveryRule(ctx antlr.ParserRuleContext) {
 	if ctx.GetRuleIndex() == parser.DRConfigParserRULE_parentClass {
 		currentClass := t.classStack.Current()
 		parentClass := ctx.GetText()
+		parentClass = strings.ToLower(parentClass)
 
 		if t.IsGenericClass {
 			if t.depth == 0 {
