@@ -147,64 +147,6 @@ func (c *DRConfig) getFromGCType(gcType []string, children map[string]*database.
 	return nil
 }
 
-type DRCategory struct {
-	Children map[string]*DRCategory
-	Classes  map[string]bool
-}
-
-func NewDRCategory() *DRCategory {
-	return &DRCategory{
-		Children: map[string]*DRCategory{},
-		Classes:  map[string]bool{},
-	}
-}
-
-func (c *DRConfig) GenerateCategoryMap() (map[string]*DRCategory, error) {
-	output := map[string]*DRCategory{}
-
-	c.generateCategoryMap(c.Classes.Children, output, []string{})
-
-	return output, nil
-}
-
-func (c *DRConfig) generateCategoryMap(classes map[string]*database.DRClassChildGroup, output map[string]*DRCategory, gcTypeName []string) {
-	for className, classChildGroup := range classes {
-		for _, entity := range classChildGroup.Entities {
-			c.generateCategoryMap(entity.Children, output, append(gcTypeName, className))
-
-			if entity.Extends != "" {
-				parentsGCTypes := c.getParents(entity.Extends)
-				parentGCType := strings.Join(parentsGCTypes, ".")
-
-				fullGCType := parentGCType + "." + className
-
-				curMap := output
-				var curCategory *DRCategory = nil
-				curGCType := ""
-
-				for i := 0; i < len(parentsGCTypes); i++ {
-					curGCType = parentsGCTypes[i]
-
-					if _, ok := curMap[curGCType]; !ok {
-						curMap[curGCType] = NewDRCategory()
-					}
-
-					curCategory = curMap[curGCType]
-					curMap = curMap[curGCType].Children
-				}
-
-				if curCategory == nil {
-					fmt.Println("nil category " + fullGCType)
-				} else {
-					curCategory.Classes[fullGCType] = true
-				}
-
-				fmt.Println(fullGCType)
-			}
-		}
-	}
-}
-
 func (c *DRConfig) getParents(extends string) []string {
 	splitKey := strings.Split(extends, ".")
 	parent, err := c.GetSimple(extends)

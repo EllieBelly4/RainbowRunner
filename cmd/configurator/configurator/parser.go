@@ -12,6 +12,34 @@ import (
 	"strings"
 )
 
+func LoadFromCategoryConfigFile(path string) (map[string]*configparser.DRCategory, error) {
+	stat, err := os.Stat(path)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if stat.IsDir() {
+		return nil, errors.New(fmt.Sprintf("Config file path %s is a directory", path))
+	}
+
+	data, err := ioutil.ReadFile(path)
+
+	if err != nil {
+		return nil, err
+	}
+
+	drConfig := map[string]*configparser.DRCategory{}
+
+	err = json.Unmarshal(data, &drConfig)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return drConfig, nil
+}
+
 func LoadFromDumpedConfigFile(path string) (*configparser.DRConfig, error) {
 	stat, err := os.Stat(path)
 
