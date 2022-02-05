@@ -37,11 +37,11 @@ func NewDRConfigListener(filePath string, rootPath string, config *DRConfig) *DR
 	splitBaseType := strings.Split(gcBaseType, ".")
 	curMap := config.Classes
 
-	for i := 0; i < len(splitBaseType); i++ {
+	for i := 0; i < len(splitBaseType)-1; i++ {
 		if _, ok := curMap.Children[splitBaseType[i]]; !ok {
-			curMap.Children[splitBaseType[i]] = database.NewDRClassChildGroup(splitBaseType[i])
+			curMap.Children[splitBaseType[i]] = database.NewDRClassChildGroup("")
 			curMap.Children[splitBaseType[i]].Entities = make([]*database.DRClass, 0)
-			curMap.Children[splitBaseType[i]].Entities = append(curMap.Children[splitBaseType[i]].Entities, database.NewDRClass(splitBaseType[i]))
+			curMap.Children[splitBaseType[i]].Entities = append(curMap.Children[splitBaseType[i]].Entities, database.NewDRClass(""))
 		}
 
 		curMap = curMap.Children[splitBaseType[i]].Entities[0]
@@ -101,10 +101,10 @@ func (t *DRConfigParser) EnterEveryRule(ctx antlr.ParserRuleContext) {
 		}
 
 		if !t.IsGenericClass {
-			newClass := database.NewDRClass(className)
+			newClass := database.NewDRClass("")
 
 			if _, ok := currentClass.Children[className]; !ok {
-				currentClass.Children[className] = database.NewDRClassChildGroup(className)
+				currentClass.Children[className] = database.NewDRClassChildGroup("")
 			}
 
 			currentClass.Children[className].Entities = append(currentClass.Children[className].Entities, newClass)
@@ -128,7 +128,7 @@ func (t *DRConfigParser) EnterEveryRule(ctx antlr.ParserRuleContext) {
 				newClass.Extends = parentClass
 
 				if _, ok := currentClass.Children[childParentClass]; !ok {
-					currentClass.Children[childParentClass] = database.NewDRClassChildGroup(childParentClass)
+					currentClass.Children[childParentClass] = database.NewDRClassChildGroup("")
 				}
 
 				currentClass.Children[childParentClass].Entities = append(currentClass.Children[childParentClass].Entities, newClass)

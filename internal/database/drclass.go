@@ -8,10 +8,10 @@ import (
 )
 
 type DRClassChildGroup struct {
-	Name     string     `json:"name"`
-	Extends  string     `json:"extends,omitempty"`
+	Name     string     `json:"name,omitempty"`
 	Entities []*DRClass `json:"entities"`
 	Entity   *DRClass   `json:"entity,omitempty"`
+	GCType   string     `json:"gcType,omitempty"`
 }
 
 type DRClass struct {

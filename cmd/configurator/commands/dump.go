@@ -8,6 +8,7 @@ import (
 )
 
 var outputFile string
+var rootDir string
 
 var dumpCommand = &cobra.Command{
 	Use: "dump",
@@ -18,6 +19,7 @@ var dumpCommand = &cobra.Command{
 			panic(err)
 		}
 
+		//data, err := json.MarshalIndent(config, "", " ")
 		data, err := json.Marshal(config)
 
 		if err != nil {
@@ -33,5 +35,13 @@ var dumpCommand = &cobra.Command{
 }
 
 func initDumpCommand() {
-	dumpCommand.Flags().StringVarP(&outputFile, "output-fil", "o", "dr-config-dump.json", "-o Dumps\\dump.json")
+	dumpCommand.PersistentFlags().StringVarP(&rootDir, "config-root-dir", "d", "", "-d D:\\Work\\DungeonRunners\\ConfigFiles")
+
+	err := cobra.MarkFlagRequired(dumpCommand.PersistentFlags(), "config-root-dir")
+
+	if err != nil {
+		panic(err)
+	}
+
+	dumpCommand.Flags().StringVarP(&outputFile, "output-file", "o", "dr-config-dump.json", "-o Dumps\\dump.json")
 }

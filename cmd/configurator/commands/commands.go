@@ -6,23 +6,16 @@ import (
 	"os"
 )
 
-var rootDir string
-
 var rootCmd = &cobra.Command{
 	Use: "configurator",
 }
 
 func Init() {
-	rootCmd.PersistentFlags().StringVarP(&rootDir, "config-root-dir", "d", "", "-d D:\\Work\\DungeonRunners\\ConfigFiles")
-
-	err := cobra.MarkFlagRequired(rootCmd.PersistentFlags(), "config-root-dir")
-
-	if err != nil {
-		panic(err)
-	}
-
 	initDumpCommand()
+	initGetCommand()
+
 	rootCmd.AddCommand(dumpCommand)
+	rootCmd.AddCommand(getCommand)
 }
 
 func Execute() {
