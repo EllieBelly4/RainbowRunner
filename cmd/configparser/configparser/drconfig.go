@@ -49,10 +49,6 @@ func (c *DRConfig) MergeParents(class *database.DRClassChildGroup) {
 
 			c.MergeParents(parent)
 
-			if parentEntity.Properties == nil {
-				continue
-			}
-
 			for _, entity := range class.Entities {
 				c.mergeProperties(entity, parentEntity)
 

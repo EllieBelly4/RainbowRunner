@@ -16,8 +16,8 @@ type DRWeapon struct {
 	*DRClass
 }
 
-var Weapons *DRClass
-var Armour *DRClass
+var Weapons []*DRClassChildGroup
+var Armour []*DRClassChildGroup
 
 var MeleeWeapons EquipmentMap
 var RangedWeapons EquipmentMap
@@ -25,6 +25,16 @@ var Helmets EquipmentMap
 var Armours EquipmentMap
 var Gloves EquipmentMap
 var Boots EquipmentMap
+
+func FindItem(db []*DRClassChildGroup, gcType string) *DRClass {
+	for _, group := range db {
+		if group.GCType == gcType {
+			return group.Entities[0]
+		}
+	}
+
+	return nil
+}
 
 func LoadEquipmentFixtures() {
 	fmt.Println("loading equipment fixtures")
@@ -61,33 +71,27 @@ func LoadEquipmentFixtures() {
 }
 
 func AddWeapons() {
-	for _, weapon := range Weapons.Children {
-		root := weapon.Name
+	for _, sub := range Weapons {
+		subType := sub.Entities[0]
+		desc := subType.Find([]string{"Description"})
 
-		for _, sub := range weapon.Entities[0].Children {
-			subType := sub.Entities[0]
-			desc := subType.Find([]string{"Description"})
+		// Mods do not have descriptions
+		if desc == nil {
+			continue
+		}
 
-			// Mods do not have descriptions
-			if desc == nil {
-				continue
+		if strings.HasSuffix(desc.Properties["WeaponClass"], "MELEE") {
+			if MeleeWeapons == nil {
+				MeleeWeapons = make(EquipmentMap)
 			}
 
-			key := strings.Join([]string{root, sub.Name}, ".")
-
-			if strings.HasSuffix(desc.Properties["WeaponClass"], "MELEE") {
-				if MeleeWeapons == nil {
-					MeleeWeapons = make(EquipmentMap)
-				}
-
-				MeleeWeapons[key] = subType
-			} else {
-				if RangedWeapons == nil {
-					RangedWeapons = make(EquipmentMap)
-				}
-
-				RangedWeapons[key] = subType
+			MeleeWeapons[sub.GCType] = subType
+		} else {
+			if RangedWeapons == nil {
+				RangedWeapons = make(EquipmentMap)
 			}
+
+			RangedWeapons[sub.GCType] = subType
 		}
 	}
 }
@@ -107,27 +111,21 @@ var armourTypeMap = map[types.EquipmentSlot]*EquipmentMap{
 }
 
 func AddArmours() {
-	for _, armour := range Armour.Children {
-		root := armour.Name
+	for _, sub := range Armour {
+		subType := sub.Entities[0]
+		desc := subType.Find([]string{"Description"})
 
-		for _, sub := range armour.Entities[0].Children {
-			subType := sub.Entities[0]
-			desc := subType.Find([]string{"Description"})
+		// Mods do not have descriptions
+		if desc == nil {
+			continue
+		}
 
-			// Mods do not have descriptions
-			if desc == nil {
-				continue
+		if m, ok := armourTypeMap[subType.Slot()]; ok {
+			if *m == nil {
+				*m = make(EquipmentMap)
 			}
 
-			key := strings.Join([]string{root, sub.Name}, ".")
-
-			if m, ok := armourTypeMap[subType.Slot()]; ok {
-				if *m == nil {
-					*m = make(EquipmentMap)
-				}
-
-				(*m)[key] = subType
-			}
+			(*m)[sub.GCType] = subType
 		}
 	}
 }

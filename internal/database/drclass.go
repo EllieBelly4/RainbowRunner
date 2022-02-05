@@ -22,8 +22,8 @@ type DRClass struct {
 }
 
 func (c *DRClass) Find(class []string) *DRClass {
-	for _, child := range c.Children {
-		if child.Name == class[0] {
+	for childName, child := range c.Children {
+		if childName == class[0] {
 			if len(class) > 1 {
 				return c.Find(class[1:])
 			} else {
@@ -40,12 +40,12 @@ var modRegexp = regexp.MustCompile("^Mod[0-9]+$")
 func (c *DRClass) ModCount() int {
 	modCount := 0
 
-	for _, child := range c.Children {
+	for childName, _ := range c.Children {
 		//if modRegexp.MatchString(child.Name) {
 		//	modCount++
 		//}
 
-		if child.Name != "Description" {
+		if childName != "Description" {
 			modCount++
 		}
 	}
