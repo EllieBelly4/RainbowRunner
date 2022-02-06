@@ -1,4 +1,4 @@
-package main
+package modelextractor
 
 import (
 	"RainbowRunner/pkg/datatypes"
@@ -28,8 +28,15 @@ func (w *OBJWriter) String() string {
 	return w.body.String()
 }
 
-func (w *OBJWriter) WriteFace(tri []uint16, withNormals, withUVs bool) {
+func (w *OBJWriter) WriteFace(tri []uint16, withNormals, withUVs bool, flipTriangles bool) {
 	fullStr := "f "
+
+	if flipTriangles {
+		two := tri[2]
+		one := tri[1]
+		tri[2] = one
+		tri[1] = two
+	}
 
 	for i := 0; i < 3; i++ {
 		str := ""
@@ -70,6 +77,6 @@ func (w *OBJWriter) WriteObject(label string) {
 	w.vertsThisModel = 0
 }
 
-func NewOBJWriter() *OBJWriter {
+func NewOBJBuilder() *OBJWriter {
 	return &OBJWriter{}
 }

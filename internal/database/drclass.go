@@ -13,11 +13,19 @@ type DRClassChildGroup struct {
 	GCType   string     `json:"gcType,omitempty"`
 }
 
+type DRClassProperties map[string]string
+
+var quoteRemoveRegex = regexp.MustCompile("^[\"']|[\"']$")
+
 type DRClass struct {
 	Name       string                        `json:"name,omitempty"`
 	Extends    string                        `json:"extends,omitempty"`
-	Properties map[string]string             `json:"properties,omitempty"`
+	Properties DRClassProperties             `json:"properties,omitempty"`
 	Children   map[string]*DRClassChildGroup `json:"children,omitempty"`
+}
+
+func (p *DRClassProperties) StringVal(key string) string {
+	return quoteRemoveRegex.ReplaceAllString((*p)[key], "")
 }
 
 func (c *DRClass) Find(class []string) *DRClass {

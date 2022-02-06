@@ -93,9 +93,9 @@ typedef struct DFC3DStaticMeshNode {
     // 0x02 = normals
     // 0x04 = has colours
     // 0x08 and 0x10 seem to be exclusive
-    // 0x08 = 
+    // 0x08 = has UVs
     // 0x10 = 
-    uint32 Flags; //unconfirmed, seems to control if normals are added
+    uint32 Flags;
     
     Vector3 Verts[VertCount] <bgcolor=cLtRed>;
 
