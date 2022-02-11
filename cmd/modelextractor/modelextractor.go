@@ -35,7 +35,7 @@ func main() {
 	//}
 
 	sourceDir := "D:\\Work\\dungeon-runners\\666 dumps new"
-	prefix := "di_CenterBuilding_1"
+	prefix := "Townston_graveyard"
 	fileType := ".3dnode"
 	allFiles, err := os.ReadDir(sourceDir)
 

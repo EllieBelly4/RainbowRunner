@@ -37,7 +37,7 @@ func (n *Manipulators) RemoveEquipmentByID(id uint32) {
 	}
 
 	if toRemove > -1 {
-		n.children = append(n.children[:toRemove], n.children[toRemove+1:]...)
+		n.GCChildren = append(n.GCChildren[:toRemove], n.GCChildren[toRemove+1:]...)
 	}
 }
 

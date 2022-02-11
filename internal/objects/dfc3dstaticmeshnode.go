@@ -9,11 +9,11 @@ type DFC3DStaticMeshNode struct {
 	*GCObject
 	Materials []DFCMeshMaterialRef
 	Flags     uint32
-	Verts     []datatypes.Vector3Float32
-	Normals   []datatypes.Vector3Float32
-	Colours   []datatypes.RGBA32
-	UVs       []datatypes.Vector2Float32
-	Triangles []uint16
+	Verts     []datatypes.Vector3Float32 `json:"-"`
+	Normals   []datatypes.Vector3Float32 `json:"-"`
+	Colours   []datatypes.RGBA32         `json:"-"`
+	UVs       []datatypes.Vector2Float32 `json:"-"`
+	Triangles []uint16                   `json:"-"`
 	Center    datatypes.Vector3Float32
 	MinBounds datatypes.Vector3Float32
 	MaxBounds datatypes.Vector3Float32

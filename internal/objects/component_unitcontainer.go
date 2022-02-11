@@ -196,7 +196,7 @@ func (u *UnitContainer) WriteAddItem(body *byter.Byter, item DRObject, inventory
 }
 
 func (u *UnitContainer) GetInventoryByID(index byte) *Inventory {
-	for _, child := range u.children {
+	for _, child := range u.GCChildren {
 		if inventory, ok := child.(*Inventory); ok {
 			if inventory.InventoryID == index {
 				return inventory

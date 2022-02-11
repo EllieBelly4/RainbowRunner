@@ -66,7 +66,7 @@ func (i *Inventory) RemoveItemByIndex(index int) DRObject {
 	}
 
 	if toRemove > -1 {
-		i.children = append(i.children[:toRemove], i.children[toRemove+1:]...)
+		i.GCChildren = append(i.GCChildren[:toRemove], i.GCChildren[toRemove+1:]...)
 	}
 
 	return toReturn

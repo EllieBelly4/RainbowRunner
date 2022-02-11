@@ -5,11 +5,13 @@ import (
 	"RainbowRunner/cmd/rrcli/configurator"
 	"RainbowRunner/cmd/rrcli/modelextractor"
 	"RainbowRunner/internal/database"
+	"RainbowRunner/internal/gosucks"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 )
 
@@ -133,17 +135,22 @@ func extractModelsForObjects(entities []struct {
 			continue
 		}
 
-		objBuilder := modelextractor.NewOBJBuilder()
+		//objBuilder := modelextractor.NewOBJBuilder()
 
-		modelextractor.Extract(filePath, objBuilder)
-
+		//modelextractor.Extract(filePath, objBuilder)
 		entityFileName := strings.ReplaceAll(entityGCType, ".", "-")
 
-		err := ioutil.WriteFile(path.Join(destPath, entityFileName+".obj"), []byte(objBuilder.String()), 0755)
+		modelextractor.Split(filePath, filepath.Join(destPath, entityFileName))
 
-		if err != nil {
-			panic(err)
-		}
+		gosucks.VAR(entityGCType)
+
+		//entityFileName := strings.ReplaceAll(entityGCType, ".", "-")
+
+		//err := ioutil.WriteFile(path.Join(destPath, entityFileName+".obj"), []byte(objBuilder.String()), 0755)
+		//
+		//if err != nil {
+		//	panic(err)
+		//}
 	}
 }
 

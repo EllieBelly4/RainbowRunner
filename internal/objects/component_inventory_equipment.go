@@ -175,7 +175,7 @@ func (n *EquipmentInventory) RemoveEquipmentBySlot(slot types.EquipmentSlot) *Eq
 	}
 
 	if toRemove > -1 {
-		n.children = append(n.children[:toRemove], n.children[toRemove+1:]...)
+		n.GCChildren = append(n.GCChildren[:toRemove], n.GCChildren[toRemove+1:]...)
 	}
 
 	return toReturn
