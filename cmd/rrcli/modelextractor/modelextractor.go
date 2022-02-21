@@ -1,6 +1,9 @@
 package modelextractor
 
 import (
+	"RainbowRunner/cmd/configparser/configparser"
+	"RainbowRunner/cmd/rrcli/configurator"
+	"RainbowRunner/internal/gosucks"
 	"RainbowRunner/internal/objects"
 	"RainbowRunner/internal/types"
 	"RainbowRunner/pkg/byter"
@@ -11,7 +14,29 @@ import (
 	"path/filepath"
 )
 
-func Extract(pathString string, objBuilder *OBJWriter) {
+var basePath string
+var config *configparser.DRConfig
+
+func LoadConfig(configPath string) {
+	fmt.Println("loading dumped config")
+
+	var err error
+	config, err = configurator.LoadFromDumpedConfigFile(configPath)
+
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("config load complete")
+}
+
+func SetConfig(drConfig *configparser.DRConfig) {
+	config = drConfig
+}
+
+func Extract(pathString string, objBuilder *OBJBuilder, mtlBuilder *MTLBuilder) {
+	setBasePath(pathString)
+
 	file, err := os.Open(pathString)
 
 	if err != nil {
@@ -26,12 +51,18 @@ func Extract(pathString string, objBuilder *OBJWriter) {
 
 	node := objects.ReadData(byter.NewLEByter(data))
 
-	extractFromChildren(node, objBuilder, types.Matrix324x4{
+	extractFromChildren(node, objBuilder, mtlBuilder, types.Matrix324x4{
 		Values: [16]float32{},
 	})
 }
 
+func setBasePath(pathString string) {
+	basePath = filepath.Dir(pathString)
+}
+
 func Split(pathString string, destPath string) {
+	setBasePath(pathString)
+
 	file, err := os.Open(pathString)
 
 	if err != nil {
@@ -52,7 +83,7 @@ func Split(pathString string, destPath string) {
 
 	node := objects.ReadData(byter.NewLEByter(data))
 
-	splitObjects(node, func(writer *OBJWriter, meshNode *objects.DFC3DStaticMeshNode) {
+	splitObjects(node, func(writer *OBJBuilder, mtlBuilder *MTLBuilder, meshNode *objects.DFC3DStaticMeshNode) {
 		err := ioutil.WriteFile(
 			filepath.Join(
 				destPath,
@@ -80,9 +111,10 @@ func Split(pathString string, destPath string) {
 	}
 }
 
-func splitObjects(node objects.DRObject, f func(writer *OBJWriter, meshNode *objects.DFC3DStaticMeshNode)) {
+func splitObjects(node objects.DRObject, f func(writer *OBJBuilder, mtlBuilder *MTLBuilder, meshNode *objects.DFC3DStaticMeshNode)) {
 	for _, child := range node.Children() {
 		objBuilder := NewOBJBuilder()
+		mtlBuilder := NewMTLBuilder()
 
 		fmt.Printf("%d %s\n", child.GetGCObject().ID(), child.GetGCObject().GCLabel)
 
@@ -93,14 +125,16 @@ func splitObjects(node objects.DRObject, f func(writer *OBJWriter, meshNode *obj
 				Values: [16]float32{},
 			})
 
-			f(objBuilder, meshNode)
+			addMaterials(meshNode, objBuilder, mtlBuilder)
+
+			f(objBuilder, mtlBuilder, meshNode)
 		}
 	}
 }
 
 var depth = -1
 
-func extractFromChildren(node objects.DRObject, objBuilder *OBJWriter, matrix types.Matrix324x4) {
+func extractFromChildren(node objects.DRObject, objBuilder *OBJBuilder, mtlBuilder *MTLBuilder, matrix types.Matrix324x4) {
 	//if strings.Contains(node.GetGCObject().GCLabel, "StaticObject") {
 	//matrix = matrix.MultiplyMatrix324x4(node.(*objects.DFC3DNode).Matrix)
 	//}
@@ -125,30 +159,82 @@ func extractFromChildren(node objects.DRObject, objBuilder *OBJWriter, matrix ty
 				matrix.Values[2],
 			}}
 
-			objBuilder.WriteObject(mesh.GetGCObject().GCLabel)
-
 			addMeshToObj(objBuilder, mesh, subMatrix)
+			addMaterials(mesh, objBuilder, mtlBuilder)
 		} else if mesh, ok := object.(*objects.DFC3DNode); ok {
-			extractFromChildren(mesh, objBuilder, matrix)
+			extractFromChildren(mesh, objBuilder, mtlBuilder, matrix)
 		}
 	}
 
 	depth--
 }
 
-func addMeshToObj(objBuilder *OBJWriter, mesh *objects.DFC3DStaticMeshNode, matrix types.Matrix324x4) {
-	//offset := datatypes.Vector3Float32{
-	//	X: (mesh.MaxBounds.X-mesh.MinBounds.X)/2.0 + mesh.MinBounds.X,
-	//	Y: (mesh.MaxBounds.Y-mesh.MinBounds.Y)/2.0 + mesh.MinBounds.Y,
-	//	Z: (mesh.MaxBounds.Z-mesh.MinBounds.Z)/2.0 + mesh.MinBounds.Z,
+func addMaterials(mesh *objects.DFC3DStaticMeshNode, objBuilder *OBJBuilder, mtlBuilder *MTLBuilder) {
+	for _, materialRef := range mesh.Materials {
+		material := createMaterial(materialRef, objBuilder, mtlBuilder)
+		//addMaterialToObj(material)
+		gosucks.VAR(material)
+	}
+}
+
+func createMaterial(ref objects.DFCMeshMaterialRef, objBuilder *OBJBuilder, mtlBuilder *MTLBuilder) string {
+	matFilePath := filepath.Join(basePath, ref.Name+".mat")
+
+	drConfig, err := configparser.ParseAllFilesToDRConfig([]string{matFilePath}, basePath)
+
+	gosucks.VAR(drConfig)
+
+	if err != nil {
+		panic(err)
+	}
+
+	//The options for the map_Kd statement are listed below.  These options
+	//are described in detail in "Options for texture map statements" on page
+	//5-18.
+	//
+	// 	-blendu on | off
+	// 	-blendv on | off
+	// 	-cc on | off
+	// 	-clamp on | off
+	// 	-mm base gain
+	// 	-o u v w
+	// 	-s u v w
+	// 	-t u v w
+	// 	-texres value
+	if !mtlBuilder.HasMaterial(ref.Name) {
+		mtlBuilder.WriteNewMaterial(ref.Name)
+		for childName, childGroup := range drConfig.Classes.Children["material"].Entities[0].Children {
+			if childName != "texture" {
+				panic(fmt.Sprintf("unknown child %s", childName))
+			}
+
+			for _, texture := range childGroup.Entities {
+				textureFileName := texture.Properties["Filename"] + ".dds"
+				mtlBuilder.WriteNewTexture(ref.Name, MTLTexture{
+					Type:     MTLTextureTypeDiffuse,
+					Filename: textureFileName,
+				})
+			}
+		}
+		//map_Kd -s 1 1 1 -o 0 0 0 -mm 0 1 chrome.mpc
+	}
+
+	return ""
+}
+
+func addMeshToObj(objBuilder *OBJBuilder, mesh *objects.DFC3DStaticMeshNode, matrix types.Matrix324x4) {
+	//for _, materialRef := range mesh.Materials {
+	//	gosucks.VAR(materialRef)
 	//}
+
+	fmt.Println(mesh.GCLabel)
+	fmt.Println(len(mesh.Materials))
+
+	objBuilder.WriteUseMaterial(mesh.Materials[0])
+
+	objBuilder.WriteObject(mesh.GetGCObject().GCLabel)
+
 	for _, vert := range mesh.Verts {
-		//offset := mesh.Center
-
-		//objBuilder.WriteVertSwizzle(vert.Sub(offset))
-		//objBuilder.WriteVert(vert.Sub(offset))
-		//objBuilder.WriteVert(vert)
-
 		vert.X += matrix.Values[0]
 		vert.Y += matrix.Values[1]
 		vert.Z += matrix.Values[2]

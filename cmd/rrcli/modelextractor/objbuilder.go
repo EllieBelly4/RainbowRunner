@@ -1,34 +1,36 @@
 package modelextractor
 
 import (
+	"RainbowRunner/internal/objects"
 	"RainbowRunner/pkg/datatypes"
 	"fmt"
 	"strings"
 )
 
-type OBJWriter struct {
+type OBJBuilder struct {
+	header         strings.Builder
 	body           strings.Builder
 	vertsThisModel int
 	baseFaceIndex  int
 }
 
-func (w *OBJWriter) WriteVert(vert datatypes.Vector3Float32) {
+func (w *OBJBuilder) WriteVert(vert datatypes.Vector3Float32) {
 	w.body.WriteString(fmt.Sprintf("v %f %f %f\n", vert.X, vert.Y, vert.Z))
 
 	w.vertsThisModel++
 }
 
-func (w *OBJWriter) WriteVertSwizzle(vert datatypes.Vector3Float32) {
+func (w *OBJBuilder) WriteVertSwizzle(vert datatypes.Vector3Float32) {
 	w.body.WriteString(fmt.Sprintf("v %f %f %f\n", vert.X, vert.Z, vert.Y))
 
 	w.vertsThisModel++
 }
 
-func (w *OBJWriter) String() string {
-	return w.body.String()
+func (w *OBJBuilder) String() string {
+	return w.header.String() + w.body.String()
 }
 
-func (w *OBJWriter) WriteFace(tri []uint16, withNormals, withUVs bool, flipTriangles bool) {
+func (w *OBJBuilder) WriteFace(tri []uint16, withNormals, withUVs bool, flipTriangles bool) {
 	fullStr := "f "
 
 	if flipTriangles {
@@ -63,20 +65,32 @@ func (w *OBJWriter) WriteFace(tri []uint16, withNormals, withUVs bool, flipTrian
 	w.body.WriteString(fullStr + "\n")
 }
 
-func (w *OBJWriter) WriteNormal(norm datatypes.Vector3Float32) {
+func (w *OBJBuilder) WriteNormal(norm datatypes.Vector3Float32) {
 	w.body.WriteString(fmt.Sprintf("vn %f %f %f\n", norm.X, norm.Y, norm.Z))
 }
 
-func (w *OBJWriter) WriteTextureCoordinates(texcoord datatypes.Vector2Float32) {
+func (w *OBJBuilder) WriteTextureCoordinates(texcoord datatypes.Vector2Float32) {
 	w.body.WriteString(fmt.Sprintf("vt %f %f\n", texcoord.X, texcoord.Y))
 }
 
-func (w *OBJWriter) WriteObject(label string) {
-	w.body.WriteString(fmt.Sprintf("o [%s]\n", label))
+func (w *OBJBuilder) WriteObject(label string) {
+	w.body.WriteString(fmt.Sprintf("o %s\n", label))
 	w.baseFaceIndex += w.vertsThisModel
 	w.vertsThisModel = 0
 }
 
-func NewOBJBuilder() *OBJWriter {
-	return &OBJWriter{}
+func (w *OBJBuilder) WriteIncludeMTL(name string) {
+	w.header.WriteString("mtllib ")
+	w.header.WriteString(name)
+	w.header.WriteString("\n")
+}
+
+func (w *OBJBuilder) WriteUseMaterial(ref objects.DFCMeshMaterialRef) {
+	w.body.WriteString("usemtl ")
+	w.body.WriteString(ref.Name)
+	w.body.WriteRune('\n')
+}
+
+func NewOBJBuilder() *OBJBuilder {
+	return &OBJBuilder{}
 }

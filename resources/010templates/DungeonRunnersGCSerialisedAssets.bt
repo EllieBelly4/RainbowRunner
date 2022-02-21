@@ -54,8 +54,9 @@ typedef struct TriangleGroup {
     uint16 Third <fgcolor=cLtBlue>;
 };
 
-typedef struct SomeValueGroup {
-    uint32 unkgroup <bgcolor=cLtPurple>;
+typedef struct VertexMaterialGroup {
+    uint32 MaterialID <bgcolor=cLtPurple>;
+
     uint32 unkgroup <bgcolor=cPurple>;
     uint32 unkgroup <bgcolor=cLtPurple>;
     uint32 unkgroup <bgcolor=cPurple>;
@@ -115,9 +116,9 @@ typedef struct DFC3DStaticMeshNode {
     uint32 TriangleCount <bgcolor=cLtYellow>;
     TriangleGroup Triangles[TriangleCount/3] <bgcolor=cSilver>;
 
-    uint32 SomeValueGroupCount;
+    uint32 VertexMaterialGroupCount;
     
-    SomeValueGroup SomeValues[SomeValueGroupCount];
+    VertexMaterialGroup VertexMaterialGroups[VertexMaterialGroupCount];
     
     Vector3 MinBounds;
     Vector3 MaxBounds;

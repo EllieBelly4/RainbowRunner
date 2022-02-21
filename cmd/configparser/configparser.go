@@ -3067,39 +3067,6 @@ var weaponFiles = []string{
 }
 
 func main() {
-	//parseFile("D:\\Work\\dungeon-runners\\666 dumps\\tutorial_loot_1w.txt")
-	successfulParses = []string{
-		//"D:\\Work\\dungeon-runners\\666 dumps\\PlatePAL.txt",
-		//"D:\\Work\\dungeon-runners\\666 dumps\\BaseArmorClasses.txt",
-		//"D:\\Work\\dungeon-runners\\666 dumps\\ChainBoots3PAL.txt",
-		"C:\\Users\\Sophie\\go\\src\\RainbowRunner\\resources\\Configs\\ChainBoots3PAL.txt",
-	}
-
-	//successfulParses = make([]string, 0, 1024)
-
-	//reg := regexp.MustCompile("[0-9]PAL.txt")
-
-	successfulParses = armourFiles
-	successfulParses = weaponFiles
-
-	//filepath.Walk("D:\\Work\\dungeon-runners\\666 dumps", func(path string, info os.FileInfo, err error) error {
-	//	if !listContains(successfulParses, path) {
-	//		return nil
-	//	}
-	//
-	//	//if !reg.MatchString(path) {
-	//	//	return nil
-	//	//}
-	//
-	//	successfulParses = append(successfulParses, path)
-	//
-	//	return nil
-	//})
-
-	//successfulParses = []string{
-	//	"D:\\Work\\dungeon-runners\\666 dumps\\PlateArmor1PAL.txt",
-	//}
-
 	all, err := configparser.ParseAllFilesToDRConfig(
 		armourFiles,
 		"D:\\Work\\dungeon-runners\\666 dumps",
@@ -3111,14 +3078,9 @@ func main() {
 		panic(err)
 	}
 
-	//fmt.Printf("%s", string(data))
-
 	err = ioutil.WriteFile("resources/Dumps/generated/test_armour.json", data, 0774)
 
 	if err != nil {
 		panic(err)
 	}
-
-	//parseAllFiles(armourFiles, "resources/Dumps/generated/armourtest.json")
-	//parseAllFiles(weaponFiles, "resources/Dumps/generated/weapons.json")
 }

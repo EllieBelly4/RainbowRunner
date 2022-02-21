@@ -103,6 +103,11 @@ func extractModelsForObjects(entities []struct {
 			continue
 		}
 
+		// TODO remove
+		if entity.Name != "Townston_tier_3" {
+			continue
+		}
+
 		if entity.Children == nil {
 			continue
 		}

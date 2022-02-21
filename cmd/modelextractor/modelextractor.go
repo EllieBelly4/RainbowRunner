@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path"
+	"path/filepath"
 	"regexp"
 	"strings"
 )
@@ -34,6 +35,9 @@ func main() {
 	//	//"D:\\Work\\dungeon-runners\\666 dumps new\\throne.3dnode",
 	//}
 
+	//configDumpPath := "resources/Dumps/generated/finalconf.json"
+	//modelextractor.LoadConfig(configDumpPath)
+
 	sourceDir := "D:\\Work\\dungeon-runners\\666 dumps new"
 	prefix := "Townston_graveyard"
 	fileType := ".3dnode"
@@ -46,6 +50,7 @@ func main() {
 	outputPath = strings.ReplaceAll(outputPath, "\\", "/")
 
 	objBuilder := modelextractor.NewOBJBuilder()
+	mtlBuilder := modelextractor.NewMTLBuilder()
 
 	pattern := regexp.MustCompile("^" + prefix + ".*" + fileType + "$")
 
@@ -57,15 +62,15 @@ func main() {
 		fmt.Printf("Extracting from %s\n", file.Name())
 
 		filePathFull := strings.ReplaceAll(path.Join(sourceDir, file.Name()), "\\", "/")
-		modelextractor.Extract(filePathFull, objBuilder)
+		modelextractor.Extract(filePathFull, objBuilder, mtlBuilder)
 	}
 
 	//fileNameWithoutExt := strings.Split(path.Base(pathString), ".")[0]
-	outputDir := fmt.Sprintf("%s", outputPath)
+	outputDir := filepath.Join(fmt.Sprintf("%s", outputPath), prefix+"_combined")
 
 	if _, err := os.Stat(outputDir); err != nil {
 		if errors.Is(err, os.ErrNotExist) {
-			err := os.Mkdir(outputDir, os.ModeDir)
+			err := os.MkdirAll(outputDir, os.ModeDir)
 
 			if err != nil {
 				panic(err)
@@ -75,10 +80,33 @@ func main() {
 		}
 	}
 
-	fileName := fmt.Sprintf("%s_combined.obj", prefix)
-	outputFullPath := fmt.Sprintf("%s/%s", outputDir, fileName)
-	err = ioutil.WriteFile(outputFullPath, []byte(objBuilder.String()), os.ModePerm)
+	objFileName := fmt.Sprintf("%s_combined.obj", prefix)
+	mtlFileName := fmt.Sprintf("%s.mtl", prefix)
+
+	objBuilder.WriteIncludeMTL(mtlFileName)
+
+	fullOuputOBJFilePath := fmt.Sprintf("%s/%s", outputDir, objFileName)
+	err = ioutil.WriteFile(fullOuputOBJFilePath, []byte(objBuilder.String()), os.ModePerm)
 	if err != nil {
 		panic(err)
+	}
+
+	fullOuputMTLFilePath := fmt.Sprintf("%s/%s", outputDir, mtlFileName)
+	err = ioutil.WriteFile(fullOuputMTLFilePath, []byte(mtlBuilder.String()), os.ModePerm)
+
+	for _, textureFilename := range mtlBuilder.TextureFilenames() {
+		textureFullPath := filepath.Join(sourceDir, textureFilename)
+
+		textureData, err := ioutil.ReadFile(textureFullPath)
+
+		if err != nil {
+			panic(err)
+		}
+
+		err = ioutil.WriteFile(fmt.Sprintf("%s/%s", outputDir, textureFilename), textureData, 0755)
+
+		if err != nil {
+			panic(err)
+		}
 	}
 }
