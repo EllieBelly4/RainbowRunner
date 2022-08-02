@@ -135,9 +135,6 @@ func splitObjects(node objects.DRObject, f func(writer *OBJBuilder, mtlBuilder *
 var depth = -1
 
 func extractFromChildren(node objects.DRObject, objBuilder *OBJBuilder, mtlBuilder *MTLBuilder, matrix types.Matrix324x4) {
-	//if strings.Contains(node.GetGCObject().GCLabel, "StaticObject") {
-	//matrix = matrix.MultiplyMatrix324x4(node.(*objects.DFC3DNode).Matrix)
-	//}
 	depth++
 
 	if d3Node, ok := node.(*objects.DFC3DNode); ok {
@@ -146,10 +143,6 @@ func extractFromChildren(node objects.DRObject, objBuilder *OBJBuilder, mtlBuild
 		matrix.Values[1] += newMatrix.Values[1]
 		matrix.Values[2] += newMatrix.Values[2]
 	}
-
-	//pad := strings.Repeat(" ", depth)
-	//
-	//fmt.Printf("%smatrix position %f, %f, %f\n", pad, matrix.Values[0], matrix.Values[1], matrix.Values[2])
 
 	for _, object := range node.Children() {
 		if mesh, ok := object.(*objects.DFC3DStaticMeshNode); ok {
@@ -230,7 +223,9 @@ func addMeshToObj(objBuilder *OBJBuilder, mesh *objects.DFC3DStaticMeshNode, mat
 	fmt.Println(mesh.GCLabel)
 	fmt.Println(len(mesh.Materials))
 
-	objBuilder.WriteUseMaterial(mesh.Materials[0])
+	if len(mesh.Materials) > 0 {
+		objBuilder.WriteUseMaterial(mesh.Materials[0])
+	}
 
 	objBuilder.WriteObject(mesh.GetGCObject().GCLabel)
 

@@ -6,6 +6,7 @@ import (
 	"RainbowRunner/cmd/rrcli/modelextractor"
 	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/gosucks"
+	"RainbowRunner/pkg/datatypes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -31,7 +32,8 @@ type StaticObjectDump struct {
 func main() {
 	filePath := "resources/Dumps/Objects/townston_staticobjects.json"
 	rootPath := "D:\\Work\\dungeon-runners\\666 dumps new"
-	destPath := "E:\\Unity\\RainbowRunnerGameBackend\\Assets\\Resources\\ModelDumps\\Townston"
+	//destPath := "E:\\Unity\\RainbowRunnerGameBackend\\Assets\\Resources\\ModelDumps\\Townston"
+	destPath := "D:\\Work\\dungeon-runners\\models"
 
 	file, err := os.Open(filePath)
 
@@ -73,14 +75,19 @@ func main() {
 		panic(err)
 	}
 
-	extractModelsForObjects(allEntities, rootPath, destPath)
+	extractModelsForObjects(allEntities, rootPath, destPath, false)
 }
 
 func extractModelsForObjects(entities []struct {
 	string
 	*database.DRClass
-}, rootPath string, destPath string) {
+}, rootPath string, destPath string, split bool) {
 	useCollisionModel := false
+
+	entityFileName := "static_town"
+
+	objBuilder := modelextractor.NewOBJBuilder()
+	mtlBuilder := modelextractor.NewMTLBuilder()
 
 	childName := "visual"
 	propName := "Visual"
@@ -100,11 +107,6 @@ func extractModelsForObjects(entities []struct {
 			entity.Name == "elmforest_lightray_1" ||
 			entity.Name == "fireflies_2" {
 			fmt.Printf("skipping %s because we can't parse the 3dnode yet\n", entity.Name)
-			continue
-		}
-
-		// TODO remove
-		if entity.Name != "Townston_tier_3" {
 			continue
 		}
 
@@ -140,22 +142,27 @@ func extractModelsForObjects(entities []struct {
 			continue
 		}
 
-		//objBuilder := modelextractor.NewOBJBuilder()
+		if split {
+			modelextractor.Split(filePath, filepath.Join(destPath, strings.ReplaceAll(entityGCType, ".", "-")))
+		} else {
+			dumpedPos := entity.CustomProperties["DumpedPosition"].(StaticObjectDumpLocation)
+			objBuilder.SetModelOffset(datatypes.Vector3Float32{
+				X: dumpedPos.X,
+				Y: dumpedPos.Y,
+				Z: dumpedPos.Z,
+			}.DivideByFloat32(10))
+			modelextractor.Extract(filePath, objBuilder, mtlBuilder)
+		}
 
-		//modelextractor.Extract(filePath, objBuilder)
-		entityFileName := strings.ReplaceAll(entityGCType, ".", "-")
+		gosucks.VAR(entityGCType, entityFileName, mtlBuilder, objBuilder)
+	}
 
-		modelextractor.Split(filePath, filepath.Join(destPath, entityFileName))
+	if !split {
+		err := ioutil.WriteFile(path.Join(destPath, entityFileName+".obj"), []byte(objBuilder.String()), 0755)
 
-		gosucks.VAR(entityGCType)
-
-		//entityFileName := strings.ReplaceAll(entityGCType, ".", "-")
-
-		//err := ioutil.WriteFile(path.Join(destPath, entityFileName+".obj"), []byte(objBuilder.String()), 0755)
-		//
-		//if err != nil {
-		//	panic(err)
-		//}
+		if err != nil {
+			panic(err)
+		}
 	}
 }
 
@@ -184,6 +191,12 @@ func getDRClassesForStaticObjects(dump []StaticObjectDump, config *configparser.
 		entity := gcObject[0].Entities[0]
 
 		entity.Name = gcObject[0].Name
+
+		if entity.CustomProperties == nil {
+			entity.CustomProperties = make(map[string]interface{})
+		}
+
+		entity.CustomProperties["DumpedPosition"] = dumpObject.Position
 
 		allEntities = append(allEntities, struct {
 			string

@@ -18,10 +18,11 @@ type DRClassProperties map[string]string
 var quoteRemoveRegex = regexp.MustCompile("^[\"']|[\"']$")
 
 type DRClass struct {
-	Name       string                        `json:"name,omitempty"`
-	Extends    string                        `json:"extends,omitempty"`
-	Properties DRClassProperties             `json:"properties,omitempty"`
-	Children   map[string]*DRClassChildGroup `json:"children,omitempty"`
+	Name             string                        `json:"name,omitempty"`
+	Extends          string                        `json:"extends,omitempty"`
+	Properties       DRClassProperties             `json:"properties,omitempty"`
+	Children         map[string]*DRClassChildGroup `json:"children,omitempty"`
+	CustomProperties map[string]interface{}        `json:"customProperties,omitempty"`
 }
 
 func (p *DRClassProperties) StringVal(key string) string {
@@ -79,9 +80,10 @@ func (c *DRClass) Slot() types.EquipmentSlot {
 
 func NewDRClass(className string) *DRClass {
 	return &DRClass{
-		Name:       className,
-		Properties: make(map[string]string),
-		Children:   make(map[string]*DRClassChildGroup),
+		Name:             className,
+		Properties:       make(map[string]string),
+		Children:         make(map[string]*DRClassChildGroup),
+		CustomProperties: make(map[string]interface{}),
 	}
 }
 

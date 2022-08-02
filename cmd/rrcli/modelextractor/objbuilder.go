@@ -12,15 +12,20 @@ type OBJBuilder struct {
 	body           strings.Builder
 	vertsThisModel int
 	baseFaceIndex  int
+	positionOffset datatypes.Vector3Float32
 }
 
 func (w *OBJBuilder) WriteVert(vert datatypes.Vector3Float32) {
+	vert = vert.Add(w.positionOffset)
+
 	w.body.WriteString(fmt.Sprintf("v %f %f %f\n", vert.X, vert.Y, vert.Z))
 
 	w.vertsThisModel++
 }
 
 func (w *OBJBuilder) WriteVertSwizzle(vert datatypes.Vector3Float32) {
+	vert = vert.Add(w.positionOffset)
+
 	w.body.WriteString(fmt.Sprintf("v %f %f %f\n", vert.X, vert.Z, vert.Y))
 
 	w.vertsThisModel++
@@ -89,6 +94,10 @@ func (w *OBJBuilder) WriteUseMaterial(ref objects.DFCMeshMaterialRef) {
 	w.body.WriteString("usemtl ")
 	w.body.WriteString(ref.Name)
 	w.body.WriteRune('\n')
+}
+
+func (w *OBJBuilder) SetModelOffset(offset datatypes.Vector3Float32) {
+	w.positionOffset = offset
 }
 
 func NewOBJBuilder() *OBJBuilder {
