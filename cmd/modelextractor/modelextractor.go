@@ -12,6 +12,8 @@ import (
 	"strings"
 )
 
+var quoteRegex = regexp.MustCompile("[\"']")
+
 func main() {
 	//singleModel := true
 	outputPath := os.Args[1]
@@ -39,7 +41,8 @@ func main() {
 	//modelextractor.LoadConfig(configDumpPath)
 
 	sourceDir := "D:\\Work\\dungeon-runners\\666 dumps new"
-	prefix := "Townston_graveyard"
+	//prefix := "Townston_graveyard"
+	prefix := "Townston_"
 	fileType := ".3dnode"
 	allFiles, err := os.ReadDir(sourceDir)
 
@@ -95,6 +98,8 @@ func main() {
 	err = ioutil.WriteFile(fullOuputMTLFilePath, []byte(mtlBuilder.String()), os.ModePerm)
 
 	for _, textureFilename := range mtlBuilder.TextureFilenames() {
+		textureFilename = quoteRegex.ReplaceAllString(textureFilename, "")
+
 		textureFullPath := filepath.Join(sourceDir, textureFilename)
 
 		textureData, err := ioutil.ReadFile(textureFullPath)
