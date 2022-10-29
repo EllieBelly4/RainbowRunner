@@ -39,3 +39,10 @@ WorldEntity::setPosition
 .text:004D32A2 8B 56 08                      mov     edx, [esi+8]
 .text:004D32A5 57                            push    edi
 .text:004D32A6 89 97 98 00 00 00             mov     [edi+98h], edx
+
+## back again
+
+.text:004D0D80 ; void __thiscall World::PopulateStaticObjectPlaceholders(#360 *__hidden this, int)
+.text:004D0D80 ?PopulateStaticObjectPlaceholders@World@@QAEXH@Z proc near
+
+"placeholderstatics"
