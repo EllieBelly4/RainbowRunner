@@ -2,11 +2,12 @@
 
 Private server + tools for Dungeon Runners.
 
-This is very much a work in progress and is not close to completion and definitely not user friendly.
+This is very much a work in progress and is not close to completion and definitely not user-friendly.
+
 ## Requirements
 
-* Golang >=1.18 - Server + CLI tools
-* [ANTLR](https://www.antlr.org/index.html) - Generating config parser from language file([antlr/DRConfig.g4]())
+* Golang >=1.19 - Server + CLI tools
+* [ANTLR](https://www.antlr.org/index.html) - Generating config parser from language file([antlr/DRConfig.g4](antlr/DRConfig.g4))
 
 ## Contributing
 
