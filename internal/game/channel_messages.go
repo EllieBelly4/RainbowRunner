@@ -24,6 +24,7 @@ var channelMessageHandlers = map[messages.Channel]ChannelMessageHandler{
 	messages.GroupChannel:        handleGroupChannelMessages,
 	messages.ZoneChannel:         handleZoneChannelMessages,
 	messages.UserChannel:         handleUserChannelMessages,
+	messages.ChatChannel:         handleChatChannelMessages,
 }
 
 func handleUnk2ChannelMessages(conn *connections.RRConn, msgType byte, reader *byter.Byter) error {
