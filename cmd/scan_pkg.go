@@ -15,7 +15,7 @@ import (
 )
 
 func main() {
-	dest := "D:\\Work\\dungeon-runners\\666 dumps new"
+	dest := "D:\\Work\\dungeon-runners\\666_dumps_test2"
 
 	pki, err := ioutil.ReadFile("D:\\Work\\dungeon-runners\\game_decompressed.pki")
 
@@ -23,7 +23,7 @@ func main() {
 		panic(err)
 	}
 
-	pkg, err := os.Open("E:\\Games\\DungeonRunners v666\\game.pkg")
+	pkg, err := os.Open("F:\\Games\\DungeonRunners v666\\game.pkg")
 
 	if err != nil {
 		panic(err)
@@ -137,11 +137,6 @@ func main() {
 		}
 
 		fileType, ext := files.GetExtensionForFile(buf, fileLength)
-
-		if ext != ".txt" {
-			fmt.Println("Skipping " + str)
-			continue
-		}
 
 		if isCompressed {
 			fileType = "Z " + fileType
