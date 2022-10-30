@@ -47,6 +47,11 @@ func handleChatChannelMessages(conn *connections.RRConn, msgType byte, reader *b
 func handleDirectChatMessageSent(player *objects.RRPlayer, conn *connections.RRConn, reader *byter.Byter) error {
 	msg := reader.CString()
 	splitMsg := strings.Split(msg, " ")
+
+	if len(splitMsg) < 2 {
+		return nil
+	}
+
 	targetName := splitMsg[0]
 	message := splitMsg[1]
 
