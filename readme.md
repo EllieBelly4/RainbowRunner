@@ -64,7 +64,7 @@ they will have to be modified directly to change parameters.
 
 #### [cmd/rrcli](cmd/rrcli) - Slightly more final CLI interface
 
-To run all in here commands use: `go run cmd/rrcli`
+To run all commands in here use: `go run cmd/rrcli`
 
 * `dump` - Parses all Dungeon Runners configuration files in a directory and outputs a compiled JSON that is readable by
   RainbowRunner, use after you run `cmd/scan_pkg.go` to extract the config files.
