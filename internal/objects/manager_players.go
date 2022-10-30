@@ -73,7 +73,22 @@ func (m *PlayerManager) OnDisconnect(id int) {
 	delete(Players.Players, id)
 }
 
+func (m *PlayerManager) GetPlayerByCharacterName(name string) *RRPlayer {
+	m.RLock()
+	defer m.RUnlock()
+	for _, player := range m.Players {
+		if strings.ToLower(player.CurrentCharacter.Name) == strings.ToLower(name) {
+			return player
+		}
+	}
+
+	return nil
+}
+
 func (m *PlayerManager) GetPlayer(id uint16) *RRPlayer {
+	m.RLock()
+	defer m.RUnlock()
+
 	return m.Players[int(id)]
 }
 

@@ -6,21 +6,94 @@ import (
 	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/objects"
 	"RainbowRunner/pkg/byter"
+	"errors"
+	"fmt"
+	"regexp"
+	"strings"
 )
 
 func handleChatChannelMessages(conn *connections.RRConn, msgType byte, reader *byter.Byter) error {
-	if msgType == 0x02 ||
-		msgType == 0x03 ||
-		msgType == 0x04 ||
-		msgType == 0x0B ||
-		msgType == 0x0C {
-		return handleIndirectChatMessageSent(conn, reader, msgType)
+	sendingPlayer := objects.Players.GetPlayer(uint16(conn.GetID()))
+
+	if sendingPlayer == nil {
+		return errors.New(fmt.Sprintf("could not find player sending chat message with ID: %d", conn.GetID()))
+	}
+
+	msgChannel := ClientMessageChannelSource(msgType)
+
+	/**
+	0x01 - World
+	0x02 - Zone
+	0x03 - Group
+	0x04 - Tell
+	0x05 - Market
+	0x06 - Noob
+	0x07 - PVP
+	*/
+	if msgChannel == ClientMessageChannelSourceZone ||
+		msgChannel == ClientMessageChannelSourceGroup ||
+		msgChannel == ClientMessageChannelSourceMarket ||
+		msgChannel == ClientMessageChannelSourceWorld ||
+		msgChannel == ClientMessageChannelSourceNoob ||
+		msgChannel == ClientMessageChannelSourcePVP {
+		return handleIndirectChatMessageSent(sendingPlayer, conn, reader, msgChannel)
+	} else if msgChannel == ClientMessageChannelSourceTell {
+		return handleDirectChatMessageSent(sendingPlayer, conn, reader)
 	} else {
 		return UnhandledChannelMessageError
 	}
 }
 
-func handleIndirectChatMessageSent(conn *connections.RRConn, reader *byter.Byter, channel byte) error {
+func handleDirectChatMessageSent(player *objects.RRPlayer, conn *connections.RRConn, reader *byter.Byter) error {
+	msg := reader.CString()
+	splitMsg := strings.Split(msg, " ")
+	targetName := splitMsg[0]
+	message := splitMsg[1]
+
+	quoteRegex := regexp.MustCompile("['\"]")
+
+	targetName = quoteRegex.ReplaceAllString(targetName, "")
+
+	target := objects.Players.GetPlayerByCharacterName(targetName)
+
+	if target == nil {
+		return sendUndeliveredMessageNotification(conn, UndeliveredMessageNotificationReasonTargetNotFound)
+	}
+
+	err := sendTell(player, message, target)
+
+	if err != nil {
+		return sendUndeliveredMessageNotification(conn, UndeliveredMessageNotificationReasonNoReason)
+	}
+
+	return nil
+}
+
+func sendTell(player *objects.RRPlayer, msg string, target *objects.RRPlayer) error {
+	body := byter.NewLEByter(make([]byte, 0, 1024))
+	body.WriteByte(byte(messages.ChatChannel))
+	body.WriteByte(0x00) // Chat Message
+	body.WriteByte(byte(MessageChannelSourceTell))
+	body.WriteByte(0x02) // Unk - must not be 0
+	// Sender name
+	body.WriteCString(player.CurrentCharacter.Name)
+	body.WriteCString(msg)
+	helpers.WriteCompressedASimple(target.Conn, body)
+
+	body.Clear()
+	body.WriteByte(byte(messages.ChatChannel))
+	body.WriteByte(0x00) // Chat Message
+	body.WriteByte(byte(MessageChannelSourceTell2))
+	body.WriteByte(0x01) // Unk - must not be 0
+	// Sender name
+	body.WriteCString(player.CurrentCharacter.Name)
+	body.WriteCString(msg)
+	helpers.WriteCompressedASimple(player.Conn, body)
+
+	return nil
+}
+
+func handleIndirectChatMessageSent(player *objects.RRPlayer, conn *connections.RRConn, reader *byter.Byter, channel ClientMessageChannelSource) error {
 	msg := reader.CString()
 
 	// 0x00 Looks like message reading
@@ -36,16 +109,23 @@ func handleIndirectChatMessageSent(conn *connections.RRConn, reader *byter.Byter
 	// 0x02 Undelivered message notification
 	// 0x03
 
-	err := sendMessageToTargets(msg, objects.Players.GetPlayers())
+	severChannelSource, err := channel.ToMessageChannelSource()
 
 	if err != nil {
-		return sendUndeliveredMessageNotification(conn)
+		sendUndeliveredMessageNotification(conn, UndeliveredMessageNotificationReasonNoReason)
+		return err
+	}
+
+	err = sendMessageToTargets(player, msg, severChannelSource, objects.Players.GetPlayers())
+
+	if err != nil {
+		return sendUndeliveredMessageNotification(conn, UndeliveredMessageNotificationReasonNoReason)
 	}
 
 	return nil
 }
 
-func sendUndeliveredMessageNotification(conn *connections.RRConn) error {
+func sendUndeliveredMessageNotification(conn *connections.RRConn, reason UndeliveredMessageNotificationReasonString) error {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.ChatChannel))
 	body.WriteByte(0x02) // Undelivered message notification
@@ -65,34 +145,24 @@ func sendUndeliveredMessageNotification(conn *connections.RRConn) error {
 	0x08 'Target Not Found'
 	0x09 'Chat System Unavailable'
 	*/
-	body.WriteByte(0x09)
+	body.WriteByte(byte(reason))
 
 	helpers.WriteCompressedASimple(conn, body)
 
 	return nil
 }
 
-func sendMessageToTargets(msg string, players []*objects.RRPlayer) error {
+func sendMessageToTargets(sendingPlayer *objects.RRPlayer, msg string, channel MessageChannelSource, players []*objects.RRPlayer) error {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.ChatChannel))
 	body.WriteByte(0x00) // Chat Message
 
-	// 0x02 - World
-	// 0x03 - Local
-	// 0x04 - Group
-	// 0x05 - Tell
-	// 0x06 - Part of Tell? Sends back "To {NAME}" e.g. "To Testy" in pink
-	// 0x0B - Market
-	// 0x0C - Noob
-	// 0x0D - Global Announcement
-	messageChatChannelSource := byte(0x0C)
+	body.WriteByte(byte(channel))
 
-	body.WriteByte(messageChatChannelSource) // Unk
-
-	if messageChatChannelSource != 0x0D {
-		body.WriteByte(0x00) // Unk
+	if channel != MessageChannelSourceGlobalAnnouncement {
+		body.WriteByte(0x00) // Unk, if not 0 then text colour is white
 		// Sender name
-		body.WriteCString("Testy")
+		body.WriteCString(sendingPlayer.CurrentCharacter.Name)
 	}
 
 	body.WriteCString(msg)
