@@ -66,5 +66,5 @@ func main() {
 
 	outFile.Write(buffer[:totalBytes])
 
-	ioutil.WriteFile("resources/Dumps/010/game_pkg_gcdictionary.dict_uncompressed_body", buffer[0:totalBytes], 755)
+	//ioutil.WriteFile("resources/Dumps/010/game_pkg_gcdictionary.dict_uncompressed_body", buffer[0:totalBytes], 755)
 }
