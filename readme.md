@@ -73,6 +73,7 @@ To run all in here commands use: `go run cmd/rrcli`
   categories: [resources/Dumps/generated/drcategories.json](resources/Dumps/generated/drcategories.json)
 * `categorise` - Parse the dumped configuration from `dump` and generate the category config
   file ([resources/Dumps/generated/drcategories.json](resources/Dumps/generated/drcategories.json)).
+* `models convert` - Convert models from `.3dnode` to `.obj` and `.mtl`
 
 ## Contributing
 
