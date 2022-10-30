@@ -16,6 +16,20 @@ type MTLTexture struct {
 	Filename string
 }
 
+type MTLColourType string
+
+const (
+	MTLColourTypeDiffuse            = "Kd"
+	MTLColourTypeSpecular           = "Ks"
+	MTLColourTypeAmbient            = "Ka"
+	MTLColourTypeTransmissionFilter = "Tf"
+)
+
+type MTLColour struct {
+	Type    MTLColourType
+	R, G, B float32
+}
+
 type MTLBuilder struct {
 	body         strings.Builder
 	materialDefs map[string]*strings.Builder
@@ -75,6 +89,37 @@ func (b *MTLBuilder) TextureFilenames() []string {
 	}
 
 	return list
+}
+
+func (b *MTLBuilder) WriteNewColour(materialName string, colour MTLColour) {
+	if colour.Type == "" {
+		panic("no colour type provided")
+	}
+
+	builder := b.materialDefs[materialName]
+
+	builder.WriteString(string(colour.Type))
+	builder.WriteRune(' ')
+
+	builder.WriteString(fmt.Sprintf("%f", colour.R))
+	builder.WriteRune(' ')
+
+	builder.WriteString(fmt.Sprintf("%f", colour.G))
+	builder.WriteRune(' ')
+
+	builder.WriteString(fmt.Sprintf("%f", colour.B))
+	builder.WriteRune(' ')
+
+	builder.WriteRune('\n')
+}
+
+func (b *MTLBuilder) WriteNewAlpha(materialName string, f float32) {
+	builder := b.materialDefs[materialName]
+
+	builder.WriteString("d ")
+
+	builder.WriteString(fmt.Sprintf("%f", f))
+	builder.WriteRune('\n')
 }
 
 func NewMTLBuilder() *MTLBuilder {

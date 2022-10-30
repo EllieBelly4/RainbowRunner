@@ -2,37 +2,22 @@ package modelextractor
 
 import (
 	"RainbowRunner/cmd/configparser/configparser"
-	"RainbowRunner/cmd/rrcli/configurator"
+	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/gosucks"
 	"RainbowRunner/internal/objects"
 	"RainbowRunner/internal/types"
 	"RainbowRunner/pkg/byter"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"sort"
+	"strconv"
 )
 
 var basePath string
-var config *configparser.DRConfig
-
-func LoadConfig(configPath string) {
-	fmt.Println("loading dumped config")
-
-	var err error
-	config, err = configurator.LoadFromDumpedConfigFile(configPath)
-
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println("config load complete")
-}
-
-func SetConfig(drConfig *configparser.DRConfig) {
-	config = drConfig
-}
 
 func Extract(pathString string, objBuilder *OBJBuilder, mtlBuilder *MTLBuilder) {
 	setBasePath(pathString)
@@ -43,13 +28,17 @@ func Extract(pathString string, objBuilder *OBJBuilder, mtlBuilder *MTLBuilder) 
 		panic(err)
 	}
 
-	data, err := ioutil.ReadAll(file)
+	data, err := io.ReadAll(file)
 
 	if err != nil {
 		panic(err)
 	}
 
 	node := objects.ReadData(byter.NewLEByter(data))
+
+	if node == nil {
+		return
+	}
 
 	extractFromChildren(node, objBuilder, mtlBuilder, types.Matrix324x4{
 		Values: [16]float32{},
@@ -164,16 +153,22 @@ func extractFromChildren(node objects.DRObject, objBuilder *OBJBuilder, mtlBuild
 
 func addMaterials(mesh *objects.DFC3DStaticMeshNode, objBuilder *OBJBuilder, mtlBuilder *MTLBuilder) {
 	for _, materialRef := range mesh.Materials {
-		material := createMaterial(materialRef, objBuilder, mtlBuilder)
-		//addMaterialToObj(material)
-		gosucks.VAR(material)
+		err := createMaterial(materialRef, objBuilder, mtlBuilder)
+
+		if err != nil {
+			fmt.Printf("could not add material %s: %s\n", materialRef.Name, err.Error())
+		}
 	}
 }
 
-func createMaterial(ref objects.DFCMeshMaterialRef, objBuilder *OBJBuilder, mtlBuilder *MTLBuilder) string {
+func createMaterial(ref objects.DFCMeshMaterialRef, objBuilder *OBJBuilder, mtlBuilder *MTLBuilder) error {
 	matFilePath := filepath.Join(basePath, ref.Name+".mat")
 
 	drConfig, err := configparser.ParseAllFilesToDRConfig([]string{matFilePath}, basePath)
+
+	if err != nil {
+		return err
+	}
 
 	gosucks.VAR(drConfig)
 
@@ -197,22 +192,79 @@ func createMaterial(ref objects.DFCMeshMaterialRef, objBuilder *OBJBuilder, mtlB
 	if !mtlBuilder.HasMaterial(ref.Name) {
 		mtlBuilder.WriteNewMaterial(ref.Name)
 		for childName, childGroup := range drConfig.Classes.Children["material"].Entities[0].Children {
-			if childName != "texture" {
-				panic(fmt.Sprintf("unknown child %s", childName))
+			if childName == "texture" {
+				for _, texture := range childGroup.Entities {
+					textureFileName := texture.Properties["Filename"] + ".dds"
+					mtlBuilder.WriteNewTexture(ref.Name, MTLTexture{
+						Type:     MTLTextureTypeDiffuse,
+						Filename: textureFileName,
+					})
+				}
+				continue
+			} else if childName == "materialcolor" {
+				for _, colourGroup := range childGroup.Entities {
+					for colourType, colour := range colourGroup.Children {
+						colourProperties := colour.Entities[0].Properties
+
+						var colourTypeEnum MTLColourType
+
+						switch colourType {
+						case "specular":
+							colourTypeEnum = MTLColourTypeSpecular
+						case "diffuse":
+							colourTypeEnum = MTLColourTypeDiffuse
+						case "emissive":
+							colourTypeEnum = MTLColourTypeAmbient
+						default:
+							panic(fmt.Sprintf("unhandled colour type %s", colourType))
+						}
+
+						r := parseColour(colourProperties, "Red")
+						g := parseColour(colourProperties, "Green")
+						b := parseColour(colourProperties, "Blue")
+						a := parseColour(colourProperties, "Alpha")
+
+						if r != nil && g != nil && b != nil {
+							mtlBuilder.WriteNewColour(ref.Name, MTLColour{
+								Type: colourTypeEnum,
+								R:    *r,
+								G:    *g,
+								B:    *b,
+							})
+						}
+
+						if a != nil {
+							mtlBuilder.WriteNewAlpha(ref.Name, *a)
+						}
+					}
+				}
+
+				continue
 			}
 
-			for _, texture := range childGroup.Entities {
-				textureFileName := texture.Properties["Filename"] + ".dds"
-				mtlBuilder.WriteNewTexture(ref.Name, MTLTexture{
-					Type:     MTLTextureTypeDiffuse,
-					Filename: textureFileName,
-				})
-			}
+			panic(fmt.Sprintf("unknown child %s", childName))
+
 		}
 		//map_Kd -s 1 1 1 -o 0 0 0 -mm 0 1 chrome.mpc
 	}
 
-	return ""
+	return nil
+}
+
+func parseColour(colourProperties database.DRClassProperties, property string) *float32 {
+	if rString, ok := colourProperties[property]; ok {
+		val, err := strconv.ParseInt(rString, 10, 32)
+
+		if err != nil {
+			panic(err)
+		}
+
+		result := float32(val) / 255
+
+		return &result
+	}
+
+	return nil
 }
 
 func addMeshToObj(objBuilder *OBJBuilder, mesh *objects.DFC3DStaticMeshNode, matrix types.Matrix324x4) {
@@ -220,12 +272,13 @@ func addMeshToObj(objBuilder *OBJBuilder, mesh *objects.DFC3DStaticMeshNode, mat
 	//	gosucks.VAR(materialRef)
 	//}
 
-	fmt.Println(mesh.GCLabel)
-	fmt.Println(len(mesh.Materials))
+	fmt.Println("adding mesh " + mesh.GCLabel)
 
-	if len(mesh.Materials) > 0 {
-		objBuilder.WriteUseMaterial(mesh.Materials[0])
-	}
+	matGroups := mesh.MaterialGroups
+
+	sort.Slice(matGroups, func(i, j int) bool {
+		return matGroups[i].TriangleIndex < matGroups[j].TriangleIndex
+	})
 
 	objBuilder.WriteObject(mesh.GetGCObject().GCLabel)
 
@@ -249,7 +302,39 @@ func addMeshToObj(objBuilder *OBJBuilder, mesh *objects.DFC3DStaticMeshNode, mat
 		objBuilder.WriteTextureCoordinates(uv)
 	}
 
+	materialGroundIndex := 0
+	currentMaterialGroup := matGroups[materialGroundIndex]
+
+	for _, material := range mesh.Materials {
+		if material.ID == currentMaterialGroup.MaterialID {
+			objBuilder.WriteUseMaterial(material)
+			break
+		}
+	}
+
 	for i := 0; i < len(mesh.Triangles); i += 3 {
 		objBuilder.WriteFace(mesh.Triangles[i:i+3], len(mesh.Normals) > 0, len(mesh.UVs) > 0, true)
+
+		if i == int(currentMaterialGroup.TriangleIndex+currentMaterialGroup.TriangleCount) {
+			materialGroundIndex++
+
+			if materialGroundIndex < len(matGroups) {
+				currentMaterialGroup = matGroups[materialGroundIndex]
+
+				foundMat := false
+
+				for _, material := range mesh.Materials {
+					if material.ID == currentMaterialGroup.MaterialID {
+						objBuilder.WriteUseMaterial(material)
+						foundMat = true
+						break
+					}
+				}
+
+				if !foundMat {
+					fmt.Printf("could not find material with ID %d, ignoring", currentMaterialGroup.MaterialID)
+				}
+			}
+		}
 	}
 }

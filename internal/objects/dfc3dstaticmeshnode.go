@@ -5,19 +5,28 @@ import (
 	"RainbowRunner/pkg/datatypes"
 )
 
+type DFC3DMeshNodeMaterialGroup struct {
+	MaterialID    uint32
+	VertexIndex   uint32
+	VertexCount   uint32
+	TriangleIndex uint32
+	TriangleCount uint32
+}
+
 type DFC3DStaticMeshNode struct {
 	*GCObject
-	Materials []DFCMeshMaterialRef
-	Flags     uint32
-	Verts     []datatypes.Vector3Float32 `json:"-"`
-	Normals   []datatypes.Vector3Float32 `json:"-"`
-	Colours   []datatypes.RGBA32         `json:"-"`
-	UVs       []datatypes.Vector2Float32 `json:"-"`
-	Triangles []uint16                   `json:"-"`
-	Center    datatypes.Vector3Float32
-	MinBounds datatypes.Vector3Float32
-	MaxBounds datatypes.Vector3Float32
-	Angle     float32
+	Materials      []DFCMeshMaterialRef
+	MaterialGroups []DFC3DMeshNodeMaterialGroup
+	Flags          uint32
+	Verts          []datatypes.Vector3Float32 `json:"-"`
+	Normals        []datatypes.Vector3Float32 `json:"-"`
+	Colours        []datatypes.RGBA32         `json:"-"`
+	UVs            []datatypes.Vector2Float32 `json:"-"`
+	Triangles      []uint16                   `json:"-"`
+	Center         datatypes.Vector3Float32
+	MinBounds      datatypes.Vector3Float32
+	MaxBounds      datatypes.Vector3Float32
+	Angle          float32
 }
 
 type DFCMeshMaterialRef struct {
@@ -84,14 +93,18 @@ func (d *DFC3DStaticMeshNode) ReadData(b *byter.Byter) {
 		d.Triangles = append(d.Triangles, b.UInt16())
 	}
 
-	someValueGroupCount := b.UInt32()
+	materialGroupCount := b.UInt32()
 
-	for i := 0; i < int(someValueGroupCount); i++ {
-		b.UInt32() // Unk
-		b.UInt32() // Unk
-		b.UInt32() // Unk
-		b.UInt32() // Unk
-		b.UInt32() // Unk
+	d.MaterialGroups = make([]DFC3DMeshNodeMaterialGroup, 0, materialGroupCount)
+
+	for i := 0; i < int(materialGroupCount); i++ {
+		d.MaterialGroups = append(d.MaterialGroups, DFC3DMeshNodeMaterialGroup{
+			MaterialID:    b.UInt32(),
+			VertexIndex:   b.UInt32(),
+			VertexCount:   b.UInt32(),
+			TriangleIndex: b.UInt32(),
+			TriangleCount: b.UInt32(),
+		})
 	}
 
 	d.MinBounds = b.Vector3Float32() // Min Bounds

@@ -5,6 +5,7 @@ import (
 	"RainbowRunner/internal/database"
 	"fmt"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
+	"os"
 	"strings"
 )
 
@@ -207,6 +208,12 @@ func ParseAllFilesToDRConfig(files []string, rootPath string) (*DRConfig, error)
 	for _, path := range files {
 		//split := strings.Split(path, "\\")
 		//fileName := strings.Split(split[len(split)-1], ".")[0]
+
+		_, err := os.Stat(path)
+
+		if err != nil {
+			return nil, err
+		}
 
 		fmt.Println("Parsing " + path)
 

@@ -57,10 +57,10 @@ typedef struct TriangleGroup {
 typedef struct VertexMaterialGroup {
     uint32 MaterialID <bgcolor=cLtPurple>;
 
-    uint32 unkgroup <bgcolor=cPurple>;
-    uint32 unkgroup <bgcolor=cLtPurple>;
-    uint32 unkgroup <bgcolor=cPurple>;
-    uint32 unkgroup <bgcolor=cLtPurple>;
+    uint32 startVertexIndex <bgcolor=cPurple>;
+    uint32 vertexCount <bgcolor=cLtPurple>;
+    uint32 startTriangleIndex <bgcolor=cPurple>;
+    uint32 triangleCount <bgcolor=cLtPurple>;
 };
 
 typedef struct DFC3DStaticMeshNode {

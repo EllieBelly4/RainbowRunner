@@ -2,6 +2,7 @@ package commands
 
 import (
 	"RainbowRunner/cmd/rrcli/commands/config"
+	"RainbowRunner/cmd/rrcli/commands/models"
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
@@ -13,6 +14,7 @@ var rootCmd = &cobra.Command{
 
 func Init() {
 	config.Init(rootCmd)
+	models.Init(rootCmd)
 }
 
 func Execute() {

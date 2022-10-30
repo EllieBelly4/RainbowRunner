@@ -262,6 +262,15 @@ func ReadData(b *byter.Byter) DRObject {
 	nativeType := b.CString()
 	id := b.UInt32()
 
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("child was not parsed successfully, abandoning readData. parent: %s - id %x\n",
+				nativeType,
+				id,
+			)
+		}
+	}()
+
 	var gcObject DRObject
 
 	switch nativeType {
@@ -269,6 +278,8 @@ func ReadData(b *byter.Byter) DRObject {
 		gcObject = NewDFC3DNode()
 	case "DFC3DStaticMeshNode":
 		gcObject = NewDFC3DStaticMeshNode()
+	case "AdvParticleSystem":
+		return nil
 	default:
 		gcObject = NewGCObject(nativeType)
 	}
@@ -282,7 +293,13 @@ func ReadData(b *byter.Byter) DRObject {
 	childCount := b.UInt32()
 
 	for i := 0; i < int(childCount); i++ {
-		gcObject.AddChild(ReadData(b))
+		child := ReadData(b)
+
+		if child == nil {
+			return nil
+		}
+
+		gcObject.AddChild(child)
 	}
 
 	gcObject.ReadData(b)
