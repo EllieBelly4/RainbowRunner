@@ -15,15 +15,6 @@ import (
 
 var Players = NewPlayerManager()
 
-type RRPlayer struct {
-	Conn               *connections.RRConn
-	CurrentCharacter   *Player
-	Characters         []*Player
-	Zone               *Zone
-	ClientEntityWriter *ClientEntityWriter
-	MessageQueue       *message.Queue
-}
-
 type PlayerManager struct {
 	sync.RWMutex
 	Players map[int]*RRPlayer

@@ -2,6 +2,7 @@ package objects
 
 import (
 	lua2 "RainbowRunner/internal/lua"
+	"RainbowRunner/pkg/datatypes"
 	lua "github.com/yuin/gopher-lua"
 )
 
@@ -22,15 +23,20 @@ func (f ZoneLuaFunctions) GetName(state *lua.LState) int {
 
 func (f ZoneLuaFunctions) SpawnNPC(state *lua.LState) int {
 	z := lua2.CheckReferenceValue[Zone](state, 1)
-
-	if state.GetTop() != 2 {
-		state.ArgError(2, "missing argument, need NPC to spawn")
-		return 0
-	}
-
 	npc := lua2.CheckReferenceValue[NPC](state, 2)
 
-	z.Spawn(npc)
+	var position datatypes.Vector3Float32
+	var rotation float32
+
+	if state.GetTop() >= 3 {
+		position = lua2.CheckValue[datatypes.Vector3Float32](state, 3)
+	}
+
+	if state.GetTop() >= 4 {
+		rotation = float32(state.CheckNumber(4))
+	}
+
+	z.SpawnInit(npc, &position, &rotation)
 
 	return 0
 }

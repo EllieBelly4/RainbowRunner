@@ -26,7 +26,7 @@ func NewNPC(
 	gcType,
 	behaviourType string,
 	position datatypes.Vector3Float32,
-	rotation int,
+	rotation float32,
 ) *NPC {
 	unit := NewStockUnit(gcType)
 	unit.GCType = gcType

@@ -6,6 +6,7 @@ import (
 	"RainbowRunner/internal/types/configtypes"
 	"encoding/json"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"strings"
 )
@@ -42,6 +43,7 @@ func FindItem(db []*configtypes.DRClassChildGroup, gcType string) *configtypes.D
 }
 
 func LoadConfigFiles() {
+	log.Info("loading config files")
 	var err error
 
 	config, err = configurator.LoadFromDumpedConfigFile("resources/Dumps/generated/finalconf.json")
@@ -49,6 +51,8 @@ func LoadConfigFiles() {
 	if err != nil {
 		panic(err)
 	}
+
+	log.Info("config files loaded")
 }
 
 func LoadEquipmentFixtures() {

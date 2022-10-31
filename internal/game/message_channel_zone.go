@@ -6,8 +6,6 @@ import (
 	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/objects"
 	byter "RainbowRunner/pkg/byter"
-	"RainbowRunner/pkg/datatypes"
-	"RainbowRunner/pkg/math"
 )
 
 type ZoneChannelMessage byte
@@ -69,58 +67,59 @@ func handleZoneJoin(conn *connections.RRConn) {
 
 	player := objects.Players.Players[conn.GetID()]
 
-	entitiesToSpawn := [][]string{
-		{"npc.Avatar.Female.base.NPC_Amazon1_Base", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-		//{"npc.Avatar.Female.Basic.Amazon_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-		//{"npc.Avatar.Female.Basic.Fighter_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-		//{"npc.Avatar.Female.Basic.Gladiator_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-		//{"npc.Avatar.Female.Basic.Mage_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-		//{"npc.Avatar.Female.Basic.Mage_002", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-		//{"npc.Avatar.Female.Basic.Ninja_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-		//{"npc.Avatar.Female.Basic.Officer_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-		//{"npc.Avatar.Female.Basic.Ranger_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-		//{"npc.Avatar.Female.Basic.Ranger_002", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-		//{"npc.Avatar.Female.Basic.Ranger_003", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-		//{"npc.Avatar.Female.Basic.Scout_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-		//{"world.town.npc.TownCommander", "world.town.npc.TownCommander.Behavior"},
-		//{"world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior"},
-		//{"world.dungeon16.mob.boss_manager01", "world.dungeon16.mob.boss_manager01.Behavior"},
-		//{"world.dungeon15.mob.boss", "world.dungeon15.mob.boss.Behavior"},
-	}
+	//entitiesToSpawn := [][]string{
+	//	{"npc.Avatar.Female.base.NPC_Amazon1_Base", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+	//	//{"npc.Avatar.Female.Basic.Amazon_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+	//	//{"npc.Avatar.Female.Basic.Fighter_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+	//	//{"npc.Avatar.Female.Basic.Gladiator_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+	//	//{"npc.Avatar.Female.Basic.Mage_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+	//	//{"npc.Avatar.Female.Basic.Mage_002", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+	//	//{"npc.Avatar.Female.Basic.Ninja_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+	//	//{"npc.Avatar.Female.Basic.Officer_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+	//	//{"npc.Avatar.Female.Basic.Ranger_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+	//	//{"npc.Avatar.Female.Basic.Ranger_002", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+	//	//{"npc.Avatar.Female.Basic.Ranger_003", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+	//	//{"npc.Avatar.Female.Basic.Scout_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
+	//	//{"world.town.npc.TownCommander", "world.town.npc.TownCommander.Behavior"},
+	//	//{"world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior"},
+	//	//{"world.dungeon16.mob.boss_manager01", "world.dungeon16.mob.boss_manager01.Behavior"},
+	//	//{"world.dungeon15.mob.boss", "world.dungeon15.mob.boss.Behavior"},
+	//}
 
 	SendInterval(conn)
 
 	player.CurrentCharacter.OnZoneJoin(player)
+	player.OnZoneJoin()
 
-	if player.Zone.Name == "town" {
-		for i, entityStrings := range entitiesToSpawn {
-			objects.CreateNPC(player, player.Zone, datatypes.Transform{
-				Position: datatypes.Vector3Float32{float32(106342+2048*int32(i)) / 256, -140, 49},
-				Rotation: 180 * math.DRDegToRot,
-			}, entityStrings[0], entityStrings[1])
-		}
-
-	} else if player.Zone.Name == "dungeon16_level00" {
-		objects.CreateNPC(player, player.Zone, datatypes.Transform{
-			Position: datatypes.Vector3Float32{0, 0, 15000},
-			Rotation: 180 * math.DRDegToRot,
-		}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
-
-		objects.CreateNPC(player, player.Zone, datatypes.Transform{
-			Position: datatypes.Vector3Float32{20 * 256, 20 * 256, 15000},
-			Rotation: 270 * math.DRDegToRot,
-		}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
-
-		objects.CreateNPC(player, player.Zone, datatypes.Transform{
-			Position: datatypes.Vector3Float32{0 * 256, 40 * 256, 15000},
-			Rotation: 360 * math.DRDegToRot,
-		}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
-
-		objects.CreateNPC(player, player.Zone, datatypes.Transform{
-			Position: datatypes.Vector3Float32{-20 * 256, 20 * 256, 15000},
-			Rotation: 90 * math.DRDegToRot,
-		}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
-	}
+	//if player.Zone.Name == "town" {
+	//	for i, entityStrings := range entitiesToSpawn {
+	//		objects.CreateNPC(player, player.Zone, datatypes.Transform{
+	//			Position: datatypes.Vector3Float32{float32(106342+2048*int32(i)) / 256, -140, 49},
+	//			Rotation: 180 * math.DRDegToRot,
+	//		}, entityStrings[0], entityStrings[1])
+	//	}
+	//
+	//} else if player.Zone.Name == "dungeon16_level00" {
+	//	objects.CreateNPC(player, player.Zone, datatypes.Transform{
+	//		Position: datatypes.Vector3Float32{0, 0, 15000},
+	//		Rotation: 180 * math.DRDegToRot,
+	//	}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
+	//
+	//	objects.CreateNPC(player, player.Zone, datatypes.Transform{
+	//		Position: datatypes.Vector3Float32{20 * 256, 20 * 256, 15000},
+	//		Rotation: 270 * math.DRDegToRot,
+	//	}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
+	//
+	//	objects.CreateNPC(player, player.Zone, datatypes.Transform{
+	//		Position: datatypes.Vector3Float32{0 * 256, 40 * 256, 15000},
+	//		Rotation: 360 * math.DRDegToRot,
+	//	}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
+	//
+	//	objects.CreateNPC(player, player.Zone, datatypes.Transform{
+	//		Position: datatypes.Vector3Float32{-20 * 256, 20 * 256, 15000},
+	//		Rotation: 90 * math.DRDegToRot,
+	//	}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
+	//}
 
 	// Creating Player Entity
 	//objects.SendCreateNewPlayerEntity(conn, body)

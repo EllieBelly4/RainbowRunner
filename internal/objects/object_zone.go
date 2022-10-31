@@ -4,6 +4,7 @@ import (
 	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/lua"
 	"RainbowRunner/pkg/byter"
+	"RainbowRunner/pkg/datatypes"
 	log "github.com/sirupsen/logrus"
 	lua2 "github.com/yuin/gopher-lua"
 	"sync"
@@ -91,6 +92,18 @@ func (z *Zone) SendToAll(body *byter.Byter) {
 	}
 }
 
+func (z *Zone) SpawnInit(npc *NPC, position *datatypes.Vector3Float32, rotation *float32) {
+	if position != nil {
+		npc.WorldPosition = *position
+	}
+
+	if rotation != nil {
+		npc.Rotation = *rotation
+	}
+
+	z.Spawn(npc)
+}
+
 func (z *Zone) Init() {
 	script := z.Scripts.Get("init")
 
@@ -100,6 +113,8 @@ func (z *Zone) Init() {
 
 	state := lua2.NewState()
 	defer state.Close()
+
+	AddGlobals(state)
 
 	//zoneConfig := database.
 	AddZoneToState(state, z)

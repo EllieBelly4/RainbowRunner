@@ -8,7 +8,7 @@ import (
 type WorldEntity struct {
 	*GCObject
 	WorldPosition        datatypes.Vector3Float32
-	Rotation             int
+	Rotation             float32
 	WorldEntityFlags     uint32
 	WorldEntityInitFlags byte
 }
@@ -46,7 +46,7 @@ func (n *WorldEntity) WriteInit(b *byter.Byter) {
 	b.WriteInt32(int32(n.WorldPosition.X * 256)) // Pos X
 	b.WriteInt32(int32(n.WorldPosition.Y * 256)) // Pos Y
 	b.WriteInt32(int32(n.WorldPosition.Z * 256)) // Pos Z
-	b.WriteInt32(int32(n.Rotation))
+	b.WriteInt32(int32(n.Rotation * 256))
 
 	// Flags
 	// Each flag adds one more section of data to read sequentially

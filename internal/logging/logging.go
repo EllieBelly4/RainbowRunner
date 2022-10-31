@@ -33,7 +33,7 @@ func Init() {
 		DisableQuote: true,
 	})
 
-	mw := io.MultiWriter(logFile)
+	mw := io.MultiWriter(logFile, os.Stdout)
 	log.SetOutput(mw)
 
 	// Only log the warning severity or above.

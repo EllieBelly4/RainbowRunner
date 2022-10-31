@@ -81,5 +81,5 @@ func (f Vector3Float32) MultiplyByFloat32(i float32) Vector3Float32 {
 
 type Transform struct {
 	Position Vector3Float32
-	Rotation int
+	Rotation float32
 }
