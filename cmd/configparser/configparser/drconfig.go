@@ -25,10 +25,6 @@ import (
 }
 */
 
-type DRConfig struct {
-	Classes *database.DRClass `json:"classes"`
-}
-
 func (c *DRConfig) MergeParents(class *database.DRClassChildGroup) {
 	for _, entity := range class.Entities {
 		if entity.Extends != "" {

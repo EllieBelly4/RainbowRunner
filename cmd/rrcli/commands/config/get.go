@@ -46,15 +46,8 @@ var getCommand = &cobra.Command{
 }
 
 func InitGetCommand() {
-	getCommand.PersistentFlags().StringVarP(&inputFile, "input-config-file", "f", "finalconf.json", "-f config\\finalconf.json")
-
-	err := cobra.MarkFlagRequired(getCommand.PersistentFlags(), "input-config-file")
-
+	getCommand.PersistentFlags().StringVarP(&inputFile, "input-config-file", "f", "resources/Dumps/generated/finalconf.json", "-f config\\finalconf.json")
 	getCommand.PersistentFlags().StringVarP(&getOutputFile, "output-file", "o", "", "-o dumps\\dr-class-output.json")
-
-	if err != nil {
-		panic(err)
-	}
 
 	InitGetCategoryCommand()
 	getCommand.AddCommand(getCategoryCommand)

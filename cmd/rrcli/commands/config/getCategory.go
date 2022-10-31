@@ -9,7 +9,6 @@ import (
 	"github.com/spf13/cobra"
 	"io/ioutil"
 	"regexp"
-	"strings"
 )
 
 var categoryInputFile string
@@ -17,8 +16,8 @@ var minDepth int
 var regexpFilter string
 
 var getCategoryCommand = &cobra.Command{
-	Use:  "category <category>",
-	Args: cobra.ExactArgs(1),
+	Use:  "category [category]",
+	Args: cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		categoryConfig, err := configurator.LoadFromCategoryConfigFile(categoryInputFile)
 
@@ -28,8 +27,14 @@ var getCategoryCommand = &cobra.Command{
 
 		regex := regexp.MustCompile(regexpFilter)
 
+		category := ""
+
+		if len(args) > 0 {
+			category = args[0]
+		}
+
 		gcTypes, err := configparser.GetGCTypesByCategory(
-			strings.ToLower(args[0]),
+			category,
 			categoryConfig,
 			minDepth,
 			regex,
@@ -76,13 +81,7 @@ var getCategoryCommand = &cobra.Command{
 }
 
 func InitGetCategoryCommand() {
-	getCategoryCommand.PersistentFlags().StringVarP(&categoryInputFile, "category-input-config-file", "c", "drcategories.json", "-f config\\drcategories.json")
-
-	err := cobra.MarkFlagRequired(getCategoryCommand.PersistentFlags(), "category-input-config-file")
-
-	if err != nil {
-		panic(err)
-	}
+	getCategoryCommand.PersistentFlags().StringVarP(&categoryInputFile, "category-input-config-file", "c", "resources/Dumps/generated/drcategories.json", "-f resources/Dumps/generated/drcategories.json")
 
 	getCategoryCommand.Flags().IntVarP(&minDepth, "min-depth", "m", -1, "-m 5")
 	getCategoryCommand.Flags().StringVarP(&regexpFilter, "regexp-filter", "x", "", "-x \"^[0-9]+\"")

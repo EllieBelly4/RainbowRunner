@@ -26,7 +26,19 @@ func (c *DRCategory) WalkChildGCTypes(f func(gcType string, depth int), currentD
 }
 
 func GetGCTypesByCategory(category string, categories map[string]*DRCategory, minDepth int, filter *regexp.Regexp) ([]string, error) {
-	rootElement := getElementByCategory(strings.Split(category, "."), categories)
+	var rootElement *DRCategory
+	var depthMod = 0
+
+	if category != "" {
+		rootElement = getElementByCategory(strings.Split(category, "."), categories)
+	} else {
+		rootElement = &DRCategory{
+			Children: categories,
+			Classes:  nil,
+		}
+
+		depthMod -= 1
+	}
 
 	if rootElement == nil {
 		return nil, errors.New(fmt.Sprintf("could not find root element with category %s", category))
@@ -35,7 +47,8 @@ func GetGCTypesByCategory(category string, categories map[string]*DRCategory, mi
 	results := make([]string, 0, 1024)
 
 	rootElement.WalkChildGCTypes(func(gcType string, depth int) {
-		if minDepth > -1 && depth < minDepth {
+		d := depth + depthMod
+		if minDepth > -1 && d < minDepth {
 			return
 		}
 

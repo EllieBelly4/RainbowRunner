@@ -1,6 +1,8 @@
 package database
 
 import (
+	"RainbowRunner/cmd/configparser/configparser"
+	"RainbowRunner/cmd/rrcli/configurator"
 	"RainbowRunner/internal/types"
 	"encoding/json"
 	"fmt"
@@ -15,6 +17,8 @@ type EquipmentMap map[string]*DRClass
 type DRWeapon struct {
 	*DRClass
 }
+
+var Config *configparser.DRConfig
 
 var Weapons []*DRClassChildGroup
 var Armour []*DRClassChildGroup
@@ -35,6 +39,16 @@ func FindItem(db []*DRClassChildGroup, gcType string) *DRClass {
 	}
 
 	return nil
+}
+
+func LoadConfigFiles() {
+	config, err := configurator.LoadFromDumpedConfigFile("resources/Dumps/generated/finalconf.json")
+
+	if err != nil {
+		panic(err)
+	}
+
+	Config = config
 }
 
 func LoadEquipmentFixtures() {
