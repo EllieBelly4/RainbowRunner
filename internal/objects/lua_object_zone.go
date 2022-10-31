@@ -41,24 +41,47 @@ func (f ZoneLuaFunctions) SpawnNPC(state *lua.LState) int {
 	return 0
 }
 
+func (f ZoneLuaFunctions) LoadNPCFromConfig(s *lua.LState) int {
+	z := lua2.CheckReferenceValue[Zone](s, 1)
+	npcID := s.CheckString(2)
+
+	npcConfig, ok := z.BaseConfig.NPCs[npcID]
+
+	if !ok {
+		s.Error(lua.LString("could not find NPC config with ID: "+npcID), -1)
+	}
+
+	npc := NewNPCFromConfig(npcConfig)
+
+	ud := s.NewUserData()
+	ud.Value = npc
+
+	s.SetMetatable(ud, s.GetTypeMetatable(luaNPCTypeName))
+	s.Push(ud)
+	return 1
+}
+
 var zoneLuaFunctions ZoneLuaFunctions
 
-const luaZoneTypeName = "zone"
+const luaZoneTypeName = "Zone"
+
+func registerLuaZone(s *lua.LState) {
+	mt := s.NewTypeMetatable(luaZoneTypeName)
+	s.SetGlobal("Zone", mt)
+	s.SetField(mt, "__index", s.SetFuncs(s.NewTable(), zoneMethods))
+}
 
 func AddZoneToState(L *lua.LState, z *Zone) {
-	mt := L.NewTypeMetatable(luaZoneTypeName)
-	L.SetGlobal("zone", mt)
 	ud := L.NewUserData()
 	ud.Value = z
 	L.SetMetatable(ud, L.GetTypeMetatable(luaZoneTypeName))
 	L.SetGlobal("currentZone", ud)
-	// methods
-	L.SetField(mt, "__index", L.SetFuncs(L.NewTable(), zoneMethods))
 }
 
 var zoneMethods = map[string]lua.LGFunction{
-	"name":     zoneLuaFunctions.GetName,
-	"spawnNPC": zoneLuaFunctions.SpawnNPC,
+	"name":              zoneLuaFunctions.GetName,
+	"spawnNPC":          zoneLuaFunctions.SpawnNPC,
+	"loadNPCFromConfig": zoneLuaFunctions.LoadNPCFromConfig,
 }
 
 //// Constructor

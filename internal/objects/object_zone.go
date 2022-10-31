@@ -1,6 +1,7 @@
 package objects
 
 import (
+	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/lua"
 	"RainbowRunner/pkg/byter"
@@ -12,10 +13,11 @@ import (
 
 type Zone struct {
 	sync.RWMutex
-	Name     string
-	entities map[uint16]DRObject
-	players  map[uint16]*RRPlayer
-	Scripts  *lua.LuaScriptGroup
+	Name       string
+	entities   map[uint16]DRObject
+	players    map[uint16]*RRPlayer
+	Scripts    *lua.LuaScriptGroup
+	BaseConfig *database.ZoneConfig
 }
 
 func (z *Zone) Entities() []DRObject {
@@ -105,6 +107,14 @@ func (z *Zone) SpawnInit(npc *NPC, position *datatypes.Vector3Float32, rotation 
 }
 
 func (z *Zone) Init() {
+	config, err := database.GetZoneConfig(z.Name)
+
+	if err != nil {
+		panic(err)
+	}
+
+	z.BaseConfig = config
+
 	script := z.Scripts.Get("init")
 
 	if script == nil {
@@ -114,15 +124,16 @@ func (z *Zone) Init() {
 	state := lua2.NewState()
 	defer state.Close()
 
-	AddGlobals(state)
-
-	//zoneConfig := database.
+	RegisterLuaGlobals(state)
 	AddZoneToState(state, z)
-	RegisterLuaNPC(state)
 
-	err := script.Execute(state)
+	err = script.Execute(state)
 
 	if err != nil {
 		log.Errorf("failed to execute zone init script %s: %s", z.Name, err.Error())
 	}
+}
+
+func (z *Zone) ClearEntities() {
+	z.entities = make(map[uint16]DRObject)
 }

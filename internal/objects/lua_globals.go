@@ -5,14 +5,16 @@ import (
 	lua "github.com/yuin/gopher-lua"
 )
 
-func AddGlobals(state *lua.LState) {
-	addVector3(state)
-	addVector2(state)
+func RegisterLuaGlobals(state *lua.LState) {
+	registerLuaNPC(state)
+	registerLuaZone(state)
+	registerLuaVector3(state)
+	registerLuaVector2(state)
 }
 
-func addVector3(s *lua.LState) {
-	mt := s.NewTypeMetatable("vector3")
-	s.SetGlobal("vector3", mt)
+func registerLuaVector3(s *lua.LState) {
+	mt := s.NewTypeMetatable("Vector3")
+	s.SetGlobal("Vector3", mt)
 	s.SetField(mt, "new", s.NewFunction(newLuaVector3))
 }
 
@@ -27,15 +29,15 @@ func newLuaVector3(state *lua.LState) int {
 
 	ud := state.NewUserData()
 	ud.Value = v3
-	state.SetMetatable(ud, state.GetTypeMetatable("vector3"))
+	state.SetMetatable(ud, state.GetTypeMetatable("Vector3"))
 
 	state.Push(ud)
 	return 1
 }
 
-func addVector2(s *lua.LState) {
-	mt := s.NewTypeMetatable("vector2")
-	s.SetGlobal("vector2", mt)
+func registerLuaVector2(s *lua.LState) {
+	mt := s.NewTypeMetatable("Vector2")
+	s.SetGlobal("Vector2", mt)
 	s.SetField(mt, "new", s.NewFunction(newLuaVector2))
 }
 
@@ -49,7 +51,7 @@ func newLuaVector2(state *lua.LState) int {
 
 	ud := state.NewUserData()
 	ud.Value = v2
-	state.SetMetatable(ud, state.GetTypeMetatable("vector2"))
+	state.SetMetatable(ud, state.GetTypeMetatable("Vector2"))
 
 	state.Push(ud)
 	return 1

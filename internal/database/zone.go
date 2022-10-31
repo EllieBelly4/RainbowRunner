@@ -1,37 +1,46 @@
 package database
 
+import (
+	"RainbowRunner/internal/types/configtypes"
+)
+
 type ZoneConfig struct {
 	Name string
+	NPCs map[string]*NPCConfig
 }
 
-func GetZoneConfig(name string) error {
-	//rawConfig, err := config.Get("world." + name)
-	//
-	//if err != nil {
-	//	return err
-	//}
-	//
-	//zoneConfig := NewZoneConfig()
-	//
-	//configEntities := rawConfig[0].Entities[0].Children
-	//
-	//if npcConfig, ok := configEntities["npc"]; ok {
-	//	handleNPCs(zoneConfig, npcConfig)
-	//}
-	//
-	//gosucks.VAR(rawConfig)
-	//
-	////npcs := rawConfig
+func GetZoneConfig(name string) (*ZoneConfig, error) {
+	rawConfig, err := config.Get("world." + name)
 
-	return nil
+	if err != nil {
+		return nil, err
+	}
+
+	zoneConfig := NewZoneConfig(name)
+
+	configEntities := rawConfig[0].Entities[0].Children
+
+	if npcConfig, ok := configEntities["npc"]; ok {
+		handleNPCs(zoneConfig, npcConfig)
+	}
+
+	return zoneConfig, nil
 }
 
-//func handleNPCs(zoneConfig *ZoneConfig, npcConfig *configtypes.DRClassChildGroup) {
-//	for _, npcConfig := range npcConfig.Entities[0].Children {
-//		npc := NewNPCCOnfig(npcConfig)
-//	}
-//}
+func handleNPCs(zoneConfig *ZoneConfig, rawNPCConfig *configtypes.DRClassChildGroup) {
+	zoneConfig.NPCs = make(map[string]*NPCConfig)
 
-func NewZoneConfig() *ZoneConfig {
-	return &ZoneConfig{}
+	for npcKey, npcConfig := range rawNPCConfig.Entities[0].Children {
+		npc := NewNPCConfig(npcConfig)
+
+		npc.FullGCType = "world." + zoneConfig.Name + ".npc." + npcKey
+
+		zoneConfig.NPCs[npcKey] = npc
+	}
+}
+
+func NewZoneConfig(name string) *ZoneConfig {
+	return &ZoneConfig{
+		Name: name,
+	}
 }

@@ -2,20 +2,19 @@ package main
 
 import (
 	"RainbowRunner/internal/config"
-	"RainbowRunner/internal/lua"
-	"RainbowRunner/internal/objects"
+	"RainbowRunner/internal/database"
+	"RainbowRunner/internal/gosucks"
 )
 
 func main() {
 	config.Load()
-	//database.LoadConfigFiles()
-	err := lua.LoadScripts("./lua")
+	database.LoadConfigFiles()
+
+	zoneConfig, err := database.GetZoneConfig("town")
+
 	if err != nil {
 		panic(err)
 	}
-	objects.Init()
 
-	zone := objects.Zones.CreateZone("town")
-
-	zone.Init()
+	gosucks.VAR(zoneConfig)
 }

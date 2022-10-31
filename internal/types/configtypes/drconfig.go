@@ -3,6 +3,7 @@ package configtypes
 import (
 	"errors"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"strings"
 )
 
@@ -34,7 +35,7 @@ func (c *DRConfig) MergeParents(class *DRClassChildGroup) {
 			parentClass, err := c.Get(entity.Extends)
 
 			if err != nil || parentClass == nil || len(parentClass) == 0 {
-				fmt.Println("child not found " + entity.Extends)
+				log.Debug("child not found " + entity.Extends)
 				return
 			}
 

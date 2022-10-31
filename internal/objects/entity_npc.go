@@ -1,6 +1,7 @@
 package objects
 
 import (
+	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/game/components/behavior"
 	"RainbowRunner/internal/global"
 	"RainbowRunner/internal/message"
@@ -11,7 +12,8 @@ import (
 type NPC struct {
 	*StockUnit
 
-	Name string
+	Name  string
+	Level int32
 }
 
 func (n *NPC) WriteInit(b *byter.Byter) {
@@ -126,4 +128,13 @@ func CreateNPC(player *RRPlayer, zone *Zone, transform datatypes.Transform, npcT
 	//unitBehavior.Warp(106342, -46263, 12778)
 	//unitBehavior.Warp(0, 0, 0)
 	//unitBehavior.SendPosition()
+}
+
+func NewNPCFromConfig(config *database.NPCConfig) *NPC {
+	npc := NewNPCSimple(config.FullGCType)
+
+	npc.Name = config.Name
+	npc.Level = config.Level
+
+	return npc
 }

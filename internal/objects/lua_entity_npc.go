@@ -5,11 +5,11 @@ import (
 	lua2 "github.com/yuin/gopher-lua"
 )
 
-const luaNPCTypeName = "npc"
+const luaNPCTypeName = "NPC"
 
-func RegisterLuaNPC(state *lua2.LState) {
+func registerLuaNPC(state *lua2.LState) {
 	mt := state.NewTypeMetatable(luaNPCTypeName)
-	state.SetGlobal("npc", mt)
+	state.SetGlobal("NPC", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaNPC))
 	state.SetField(mt, "__index", state.SetFuncs(state.NewTable(), entityLuaNPCMethods))
 }

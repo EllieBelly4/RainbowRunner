@@ -27,10 +27,15 @@ func (m *ZoneManager) PlayerJoin(zoneName string, player *RRPlayer) {
 func (m *ZoneManager) getOrCreateZone(zoneName string) *Zone {
 	if _, ok := m.Zones[zoneName]; !ok {
 		m.CreateZone(zoneName)
-		m.Zones[zoneName].Init()
+		//m.Zones[zoneName].Init()
 	}
 
-	return m.Zones[zoneName]
+	// TODO move init back above only on create
+	z := m.Zones[zoneName]
+	z.ClearEntities()
+	z.Init()
+
+	return z
 }
 
 func (m *ZoneManager) CreateZone(name string) *Zone {
