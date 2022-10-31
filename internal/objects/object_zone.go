@@ -4,6 +4,7 @@ import (
 	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/lua"
 	"RainbowRunner/pkg/byter"
+	log "github.com/sirupsen/logrus"
 	lua2 "github.com/yuin/gopher-lua"
 	"sync"
 )
@@ -102,6 +103,11 @@ func (z *Zone) Init() {
 
 	//zoneConfig := database.
 	AddZoneToState(state, z)
+	RegisterLuaNPC(state)
 
-	script.Execute(state)
+	err := script.Execute(state)
+
+	if err != nil {
+		log.Errorf("failed to execute zone init script %s: %s", z.Name, err.Error())
+	}
 }

@@ -95,29 +95,29 @@ func handleZoneJoin(conn *connections.RRConn) {
 	if player.Zone.Name == "town" {
 		for i, entityStrings := range entitiesToSpawn {
 			objects.CreateNPC(player, player.Zone, datatypes.Transform{
-				Position: datatypes.Vector3{106342 + 2048*int32(i), -36000, 12778},
+				Position: datatypes.Vector3Float32{float32(106342+2048*int32(i)) / 256, -140, 49},
 				Rotation: 180 * math.DRDegToRot,
 			}, entityStrings[0], entityStrings[1])
 		}
 
 	} else if player.Zone.Name == "dungeon16_level00" {
 		objects.CreateNPC(player, player.Zone, datatypes.Transform{
-			Position: datatypes.Vector3{0, 0, 15000},
+			Position: datatypes.Vector3Float32{0, 0, 15000},
 			Rotation: 180 * math.DRDegToRot,
 		}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
 
 		objects.CreateNPC(player, player.Zone, datatypes.Transform{
-			Position: datatypes.Vector3{20 * 256, 20 * 256, 15000},
+			Position: datatypes.Vector3Float32{20 * 256, 20 * 256, 15000},
 			Rotation: 270 * math.DRDegToRot,
 		}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
 
 		objects.CreateNPC(player, player.Zone, datatypes.Transform{
-			Position: datatypes.Vector3{0 * 256, 40 * 256, 15000},
+			Position: datatypes.Vector3Float32{0 * 256, 40 * 256, 15000},
 			Rotation: 360 * math.DRDegToRot,
 		}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
 
 		objects.CreateNPC(player, player.Zone, datatypes.Transform{
-			Position: datatypes.Vector3{-20 * 256, 20 * 256, 15000},
+			Position: datatypes.Vector3Float32{-20 * 256, 20 * 256, 15000},
 			Rotation: 90 * math.DRDegToRot,
 		}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
 	}
@@ -148,10 +148,10 @@ func handleZoneJoin(conn *connections.RRConn) {
 
 	avatar := objects.Players.Players[conn.GetID()].CurrentCharacter.GetChildByGCNativeType("Avatar").(*objects.Avatar)
 	if rrPlayer.Zone.Name == "town" {
-		avatar.Warp(106342, -46263, 12778)
+		avatar.Warp(106342/256, -46263/256, 12778/256)
 		//avatar.SendPosition()
 	} else if rrPlayer.Zone.Name == "dungeon16_level00" {
-		avatar.Warp(0, 0, 15000)
+		avatar.Warp(0, 0, 15000/256)
 		//avatar.SendPosition()
 	}
 

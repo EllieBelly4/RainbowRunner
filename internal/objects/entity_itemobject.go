@@ -23,8 +23,8 @@ func (n *ItemObject) WriteInit(b *byter.Byter) {
 
 	// String here if above is 0
 
-	b.WriteInt32(n.WorldPosition.X)
-	b.WriteInt32(n.WorldPosition.Y)
+	b.WriteInt32(int32(n.WorldPosition.X * 256))
+	b.WriteInt32(int32(n.WorldPosition.Y * 256))
 	b.WriteByte(0xBA)
 
 	// At some point here it expects a GCClass of type Item, Manipulator

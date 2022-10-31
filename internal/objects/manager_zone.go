@@ -33,7 +33,7 @@ func (m *ZoneManager) getOrCreateZone(zoneName string) *Zone {
 	return m.Zones[zoneName]
 }
 
-func (m *ZoneManager) CreateZone(name string) {
+func (m *ZoneManager) CreateZone(name string) *Zone {
 	z := &Zone{
 		Name:     name,
 		entities: make(map[uint16]DRObject),
@@ -43,6 +43,8 @@ func (m *ZoneManager) CreateZone(name string) {
 	z.Scripts = lua.GetScriptGroup("zones." + name)
 
 	m.Zones[name] = z
+
+	return z
 }
 
 func (m *ZoneManager) Spawn(npc *GCObject) {

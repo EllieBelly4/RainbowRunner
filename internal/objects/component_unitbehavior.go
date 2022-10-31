@@ -15,8 +15,8 @@ import (
 
 type UnitBehavior struct {
 	*Component
-	LastPosition   datatypes.Vector3
-	Position       datatypes.Vector3
+	LastPosition   datatypes.Vector3Float32
+	Position       datatypes.Vector3Float32
 	Rotation       int32
 	UnitMoverFlags byte
 	Action1        behavior.Action
@@ -38,7 +38,7 @@ func (u *UnitBehaviorHandler) WriteUpdate(b *byter.Byter) {
 func (u *UnitBehavior) WriteMoveUpdate(b *byter.Byter) {
 	positions := []UnitPathPosition{
 		{
-			Position: u.Position.ToVector2(),
+			Position: u.Position.ToVector2Float32(),
 			Rotation: u.Rotation,
 		},
 	}
@@ -78,8 +78,8 @@ func (u *UnitBehavior) WriteMoveUpdate(b *byter.Byter) {
 		//
 		b.WriteByte(0x01 | 0x02) // Not all values work
 		b.WriteInt32(position.Rotation)
-		b.WriteInt32(position.Position.X)
-		b.WriteInt32(position.Position.Y)
+		b.WriteInt32(int32(position.Position.X * 256))
+		b.WriteInt32(int32(position.Position.Y * 256))
 
 		degrees := float32((float64(position.Rotation) / 0x17000) * 360)
 
@@ -167,7 +167,7 @@ func (n *UnitBehavior) WriteInit(b *byter.Byter) {
 }
 
 type UnitPathPosition struct {
-	Position datatypes.Vector2
+	Position datatypes.Vector2Float32
 	Rotation int32
 }
 
@@ -176,7 +176,7 @@ func (g *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 	// The client will then increment by 1 for every individual movement performed (clicking)
 	updateNumber := reader.Byte()
 	count := int(reader.Byte())
-	pos := datatypes.Vector2{}
+	pos := datatypes.Vector2Float32{}
 
 	if config.Config.Logging.LogMoves {
 		fmt.Printf("Received %d player moves unk val: %x\n", count, updateNumber)
@@ -193,13 +193,15 @@ func (g *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 		//degrees := float32((float64(rotation) / 0x17000) * 360)
 		degrees := float32(rotation / 256)
 
-		pos.X = reader.Int32()
-		pos.Y = reader.Int32()
+		pos.X = float32(reader.Int32()) / 256
+		pos.Y = float32(reader.Int32()) / 256
 
 		avatar.ClientUpdateNumber = updateNumber
 		if config.Config.Logging.LogReceivedMoves {
+			//xf := float32(pos.X>>8) + (float32(pos.X&0xFF) / 256)
+			//yf := float32(pos.Y>>8) + (float32(pos.Y&0xFF) / 256)
 			fmt.Printf(
-				"Player move 0x%x rotation 0x%x(%.2fdeg) (%d, %d) Hex (%x, %x)\n",
+				"Player move 0x%x rotation 0x%x(%.2fdeg) (%f, %f) Hex (%x, %x)\n",
 				moveUpdateType, rotation, degrees, pos.X, pos.Y, pos.X, pos.Y,
 			)
 		}
@@ -235,7 +237,7 @@ func (g *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 
 		responseMoves = append(responseMoves, UnitPathPosition{
 			Rotation: rotation,
-			Position: datatypes.Vector2{
+			Position: datatypes.Vector2Float32{
 				X: pos.X,
 				Y: pos.Y,
 			},
@@ -282,7 +284,7 @@ func (g *UnitBehavior) ReadUpdate(reader *byter.Byter) error {
 	return nil
 }
 
-func (n *UnitBehavior) Warp(x int32, y int32, z int32) {
+func (n *UnitBehavior) Warp(x, y, z float32) {
 	n.Position.X = x
 	n.Position.Y = y
 	n.Position.Z = z
@@ -292,7 +294,7 @@ func (n *UnitBehavior) Warp(x int32, y int32, z int32) {
 	}
 }
 
-func (n *UnitBehavior) sendWarpTo(posX, posY, posZ int32) {
+func (n *UnitBehavior) sendWarpTo(posX, posY, posZ float32) {
 	writer := NewClientEntityWriterWithByter()
 	writer.BeginStream()
 	writer.BeginComponentUpdate(n)
@@ -300,9 +302,9 @@ func (n *UnitBehavior) sendWarpTo(posX, posY, posZ int32) {
 	writer.Body.WriteByte(0x04) // CreateAction1
 	writer.Body.WriteByte(17)
 	writer.Body.WriteByte(0x00)
-	writer.Body.WriteInt32(posX)
-	writer.Body.WriteInt32(posY)
-	writer.Body.WriteInt32(posZ)
+	writer.Body.WriteInt32(int32(posX * 256))
+	writer.Body.WriteInt32(int32(posY * 256))
+	writer.Body.WriteInt32(int32(posZ * 256))
 
 	writer.WriteSynch(n)
 	writer.EndStream()

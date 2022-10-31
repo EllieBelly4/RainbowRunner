@@ -10,16 +10,22 @@ import (
 
 type NPC struct {
 	*StockUnit
+
+	Name string
 }
 
 func (n *NPC) WriteInit(b *byter.Byter) {
 	n.StockUnit.WriteInit(b)
 }
 
+func NewNPCSimple(gcType string) *NPC {
+	return NewNPC(gcType, "", datatypes.Vector3Float32{}, 0)
+}
+
 func NewNPC(
 	gcType,
 	behaviourType string,
-	position datatypes.Vector3,
+	position datatypes.Vector3Float32,
 	rotation int,
 ) *NPC {
 	unit := NewStockUnit(gcType)

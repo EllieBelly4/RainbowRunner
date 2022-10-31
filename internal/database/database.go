@@ -18,7 +18,7 @@ type DRWeapon struct {
 	*configtypes.DRClass
 }
 
-var Config *configtypes.DRConfig
+var config *configtypes.DRConfig
 
 var Weapons []*configtypes.DRClassChildGroup
 var Armour []*configtypes.DRClassChildGroup
@@ -42,13 +42,13 @@ func FindItem(db []*configtypes.DRClassChildGroup, gcType string) *configtypes.D
 }
 
 func LoadConfigFiles() {
-	config, err := configurator.LoadFromDumpedConfigFile("resources/Dumps/generated/finalconf.json")
+	var err error
+
+	config, err = configurator.LoadFromDumpedConfigFile("resources/Dumps/generated/finalconf.json")
 
 	if err != nil {
 		panic(err)
 	}
-
-	Config = config
 }
 
 func LoadEquipmentFixtures() {

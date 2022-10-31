@@ -11,14 +11,15 @@ type LuaScript struct {
 	scriptText string
 }
 
-func (s *LuaScript) Execute(state *lua.LState) {
+func (s *LuaScript) Execute(state *lua.LState) error {
 	s.load()
 
 	err := state.DoString(s.scriptText)
 
 	if err != nil {
-		panic(err)
+		return err
 	}
+	return nil
 }
 
 func (s *LuaScript) load() {

@@ -104,12 +104,12 @@ func (p *Avatar) SendFollowClient() {
 	p.Send(writer.Body)
 }
 
-func (p *Avatar) Warp(x int32, y int32, z int32) {
+func (p *Avatar) Warp(x, y, z float32) {
 	unitBehavior := p.GetChildByGCNativeType("UnitBehavior").(*UnitBehavior)
 	unitBehavior.Warp(x, y, z)
 }
 
-func (p *Avatar) SendMoveTo(unk uint8, compID uint16, posX, posY int32) {
+func (p *Avatar) SendMoveTo(unk uint8, compID uint16, posX, posY float32) {
 	body := byter.NewLEByter(make([]byte, 0))
 
 	body.WriteByte(byte(messages.ClientEntityChannel))
@@ -118,8 +118,8 @@ func (p *Avatar) SendMoveTo(unk uint8, compID uint16, posX, posY int32) {
 	body.WriteByte(0x04)     // CreateAction1
 	body.WriteByte(0x01)     // MoveTo
 	body.WriteByte(unk)
-	body.WriteInt32(posX)
-	body.WriteInt32(posY)
+	body.WriteInt32(int32(posX * 256))
+	body.WriteInt32(int32(posY * 256))
 
 	body.WriteByte(0x02)
 	body.WriteUInt32(0x00)

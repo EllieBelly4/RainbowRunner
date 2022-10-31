@@ -1,6 +1,7 @@
 package objects
 
 import (
+	lua2 "RainbowRunner/internal/lua"
 	lua "github.com/yuin/gopher-lua"
 )
 
@@ -8,7 +9,7 @@ type ZoneLuaFunctions struct {
 }
 
 func (f ZoneLuaFunctions) GetName(state *lua.LState) int {
-	z := checkZone(state)
+	z := lua2.CheckReferenceValue[Zone](state, 1)
 
 	if state.GetTop() == 2 {
 		state.ArgError(2, "variable is readonly")
@@ -19,13 +20,19 @@ func (f ZoneLuaFunctions) GetName(state *lua.LState) int {
 	return 1
 }
 
-func checkZone(L *lua.LState) *Zone {
-	ud := L.CheckUserData(1)
-	if v, ok := ud.Value.(*Zone); ok {
-		return v
+func (f ZoneLuaFunctions) SpawnNPC(state *lua.LState) int {
+	z := lua2.CheckReferenceValue[Zone](state, 1)
+
+	if state.GetTop() != 2 {
+		state.ArgError(2, "missing argument, need NPC to spawn")
+		return 0
 	}
-	L.ArgError(1, "zone expected")
-	return nil
+
+	npc := lua2.CheckReferenceValue[NPC](state, 2)
+
+	z.Spawn(npc)
+
+	return 0
 }
 
 var zoneLuaFunctions ZoneLuaFunctions
@@ -44,7 +51,8 @@ func AddZoneToState(L *lua.LState, z *Zone) {
 }
 
 var zoneMethods = map[string]lua.LGFunction{
-	"name": zoneLuaFunctions.GetName,
+	"name":     zoneLuaFunctions.GetName,
+	"spawnNPC": zoneLuaFunctions.SpawnNPC,
 }
 
 //// Constructor

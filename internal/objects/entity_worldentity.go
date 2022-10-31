@@ -7,7 +7,7 @@ import (
 
 type WorldEntity struct {
 	*GCObject
-	WorldPosition        datatypes.Vector3
+	WorldPosition        datatypes.Vector3Float32
 	Rotation             int
 	WorldEntityFlags     uint32
 	WorldEntityInitFlags byte
@@ -43,9 +43,9 @@ func (n *WorldEntity) WriteInit(b *byter.Byter) {
 		n.WorldEntityFlags, // With this one alone it was working
 	)
 	// These positions stopped working at some point
-	b.WriteInt32(n.WorldPosition.X) // Pos X
-	b.WriteInt32(n.WorldPosition.Y) // Pos Y
-	b.WriteInt32(n.WorldPosition.Z) // Pos Z
+	b.WriteInt32(int32(n.WorldPosition.X * 256)) // Pos X
+	b.WriteInt32(int32(n.WorldPosition.Y * 256)) // Pos Y
+	b.WriteInt32(int32(n.WorldPosition.Z * 256)) // Pos Z
 	b.WriteInt32(int32(n.Rotation))
 
 	// Flags
