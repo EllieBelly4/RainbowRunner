@@ -17,7 +17,7 @@ type UnitBehavior struct {
 	*Component
 	LastPosition   datatypes.Vector3Float32
 	Position       datatypes.Vector3Float32
-	Rotation       int32
+	Rotation       float32
 	UnitMoverFlags byte
 	Action1        behavior.Action
 	Action2        behavior.Action
@@ -77,16 +77,14 @@ func (u *UnitBehavior) WriteMoveUpdate(b *byter.Byter) {
 		// result = result ^ someVal // 0x78
 		//
 		b.WriteByte(0x01 | 0x02) // Not all values work
-		b.WriteInt32(position.Rotation)
+		b.WriteInt32(int32(position.Rotation * 256))
 		b.WriteInt32(int32(position.Position.X * 256))
 		b.WriteInt32(int32(position.Position.Y * 256))
-
-		degrees := float32((float64(position.Rotation) / 0x17000) * 360)
 
 		if config.Config.Logging.LogMoves {
 			fmt.Printf(
 				"Sending move rotation 0x%x(%.2fdeg) (%d, %d) Hex (%x, %x)\n",
-				position.Rotation, degrees, position.Position.X, position.Position.Y, position.Position.X, position.Position.Y,
+				int32(position.Rotation*256), position.Rotation, position.Position.X, position.Position.Y, position.Position.X, position.Position.Y,
 			)
 		}
 	}
@@ -168,7 +166,7 @@ func (n *UnitBehavior) WriteInit(b *byter.Byter) {
 
 type UnitPathPosition struct {
 	Position datatypes.Vector2Float32
-	Rotation int32
+	Rotation float32
 }
 
 func (g *UnitBehavior) handleClientMove(conn connections.Connection, reader *byter.Byter) {
@@ -187,8 +185,8 @@ func (g *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 	avatar := Players.Players[conn.GetID()].CurrentCharacter.GetChildByGCNativeType("Avatar").(*Avatar)
 
 	for i := 0; i < count; i++ {
-		moveUpdateType := reader.Byte() // Unk
-		rotation := reader.Int32()      // Seems to be rotation
+		moveUpdateType := reader.Byte()     // Unk
+		rotation := float32(reader.Int32()) // Seems to be rotation
 
 		//degrees := float32((float64(rotation) / 0x17000) * 360)
 		degrees := float32(rotation / 256)
@@ -211,7 +209,7 @@ func (g *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 		g.Position.X = pos.X
 		g.Position.Y = pos.Y
 		g.Position.Z = 0
-		g.Rotation = rotation
+		g.Rotation = degrees
 
 		//conn.Player.SendPosition(moveUpdateType)
 
