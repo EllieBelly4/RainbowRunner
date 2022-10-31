@@ -3,6 +3,7 @@ package objects
 import (
 	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/types"
+	"RainbowRunner/internal/types/configtypes"
 	"RainbowRunner/pkg/byter"
 	"fmt"
 )
@@ -51,7 +52,7 @@ func NewEquipment(itemGCType, itemModGCType string, itemType ItemType, slot type
 	item := NewItem(string(itemType), itemType)
 	item.GCType = itemGCType
 
-	var drClass *database.DRClass
+	var drClass *configtypes.DRClass
 
 	if itemType == ItemArmour {
 		drClass = database.FindItem(database.Armour, itemGCType)

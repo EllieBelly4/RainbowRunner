@@ -3,6 +3,7 @@ package config
 import (
 	"RainbowRunner/cmd/configparser/configparser"
 	"RainbowRunner/cmd/rrcli/configurator"
+	"RainbowRunner/internal/types/configtypes"
 	"encoding/json"
 	"github.com/spf13/cobra"
 	"io/ioutil"
@@ -15,7 +16,7 @@ var dumpFileName string
 var dumpCommand = &cobra.Command{
 	Use: "dump",
 	Run: func(cmd *cobra.Command, args []string) {
-		var config *configparser.DRConfig
+		var config *configtypes.DRConfig
 		var err error
 
 		if dumpFileName == "" {

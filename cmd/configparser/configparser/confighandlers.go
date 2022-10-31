@@ -2,14 +2,14 @@ package configparser
 
 import (
 	"RainbowRunner/cmd/configparser/parser"
-	"RainbowRunner/internal/database"
+	"RainbowRunner/internal/types/configtypes"
 	"fmt"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"os"
 	"strings"
 )
 
-var baseMaps = make(map[string]*database.DRClass)
+var baseMaps = make(map[string]*configtypes.DRClass)
 
 type DRConfigParser struct {
 	*parser.BaseDRConfigListener
@@ -26,10 +26,10 @@ type DRConfigParser struct {
 	depth          int
 	IsGenericClass bool
 	gcBaseType     string
-	drConfig       *DRConfig
+	drConfig       *configtypes.DRConfig
 }
 
-func NewDRConfigListener(filePath string, rootPath string, config *DRConfig) *DRConfigParser {
+func NewDRConfigListener(filePath string, rootPath string, config *configtypes.DRConfig) *DRConfigParser {
 	split := strings.Split(filePath, "\\")
 	fileName := strings.Split(split[len(split)-1], ".")[0]
 	extensionlessPath := strings.SplitN(filePath, ".", 2)[0]
@@ -42,9 +42,9 @@ func NewDRConfigListener(filePath string, rootPath string, config *DRConfig) *DR
 		gcTypeNameLowercase := strings.ToLower(splitBaseType[i])
 
 		if _, ok := curMap.Children[gcTypeNameLowercase]; !ok {
-			curMap.Children[gcTypeNameLowercase] = database.NewDRClassChildGroup("")
-			curMap.Children[gcTypeNameLowercase].Entities = make([]*database.DRClass, 0)
-			curMap.Children[gcTypeNameLowercase].Entities = append(curMap.Children[gcTypeNameLowercase].Entities, database.NewDRClass(""))
+			curMap.Children[gcTypeNameLowercase] = configtypes.NewDRClassChildGroup("")
+			curMap.Children[gcTypeNameLowercase].Entities = make([]*configtypes.DRClass, 0)
+			curMap.Children[gcTypeNameLowercase].Entities = append(curMap.Children[gcTypeNameLowercase].Entities, configtypes.NewDRClass(""))
 		}
 
 		curMap = curMap.Children[gcTypeNameLowercase].Entities[0]
@@ -106,10 +106,10 @@ func (t *DRConfigParser) EnterEveryRule(ctx antlr.ParserRuleContext) {
 		className = strings.ToLower(className)
 
 		if !t.IsGenericClass {
-			newClass := database.NewDRClass("")
+			newClass := configtypes.NewDRClass("")
 
 			if _, ok := currentClass.Children[className]; !ok {
-				currentClass.Children[className] = database.NewDRClassChildGroup("")
+				currentClass.Children[className] = configtypes.NewDRClassChildGroup("")
 			}
 
 			currentClass.Children[className].Entities = append(currentClass.Children[className].Entities, newClass)
@@ -130,11 +130,11 @@ func (t *DRConfigParser) EnterEveryRule(ctx antlr.ParserRuleContext) {
 				splitParentClass := strings.Split(parentClass, ".")
 				childParentClass := splitParentClass[len(splitParentClass)-1]
 
-				newClass := database.NewDRClass("*")
+				newClass := configtypes.NewDRClass("*")
 				newClass.Extends = parentClass
 
 				if _, ok := currentClass.Children[childParentClass]; !ok {
-					currentClass.Children[childParentClass] = database.NewDRClassChildGroup("")
+					currentClass.Children[childParentClass] = configtypes.NewDRClassChildGroup("")
 				}
 
 				currentClass.Children[childParentClass].Entities = append(currentClass.Children[childParentClass].Entities, newClass)
@@ -175,7 +175,7 @@ func (t *DRConfigParser) ExitEveryRule(ctx antlr.ParserRuleContext) {
 	}
 }
 
-func parseFile(path string, rootPath string, config *DRConfig) {
+func parseFile(path string, rootPath string, config *configtypes.DRConfig) {
 	input, _ := antlr.NewFileStream(path)
 	lexer := parser.NewDRConfigLexer(input)
 	stream := antlr.NewCommonTokenStream(lexer, 0)
@@ -202,8 +202,8 @@ func parseFile(path string, rootPath string, config *DRConfig) {
 //	return all, nil
 //}
 
-func ParseAllFilesToDRConfig(files []string, rootPath string) (*DRConfig, error) {
-	drConfig := NewDRConfig()
+func ParseAllFilesToDRConfig(files []string, rootPath string) (*configtypes.DRConfig, error) {
+	drConfig := configtypes.NewDRConfig()
 
 	for _, path := range files {
 		//split := strings.Split(path, "\\")

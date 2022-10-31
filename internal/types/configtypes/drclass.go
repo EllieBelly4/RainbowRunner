@@ -1,4 +1,4 @@
-package database
+package configtypes
 
 import (
 	"RainbowRunner/internal/types"
@@ -7,26 +7,12 @@ import (
 	"strconv"
 )
 
-type DRClassChildGroup struct {
-	Name     string     `json:"name,omitempty"`
-	Entities []*DRClass `json:"entities"`
-	GCType   string     `json:"gcType,omitempty"`
-}
-
-type DRClassProperties map[string]string
-
-var quoteRemoveRegex = regexp.MustCompile("^[\"']|[\"']$")
-
 type DRClass struct {
 	Name             string                        `json:"name,omitempty"`
 	Extends          string                        `json:"extends,omitempty"`
 	Properties       DRClassProperties             `json:"properties,omitempty"`
 	Children         map[string]*DRClassChildGroup `json:"children,omitempty"`
 	CustomProperties map[string]interface{}        `json:"customProperties,omitempty"`
-}
-
-func (p *DRClassProperties) StringVal(key string) string {
-	return quoteRemoveRegex.ReplaceAllString((*p)[key], "")
 }
 
 func (c *DRClass) Find(class []string) *DRClass {
@@ -76,20 +62,4 @@ func (c *DRClass) Slot() types.EquipmentSlot {
 	}
 
 	return types.EquipmentSlot(slotInt)
-}
-
-func NewDRClass(className string) *DRClass {
-	return &DRClass{
-		Name:             className,
-		Properties:       make(map[string]string),
-		Children:         make(map[string]*DRClassChildGroup),
-		CustomProperties: make(map[string]interface{}),
-	}
-}
-
-func NewDRClassChildGroup(className string) *DRClassChildGroup {
-	return &DRClassChildGroup{
-		Name:     className,
-		Entities: make([]*DRClass, 0),
-	}
 }

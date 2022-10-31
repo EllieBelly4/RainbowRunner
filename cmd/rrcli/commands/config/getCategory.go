@@ -3,7 +3,7 @@ package config
 import (
 	"RainbowRunner/cmd/configparser/configparser"
 	"RainbowRunner/cmd/rrcli/configurator"
-	"RainbowRunner/internal/database"
+	"RainbowRunner/internal/types/configtypes"
 	"encoding/json"
 	"fmt"
 	"github.com/spf13/cobra"
@@ -50,7 +50,7 @@ var getCategoryCommand = &cobra.Command{
 			panic(err)
 		}
 
-		var results []*database.DRClassChildGroup
+		var results []*configtypes.DRClassChildGroup
 
 		for _, gcType := range gcTypes {
 			class, err := config.Get(gcType)

@@ -1,7 +1,6 @@
-package configparser
+package configtypes
 
 import (
-	"RainbowRunner/internal/database"
 	"errors"
 	"fmt"
 	"strings"
@@ -25,7 +24,11 @@ import (
 }
 */
 
-func (c *DRConfig) MergeParents(class *database.DRClassChildGroup) {
+type DRConfig struct {
+	Classes *DRClass `json:"classes"`
+}
+
+func (c *DRConfig) MergeParents(class *DRClassChildGroup) {
 	for _, entity := range class.Entities {
 		if entity.Extends != "" {
 			parentClass, err := c.Get(entity.Extends)
@@ -49,7 +52,7 @@ func (c *DRConfig) MergeParents(class *database.DRClassChildGroup) {
 				c.mergeProperties(entity, parentEntity)
 
 				if entity.Children == nil {
-					entity.Children = map[string]*database.DRClassChildGroup{}
+					entity.Children = map[string]*DRClassChildGroup{}
 				}
 
 				for parentChildName, parentChild := range parentEntity.Children {
@@ -75,7 +78,7 @@ func (c *DRConfig) MergeParents(class *database.DRClassChildGroup) {
 	}
 }
 
-func (c *DRConfig) mergeProperties(entity *database.DRClass, parentEntity *database.DRClass) {
+func (c *DRConfig) mergeProperties(entity *DRClass, parentEntity *DRClass) {
 	if entity.Properties == nil {
 		entity.Properties = map[string]string{}
 	}
@@ -87,7 +90,7 @@ func (c *DRConfig) mergeProperties(entity *database.DRClass, parentEntity *datab
 	}
 }
 
-func (c *DRConfig) Get(fullgctype string) ([]*database.DRClassChildGroup, error) {
+func (c *DRConfig) Get(fullgctype string) ([]*DRClassChildGroup, error) {
 	fullgctype = strings.ToLower(fullgctype)
 	splitGCType := strings.Split(fullgctype, ".")
 
@@ -110,7 +113,7 @@ func (c *DRConfig) Get(fullgctype string) ([]*database.DRClassChildGroup, error)
 	return found, nil
 }
 
-func (c *DRConfig) GetSimple(splitGCType string) ([]*database.DRClassChildGroup, error) {
+func (c *DRConfig) GetSimple(splitGCType string) ([]*DRClassChildGroup, error) {
 	found := c.getFromGCType(strings.Split(splitGCType, "."), c.Classes.Children)
 
 	if found == nil {
@@ -120,13 +123,13 @@ func (c *DRConfig) GetSimple(splitGCType string) ([]*database.DRClassChildGroup,
 
 }
 
-func (c *DRConfig) getFromGCType(gcType []string, children map[string]*database.DRClassChildGroup) []*database.DRClassChildGroup {
+func (c *DRConfig) getFromGCType(gcType []string, children map[string]*DRClassChildGroup) []*DRClassChildGroup {
 	if child, ok := children[gcType[0]]; ok {
 		if len(gcType) == 1 {
-			return []*database.DRClassChildGroup{child}
+			return []*DRClassChildGroup{child}
 		}
 
-		foundSubChildren := make([]*database.DRClassChildGroup, 0)
+		foundSubChildren := make([]*DRClassChildGroup, 0)
 
 		for _, subChild := range child.Entities {
 			foundFromSubChild := c.getFromGCType(gcType[1:], subChild.Children)
@@ -194,6 +197,54 @@ func (c *DRConfig) getParents(extends string) []string {
 
 func NewDRConfig() *DRConfig {
 	return &DRConfig{
-		Classes: database.NewDRClass("root"),
+		Classes: NewDRClass("root"),
+	}
+}
+
+func (c *DRConfig) GenerateCategoryMap() (map[string]*DRCategory, error) {
+	output := map[string]*DRCategory{}
+
+	c.generateCategoryMap(c.Classes.Children, output, []string{})
+
+	return output, nil
+}
+
+func (c *DRConfig) generateCategoryMap(classes map[string]*DRClassChildGroup, output map[string]*DRCategory, gcTypeName []string) {
+	for className, classChildGroup := range classes {
+		for _, entity := range classChildGroup.Entities {
+			c.generateCategoryMap(entity.Children, output, append(gcTypeName, className))
+
+			if entity.Extends != "" {
+				parentsGCTypes := c.getParents(entity.Extends)
+				parentGCType := strings.Join(parentsGCTypes, ".")
+
+				fullGCType := parentGCType + "." + className
+
+				curMap := output
+				var curCategory *DRCategory = nil
+				curGCType := ""
+
+				for i := 0; i < len(parentsGCTypes); i++ {
+					curGCType = parentsGCTypes[i]
+
+					if _, ok := curMap[curGCType]; !ok {
+						curMap[curGCType] = NewDRCategory()
+					}
+
+					curCategory = curMap[curGCType]
+					curMap = curMap[curGCType].Children
+				}
+
+				realGCTypeName := strings.Join(append(gcTypeName, className), ".")
+
+				if curCategory == nil {
+					fmt.Println("nil category " + fullGCType)
+				} else {
+					curCategory.Classes[realGCTypeName] = true
+				}
+
+				fmt.Println(realGCTypeName)
+			}
+		}
 	}
 }

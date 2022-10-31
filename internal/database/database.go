@@ -1,27 +1,27 @@
 package database
 
 import (
-	"RainbowRunner/cmd/configparser/configparser"
 	"RainbowRunner/cmd/rrcli/configurator"
 	"RainbowRunner/internal/types"
+	"RainbowRunner/internal/types/configtypes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"strings"
 )
 
-type DRClassCollection map[string]*DRClass
+type DRClassCollection map[string]*configtypes.DRClass
 
-type EquipmentMap map[string]*DRClass
+type EquipmentMap map[string]*configtypes.DRClass
 
 type DRWeapon struct {
-	*DRClass
+	*configtypes.DRClass
 }
 
-var Config *configparser.DRConfig
+var Config *configtypes.DRConfig
 
-var Weapons []*DRClassChildGroup
-var Armour []*DRClassChildGroup
+var Weapons []*configtypes.DRClassChildGroup
+var Armour []*configtypes.DRClassChildGroup
 
 var MeleeWeapons EquipmentMap
 var RangedWeapons EquipmentMap
@@ -30,7 +30,7 @@ var Armours EquipmentMap
 var Gloves EquipmentMap
 var Boots EquipmentMap
 
-func FindItem(db []*DRClassChildGroup, gcType string) *DRClass {
+func FindItem(db []*configtypes.DRClassChildGroup, gcType string) *configtypes.DRClass {
 	gcType = strings.ToLower(gcType)
 	for _, group := range db {
 		if strings.ToLower(group.GCType) == gcType {

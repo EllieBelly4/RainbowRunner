@@ -1,11 +1,10 @@
 package main
 
 import (
-	"RainbowRunner/cmd/configparser/configparser"
 	"RainbowRunner/cmd/rrcli/configurator"
 	"RainbowRunner/cmd/rrcli/modelextractor"
-	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/gosucks"
+	"RainbowRunner/internal/types/configtypes"
 	"RainbowRunner/pkg/datatypes"
 	"encoding/json"
 	"fmt"
@@ -80,7 +79,7 @@ func main() {
 
 func extractModelsForObjects(entities []struct {
 	string
-	*database.DRClass
+	*configtypes.DRClass
 }, rootPath string, destPath string, split bool) {
 	useCollisionModel := false
 
@@ -166,13 +165,13 @@ func extractModelsForObjects(entities []struct {
 	}
 }
 
-func getDRClassesForStaticObjects(dump []StaticObjectDump, config *configparser.DRConfig) []struct {
+func getDRClassesForStaticObjects(dump []StaticObjectDump, config *configtypes.DRConfig) []struct {
 	string
-	*database.DRClass
+	*configtypes.DRClass
 } {
 	var allEntities []struct {
 		string
-		*database.DRClass
+		*configtypes.DRClass
 	}
 
 	for _, dumpObject := range dump {
@@ -200,7 +199,7 @@ func getDRClassesForStaticObjects(dump []StaticObjectDump, config *configparser.
 
 		allEntities = append(allEntities, struct {
 			string
-			*database.DRClass
+			*configtypes.DRClass
 		}{dumpObject.GCTypeName, entity})
 	}
 
