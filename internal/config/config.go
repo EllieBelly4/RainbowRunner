@@ -24,8 +24,9 @@ type LoggingOptions struct {
 }
 
 type RRConfig struct {
-	SendMovementMessages bool           `mapstructure:"send_movement_messages"`
-	Logging              LoggingOptions `mapstructure:"logging"`
+	SendMovementMessages     bool           `mapstructure:"send_movement_messages"`
+	Logging                  LoggingOptions `mapstructure:"logging"`
+	ReinitialiseZonesOnEnter bool           `mapstructure:"reinitialise_zones_on_enter"`
 }
 
 func Load() {

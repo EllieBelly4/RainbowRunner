@@ -107,6 +107,8 @@ func (z *Zone) SpawnInit(npc *NPC, position *datatypes.Vector3Float32, rotation 
 }
 
 func (z *Zone) Init() {
+	log.Infof("initialising zone %s", z.Name)
+
 	config, err := database.GetZoneConfig(z.Name)
 
 	if err != nil {

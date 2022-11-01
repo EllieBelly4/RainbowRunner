@@ -1,4 +1,5 @@
 send_movement_messages: true
+reinitialise_zones_on_enter: false
 logging:
   log_moves: false
   log_received_moves: false
