@@ -223,7 +223,7 @@ npcs = {
 
 for i, v in ipairs(npcs) do
     npc = currentZone:loadNPCFromConfig(v["name"])
-    currentZone:spawnNPC(npc, v["position"], v["rotation"])
+    currentZone:spawn(npc, v["position"], v["rotation"])
 end
 
 

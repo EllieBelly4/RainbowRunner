@@ -21,9 +21,44 @@ func (f ZoneLuaFunctions) GetName(state *lua.LState) int {
 	return 1
 }
 
-func (f ZoneLuaFunctions) SpawnNPC(state *lua.LState) int {
+func (f ZoneLuaFunctions) LoadNPCFromConfig(s *lua.LState) int {
+	z := lua2.CheckReferenceValue[Zone](s, 1)
+	npcID := s.CheckString(2)
+
+	npcConfig, ok := z.BaseConfig.NPCs[npcID]
+
+	if !ok {
+		s.RaiseError("could not find NPC config with ID: " + npcID)
+	}
+
+	npc := NewNPCFromConfig(npcConfig)
+
+	ud := s.NewUserData()
+	ud.Value = npc
+
+	s.SetMetatable(ud, s.GetTypeMetatable(luaNPCTypeName))
+	s.Push(ud)
+	return 1
+}
+
+func (f ZoneLuaFunctions) Spawn(state *lua.LState) int {
+	ud := state.CheckUserData(2)
+
+	switch ud.Value.(type) {
+	case *NPC:
+		return LuaZoneSpawnEntity(state)
+	case *WorldEntity:
+		return LuaZoneSpawnEntity(state)
+	default:
+		state.RaiseError("cannot spawn given entity type ")
+	}
+
+	return 0
+}
+
+func LuaZoneSpawnEntity(state *lua.LState) int {
 	z := lua2.CheckReferenceValue[Zone](state, 1)
-	npc := lua2.CheckReferenceValue[NPC](state, 2)
+	entity := lua2.CheckInterfaceValue[DRObject](state, 2)
 
 	var position datatypes.Vector3Float32
 	var rotation float32
@@ -36,29 +71,9 @@ func (f ZoneLuaFunctions) SpawnNPC(state *lua.LState) int {
 		rotation = float32(state.CheckNumber(4))
 	}
 
-	z.SpawnInit(npc, &position, &rotation)
+	z.SpawnInit(entity, &position, &rotation)
 
 	return 0
-}
-
-func (f ZoneLuaFunctions) LoadNPCFromConfig(s *lua.LState) int {
-	z := lua2.CheckReferenceValue[Zone](s, 1)
-	npcID := s.CheckString(2)
-
-	npcConfig, ok := z.BaseConfig.NPCs[npcID]
-
-	if !ok {
-		s.Error(lua.LString("could not find NPC config with ID: "+npcID), -1)
-	}
-
-	npc := NewNPCFromConfig(npcConfig)
-
-	ud := s.NewUserData()
-	ud.Value = npc
-
-	s.SetMetatable(ud, s.GetTypeMetatable(luaNPCTypeName))
-	s.Push(ud)
-	return 1
 }
 
 var zoneLuaFunctions ZoneLuaFunctions
@@ -80,41 +95,6 @@ func AddZoneToState(L *lua.LState, z *Zone) {
 
 var zoneMethods = map[string]lua.LGFunction{
 	"name":              zoneLuaFunctions.GetName,
-	"spawnNPC":          zoneLuaFunctions.SpawnNPC,
+	"spawn":             zoneLuaFunctions.Spawn,
 	"loadNPCFromConfig": zoneLuaFunctions.LoadNPCFromConfig,
 }
-
-//// Constructor
-//func newPerson(L *lua.LState) int {
-//	person := &Person{L.CheckString(1)}
-//	ud := L.NewUserData()
-//	ud.Value = person
-//	L.SetMetatable(ud, L.GetTypeMetatable(luaZoneTypeName))
-//	L.Push(ud)
-//	return 1
-//}
-
-// Checks whether the first lua argument is a *LUserData with *Person and returns this *Person.
-//func checkPerson(L *lua.LState) *Person {
-//	ud := L.CheckUserData(1)
-//	if v, ok := ud.Value.(*Person); ok {
-//		return v
-//	}
-//	L.ArgError(1, "person expected")
-//	return nil
-//}
-
-//var personMethods = map[string]lua.LGFunction{
-//	"name": personGetSetName,
-//}
-
-//// Getter and setter for the Person#Name
-//func personGetSetName(L *lua.LState) int {
-//	p := checkPerson(L)
-//	if L.GetTop() == 2 {
-//		p.Name = L.CheckString(2)
-//		return 0
-//	}
-//	L.Push(lua.LString(p.Name))
-//	return 1
-//}

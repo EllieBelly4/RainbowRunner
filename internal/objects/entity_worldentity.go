@@ -5,12 +5,29 @@ import (
 	"RainbowRunner/pkg/datatypes"
 )
 
+type IWorldEntity interface {
+	GetWorldEntity() *WorldEntity
+}
+
 type WorldEntity struct {
 	*GCObject
 	WorldPosition        datatypes.Vector3Float32
 	Rotation             float32
 	WorldEntityFlags     uint32
 	WorldEntityInitFlags byte
+	Label                string
+}
+
+func (n *WorldEntity) GetWorldEntity() *WorldEntity {
+	return n
+}
+
+func (n *WorldEntity) SetPosition(position datatypes.Vector3Float32) {
+	n.WorldPosition = position
+}
+
+func (n *WorldEntity) SetRotation(degrees float32) {
+	n.Rotation = degrees
 }
 
 func (n *WorldEntity) Type() DRObjectType {

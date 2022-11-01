@@ -10,6 +10,7 @@ func RegisterLuaGlobals(state *lua.LState) {
 	registerLuaZone(state)
 	registerLuaVector3(state)
 	registerLuaVector2(state)
+	registerLuaWorldEntity(state)
 }
 
 func registerLuaVector3(s *lua.LState) {

@@ -78,6 +78,9 @@ func (z *Zone) AddPlayer(player *RRPlayer) {
 
 func (z *Zone) Spawn(entity DRObject) {
 	Entities.RegisterAll(nil, entity)
+
+	log.Infof("spawning entity '%s' in zone '%s'", entity.GetGCObject().GCType, z.Name)
+
 	z.AddEntity(entity)
 }
 
@@ -94,16 +97,23 @@ func (z *Zone) SendToAll(body *byter.Byter) {
 	}
 }
 
-func (z *Zone) SpawnInit(npc *NPC, position *datatypes.Vector3Float32, rotation *float32) {
+func (z *Zone) SpawnInit(entity DRObject, position *datatypes.Vector3Float32, rotation *float32) {
+	if _, ok := entity.(IWorldEntity); !ok {
+		log.Errorf("cannot init non-world entity")
+		return
+	}
+
+	worldEntity := entity.(IWorldEntity).GetWorldEntity()
+
 	if position != nil {
-		npc.WorldPosition = *position
+		worldEntity.WorldPosition = *position
 	}
 
 	if rotation != nil {
-		npc.Rotation = *rotation
+		worldEntity.Rotation = *rotation
 	}
 
-	z.Spawn(npc)
+	z.Spawn(entity)
 }
 
 func (z *Zone) Init() {
