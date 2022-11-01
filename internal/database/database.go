@@ -5,7 +5,6 @@ import (
 	"RainbowRunner/internal/types"
 	"RainbowRunner/internal/types/configtypes"
 	"encoding/json"
-	"fmt"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"strings"
@@ -20,6 +19,7 @@ type DRWeapon struct {
 }
 
 var config *configtypes.DRConfig
+var checkpointConfigs map[string]map[string]*CheckpointConfig
 
 var Weapons []*configtypes.DRClassChildGroup
 var Armour []*configtypes.DRClassChildGroup
@@ -43,7 +43,7 @@ func FindItem(db []*configtypes.DRClassChildGroup, gcType string) *configtypes.D
 }
 
 func LoadConfigFiles() {
-	log.Info("loading config files")
+	log.Info("loading extracted config files")
 	var err error
 
 	config, err = configurator.LoadFromDumpedConfigFile("resources/Dumps/generated/finalconf.json")
@@ -52,12 +52,23 @@ func LoadConfigFiles() {
 		panic(err)
 	}
 
+	log.Info("loading checkpoint configs")
+
+	rawCheckpointConfigs, err := config.Get("world.checkpoints")
+
+	if err != nil {
+		panic(err)
+	}
+
+	checkpointConfigs = sortCheckpoints(rawCheckpointConfigs)
+
 	log.Info("config files loaded")
 }
 
 func LoadEquipmentFixtures() {
-	fmt.Println("loading equipment fixtures")
+	log.Info("loading equipment fixtures")
 
+	log.Info("loading armour fixtures")
 	data, err := ioutil.ReadFile("resources/Dumps/generated/armour.json")
 
 	if err != nil {
@@ -72,6 +83,7 @@ func LoadEquipmentFixtures() {
 
 	AddArmours()
 
+	log.Info("loading weapon fixtures")
 	data, err = ioutil.ReadFile("resources/Dumps/generated/weapons.json")
 
 	if err != nil {
@@ -86,7 +98,7 @@ func LoadEquipmentFixtures() {
 
 	AddWeapons()
 
-	fmt.Println("equipment fixtures loaded")
+	log.Info("equipment fixtures loaded")
 }
 
 func AddWeapons() {

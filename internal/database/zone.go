@@ -4,9 +4,25 @@ import (
 	"RainbowRunner/internal/types/configtypes"
 )
 
+type CheckpointConfig struct {
+	Name       string
+	FullGCType string
+	Order      int32
+	SpawnPoint string
+	Zone       string
+	Entity     *CheckpointEntityConfig
+}
+
+type CheckpointEntityConfig struct {
+	FullGCType string
+	Label      string
+	Blocking   bool
+}
+
 type ZoneConfig struct {
-	Name string
-	NPCs map[string]*NPCConfig
+	Name        string
+	NPCs        map[string]*NPCConfig
+	Checkpoints map[string]*CheckpointConfig
 }
 
 func GetZoneConfig(name string) (*ZoneConfig, error) {
@@ -22,6 +38,10 @@ func GetZoneConfig(name string) (*ZoneConfig, error) {
 
 	if npcConfig, ok := configEntities["npc"]; ok {
 		handleNPCs(zoneConfig, npcConfig)
+	}
+
+	if checkConfig, ok := checkpointConfigs[zoneConfig.Name]; ok {
+		zoneConfig.Checkpoints = checkConfig
 	}
 
 	return zoneConfig, nil
