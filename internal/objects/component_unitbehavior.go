@@ -13,6 +13,10 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+type IUnitBehavior interface {
+	GetUnitBehavior() *UnitBehavior
+}
+
 type UnitBehavior struct {
 	*Component
 	LastPosition   datatypes.Vector3Float32
@@ -21,6 +25,10 @@ type UnitBehavior struct {
 	UnitMoverFlags byte
 	Action1        behavior.Action
 	Action2        behavior.Action
+}
+
+func (u *UnitBehavior) GetUnitBehavior() *UnitBehavior {
+	return u
 }
 
 type UnitBehaviorHandler struct {
@@ -113,15 +121,15 @@ func (u *UnitBehaviorHandler) ReadUpdate(reader *byter.Byter) error {
 	return u.ReadUpdate(reader)
 }
 
-func (n *UnitBehavior) WriteInit(b *byter.Byter) {
+func (u *UnitBehavior) WriteInit(b *byter.Byter) {
 	behav := behavior.NewBehavior()
-	behav.Init(b, n.Action1, n.Action2)
+	behav.Init(b, u.Action1, u.Action2)
 
 	// UnitMover::readInit()
 	// Flags
 	// 0x04
 	// 0x01
-	unitMover := n.UnitMoverFlags
+	unitMover := u.UnitMoverFlags
 	b.WriteByte(unitMover)
 
 	if unitMover&0x04 > 0 {
@@ -169,7 +177,7 @@ type UnitPathPosition struct {
 	Rotation float32
 }
 
-func (g *UnitBehavior) handleClientMove(conn connections.Connection, reader *byter.Byter) {
+func (u *UnitBehavior) handleClientMove(conn connections.Connection, reader *byter.Byter) {
 	// This increments each time the server sends a MoveTo message
 	// The client will then increment by 1 for every individual movement performed (clicking)
 	updateNumber := reader.Byte()
@@ -204,12 +212,12 @@ func (g *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 			)
 		}
 
-		g.LastPosition = g.Position
+		u.LastPosition = u.Position
 
-		g.Position.X = pos.X
-		g.Position.Y = pos.Y
-		g.Position.Z = 0
-		g.Rotation = degrees
+		u.Position.X = pos.X
+		u.Position.Y = pos.Y
+		u.Position.Z = 0
+		u.Rotation = degrees
 
 		//conn.Player.SendPosition(moveUpdateType)
 
@@ -261,13 +269,13 @@ func (g *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 	}
 }
 
-func (g *UnitBehavior) ReadUpdate(reader *byter.Byter) error {
+func (u *UnitBehavior) ReadUpdate(reader *byter.Byter) error {
 	subMessage := reader.Byte()
 	switch int(subMessage) {
 	case 0x01:
-		g.handleClientAttack(reader)
+		u.handleClientAttack(reader)
 	case 0x65:
-		g.handleClientMove(g.EntityProperties.Conn, reader)
+		u.handleClientMove(u.EntityProperties.Conn, reader)
 	// Potentially requesting current position because starting a new path
 	case 0x03:
 		fmt.Printf("player send move request\n")
@@ -282,20 +290,20 @@ func (g *UnitBehavior) ReadUpdate(reader *byter.Byter) error {
 	return nil
 }
 
-func (n *UnitBehavior) Warp(x, y, z float32) {
-	n.Position.X = x
-	n.Position.Y = y
-	n.Position.Z = z
+func (u *UnitBehavior) Warp(x, y, z float32) {
+	u.Position.X = x
+	u.Position.Y = y
+	u.Position.Z = z
 
-	if n.RREntityProperties().Conn != nil {
-		n.sendWarpTo(x, y, z)
+	if u.RREntityProperties().Conn != nil {
+		u.sendWarpTo(x, y, z)
 	}
 }
 
-func (n *UnitBehavior) sendWarpTo(posX, posY, posZ float32) {
+func (u *UnitBehavior) sendWarpTo(posX, posY, posZ float32) {
 	writer := NewClientEntityWriterWithByter()
 	writer.BeginStream()
-	writer.BeginComponentUpdate(n)
+	writer.BeginComponentUpdate(u)
 
 	writer.Body.WriteByte(0x04) // CreateAction1
 	writer.Body.WriteByte(17)
@@ -304,11 +312,11 @@ func (n *UnitBehavior) sendWarpTo(posX, posY, posZ float32) {
 	writer.Body.WriteInt32(int32(posY * 256))
 	writer.Body.WriteInt32(int32(posZ * 256))
 
-	writer.WriteSynch(n)
+	writer.WriteSynch(u)
 	writer.EndStream()
 
-	if n.RREntityProperties().Zone != nil {
-		n.RREntityProperties().Zone.SendToAll(writer.Body)
+	if u.RREntityProperties().Zone != nil {
+		u.RREntityProperties().Zone.SendToAll(writer.Body)
 	}
 }
 
@@ -316,23 +324,37 @@ func (n *UnitBehavior) sendWarpTo(posX, posY, posZ float32) {
 //
 //}
 
-func (n *UnitBehavior) handleClientAttack(reader *byter.Byter) {
+func (u *UnitBehavior) handleClientAttack(reader *byter.Byter) {
 	reader.DumpRemaining()
 
 	writer := NewClientEntityWriterWithByter()
 
 	writer.BeginStream()
-	writer.BeginComponentUpdate(n)
+	writer.BeginComponentUpdate(u)
 
 	//00000000  07 34 b4 00 01 02 51 01  0a 76 b9 01 00 3d 4e ff  |.4....Q..v...=N.|
 	//00000010  ff ec 31 00 00                                    |..1..|
 
 	//00000000  02 51 01 0a 0b 90 01 00  88 4d ff ff ec 31 00 00  |.Q.......M...1..|
 
-	writer.EndComponentUpdate(n)
+	writer.EndComponentUpdate(u)
 	writer.EndStream()
 
-	helpers.WriteCompressedASimple(n.RREntityProperties().Conn, writer.Body)
+	helpers.WriteCompressedASimple(u.RREntityProperties().Conn, writer.Body)
+}
+
+func (u *UnitBehavior) WriteWarp(writer *ClientEntityWriter) {
+	writer.BeginComponentUpdate(u)
+
+	writer.Body.WriteByte(0x04) // CreateAction1
+	writer.Body.WriteByte(17)
+	writer.Body.WriteByte(0x00)
+	writer.Body.WriteInt32(int32(u.Position.X * 256))
+	writer.Body.WriteInt32(int32(u.Position.Y * 256))
+	writer.Body.WriteInt32(int32(u.Position.Z * 256))
+
+	writer.WriteSynch(u)
+	//writer.EndComponentUpdate(u)
 }
 
 func NewUnitBehavior(gcType string) *UnitBehavior {

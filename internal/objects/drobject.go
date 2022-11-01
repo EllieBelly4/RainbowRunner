@@ -39,6 +39,7 @@ type DRObject interface {
 	SetVersion(version byte)
 	ReadData(b *byter.Byter)
 	WalkChildren(f func(object DRObject))
+	RemoveChildAt(i int)
 }
 
 type DRItem interface {

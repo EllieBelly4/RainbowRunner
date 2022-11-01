@@ -26,17 +26,21 @@ func (p *RRPlayer) OnZoneJoin() {
 		CEWriter.Create(entity)
 
 		entity.WalkChildren(func(object DRObject) {
-			if _, ok := object.(*MonsterBehavior2); ok {
-				return
-			}
-
 			switch object.Type() {
 			case DRObjectComponent:
+				//if mb2, ok := object.(*MonsterBehavior2); ok {
+				//	CEWriter.CreateComponentAndInit(object, entity)
+				//}
 				CEWriter.CreateComponentAndInit(object, entity)
 			}
 		})
 
 		CEWriter.Init(entity)
+
+		if unitBehavior, ok := entity.GetChildByGCNativeType("UnitBehavior").(IUnitBehavior); unitBehavior != nil && ok {
+			unitBehavior.GetUnitBehavior().WriteWarp(CEWriter)
+		}
+
 		p.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeCreateNPC)
 	}
 }

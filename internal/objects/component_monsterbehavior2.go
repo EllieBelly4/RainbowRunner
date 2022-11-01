@@ -48,8 +48,8 @@ func (n *MonsterBehavior2) WriteInit(b *byter.Byter) {
 	monsterBehaviorFlags := byte(0x00)
 	b.WriteByte(monsterBehaviorFlags)
 
-	b.WriteUInt32(0x00)
-	b.WriteUInt32(0x00)
+	b.WriteUInt32(0x00000000)
+	b.WriteUInt32(0x00000000)
 
 	if monsterBehaviorFlags&0x04 > 0 {
 		b.WriteUInt16(0x00)
@@ -62,12 +62,15 @@ func (n *MonsterBehavior2) WriteInit(b *byter.Byter) {
 	if monsterBehaviorFlags&0x10 > 0 {
 		b.WriteUInt16(0x00)
 	}
+
+	// <----------------------------------------------------
 }
 
 func NewMonsterBehavior2(gctype string) *MonsterBehavior2 {
 	unitBehavior := NewUnitBehavior(gctype)
 
 	unitBehavior.UnitMoverFlags = 0x01 | 0x04 | 0x80
+	//unitBehavior.UnitMoverFlags = 0x00
 
 	return &MonsterBehavior2{
 		UnitBehavior: unitBehavior,

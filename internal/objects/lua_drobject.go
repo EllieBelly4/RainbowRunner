@@ -30,12 +30,33 @@ func luaDRObjectExtendMethods(methods map[string]lua2.LGFunction) map[string]lua
 }
 
 var luaDRObjectMethods = map[string]lua2.LGFunction{
-	"addChild":               luaDRObjectAddChild,
-	"children":               luaDRObjectGetChildren,
-	"type":                   luaDRObjectGetType,
-	"getChildByGCType":       luaDRObjectGetChildByGCType,
-	"getChildByGCNativeType": luaDRObjectGetChildByGCNativeType,
-	"ownerID":                luaDRObjectGetOwnerID,
+	"addChild":                     luaDRObjectAddChild,
+	"children":                     luaDRObjectGetChildren,
+	"type":                         luaDRObjectGetType,
+	"getChildByGCType":             luaDRObjectGetChildByGCType,
+	"getChildByGCNativeType":       luaDRObjectGetChildByGCNativeType,
+	"removeChildrenByGCNativeType": luaDRObjectRemoveChildrenByGCNativeType,
+	"ownerID":                      luaDRObjectGetOwnerID,
+}
+
+func luaDRObjectRemoveChildrenByGCNativeType(state *lua2.LState) int {
+	obj := lua.CheckInterfaceValue[DRObject](state, 1)
+	gctype := state.CheckString(2)
+
+	toRemove := make([]int, 0, 0)
+
+	for i, child := range obj.Children() {
+		if child.GetGCObject().GCNativeType == gctype {
+			toRemove = append(toRemove, i)
+		}
+	}
+
+	for _, i := range toRemove {
+		obj.RemoveChildAt(i)
+	}
+
+	state.Push(lua2.LNumber(len(toRemove)))
+	return 1
 }
 
 func luaDRObjectGetOwnerID(state *lua2.LState) int {

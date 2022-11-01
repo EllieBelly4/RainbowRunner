@@ -136,5 +136,22 @@ func NewNPCFromConfig(config *database.NPCConfig) *NPC {
 	npc.Name = config.Name
 	npc.Level = config.Level
 
+	if config.Behaviour != nil {
+		//if config.Behaviour.Type == "monsterbehavior2" {
+		npc.AddChild(NewMonsterBehavior2(config.Behaviour.Type))
+		//} else {
+		//	npc.AddChild(NewUnitBehavior(config.Behaviour.Type))
+		//}
+	}
+
+	skills := NewSkills("skills")
+	npc.AddChild(skills)
+
+	manipulators := NewManipulators("manipulators")
+	npc.AddChild(manipulators)
+
+	modifiers := NewModifiers("modifiers")
+	npc.AddChild(modifiers)
+
 	return npc
 }

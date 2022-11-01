@@ -29,6 +29,10 @@ type GCObject struct {
 	EntityHandler    EntityMessageHandler
 }
 
+func (g *GCObject) RemoveChildAt(i int) {
+	g.GCChildren = append(g.GCChildren[:i], g.GCChildren[i+1:]...)
+}
+
 func (g *GCObject) Type() DRObjectType {
 	return DRObjectUnknown
 }
@@ -105,42 +109,42 @@ func NewGCObject(nativeType string) *GCObject {
 
 var indent = 0
 
-func (o *GCObject) WriteFullGCObject(byter *byter.Byter) {
-	byter.WriteByte(o.Version)
+func (g *GCObject) WriteFullGCObject(byter *byter.Byter) {
+	byter.WriteByte(g.Version)
 
-	useHashes := o.Version >= 0x2a
+	useHashes := g.Version >= 0x2a
 
 	logSerialise("========== GCObject ===========")
 	logSerialise(`ID: %d
 Name: %s
 NativeClass: %s
 GCType: %s
----`, o.EntityProperties.ID, o.GCLabel, o.GCNativeType, o.GCType)
+---`, g.EntityProperties.ID, g.GCLabel, g.GCNativeType, g.GCType)
 
 	if useHashes {
-		byter.WriteUInt32(GetTypeHash(o.GCNativeType))
+		byter.WriteUInt32(GetTypeHash(g.GCNativeType))
 	} else {
-		byter.WriteCString(o.GCNativeType)
+		byter.WriteCString(g.GCNativeType)
 	}
 
-	byter.WriteUInt32(uint32(o.EntityProperties.ID))
-	byter.WriteCString(o.GCLabel)
+	byter.WriteUInt32(uint32(g.EntityProperties.ID))
+	byter.WriteCString(g.GCLabel)
 
-	byter.WriteUInt32(uint32(len(o.GCChildren)))
+	byter.WriteUInt32(uint32(len(g.GCChildren)))
 
 	indent++
-	for _, child := range o.GCChildren {
+	for _, child := range g.GCChildren {
 		child.WriteFullGCObject(byter)
 	}
 	indent--
 
 	if useHashes {
-		byter.WriteUInt32(GetTypeHash(o.GCType))
+		byter.WriteUInt32(GetTypeHash(g.GCType))
 	} else {
-		byter.WriteCString(o.GCType)
+		byter.WriteCString(g.GCType)
 	}
 
-	for _, prop := range o.Properties {
+	for _, prop := range g.Properties {
 		prop.Serialise(byter, useHashes)
 	}
 
@@ -158,12 +162,12 @@ func logSerialise(format string, args ...interface{}) {
 	}
 }
 
-func (o *GCObject) AddChild(child DRObject) {
-	if o.GCChildren == nil {
-		o.GCChildren = make([]DRObject, 0, 128)
+func (g *GCObject) AddChild(child DRObject) {
+	if g.GCChildren == nil {
+		g.GCChildren = make([]DRObject, 0, 128)
 	}
 
-	o.GCChildren = append(o.GCChildren, child)
+	g.GCChildren = append(g.GCChildren, child)
 }
 
 func (p GCObjectProperty) Serialise(b *byter.Byter, useHash bool) {
@@ -218,8 +222,8 @@ func GetTypeHash(name string) uint32 {
 	return result
 }
 
-func (o *GCObject) GetChildByGCNativeType(s string) DRObject {
-	for _, child := range o.GCChildren {
+func (g *GCObject) GetChildByGCNativeType(s string) DRObject {
+	for _, child := range g.GCChildren {
 		if strings.ToLower(child.GetGCObject().GCNativeType) == strings.ToLower(s) {
 			return child
 		}
@@ -228,8 +232,8 @@ func (o *GCObject) GetChildByGCNativeType(s string) DRObject {
 	return nil
 }
 
-func (o *GCObject) GetChildByGCType(s string) DRObject {
-	for _, child := range o.GCChildren {
+func (g *GCObject) GetChildByGCType(s string) DRObject {
+	for _, child := range g.GCChildren {
 		if strings.ToLower(child.GetGCObject().GCType) == strings.ToLower(s) {
 			return child
 		}
@@ -238,19 +242,19 @@ func (o *GCObject) GetChildByGCType(s string) DRObject {
 	return nil
 }
 
-func (o *GCObject) SetVersion(version uint8) {
-	o.Version = version
+func (g *GCObject) SetVersion(version uint8) {
+	g.Version = version
 }
 
-func (o *GCObject) ReadData(b *byter.Byter) {
+func (g *GCObject) ReadData(b *byter.Byter) {
 }
 
-func (o *GCObject) WalkChildren(cb func(object DRObject)) {
-	if len(o.Children()) == 0 {
+func (g *GCObject) WalkChildren(cb func(object DRObject)) {
+	if len(g.Children()) == 0 {
 		return
 	}
 
-	for _, object := range o.Children() {
+	for _, object := range g.Children() {
 		object.WalkChildren(cb)
 
 		cb(object)

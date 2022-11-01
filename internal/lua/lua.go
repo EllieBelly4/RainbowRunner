@@ -7,9 +7,16 @@ import (
 )
 
 var scripts = make(map[string]*LuaScriptGroup)
+var rootPath string
 
 func LoadScripts(root string) error {
-	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
+	rootPath = root
+
+	return reloadScripts()
+}
+
+func reloadScripts() error {
+	err := filepath.WalkDir(rootPath, func(path string, d fs.DirEntry, err error) error {
 		if d.IsDir() {
 			return nil
 		}

@@ -11,8 +11,12 @@ func registerLuaComponent(state *lua2.LState) {
 	state.SetGlobal("Component", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaComponent))
 	state.SetField(mt, "__index", state.SetFuncs(state.NewTable(),
-		luaDRObjectExtendMethods(entityLuaComponentMethods)),
-	)
+		luaMethodsComponent(),
+	))
+}
+
+func luaMethodsComponent() map[string]lua2.LGFunction {
+	return luaDRObjectExtendMethods(entityLuaComponentMethods)
 }
 
 var entityLuaComponentMethods = map[string]lua2.LGFunction{}

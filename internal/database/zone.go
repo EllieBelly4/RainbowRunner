@@ -2,6 +2,7 @@ package database
 
 import (
 	"RainbowRunner/internal/types/configtypes"
+	"strings"
 )
 
 type CheckpointConfig struct {
@@ -26,7 +27,9 @@ type ZoneConfig struct {
 }
 
 func GetZoneConfig(name string) (*ZoneConfig, error) {
-	rawConfig, err := config.Get("world." + name)
+	gcRoot := []string{"world", name}
+
+	rawConfig, err := config.Get(strings.Join(gcRoot, "."))
 
 	if err != nil {
 		return nil, err
@@ -37,7 +40,7 @@ func GetZoneConfig(name string) (*ZoneConfig, error) {
 	configEntities := rawConfig[0].Entities[0].Children
 
 	if npcConfig, ok := configEntities["npc"]; ok {
-		handleNPCs(zoneConfig, npcConfig)
+		handleNPCs(zoneConfig, npcConfig, append(gcRoot, "npc"))
 	}
 
 	if checkConfig, ok := checkpointConfigs[zoneConfig.Name]; ok {
@@ -47,13 +50,14 @@ func GetZoneConfig(name string) (*ZoneConfig, error) {
 	return zoneConfig, nil
 }
 
-func handleNPCs(zoneConfig *ZoneConfig, rawNPCConfig *configtypes.DRClassChildGroup) {
+func handleNPCs(zoneConfig *ZoneConfig, rawNPCConfig *configtypes.DRClassChildGroup, gcRoot []string) {
 	zoneConfig.NPCs = make(map[string]*NPCConfig)
 
 	for npcKey, npcConfig := range rawNPCConfig.Entities[0].Children {
-		npc := NewNPCConfig(npcConfig)
+		npcGCroot := append(gcRoot, npcKey)
+		npc := NewNPCConfig(npcConfig, npcGCroot)
 
-		npc.FullGCType = "world." + zoneConfig.Name + ".npc." + npcKey
+		npc.FullGCType = strings.Join(npcGCroot, ".")
 
 		zoneConfig.NPCs[npcKey] = npc
 	}

@@ -1,11 +1,22 @@
 package objects
 
-import "RainbowRunner/pkg/byter"
+import (
+	"RainbowRunner/pkg/byter"
+	"RainbowRunner/pkg/datatypes"
+)
+
+type IUnit interface {
+	GetUnit() *Unit
+}
 
 type Unit struct {
 	*WorldEntity
 	CurrentHP int
 	UnitFlags byte
+}
+
+func (n *Unit) GetUnit() *Unit {
+	return n
 }
 
 func (n *Unit) WriteInit(b *byter.Byter) {
@@ -67,6 +78,11 @@ func (n *Unit) WriteInit(b *byter.Byter) {
 		//0x80 case
 		b.WriteByte(0x05)
 	}
+}
+
+func (n *Unit) Warp(pos datatypes.Vector3Float32) {
+	unitBehavior := n.GetChildByGCNativeType("UnitBehavior").(*UnitBehavior)
+	unitBehavior.Warp(pos.X, pos.Y, pos.Z)
 }
 
 func NewUnit(gcType string) *Unit {

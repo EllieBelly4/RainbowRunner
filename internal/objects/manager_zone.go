@@ -2,7 +2,6 @@ package objects
 
 import (
 	"RainbowRunner/internal/config"
-	"RainbowRunner/internal/lua"
 	"sync"
 )
 
@@ -49,8 +48,6 @@ func (m *ZoneManager) CreateZone(name string) *Zone {
 		entities: make(map[uint16]DRObject),
 		players:  make(map[uint16]*RRPlayer),
 	}
-
-	z.Scripts = lua.GetScriptGroup("zones." + name)
 
 	m.Zones[name] = z
 

@@ -9,10 +9,26 @@ func RegisterLuaGlobals(state *lua.LState) {
 	registerLuaVector2(state)
 	registerLuaVector3(state)
 	registerLuaGCObject(state)
+	registerLuaDrobject(state)
 	registerLuaComponent(state)
+	registerLuaMonsterBehavior2(state)
 	registerLuaWorldEntity(state)
 	registerLuaNPC(state)
 	registerLuaZone(state)
+}
+
+func luaMethodsExtend(child map[string]lua.LGFunction, parent func() map[string]lua.LGFunction) map[string]lua.LGFunction {
+	newMethods := make(map[string]lua.LGFunction)
+
+	for key, value := range child {
+		newMethods[key] = value
+	}
+
+	for key, value := range parent() {
+		newMethods[key] = value
+	}
+
+	return newMethods
 }
 
 func registerLuaVector3(s *lua.LState) {

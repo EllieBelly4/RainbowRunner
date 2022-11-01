@@ -91,17 +91,21 @@ func (p *Avatar) Send(body *byter.Byter) {
 }
 
 func (p *Avatar) SendFollowClient() {
-	writer := NewClientEntityWriterWithByter()
-	writer.BeginStream()
-	writer.BeginComponentUpdate(p.GetChildByGCNativeType("UnitBehavior"))
+	CEWriter := NewClientEntityWriterWithByter()
+	//writer.BeginStream()
+	CEWriter.BeginComponentUpdate(p.GetChildByGCNativeType("UnitBehavior"))
 
-	writer.Body.WriteByte(0x64)
-	writer.Body.WriteByte(0x01)
+	CEWriter.Body.WriteByte(0x64)
+	CEWriter.Body.WriteByte(0x01)
 
-	writer.WriteSynch(p)
+	CEWriter.WriteSynch(p)
 
-	writer.EndStream()
-	p.Send(writer.Body)
+	player := Players.GetPlayer(uint16(p.OwnerID()))
+
+	player.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeCreateNPC)
+
+	//writer.EndStream()
+	//p.Send(CEWriter.Body)
 }
 
 func (p *Avatar) Warp(x, y, z float32) {

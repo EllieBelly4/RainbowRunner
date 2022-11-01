@@ -10,14 +10,16 @@ npcs = {
         --X: 423.285156 Y: -77.488281 Z: 49.914062 Rot: 190.00
         name = "gnome2",
         position = Vector3.new(423, -77, 49),
-        rotation = 190
+        rotation = 190,
+        behaviour = "creatures.summon.blinggnome.base.BlingGnome_NPC.Behavior"
     },
 
     {
         --X: -24.601562 Y: -155.328125 Z: 50.097656 Rot: 222.00
         name = "gnome1",
         position = Vector3.new(-24, -155, 50),
-        rotation = 222
+        rotation = 222,
+        behaviour = "creatures.summon.blinggnome.base.BlingGnome_NPC.Behavior"
     },
 
     {
@@ -73,14 +75,16 @@ npcs = {
         --X: 738.320312 Y: -329.164062 Z: 50.062500 Rot: 120.00
         name = "helpernoobosaur01_pvp",
         position = Vector3.new(738, -329, 50),
-        rotation = 120
+        rotation = 120,
+        behaviour = "npc.Base.Behavior"
     },
 
     {
         --X: -62.410156 Y: -524.523438 Z: 50.097656 Rot: 287.00
         name = "helpernoobosaur01",
         position = Vector3.new(-62., -524, 50),
-        rotation = 287
+        rotation = 287,
+        behaviour = "npc.Base.Behavior"
     },
 
     {
@@ -223,6 +227,13 @@ npcs = {
 
 for i, v in ipairs(npcs) do
     npc = currentZone:loadNPCFromConfig(v["name"])
+
+    if v["behaviour"] then
+        npc:removeChildrenByGCNativeType("UnitBehavior")
+        behaviour = MonsterBehavior2.new(v["behaviour"])
+        npc:addChild(behaviour)
+    end
+
     currentZone:spawn(npc, v["position"], v["rotation"])
 end
 

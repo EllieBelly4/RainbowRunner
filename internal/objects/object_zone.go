@@ -98,25 +98,36 @@ func (z *Zone) SendToAll(body *byter.Byter) {
 }
 
 func (z *Zone) SpawnInit(entity DRObject, position *datatypes.Vector3Float32, rotation *float32) {
-	if _, ok := entity.(IWorldEntity); !ok {
-		log.Errorf("cannot init non-world entity")
-		return
+	if _, ok := entity.(IWorldEntity); ok {
+		worldEntity := entity.(IWorldEntity).GetWorldEntity()
+
+		if position != nil {
+			worldEntity.WorldPosition = *position
+		}
+
+		if rotation != nil {
+			worldEntity.Rotation = *rotation
+		}
 	}
 
-	worldEntity := entity.(IWorldEntity).GetWorldEntity()
+	if unitBehavior, ok := entity.GetChildByGCNativeType("UnitBehavior").(IUnitBehavior); unitBehavior != nil && ok {
+		behavior := unitBehavior.GetUnitBehavior()
 
-	if position != nil {
-		worldEntity.WorldPosition = *position
-	}
+		if position != nil {
+			behavior.Position = *position
+		}
 
-	if rotation != nil {
-		worldEntity.Rotation = *rotation
+		if rotation != nil {
+			behavior.Rotation = *rotation
+		}
 	}
 
 	z.Spawn(entity)
 }
 
 func (z *Zone) Init() {
+	z.Scripts = lua.GetScriptGroup("zones." + z.Name)
+
 	log.Infof("initialising zone %s", z.Name)
 
 	config, err := database.GetZoneConfig(z.Name)
