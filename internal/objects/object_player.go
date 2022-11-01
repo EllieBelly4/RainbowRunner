@@ -30,7 +30,10 @@ func (p *RRPlayer) OnZoneJoin() {
 				return
 			}
 
-			CEWriter.CreateComponentAndInit(object, entity)
+			switch object.Type() {
+			case DRObjectComponent:
+				CEWriter.CreateComponentAndInit(object, entity)
+			}
 		})
 
 		CEWriter.Init(entity)

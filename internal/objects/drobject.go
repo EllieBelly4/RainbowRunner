@@ -5,6 +5,7 @@ import (
 	"RainbowRunner/pkg/datatypes"
 )
 
+//go:generate stringer -type=DRObjectType
 type DRObjectType int
 
 const (

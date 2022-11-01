@@ -6,11 +6,13 @@ import (
 )
 
 func RegisterLuaGlobals(state *lua.LState) {
+	registerLuaVector2(state)
+	registerLuaVector3(state)
+	registerLuaGCObject(state)
+	registerLuaComponent(state)
+	registerLuaWorldEntity(state)
 	registerLuaNPC(state)
 	registerLuaZone(state)
-	registerLuaVector3(state)
-	registerLuaVector2(state)
-	registerLuaWorldEntity(state)
 }
 
 func registerLuaVector3(s *lua.LState) {

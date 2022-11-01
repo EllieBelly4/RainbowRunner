@@ -11,7 +11,9 @@ func registerLuaWorldEntity(state *lua2.LState) {
 	mt := state.NewTypeMetatable(luaWorldEntityTypeName)
 	state.SetGlobal("WorldEntity", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaWorldEntity))
-	state.SetField(mt, "__index", state.SetFuncs(state.NewTable(), entityLuaWorldEntityMethods))
+	state.SetField(mt, "__index", state.SetFuncs(state.NewTable(),
+		luaDRObjectExtendMethods(entityLuaWorldEntityMethods),
+	))
 }
 
 var entityLuaWorldEntityMethods = map[string]lua2.LGFunction{
