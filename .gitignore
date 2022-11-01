@@ -1,3 +1,5 @@
+/lua/**/*_override.lua
+
 /tmp
 /config.yaml
 /db

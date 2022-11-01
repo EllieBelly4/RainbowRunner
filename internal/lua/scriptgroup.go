@@ -7,6 +7,10 @@ type LuaScriptGroup struct {
 }
 
 func (g LuaScriptGroup) Get(s string) *LuaScript {
+	if override, ok := g.scripts[s+"_override"]; ok {
+		return override
+	}
+
 	if script, ok := g.scripts[s]; ok {
 		return script
 	}
