@@ -5,11 +5,19 @@ import (
 	"fmt"
 )
 
+type IInventory interface {
+	GetInventory() *Inventory
+}
+
 type Inventory struct {
 	*GCObject
 
 	itemID      int
 	InventoryID byte
+}
+
+func (i *Inventory) GetInventory() *Inventory {
+	return i
 }
 
 func (i *Inventory) AddChild(child DRObject) {
@@ -31,6 +39,13 @@ func (i *Inventory) WriteInit(body *byter.Byter) {
 	body.WriteByte(0xFF)
 	body.WriteCString(i.GCType)
 	body.WriteByte(i.InventoryID)
+
+	i.WriteInitData(body)
+
+	//AddInventoryItem(body, "PlateMythicPAL.PlateMythicBoots1", 0, 0, "PlateMythicPAL.PlateMythicBoots1.Mod1")
+}
+
+func (i *Inventory) WriteInitData(body *byter.Byter) {
 	body.WriteByte(0x01) // Cannot be 0
 
 	// GCObject::ReadChildData<Item>()
@@ -39,8 +54,6 @@ func (i *Inventory) WriteInit(body *byter.Byter) {
 	for _, item := range i.Children() {
 		item.WriteInit(body)
 	}
-
-	//AddInventoryItem(body, "PlateMythicPAL.PlateMythicBoots1", 0, 0, "PlateMythicPAL.PlateMythicBoots1.Mod1")
 }
 
 func (i *Inventory) RemoveItemByIndex(index int) DRObject {
@@ -79,6 +92,16 @@ func NewInventory(gcType string, index byte) *Inventory {
 	return &Inventory{
 		GCObject: gcObject,
 		// TODO figure out how to set inventory ID properly, client is always using 1
+		InventoryID: index,
+	}
+}
+
+func NewMerchantInventory(gcType string, index byte) *Inventory {
+	gcObject := NewGCObject("MerchantInventory")
+	gcObject.GCType = gcType
+
+	return &Inventory{
+		GCObject:    gcObject,
 		InventoryID: index,
 	}
 }

@@ -11,6 +11,8 @@ func RegisterLuaGlobals(state *lua.LState) {
 	registerLuaGCObject(state)
 	registerLuaDrobject(state)
 	registerLuaComponent(state)
+	registerLuaInventory(state)
+	registerLuaMerchant(state)
 	registerLuaMonsterBehavior2(state)
 	registerLuaWorldEntity(state)
 	registerLuaNPC(state)

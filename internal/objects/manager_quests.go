@@ -51,6 +51,7 @@ func (q QuestManager) WriteInit(b *byter.Byter) {
 	b.WriteByte(byte(questCount)) // Probably quest count
 
 	for i := 0; i < questCount; i++ {
+		// Cannot resolve ArchetypeRef<class Entity> - Reference with name 'something' cannot be found
 		b.WriteCString("something") // Unk
 
 		anotherCount := 1
