@@ -36,7 +36,7 @@ func handleGroupConnected(conn *connections.RRConn) {
 
 	//sendGoToZone(conn, body, "dungeon16_level00")
 	//sendGoToZone(conn, body, "town")
-	sendGoToZone(conn, body, "test")
+	sendGoToZone(conn, body, "town")
 
 	//sendGoToZone(conn, body, "dungeon02_level01")
 }

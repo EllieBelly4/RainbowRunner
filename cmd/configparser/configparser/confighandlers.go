@@ -13,7 +13,6 @@ var baseMaps = make(map[string]*configtypes.DRClass)
 
 type DRConfigParser struct {
 	*parser.BaseDRConfigListener
-	//DRClass *database.DRClass
 
 	filePath      string
 	fileClassName string
@@ -65,19 +64,29 @@ func NewDRConfigListener(filePath string, rootPath string, config *configtypes.D
 }
 
 func (t *DRConfigParser) EnterEveryRule(ctx antlr.ParserRuleContext) {
-	//fmt.Println(t.classStack.Index)
-
 	if ctx.GetRuleIndex() == parser.DRConfigParserRULE_classEnter {
 		t.IsGenericClass = false
 		t.depth++
+
+		currentClassName := strings.ToLower(t.classStack.Current().Name)
+		currentClassParent := t.classStack.Previous()
+
+		parentChild, ok := currentClassParent.Children[currentClassName]
+
+		if !ok {
+			currentClassParent.Children[currentClassName] = configtypes.NewDRClassChildGroup("")
+			parentChild = currentClassParent.Children[currentClassName]
+		}
+
+		parentChild.Entities =
+			append(
+				parentChild.Entities,
+				t.classStack.Current(),
+			)
 	}
 
 	if ctx.GetRuleIndex() == parser.DRConfigParserRULE_classLeave {
 		t.classStack.Pop()
-		//
-		//if t.DRClass != current {
-		//	mergeChildInto(t.DRClass, current, true)
-		//}
 
 		t.depth--
 	}
@@ -92,30 +101,19 @@ func (t *DRConfigParser) EnterEveryRule(ctx antlr.ParserRuleContext) {
 
 	if ctx.GetRuleIndex() == parser.DRConfigParserRULE_classIdentifier {
 		className := ctx.GetText()
-		currentClass := t.classStack.Current()
 
 		if className == "*" {
 			t.IsGenericClass = true
-			className = t.fileClassName
-
 			if t.depth == 0 {
-				t.classStack.Push(currentClass)
+				className = t.fileClassName
+			} else {
+				className = "UNKNOWN"
 			}
 		}
 
-		className = strings.ToLower(className)
+		newClass := configtypes.NewDRClass(className)
 
-		if !t.IsGenericClass {
-			newClass := configtypes.NewDRClass("")
-
-			if _, ok := currentClass.Children[className]; !ok {
-				currentClass.Children[className] = configtypes.NewDRClassChildGroup("")
-			}
-
-			currentClass.Children[className].Entities = append(currentClass.Children[className].Entities, newClass)
-
-			t.classStack.Push(newClass)
-		}
+		t.classStack.Push(newClass)
 	}
 
 	if ctx.GetRuleIndex() == parser.DRConfigParserRULE_parentClass {
@@ -123,52 +121,11 @@ func (t *DRConfigParser) EnterEveryRule(ctx antlr.ParserRuleContext) {
 		parentClass := ctx.GetText()
 		parentClass = strings.ToLower(parentClass)
 
-		if t.IsGenericClass {
-			if t.depth == 0 {
-				currentClass.Extends = parentClass
-			} else {
-				splitParentClass := strings.Split(parentClass, ".")
-				childParentClass := splitParentClass[len(splitParentClass)-1]
-
-				newClass := configtypes.NewDRClass("*")
-				newClass.Extends = parentClass
-
-				if _, ok := currentClass.Children[childParentClass]; !ok {
-					currentClass.Children[childParentClass] = configtypes.NewDRClassChildGroup("")
-				}
-
-				currentClass.Children[childParentClass].Entities = append(currentClass.Children[childParentClass].Entities, newClass)
-
-				t.classStack.Push(newClass)
-			}
-
-		} else {
-			currentClass.Extends = parentClass
+		if t.IsGenericClass && currentClass.Name == "UNKNOWN" {
+			currentClass.Name = parentClass
 		}
 	}
 }
-
-//func mergeChildInto(base *database.DRClass, newChild *database.DRClass, rightPriority bool) {
-//	foundChild := base.Find([]string{newChild.Name})
-//
-//	if foundChild == nil {
-//		base.Children = append(base.Children, newChild)
-//	} else {
-//		if rightPriority {
-//			mergeProperties(foundChild, newChild)
-//		} else {
-//			mergeProperties(newChild, foundChild)
-//		}
-//	}
-//}
-//
-//func mergeProperties(base *database.DRClass, child *database.DRClass) {
-//	for propKey, propVal := range child.Properties {
-//		//if _, currentHasProp := child.Properties[propKey]; !currentHasProp {
-//		base.Properties[propKey] = propVal
-//		//}
-//	}
-//}
 
 func (t *DRConfigParser) ExitEveryRule(ctx antlr.ParserRuleContext) {
 	if ctx.GetRuleIndex() == parser.DRConfigParserRULE_classDef {
@@ -187,28 +144,10 @@ func parseFile(path string, rootPath string, config *configtypes.DRConfig) {
 	antlr.ParseTreeWalkerDefault.Walk(listener, tree)
 }
 
-//func ParseAllFiles(files []string) ([]*database.DRClass, error) {
-//	all := make([]*database.DRClass, 0)
-//
-//	for _, path := range files {
-//		//split := strings.Split(path, "\\")
-//		//fileName := strings.Split(split[len(split)-1], ".")[0]
-//
-//		file := parseFile(path, filepath.Dir(path), nil)
-//
-//		all = append(all, file)
-//	}
-//
-//	return all, nil
-//}
-
 func ParseAllFilesToDRConfig(files []string, rootPath string) (*configtypes.DRConfig, error) {
 	drConfig := configtypes.NewDRConfig()
 
 	for _, path := range files {
-		//split := strings.Split(path, "\\")
-		//fileName := strings.Split(split[len(split)-1], ".")[0]
-
 		_, err := os.Stat(path)
 
 		if err != nil {
@@ -233,15 +172,6 @@ func (d *ErrorListener) SyntaxError(recognizer antlr.Recognizer, offendingSymbol
 	d.DiagnosticErrorListener.SyntaxError(recognizer, offendingSymbol, line, column, msg, e)
 }
 
-//func (d *ErrorListener) ReportAmbiguity(recognizer antlr.Parser, dfa *antlr.DFA, startIndex, stopIndex int, exact bool, ambigAlts *antlr.BitSet, configs antlr.ATNConfigSet) {
-//}
-//
-//func (d *ErrorListener) ReportAttemptingFullContext(recognizer antlr.Parser, dfa *antlr.DFA, startIndex, stopIndex int, conflictingAlts *antlr.BitSet, configs antlr.ATNConfigSet) {
-//}
-//
-//func (d *ErrorListener) ReportContextSensitivity(recognizer antlr.Parser, dfa *antlr.DFA, startIndex, stopIndex, prediction int, configs antlr.ATNConfigSet) {
-//}
-
 func NewErrorListener(path string) *ErrorListener {
 	originalListener := antlr.NewDiagnosticErrorListener(true)
 
@@ -252,16 +182,3 @@ func NewErrorListener(path string) *ErrorListener {
 
 	return listener
 }
-
-func listContains(parses []string, path string) bool {
-	for _, pars := range parses {
-		if pars == path {
-			return true
-		}
-	}
-
-	return false
-}
-
-//func (this *TreeShapeListener) EnterClassDef(ctx *parser.ClassDefContext) {
-//}
