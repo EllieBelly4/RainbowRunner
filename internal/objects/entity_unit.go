@@ -11,16 +11,26 @@ type IUnit interface {
 
 type Unit struct {
 	*WorldEntity
-	CurrentHP int
+	HP        int
+	MP        int
 	UnitFlags byte
+	Level     byte
+
+	Unk10Case         byte
+	Unk20CaseEntityID uint16
+	Unk40Case0        uint16
+	Unk40Case1        uint16
+	Unk40Case2        uint16
+	Unk40Case3        byte
+	Unk80Case         byte
 }
 
 func (n *Unit) GetUnit() *Unit {
 	return n
 }
 
-func (n *Unit) WriteInit(b *byter.Byter) {
-	n.WorldEntity.WriteInit(b)
+func (u *Unit) WriteInit(b *byter.Byter) {
+	u.WorldEntity.WriteInit(b)
 
 	// Unit::readInit()
 	// Next 4 values always used
@@ -29,54 +39,54 @@ func (n *Unit) WriteInit(b *byter.Byter) {
 	// 0x02 - add HP
 	// 0x04 -
 	//b.WriteByte(0x07) // HasParent + Unk
-	//n.UnitFlags := 0x01 | 0x02 | 0x04 | 0x10 | 0x20 | 0x40 | 0x80
-	b.WriteByte(n.UnitFlags)
-	b.WriteByte(50) // Level
+	//u.UnitFlags := 0x01 | 0x02 | 0x04 | 0x10 | 0x20 | 0x40 | 0x80
+	b.WriteByte(u.UnitFlags)
+	b.WriteByte(u.Level) // Level
 	b.WriteUInt16(0x01)
 	b.WriteUInt16(0x02)
 
-	if n.UnitFlags&0x01 > 0 {
-		if n.RREntityProperties().OwnerID != 0 {
-			b.WriteUInt16(uint16(Players.Players[n.RREntityProperties().OwnerID].CurrentCharacter.RREntityProperties().ID)) // Parent ID!!!!!
+	if u.UnitFlags&0x01 > 0 {
+		if u.RREntityProperties().OwnerID != 0 {
+			b.WriteUInt16(uint16(Players.Players[u.RREntityProperties().OwnerID].CurrentCharacter.RREntityProperties().ID)) // Parent ID!!!!!
 		} else {
 			b.WriteUInt16(0x00) // Parent ID!!!!!
 		}
 	}
 
-	if n.UnitFlags&0x02 > 0 {
-		n.CurrentHP = 1150 * 256
+	if u.UnitFlags&0x02 > 0 {
+		//u.HP = 1150
 		// 0x02 case
 		// Multiply HP by 256
-		b.WriteUInt32(uint32(n.CurrentHP)) // Current HP
+		b.WriteUInt32(uint32(u.HP) * 256) // Current HP
 	}
 
-	if n.UnitFlags&0x04 > 0 {
+	if u.UnitFlags&0x04 > 0 {
 		// 0x04 case
 		// Multiply MP by 256
-		b.WriteUInt32(505 * 256) // MP
+		b.WriteUInt32(uint32(u.MP) * 256) // MP
 	}
 
-	if n.UnitFlags&0x010 > 0 {
+	if u.UnitFlags&0x010 > 0 {
 		// 0x10 case
-		b.WriteByte(0x04) // Unk
+		b.WriteByte(u.Unk10Case) // Unk
 	}
 
-	if n.UnitFlags&0x020 > 0 {
+	if u.UnitFlags&0x020 > 0 {
 		// 0x20 case
-		b.WriteUInt16(0x01) // Entity ID, Includes a call to IsKindOf<EncounterObject,Entity>(Entity *)
+		b.WriteUInt16(u.Unk20CaseEntityID) // Entity ID, Includes a call to IsKindOf<EncounterObject,Entity>(Entity *)
 	}
 
-	if n.UnitFlags&0x040 > 0 {
+	if u.UnitFlags&0x040 > 0 {
 		// 0x40 case
-		b.WriteUInt16(0x02) // Unk
-		b.WriteUInt16(0x03) // Unk
-		b.WriteUInt16(0x04) // Unk
-		b.WriteByte(0x02)
+		b.WriteUInt16(u.Unk40Case0) // Unk
+		b.WriteUInt16(u.Unk40Case1) // Unk
+		b.WriteUInt16(u.Unk40Case2) // Unk
+		b.WriteByte(u.Unk40Case3)
 	}
 
-	if n.UnitFlags&0x080 > 0 {
+	if u.UnitFlags&0x080 > 0 {
 		//0x80 case
-		b.WriteByte(0x05)
+		b.WriteByte(u.Unk80Case)
 	}
 }
 
@@ -90,6 +100,9 @@ func NewUnit(gcType string) *Unit {
 	worldEntity.GCType = gcType
 
 	return &Unit{
+		Level:       1,
+		HP:          100,
+		MP:          100,
 		WorldEntity: worldEntity,
 		UnitFlags:   0x01 | 0x02 | 0x04 | 0x20,
 	}

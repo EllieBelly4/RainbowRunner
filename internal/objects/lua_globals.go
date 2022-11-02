@@ -6,6 +6,7 @@ import (
 )
 
 func RegisterLuaGlobals(state *lua.LState) {
+	registerLuaBit32(state)
 	registerLuaVector2(state)
 	registerLuaVector3(state)
 	registerLuaGCObject(state)
@@ -15,6 +16,7 @@ func RegisterLuaGlobals(state *lua.LState) {
 	registerLuaMerchant(state)
 	registerLuaMonsterBehavior2(state)
 	registerLuaWorldEntity(state)
+	registerLuaUnit(state)
 	registerLuaNPC(state)
 	registerLuaZone(state)
 }

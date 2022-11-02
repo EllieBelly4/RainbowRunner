@@ -29,6 +29,10 @@ func luaDRObjectExtendMethods(methods map[string]lua2.LGFunction) map[string]lua
 	return newMethods
 }
 
+func luaMethodsDRObject() map[string]lua2.LGFunction {
+	return luaDRObjectMethods
+}
+
 var luaDRObjectMethods = map[string]lua2.LGFunction{
 	"addChild":                     luaDRObjectAddChild,
 	"children":                     luaDRObjectGetChildren,

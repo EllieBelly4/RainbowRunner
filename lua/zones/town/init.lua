@@ -235,6 +235,8 @@ for i, v in ipairs(npcs) do
         npc:addChild(behaviour)
     end
 
+    npc:worldEntityFlags(0x7)
+
     currentZone:spawn(npc, v["position"], v["rotation"])
 end
 

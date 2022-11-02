@@ -16,6 +16,11 @@ type WorldEntity struct {
 	WorldEntityFlags     uint32
 	WorldEntityInitFlags byte
 	Label                string
+
+	Unk1Case uint16
+	Unk2Case byte
+	Unk4Case uint32
+	Unk8Case uint32
 }
 
 func (n *WorldEntity) GetWorldEntity() *WorldEntity {
@@ -56,6 +61,7 @@ func (n *WorldEntity) WriteInit(b *byter.Byter) {
 	// 0x10000 Unk
 	// One of these flags stops the below positions from working
 	// With only 0x04 the character can be moved and is the least broken
+	// 0x07 is the least required to get NPCs working
 	b.WriteUInt32(
 		n.WorldEntityFlags, // With this one alone it was working
 	)
@@ -80,22 +86,22 @@ func (n *WorldEntity) WriteInit(b *byter.Byter) {
 
 	if n.WorldEntityInitFlags&0x01 > 0 {
 		// 0x01
-		b.WriteUInt16(0x00)
+		b.WriteUInt16(n.Unk1Case)
 	}
 
 	if n.WorldEntityInitFlags&0x02 > 0 {
 		// Ox02
-		b.WriteByte(0xFF)
+		b.WriteByte(n.Unk2Case)
 	}
 
 	if n.WorldEntityInitFlags&0x04 > 0 {
 		// 0x04
-		b.WriteUInt32(0xFFFFFFFF)
+		b.WriteUInt32(n.Unk4Case)
 	}
 
 	if n.WorldEntityInitFlags&0x08 > 0 {
 		// 0x08
-		b.WriteUInt32(0xFFFFFFFF)
+		b.WriteUInt32(n.Unk8Case)
 	}
 }
 

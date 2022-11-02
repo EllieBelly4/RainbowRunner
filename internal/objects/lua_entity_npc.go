@@ -12,8 +12,12 @@ func registerLuaNPC(state *lua2.LState) {
 	state.SetGlobal("NPC", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaNPC))
 	state.SetField(mt, "__index", state.SetFuncs(state.NewTable(),
-		luaDRObjectExtendMethods(entityLuaNPCMethods)),
-	)
+		luaMethodsNPC(),
+	))
+}
+
+func luaMethodsNPC() map[string]lua2.LGFunction {
+	return luaMethodsExtend(entityLuaNPCMethods, luaMethodsUnit)
 }
 
 var entityLuaNPCMethods = map[string]lua2.LGFunction{

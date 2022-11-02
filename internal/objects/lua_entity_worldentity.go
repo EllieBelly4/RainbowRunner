@@ -12,12 +12,20 @@ func registerLuaWorldEntity(state *lua2.LState) {
 	state.SetGlobal("WorldEntity", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaWorldEntity))
 	state.SetField(mt, "__index", state.SetFuncs(state.NewTable(),
-		luaDRObjectExtendMethods(entityLuaWorldEntityMethods),
+		luaMethodsWorldEntity(),
 	))
 }
 
-var entityLuaWorldEntityMethods = map[string]lua2.LGFunction{
-	"label": entityLuaWorldEntityGetSetLabel,
+func luaMethodsWorldEntity() map[string]lua2.LGFunction {
+	return luaMethodsExtend(map[string]lua2.LGFunction{
+		"label":                entityLuaWorldEntityGetSetLabel,
+		"worldEntityFlags":     luaGenericGetSetNumber[IWorldEntity, uint32](func(v IWorldEntity) *uint32 { return &v.GetWorldEntity().WorldEntityFlags }),
+		"worldEntityInitFlags": luaGenericGetSetNumber[IWorldEntity, byte](func(v IWorldEntity) *byte { return &v.GetWorldEntity().WorldEntityInitFlags }),
+		"worldEntityUnk1Case":  luaGenericGetSetNumber[IWorldEntity, uint16](func(v IWorldEntity) *uint16 { return &v.GetWorldEntity().Unk1Case }),
+		"worldEntityUnk2Case":  luaGenericGetSetNumber[IWorldEntity, byte](func(v IWorldEntity) *byte { return &v.GetWorldEntity().Unk2Case }),
+		"worldEntityUnk4Case":  luaGenericGetSetNumber[IWorldEntity, uint32](func(v IWorldEntity) *uint32 { return &v.GetWorldEntity().Unk4Case }),
+		"worldEntityUnk8Case":  luaGenericGetSetNumber[IWorldEntity, uint32](func(v IWorldEntity) *uint32 { return &v.GetWorldEntity().Unk8Case }),
+	}, luaMethodsDRObject)
 }
 
 func entityLuaWorldEntityGetSetLabel(state *lua2.LState) int {

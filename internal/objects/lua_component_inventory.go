@@ -15,17 +15,15 @@ func registerLuaInventory(state *lua2.LState) {
 	))
 
 	state.SetGlobal("MerchantInventory", mt)
-	state.SetField(mt, "new", state.NewFunction(newLuaInventory))
+	state.SetField(mt, "new", state.NewFunction(newLuaMerchantInventory))
 	state.SetField(mt, "__index", state.SetFuncs(state.NewTable(),
 		luaMethodsInventory(),
 	))
 }
 
 func luaMethodsInventory() map[string]lua2.LGFunction {
-	return luaDRObjectExtendMethods(entityLuaInventoryMethods)
+	return luaDRObjectExtendMethods(map[string]lua2.LGFunction{})
 }
-
-var entityLuaInventoryMethods = map[string]lua2.LGFunction{}
 
 func newLuaMerchantInventory(l *lua2.LState) int {
 	inventory := NewMerchantInventory(l.CheckString(1), byte(l.CheckNumber(2)))
