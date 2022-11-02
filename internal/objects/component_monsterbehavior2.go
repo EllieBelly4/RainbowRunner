@@ -62,8 +62,6 @@ func (n *MonsterBehavior2) WriteInit(b *byter.Byter) {
 	if monsterBehaviorFlags&0x10 > 0 {
 		b.WriteUInt16(0x00)
 	}
-
-	// <----------------------------------------------------
 }
 
 func NewMonsterBehavior2(gctype string) *MonsterBehavior2 {

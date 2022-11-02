@@ -108,6 +108,7 @@ func (c *DRConfig) Get(fullgctype string) ([]*DRClassChildGroup, error) {
 	for _, child := range found {
 		child.Name = splitGCType[len(splitGCType)-1]
 		child.GCType = fullgctype
+
 		c.MergeParents(child)
 	}
 

@@ -75,7 +75,7 @@ npcs = {
         --X: 738.320312 Y: -329.164062 Z: 50.062500 Rot: 120.00
         name = "helpernoobosaur01_pvp",
         position = Vector3.new(738, -329, 50),
-        rotation = 120,
+        rotation = 300,
         behaviour = "npc.Base.Behavior"
     },
 
@@ -83,7 +83,7 @@ npcs = {
         --X: -62.410156 Y: -524.523438 Z: 50.097656 Rot: 287.00
         name = "helpernoobosaur01",
         position = Vector3.new(-62., -524, 50),
-        rotation = 287,
+        rotation = 107,
         behaviour = "npc.Base.Behavior"
     },
 
@@ -179,7 +179,7 @@ npcs = {
         --X: 343.039062 Y: 322.851562 Z: 147.402344 Rot: 167.00
         name = "well",
         position = Vector3.new(342, 310, 147),
-        rotation = 312
+        rotation = 132
     },
 
     {

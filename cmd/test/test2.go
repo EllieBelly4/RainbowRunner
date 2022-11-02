@@ -10,7 +10,7 @@ func main() {
 	config.Load()
 	database.LoadConfigFiles()
 
-	zoneConfig, err := database.GetZoneConfig("town")
+	zoneConfig, err := database.GetZoneConfig("test")
 
 	if err != nil {
 		panic(err)
