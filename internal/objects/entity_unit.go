@@ -91,6 +91,6 @@ func NewUnit(gcType string) *Unit {
 
 	return &Unit{
 		WorldEntity: worldEntity,
-		UnitFlags:   0x01 | 0x02 | 0x04,
+		UnitFlags:   0x01 | 0x02 | 0x04 | 0x20,
 	}
 }

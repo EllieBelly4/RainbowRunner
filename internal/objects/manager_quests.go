@@ -37,12 +37,61 @@ func (q QuestManager) WriteInit(b *byter.Byter) {
 	b.WriteCString("HiAgain")
 	b.WriteCString("HiAgainAgain")
 
+	// Testing Quests:
+	// Snowman1 world.solo.dungeon_snowman.quest.Q01_a1
+
 	// QuestManager::ReadAvailableQuests()
-	b.WriteByte(0x00) // Probably quest count
+	quests := []string{
+		"world.town.quest.class.fi.Q01_a1",
+		"world.solo.dungeon_snowman.quest.Q01_a1",
+		"world.dungeon00.quest.Q02_a4",
+	}
+
+	questCount := len(quests)
+	b.WriteByte(byte(questCount)) // Probably quest count
+
+	for i := 0; i < questCount; i++ {
+		b.WriteCString("something") // Unk
+
+		anotherCount := 1
+
+		b.WriteByte(byte(anotherCount))
+		writeGCType(b, quests[i])
+	}
 
 	// QuestManager::readInit()
-	b.WriteUInt16(0x00) // Objectives count?
-	b.WriteUInt16(0x00) // Some count
+	// Currently assuming this is active
+	activeQuestCount := 1
+	b.WriteUInt16(uint16(activeQuestCount))
+
+	for i := 0; i < activeQuestCount; i++ {
+		writeGCType(b, quests[i])
+
+		b.WriteUInt32(0x00) // Unk
+		b.WriteByte(0x00)   // Completed flag - 0x01 = completed
+
+		// Quest::readObjectives
+		objectiveCount := 0x01
+		b.WriteByte(byte(objectiveCount)) // Unknown Count
+
+		for j := 0; j < objectiveCount; j++ {
+			someFlag := 0x00
+			b.WriteByte(byte(someFlag))
+			b.WriteCString("Make something great happen 0/100") // Current objective text
+
+			if someFlag == 0x02 {
+				b.WriteUInt16(0x00) // Unk
+			}
+		}
+	}
+
+	checkpointCount := 0x01
+
+	b.WriteUInt16(uint16(checkpointCount)) // Checkpoints count, no idea what this actually does
+
+	for j := 0; j < checkpointCount; j++ {
+		writeGCType(b, "world.checkpoints.TownCheckpoint")
+	}
 }
 
 func (q QuestManager) WriteUpdate(b *byter.Byter) {

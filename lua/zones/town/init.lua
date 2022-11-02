@@ -40,7 +40,8 @@ npcs = {
         --X: 456.441406 Y: -528.757812 Z: 74.910156 Rot: 213.00
         name = "snowman1",
         position = Vector3.new(456, 528, 74),
-        rotation = 213
+        rotation = 213,
+        behaviour = "npc.Base.Behavior"
     },
 
     {
