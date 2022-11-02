@@ -1,4 +1,4 @@
-/lua/**/*_override.lua
+/lua/**/*_override*.lua
 
 /tmp
 /config.yaml
