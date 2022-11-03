@@ -47,7 +47,7 @@ func (u *Unit) WriteInit(b *byter.Byter) {
 
 	if u.UnitFlags&0x01 > 0 {
 		if u.RREntityProperties().OwnerID != 0 {
-			b.WriteUInt16(uint16(Players.Players[u.RREntityProperties().OwnerID].CurrentCharacter.RREntityProperties().ID)) // Parent ID!!!!!
+			b.WriteUInt16(uint16(Players.Players[int(u.RREntityProperties().OwnerID)].CurrentCharacter.RREntityProperties().ID)) // Parent ID!!!!!
 		} else {
 			b.WriteUInt16(0x00) // Parent ID!!!!!
 		}

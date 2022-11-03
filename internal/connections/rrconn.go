@@ -18,5 +18,5 @@ func (R *RRConn) Send(b *byter.Byter) error {
 }
 
 func (R *RRConn) GetID() int {
-	return R.Client.ID
+	return int(R.Client.ID)
 }

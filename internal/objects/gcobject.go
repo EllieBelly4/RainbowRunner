@@ -66,7 +66,7 @@ func (g *GCObject) WriteUpdate(b *byter.Byter) {
 	panic("implement me")
 }
 
-func (g *GCObject) OwnerID() int {
+func (g *GCObject) OwnerID() uint16 {
 	return g.EntityProperties.OwnerID
 }
 

@@ -4,7 +4,7 @@ Attaches to an `Entity` and allows basic commands to be executed.
 
 ## `{GCObject}Behavior`
 
-### Commands
+### Commands (Actions, BehaviorActions)
 
 |Code|Name|Description|Args|
 |---|---|---|---|

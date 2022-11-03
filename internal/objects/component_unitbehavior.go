@@ -5,6 +5,7 @@ import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/components/behavior"
 	"RainbowRunner/internal/helpers"
+	"RainbowRunner/internal/message"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 	"encoding/hex"
@@ -272,8 +273,10 @@ func (u *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 func (u *UnitBehavior) ReadUpdate(reader *byter.Byter) error {
 	subMessage := reader.Byte()
 	switch int(subMessage) {
-	case 0x01:
-		u.handleClientAttack(reader)
+	case 0x01: // Execute Action?
+		return u.handleExecuteAction(reader)
+		//u.handleClientBlockMovement(reader)
+		//u.handleClientAttack(reader)
 	case 0x65:
 		u.handleClientMove(u.EntityProperties.Conn, reader)
 	// Potentially requesting current position because starting a new path
@@ -355,6 +358,57 @@ func (u *UnitBehavior) WriteWarp(writer *ClientEntityWriter) {
 
 	writer.WriteSynch(u)
 	//writer.EndComponentUpdate(u)
+}
+
+func (u *UnitBehavior) handleClientBlockMovement(reader *byter.Byter) {
+
+}
+
+func (u *UnitBehavior) handleExecuteAction(reader *byter.Byter) error {
+	unk0 := reader.Byte()
+	action := behavior.BehaviourAction(reader.Byte())
+
+	logrus.Infof("execute action %s, unk0 %d", action.String(), unk0)
+
+	switch action {
+	case behavior.BehaviourActionActivate:
+		return u.handleExecuteActivate(reader)
+	}
+
+	return nil
+}
+
+func (u *UnitBehavior) handleExecuteActivate(reader *byter.Byter) error {
+	unk := reader.Byte()
+
+	logrus.Infof("execute Activate unk0 %x", unk)
+
+	targetID := reader.UInt16()
+	targetEntity := Entities.FindByID(targetID)
+
+	if targetEntity == nil {
+		return errors.New(fmt.Sprintf("could not find target entity with ID %d", targetID))
+	}
+
+	CEWriter := NewClientEntityWriterWithByter()
+
+	CEWriter.BeginComponentUpdate(u)
+
+	CEWriter.CreateAction(behavior.BehaviourActionActivate)
+
+	activateAction := behavior.Activate{
+		TargetEntityID: targetID,
+	}
+
+	activateAction.InitWithoutOpCode(CEWriter.Body)
+
+	CEWriter.WriteSynch(u)
+
+	Players.GetPlayer(u.OwnerID()).MessageQueue.Enqueue(
+		message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeBehaviourAction,
+	)
+
+	return nil
 }
 
 func NewUnitBehavior(gcType string) *UnitBehavior {

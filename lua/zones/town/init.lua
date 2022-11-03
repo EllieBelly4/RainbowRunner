@@ -48,7 +48,8 @@ npcs = {
         --X: 69.144531 Y: 357.539062 Z: 84.867188 Rot: 181.00
         name = "vendorweapon3",
         position = Vector3.new(69, 357, 84),
-        rotation = 181
+        rotation = 181,
+        behaviour = "npc.Base.Behavior"
     },
 
     {
@@ -232,6 +233,9 @@ for i, v in ipairs(npcs) do
     if v["behaviour"] then
         npc:removeChildrenByGCNativeType("UnitBehavior")
         behaviour = MonsterBehavior2.new(v["behaviour"])
+        npc:addChild(behaviour)
+    elseif npc:getChildByGCNativeType("UnitBehavior") ~= null then
+        behaviour = MonsterBehavior2.new("npc.Base.Behavior")
         npc:addChild(behaviour)
     end
 

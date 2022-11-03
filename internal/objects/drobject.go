@@ -35,7 +35,7 @@ type DRObject interface {
 
 	GetGCObject() *GCObject
 	Tick()
-	OwnerID() int
+	OwnerID() uint16
 	SetVersion(version byte)
 	ReadData(b *byter.Byter)
 	WalkChildren(f func(object DRObject))

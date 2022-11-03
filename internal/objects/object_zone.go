@@ -55,7 +55,7 @@ func (z *Zone) RemovePlayer(id int) {
 	toDelete := make([]uint16, 0, 1024)
 
 	for index, entity := range z.entities {
-		if entity == nil || entity.RREntityProperties().OwnerID == id {
+		if entity == nil || entity.RREntityProperties().OwnerID == uint16(id) {
 			toDelete = append(toDelete, index)
 		}
 	}

@@ -6,7 +6,7 @@ import (
 )
 
 type RREntityProperties struct {
-	OwnerID int
+	OwnerID uint16
 	ID      uint32
 	Conn    connections.Connection
 	Zone    *Zone

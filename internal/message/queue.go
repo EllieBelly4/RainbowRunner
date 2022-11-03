@@ -21,6 +21,7 @@ const (
 	OpTypeInventoryItemClickResponse
 	OpTypeInventoryItemDropResponse
 	OpTypeOther
+	OpTypeBehaviourAction
 )
 
 type QueueItem struct {

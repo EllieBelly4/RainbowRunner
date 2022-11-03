@@ -43,7 +43,7 @@ func (m *PlayerManager) Register(rrconn *connections.RRConn) *RRPlayer {
 		MessageQueue:       message.NewQueue(),
 	}
 
-	m.Players[rrconn.Client.ID] = rrPlayer
+	m.Players[int(rrconn.Client.ID)] = rrPlayer
 
 	return rrPlayer
 }

@@ -1,6 +1,7 @@
 package objects
 
 import (
+	"RainbowRunner/internal/game/components/behavior"
 	"RainbowRunner/internal/game/messages"
 	byter "RainbowRunner/pkg/byter"
 )
@@ -118,6 +119,11 @@ func (w *ClientEntityWriter) GetBody() *byter.Byter {
 
 func (w *ClientEntityWriter) IsDirty() bool {
 	return w.dirty
+}
+
+func (w *ClientEntityWriter) CreateAction(action behavior.BehaviourAction) {
+	w.Body.WriteByte(0x04)
+	w.Body.WriteByte(byte(action))
 }
 
 func NewClientEntityWriter(b *byter.Byter) *ClientEntityWriter {

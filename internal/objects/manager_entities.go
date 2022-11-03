@@ -32,7 +32,7 @@ func (m *EntityManager) RegisterAll(owner connections.Connection, objects ...DRO
 		if props.ID == 0 {
 			if owner != nil {
 				props.Conn = owner
-				props.OwnerID = owner.GetID()
+				props.OwnerID = uint16(owner.GetID())
 			}
 
 			props.ID = uint32(NewID())
@@ -73,7 +73,7 @@ func (m *EntityManager) RemoveOwnedBy(id int) {
 
 	m.RLock()
 	for index, entity := range m.Entities {
-		if entity == nil || entity.RREntityProperties().OwnerID == id {
+		if entity == nil || entity.RREntityProperties().OwnerID == uint16(id) {
 			toDelete = append(toDelete, index)
 		}
 	}

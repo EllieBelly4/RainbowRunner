@@ -82,7 +82,7 @@ func (n *EquipmentInventory) handleRemoveEquippedItem(reader *byter.Byter) error
 	manipulators.RemoveEquipmentByID(item.ID())
 	manipulators.WriteRemoveItem(CEWriter.Body, item.Slot)
 
-	Players.GetPlayer(uint16(n.OwnerID())).MessageQueue.Enqueue(
+	Players.GetPlayer(n.OwnerID()).MessageQueue.Enqueue(
 		message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeEquippedItemClickResponse,
 	)
 	return nil
