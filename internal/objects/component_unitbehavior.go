@@ -174,19 +174,20 @@ func (u *UnitBehavior) WriteInit(b *byter.Byter) {
 }
 
 type UnitPathPosition struct {
-	Position datatypes.Vector2Float32
-	Rotation float32
+	Position   datatypes.Vector2Float32
+	Rotation   float32
+	ResponseID byte
 }
 
 func (u *UnitBehavior) handleClientMove(conn connections.Connection, reader *byter.Byter) {
 	// This increments each time the server sends a MoveTo message
 	// The client will then increment by 1 for every individual movement performed (clicking)
-	updateNumber := reader.Byte()
+	responseIDMaybe := reader.Byte()
 	count := int(reader.Byte())
 	pos := datatypes.Vector2Float32{}
 
 	if config.Config.Logging.LogMoves {
-		fmt.Printf("Received %d player moves unk val: %x\n", count, updateNumber)
+		fmt.Printf("Received %d player moves unk val: %x\n", count, responseIDMaybe)
 	}
 
 	responseMoves := make([]UnitPathPosition, 0)
@@ -203,7 +204,7 @@ func (u *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 		pos.X = float32(reader.Int32()) / 256
 		pos.Y = float32(reader.Int32()) / 256
 
-		avatar.ClientUpdateNumber = updateNumber
+		avatar.ClientUpdateNumber = responseIDMaybe
 		if config.Config.Logging.LogReceivedMoves {
 			//xf := float32(pos.X>>8) + (float32(pos.X&0xFF) / 256)
 			//yf := float32(pos.Y>>8) + (float32(pos.Y&0xFF) / 256)
@@ -243,7 +244,8 @@ func (u *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 		}
 
 		responseMoves = append(responseMoves, UnitPathPosition{
-			Rotation: rotation,
+			ResponseID: responseIDMaybe,
+			Rotation:   rotation,
 			Position: datatypes.Vector2Float32{
 				X: pos.X,
 				Y: pos.Y,
@@ -365,23 +367,23 @@ func (u *UnitBehavior) handleClientBlockMovement(reader *byter.Byter) {
 }
 
 func (u *UnitBehavior) handleExecuteAction(reader *byter.Byter) error {
-	unk0 := reader.Byte()
+	msgResponseIdMaybe := reader.Byte()
 	action := behavior.BehaviourAction(reader.Byte())
 
-	logrus.Infof("execute action %s, unk0 %d", action.String(), unk0)
+	logrus.Infof("execute action %s, unk0 %d", action.String(), msgResponseIdMaybe)
 
 	switch action {
 	case behavior.BehaviourActionActivate:
-		return u.handleExecuteActivate(reader)
+		return u.handleExecuteActivate(reader, msgResponseIdMaybe)
 	}
 
 	return nil
 }
 
-func (u *UnitBehavior) handleExecuteActivate(reader *byter.Byter) error {
-	unk := reader.Byte()
+func (u *UnitBehavior) handleExecuteActivate(reader *byter.Byter, responseID byte) error {
+	msgIdMaybe := reader.Byte()
 
-	logrus.Infof("execute Activate unk0 %x", unk)
+	logrus.Infof("execute Activate responseID %x", msgIdMaybe)
 
 	targetID := reader.UInt16()
 	targetEntity := Entities.FindByID(targetID)
@@ -394,7 +396,7 @@ func (u *UnitBehavior) handleExecuteActivate(reader *byter.Byter) error {
 
 	CEWriter.BeginComponentUpdate(u)
 
-	CEWriter.CreateAction(behavior.BehaviourActionActivate)
+	CEWriter.CreateActionResponse(behavior.BehaviourActionActivate, responseID)
 
 	activateAction := behavior.Activate{
 		TargetEntityID: targetID,
