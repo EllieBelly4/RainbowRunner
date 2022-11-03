@@ -126,6 +126,12 @@ func (w *ClientEntityWriter) CreateAction(action behavior.BehaviourAction) {
 	w.Body.WriteByte(byte(action))
 }
 
+func (w *ClientEntityWriter) CreateActionResponse(action behavior.BehaviourAction, responseID byte) {
+	w.Body.WriteByte(0x01)
+	w.Body.WriteByte(responseID)
+	w.Body.WriteByte(byte(action))
+}
+
 func NewClientEntityWriter(b *byter.Byter) *ClientEntityWriter {
 	return &ClientEntityWriter{
 		Body: b,
