@@ -2,6 +2,7 @@ package database
 
 import (
 	"RainbowRunner/internal/types/configtypes"
+	log "github.com/sirupsen/logrus"
 	"strings"
 )
 
@@ -27,24 +28,40 @@ type ZoneConfig struct {
 }
 
 func GetZoneConfig(name string) (*ZoneConfig, error) {
-	gcRoot := []string{"world", name}
+	var rawConfig []*configtypes.DRClassChildGroup
+	var gcRoot []string
 
-	rawConfig, err := config.Get(strings.Join(gcRoot, "."))
+	paths := []string{
+		strings.Join([]string{"world", name}, "."),
+		name,
+	}
 
-	if err != nil {
-		return nil, err
+	for i := 0; i < len(paths); i++ {
+		newConfig, err := config.Get(paths[i])
+
+		if err != nil {
+			continue
+		}
+
+		rawConfig = newConfig
+		gcRoot = strings.Split(paths[i], ".")
+		break
 	}
 
 	zoneConfig := NewZoneConfig(name)
 
-	configEntities := rawConfig[0].Entities[0].Children
+	if rawConfig != nil {
+		configEntities := rawConfig[0].Entities[0].Children
 
-	if npcConfig, ok := configEntities["npc"]; ok {
-		handleNPCs(zoneConfig, npcConfig, append(gcRoot, "npc"))
-	}
+		if npcConfig, ok := configEntities["npc"]; ok {
+			handleNPCs(zoneConfig, npcConfig, append(gcRoot, "npc"))
+		}
 
-	if checkConfig, ok := checkpointConfigs[zoneConfig.Name]; ok {
-		zoneConfig.Checkpoints = checkConfig
+		if checkConfig, ok := checkpointConfigs[zoneConfig.Name]; ok {
+			zoneConfig.Checkpoints = checkConfig
+		}
+	} else {
+		log.Warnf("could not find configuration for zone %s, using defaults", name)
 	}
 
 	return zoneConfig, nil
