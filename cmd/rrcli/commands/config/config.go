@@ -6,8 +6,10 @@ func Init(rootCmd *cobra.Command) {
 	InitDumpCommand()
 	InitGetCommand()
 	InitCategoriseCommand()
+	InitListCategoryCommand()
 
 	rootCmd.AddCommand(dumpCommand)
 	rootCmd.AddCommand(getCommand)
 	rootCmd.AddCommand(categoriseCommand)
+	rootCmd.AddCommand(listCategoryCommand)
 }

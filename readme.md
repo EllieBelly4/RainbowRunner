@@ -70,8 +70,9 @@ To run all commands in here use: `go run cmd/rrcli`
 * `dump` - Parses all Dungeon Runners configuration files in a directory and outputs a compiled JSON that is readable by
   RainbowRunner, use after you run `cmd/scan_pkg.go` to extract the config files.
 * `get` - Retrieve configuration data for specific GCObjects with text/regexp support, can also limit to categories
-  e.g. "Armor", See for all
-  categories: [resources/Dumps/generated/drcategories.json](resources/Dumps/generated/drcategories.json)
+  e.g. "Armor"
+* `list category` - Retrieve a list of all categories that can be searched, use with `-d $NUMBER` to increase
+  depth, `-1` for unlimited
 * `categorise` - Parse the dumped configuration from `dump` and generate the category config
   file ([resources/Dumps/generated/drcategories.json](resources/Dumps/generated/drcategories.json)).
 * `models convert` - Convert models from `.3dnode` to `.obj` and `.mtl`
