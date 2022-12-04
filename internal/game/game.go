@@ -17,7 +17,7 @@ var Connections = make(map[int]*connections.RRConn)
 func StartGameServer() {
 	objects.Entities = objects.NewEntityManager()
 
-	listen, err := net.Listen("tcp", "0.0.0.0:2603")
+	listen, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", config.Config.Network.GameServerPort))
 
 	if err != nil {
 		panic(err)

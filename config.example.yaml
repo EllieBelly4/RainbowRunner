@@ -1,5 +1,9 @@
 send_movement_messages: true
 reinitialise_zones_on_enter: false
+network:
+  login_server_port: 2110
+  game_server_port: 2603
+  game_server_ip: 127.0.0.1
 logging:
   log_moves: false
   log_received_moves: false
@@ -14,6 +18,7 @@ logging:
   log_e_messages: false
   log_ids: false
   log_sent_message_types:
+    OpTypeBehaviourAction: false
     OpTypeAvatarMovement: false
     OpTypeCreateNPC: false
     OpTypeEquippedItemClickResponse: false

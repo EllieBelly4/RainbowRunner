@@ -1,7 +1,10 @@
 package message
 
 import (
+	"RainbowRunner/internal/config"
 	byter "RainbowRunner/pkg/byter"
+	"strconv"
+	"strings"
 )
 
 func HandleServerListMessage(c *AuthMessageParser, reader *byter.Byter) error {
@@ -44,20 +47,22 @@ func HandleServerListMessage(c *AuthMessageParser, reader *byter.Byter) error {
 	00000013 db ? ; undefined
 	00000014 dm_serverInfoEx ends
 	*/
-	serverCount := byte(0xFF)
+	serverCount := byte(0x04)
 
 	response := byter.NewLEByter(make([]byte, 0, 128))
 	response.WriteByte(serverCount) // Server Count
 	response.WriteByte(0x00)        // Last Server ID?
 
+	ipInt := ipToInt(config.Config.Network.GameServerIP)
+
 	for i := byte(0); i < serverCount; i++ {
 		// Server Entry
-		response.WriteByte(i)                    // Server ID
-		response.WriteUInt32(0x0100007F)         // IP 127.0.0.1
-		response.WriteUInt32(0x00000A2B)         // Port 2603
+		response.WriteByte(i) // Server ID
+		response.WriteUInt32(ipInt)
+		response.WriteUInt32(uint32(config.Config.Network.GameServerPort))
 		response.WriteBool(false)                // Age limit
 		response.WriteBool(false)                // PKFlag
-		response.WriteUInt16(uint16(0x0010 + i)) // Current User ? User count?
+		response.WriteUInt16(uint16(0x0000 + i)) // Current User ? User count?
 		response.WriteUInt16(0xFFFF)             // Max user count
 		response.WriteByte(0x01)                 // Server Status
 	}
@@ -69,4 +74,26 @@ func HandleServerListMessage(c *AuthMessageParser, reader *byter.Byter) error {
 	}
 
 	return nil
+}
+
+func ipToInt(ip string) uint32 {
+	split := strings.Split(ip, ".")
+	number := uint32(0)
+
+	number |= mustAtoi(split[0])
+	number |= mustAtoi(split[1]) << 8
+	number |= mustAtoi(split[2]) << 16
+	number |= mustAtoi(split[3]) << 24
+
+	return number
+}
+
+func mustAtoi(numString string) uint32 {
+	numInt, err := strconv.Atoi(numString)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return uint32(numInt)
 }

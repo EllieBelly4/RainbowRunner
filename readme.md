@@ -15,7 +15,8 @@ This is very much a work in progress and is not close to completion and definite
 1. Clone repo
 2. Copy `config.example.yaml` to `config.yaml`
 3. Run `go get`
-4. Run `go run .` - Runs auth server on port `2110`, gameserver on port `2603` (not configurable)
+4. Run `go run .` - Runs auth server on port `2110`, gameserver on port `2603` (configurable
+   in [config.yaml](./config.example.yaml))
 5. Modify `config/DungeonRunners.cfg` and make sure `[AuthServer]`->`Address` is `localhost`
 6. Start Dungeon Runners
 

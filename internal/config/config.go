@@ -23,13 +23,24 @@ type LoggingOptions struct {
 	LogIDs               bool            `mapstructure:"log_ids"`
 }
 
+type NetworkOptions struct {
+	LoginServerPort int    `mapstructure:"login_server_port"`
+	GameServerPort  int    `mapstructure:"game_server_port"`
+	GameServerIP    string `mapstructure:"game_server_ip"`
+}
+
 type RRConfig struct {
+	Network                  NetworkOptions `mapstructure:"network"`
 	SendMovementMessages     bool           `mapstructure:"send_movement_messages"`
 	Logging                  LoggingOptions `mapstructure:"logging"`
 	ReinitialiseZonesOnEnter bool           `mapstructure:"reinitialise_zones_on_enter"`
 }
 
 func Load() {
+	viper.SetDefault("network.login_server_port", 2110)
+	viper.SetDefault("network.game_server_port", 2603)
+	viper.SetDefault("network.game_server_ip", "127.0.0.1")
+
 	viper.SetConfigName("config")                      // name of config file (without extension)
 	viper.SetConfigType("yaml")                        // REQUIRED if the config file does not have the extension in the name
 	viper.AddConfigPath("/etc/rainbowrunner/")         // path to look for the config file in
