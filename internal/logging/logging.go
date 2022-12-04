@@ -2,6 +2,7 @@ package logging
 
 import (
 	"RainbowRunner/internal/config"
+	"fmt"
 	log "github.com/sirupsen/logrus"
 	"io"
 	"os"
@@ -23,7 +24,16 @@ func Init() {
 		flag |= os.O_TRUNC
 	}
 
-	logFile, err := os.OpenFile("resources\\Logs\\"+safeName+".txt", flag, 0755)
+	if _, err := os.Stat("resources/Logs"); os.IsNotExist(err) {
+		fmt.Println("Logs directory missing, creating now")
+		err = os.Mkdir("resources/Logs", 0755)
+
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	logFile, err := os.OpenFile("resources/Logs/"+safeName+".txt", flag, 0755)
 
 	if err != nil {
 		panic(err)
