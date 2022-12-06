@@ -29,17 +29,28 @@ type NetworkOptions struct {
 	GameServerIP    string `mapstructure:"game_server_ip"`
 }
 
+type WelcomeOptions struct {
+	Message            string `mapstructure:"message"`
+	SendWelcomeMessage bool   `mapstructure:"send_welcome_message"`
+}
+
 type RRConfig struct {
 	Network                  NetworkOptions `mapstructure:"network"`
 	SendMovementMessages     bool           `mapstructure:"send_movement_messages"`
 	Logging                  LoggingOptions `mapstructure:"logging"`
 	ReinitialiseZonesOnEnter bool           `mapstructure:"reinitialise_zones_on_enter"`
+	Welcome                  WelcomeOptions `mapstructure:"welcome"`
 }
 
 func Load() {
 	viper.SetDefault("network.login_server_port", 2110)
 	viper.SetDefault("network.game_server_port", 2603)
 	viper.SetDefault("network.game_server_ip", "127.0.0.1")
+
+	viper.SetDefault("welcome.send_welcome_message", true)
+	viper.SetDefault("welcome.message", `Welcome to RainbowRunners!
+This server is currently in development and everything is broken. 
+If you want to contribute to the codebase just head to https://github.com/EllieBelly4/RainbowRunner.`)
 
 	viper.SetConfigName("config")                      // name of config file (without extension)
 	viper.SetConfigType("yaml")                        // REQUIRED if the config file does not have the extension in the name

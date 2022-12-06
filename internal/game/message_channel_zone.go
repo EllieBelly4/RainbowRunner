@@ -1,6 +1,7 @@
 package game
 
 import (
+	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/objects"
@@ -89,6 +90,10 @@ func handleZoneJoin(conn *connections.RRConn) {
 
 	player.CurrentCharacter.OnZoneJoin(player)
 	player.OnZoneJoin()
+
+	if config.Config.Welcome.SendWelcomeMessage {
+		SendWelcomeMessage(player)
+	}
 
 	//if player.Zone.Name == "town" {
 	//	for i, entityStrings := range entitiesToSpawn {
@@ -189,6 +194,15 @@ func handleZoneJoin(conn *connections.RRConn) {
 	//WriteCompressedA(conn, 0x01, 0x0f, cmd)
 
 	//WriteCompressedA(conn, 0x01, 0x0f, body)
+}
+
+func SendWelcomeMessage(player *objects.RRPlayer) {
+	msg := messages.ChatMessage{
+		Channel: messages.MessageChannelSourceGlobalAnnouncement,
+		Message: config.Config.Welcome.Message,
+	}
+
+	player.Conn.SendMessage(msg)
 }
 
 func sendGoToZone(conn *connections.RRConn, body *byter.Byter, zone string) {

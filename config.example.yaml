@@ -1,5 +1,11 @@
 send_movement_messages: true
 reinitialise_zones_on_enter: false
+welcome:
+  send_welcome_message: true
+  message: |
+    Welcome to RainbowRunners!
+    This server is currently in development and everything is broken.
+    If you want to contribute to the codebase just head to https://github.com/EllieBelly4/RainbowRunner.
 network:
   login_server_port: 2110
   game_server_port: 2603
