@@ -3,7 +3,6 @@ package game
 import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
-	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/objects"
 	"RainbowRunner/pkg/byter"
 	"errors"
@@ -19,7 +18,7 @@ func handleChatChannelMessages(conn *connections.RRConn, msgType byte, reader *b
 		return errors.New(fmt.Sprintf("could not find player sending chat message with ID: %d", conn.GetID()))
 	}
 
-	msgChannel := ClientMessageChannelSource(msgType)
+	msgChannel := messages.ClientMessageChannelSource(msgType)
 
 	/**
 	0x01 - World
@@ -30,14 +29,14 @@ func handleChatChannelMessages(conn *connections.RRConn, msgType byte, reader *b
 	0x06 - Noob
 	0x07 - PVP
 	*/
-	if msgChannel == ClientMessageChannelSourceZone ||
-		msgChannel == ClientMessageChannelSourceGroup ||
-		msgChannel == ClientMessageChannelSourceMarket ||
-		msgChannel == ClientMessageChannelSourceWorld ||
-		msgChannel == ClientMessageChannelSourceNoob ||
-		msgChannel == ClientMessageChannelSourcePVP {
+	if msgChannel == messages.ClientMessageChannelSourceZone ||
+		msgChannel == messages.ClientMessageChannelSourceGroup ||
+		msgChannel == messages.ClientMessageChannelSourceMarket ||
+		msgChannel == messages.ClientMessageChannelSourceWorld ||
+		msgChannel == messages.ClientMessageChannelSourceNoob ||
+		msgChannel == messages.ClientMessageChannelSourcePVP {
 		return handleIndirectChatMessageSent(sendingPlayer, conn, reader, msgChannel)
-	} else if msgChannel == ClientMessageChannelSourceTell {
+	} else if msgChannel == messages.ClientMessageChannelSourceTell {
 		return handleDirectChatMessageSent(sendingPlayer, conn, reader)
 	} else {
 		return UnhandledChannelMessageError
@@ -62,13 +61,13 @@ func handleDirectChatMessageSent(player *objects.RRPlayer, conn *connections.RRC
 	target := objects.Players.GetPlayerByCharacterName(targetName)
 
 	if target == nil {
-		return sendUndeliveredMessageNotification(conn, UndeliveredMessageNotificationReasonTargetNotFound)
+		return sendUndeliveredMessageNotification(conn, messages.UndeliveredMessageNotificationReasonTargetNotFound)
 	}
 
 	err := sendTell(player, message, target)
 
 	if err != nil {
-		return sendUndeliveredMessageNotification(conn, UndeliveredMessageNotificationReasonNoReason)
+		return sendUndeliveredMessageNotification(conn, messages.UndeliveredMessageNotificationReasonNoReason)
 	}
 
 	return nil
@@ -78,27 +77,27 @@ func sendTell(player *objects.RRPlayer, msg string, target *objects.RRPlayer) er
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.ChatChannel))
 	body.WriteByte(0x00) // Chat Message
-	body.WriteByte(byte(MessageChannelSourceTell))
+	body.WriteByte(byte(messages.MessageChannelSourceTell))
 	body.WriteByte(0x02) // Unk - must not be 0
 	// Sender name
 	body.WriteCString(player.CurrentCharacter.Name)
 	body.WriteCString(msg)
-	helpers.WriteCompressedASimple(target.Conn, body)
+	connections.WriteCompressedASimple(target.Conn, body)
 
 	body.Clear()
 	body.WriteByte(byte(messages.ChatChannel))
 	body.WriteByte(0x00) // Chat Message
-	body.WriteByte(byte(MessageChannelSourceTell2))
+	body.WriteByte(byte(messages.MessageChannelSourceTell2))
 	body.WriteByte(0x01) // Unk - must not be 0
 	// Sender name
 	body.WriteCString(player.CurrentCharacter.Name)
 	body.WriteCString(msg)
-	helpers.WriteCompressedASimple(player.Conn, body)
+	connections.WriteCompressedASimple(player.Conn, body)
 
 	return nil
 }
 
-func handleIndirectChatMessageSent(player *objects.RRPlayer, conn *connections.RRConn, reader *byter.Byter, channel ClientMessageChannelSource) error {
+func handleIndirectChatMessageSent(player *objects.RRPlayer, conn *connections.RRConn, reader *byter.Byter, channel messages.ClientMessageChannelSource) error {
 	msg := reader.CString()
 
 	// 0x00 Looks like message reading
@@ -117,20 +116,20 @@ func handleIndirectChatMessageSent(player *objects.RRPlayer, conn *connections.R
 	severChannelSource, err := channel.ToMessageChannelSource()
 
 	if err != nil {
-		sendUndeliveredMessageNotification(conn, UndeliveredMessageNotificationReasonNoReason)
+		sendUndeliveredMessageNotification(conn, messages.UndeliveredMessageNotificationReasonNoReason)
 		return err
 	}
 
 	err = sendMessageToTargets(player, msg, severChannelSource, objects.Players.GetPlayers())
 
 	if err != nil {
-		return sendUndeliveredMessageNotification(conn, UndeliveredMessageNotificationReasonNoReason)
+		return sendUndeliveredMessageNotification(conn, messages.UndeliveredMessageNotificationReasonNoReason)
 	}
 
 	return nil
 }
 
-func sendUndeliveredMessageNotification(conn *connections.RRConn, reason UndeliveredMessageNotificationReasonString) error {
+func sendUndeliveredMessageNotification(conn *connections.RRConn, reason messages.UndeliveredMessageNotificationReasonString) error {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.ChatChannel))
 	body.WriteByte(0x02) // Undelivered message notification
@@ -152,29 +151,22 @@ func sendUndeliveredMessageNotification(conn *connections.RRConn, reason Undeliv
 	*/
 	body.WriteByte(byte(reason))
 
-	helpers.WriteCompressedASimple(conn, body)
+	connections.WriteCompressedASimple(conn, body)
 
 	return nil
 }
 
-func sendMessageToTargets(sendingPlayer *objects.RRPlayer, msg string, channel MessageChannelSource, players []*objects.RRPlayer) error {
-	body := byter.NewLEByter(make([]byte, 0, 1024))
-	body.WriteByte(byte(messages.ChatChannel))
-	body.WriteByte(0x00) // Chat Message
-
-	body.WriteByte(byte(channel))
-
-	if channel != MessageChannelSourceGlobalAnnouncement {
-		body.WriteByte(0x00) // Unk, if not 0 then text colour is white
-		// Sender name
-		body.WriteCString(sendingPlayer.CurrentCharacter.Name)
+func sendMessageToTargets(sendingPlayer *objects.RRPlayer, msg string, channel messages.MessageChannelSource, players []*objects.RRPlayer) error {
+	chatMessage := messages.ChatMessage{
+		Channel: channel,
+		Unk0:    0x00,
+		Message: msg,
+		Sender:  sendingPlayer.CurrentCharacter.Name,
 	}
-
-	body.WriteCString(msg)
 
 	// TODO only send to relevant players
 	for _, player := range players {
-		helpers.WriteCompressedASimple(player.Conn, body)
+		player.Conn.SendMessage(chatMessage)
 	}
 
 	return nil

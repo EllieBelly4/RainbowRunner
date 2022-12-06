@@ -5,7 +5,6 @@ import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/game/messages"
-	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/objects"
 	byter "RainbowRunner/pkg/byter"
 	"fmt"
@@ -54,7 +53,7 @@ func handleCharacterList(conn *connections.RRConn) {
 		sendPlayer(character, conn.Client, body)
 	}
 
-	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
+	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
 func handleCharacterCreate(conn *connections.RRConn, reader *byter.Byter) {
@@ -76,7 +75,7 @@ func handleCharacterCreate(conn *connections.RRConn, reader *byter.Byter) {
 
 	sendPlayer(loadPlayer(conn.Client), conn.Client, body)
 
-	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
+	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
 func handleCharacterPlay(conn *connections.RRConn, reader *byter.Byter) {
@@ -88,7 +87,7 @@ func handleCharacterPlay(conn *connections.RRConn, reader *byter.Byter) {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.CharacterChannel))
 	body.WriteByte(byte(CharacterPlay))
-	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
+	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
 func handleCharacterConnected(conn *connections.RRConn) {
@@ -106,7 +105,7 @@ func handleCharacterConnected(conn *connections.RRConn) {
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.CharacterChannel)) // Character channel
 	body.WriteByte(byte(CharacterConnected))        // Connected
-	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
+	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
 func sendPlayer(character *objects.Player, client *connections.RRConnClient, body *byter.Byter) {

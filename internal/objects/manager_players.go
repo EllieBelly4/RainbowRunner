@@ -3,7 +3,6 @@ package objects
 import (
 	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
-	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/message"
 	"RainbowRunner/pkg/byter"
 	"encoding/hex"
@@ -108,7 +107,7 @@ func (m *PlayerManager) AfterTick() {
 		clientEntityWriter.EndStream()
 
 		if clientEntitySend {
-			helpers.WriteCompressedASimple(player.Conn, body)
+			connections.WriteCompressedASimple(player.Conn, body)
 		}
 
 		player.ClientEntityWriter.Clear()

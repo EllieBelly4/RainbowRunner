@@ -1,9 +1,9 @@
 package objects
 
 import (
+	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/game/components/behavior"
-	"RainbowRunner/internal/helpers"
 	"RainbowRunner/pkg/byter"
 	"fmt"
 	"math/rand"
@@ -506,7 +506,7 @@ func SendCreateNewPlayerEntity(rrplayer *RRPlayer, p *Player) {
 	//body.WriteUInt32(147200) // HP
 
 	body.WriteByte(70) // Now connected
-	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
+	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
 var r = rand.New(rand.NewSource(time.Now().Unix()))

@@ -1,5 +1,7 @@
 package messages
 
+import "RainbowRunner/pkg/byter"
+
 type ClientEntityMessage byte
 
 const (
@@ -16,3 +18,7 @@ const (
 	ClientEntityComponentUpdate = 0x34
 	ClientEntityMovement        = 0x35
 )
+
+type DRMessage interface {
+	Write(b *byter.Byter)
+}

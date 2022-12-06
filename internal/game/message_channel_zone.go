@@ -3,7 +3,6 @@ package game
 import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
-	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/objects"
 	byter "RainbowRunner/pkg/byter"
 )
@@ -30,7 +29,7 @@ func handleZoneChannelMessages(conn *connections.RRConn, msgSubType uint8, reade
 		body := byter.NewLEByter(make([]byte, 0, 1024))
 		body.WriteByte(byte(messages.ZoneChannel))
 		body.WriteByte(0x08)
-		helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
+		connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 	default:
 		return UnhandledChannelMessageError
 	}
@@ -54,7 +53,7 @@ func handleZoneJoin(conn *connections.RRConn) {
 		body.WriteUInt32(0x01)
 	}
 
-	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
+	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 
 	body = byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.ZoneChannel))
@@ -63,7 +62,7 @@ func handleZoneJoin(conn *connections.RRConn) {
 	// Adds two separate values into the ZoneClient
 	body.WriteUInt32(0x01)
 	body.WriteUInt32(0x01)
-	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
+	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 
 	player := objects.Players.Players[conn.GetID()]
 
@@ -206,5 +205,5 @@ func sendGoToZone(conn *connections.RRConn, body *byter.Byter, zone string) {
 	body.WriteByte(0xFF)
 	body.WriteCString("world.town.quest.Q01_a1")
 	body.WriteUInt32(0x01)
-	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
+	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 }

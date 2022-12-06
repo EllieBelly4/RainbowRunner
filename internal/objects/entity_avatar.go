@@ -2,8 +2,8 @@ package objects
 
 import (
 	"RainbowRunner/internal/config"
+	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
-	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/message"
 	"RainbowRunner/pkg/byter"
 	"fmt"
@@ -87,7 +87,7 @@ func (p *Avatar) GetUnitBehaviourID() uint16 {
 }
 
 func (p *Avatar) Send(body *byter.Byter) {
-	helpers.WriteCompressedA(p.RREntityProperties().Conn, 0x01, 0x0f, body)
+	connections.WriteCompressedA(p.RREntityProperties().Conn, 0x01, 0x0f, body)
 }
 
 func (p *Avatar) SendFollowClient() {
@@ -133,7 +133,7 @@ func (p *Avatar) SendMoveTo(unk uint8, compID uint16, posX, posY float32) {
 	// EndStream
 	body.WriteByte(0x06)
 
-	helpers.WriteCompressedA(p.RREntityProperties().Conn, 0x01, 0x0f, body)
+	connections.WriteCompressedA(p.RREntityProperties().Conn, 0x01, 0x0f, body)
 
 	if config.Config.Logging.LogMoves {
 		fmt.Printf("Send MoveTo %x (%d, %d) (%x, %x)\n", unk, posX, posY, posX, posY)

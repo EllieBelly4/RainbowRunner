@@ -5,7 +5,6 @@ import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/global"
-	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/objects"
 	"RainbowRunner/pkg/byter"
 	"fmt"
@@ -124,7 +123,7 @@ func handleClientEntityUnk4(conn *connections.RRConn, reader *byter.Byter) {
 
 	AddEntityUpdateStreamEnd(body)
 
-	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
+	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
 func addUnitContainerUpdate(body *byter.Byter, ID uint16) {
@@ -172,7 +171,7 @@ func SendMoveTo(conn *connections.RRConn, unk uint8, compID uint16, posX, posY i
 	//AddSynch(conn, body)
 	AddEntityUpdateStreamEnd(body)
 
-	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
+	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 
 	if config.Config.Logging.LogMoves {
 		fmt.Printf("Send MoveTo %x (%d, %d) (%x, %x)\n", unk, posX, posY, posX, posY)
@@ -209,5 +208,5 @@ func SendInterval(conn *connections.RRConn) {
 
 	AddEntityUpdateStreamEnd(body)
 
-	helpers.WriteCompressedA(conn, 0x01, 0x0f, body)
+	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 }

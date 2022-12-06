@@ -4,7 +4,6 @@ import (
 	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/components/behavior"
-	"RainbowRunner/internal/helpers"
 	"RainbowRunner/internal/message"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
@@ -345,7 +344,7 @@ func (u *UnitBehavior) handleClientAttack(reader *byter.Byter) {
 	writer.EndComponentUpdate(u)
 	writer.EndStream()
 
-	helpers.WriteCompressedASimple(u.RREntityProperties().Conn, writer.Body)
+	connections.WriteCompressedASimple(u.RREntityProperties().Conn, writer.Body)
 }
 
 func (u *UnitBehavior) WriteWarp(writer *ClientEntityWriter) {
