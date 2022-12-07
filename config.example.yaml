@@ -3,7 +3,7 @@ reinitialise_zones_on_enter: false
 welcome:
   send_welcome_message: true
   message: |
-    Welcome to RainbowRunners!
+    Welcome to RainbowRunner!
     This server is currently in development and everything is broken.
     If you want to contribute to the codebase just head to https://github.com/EllieBelly4/RainbowRunner.
 network:

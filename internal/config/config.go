@@ -48,7 +48,7 @@ func Load() {
 	viper.SetDefault("network.game_server_ip", "127.0.0.1")
 
 	viper.SetDefault("welcome.send_welcome_message", true)
-	viper.SetDefault("welcome.message", `Welcome to RainbowRunners!
+	viper.SetDefault("welcome.message", `Welcome to RainbowRunner!
 This server is currently in development and everything is broken. 
 If you want to contribute to the codebase just head to https://github.com/EllieBelly4/RainbowRunner.`)
 
