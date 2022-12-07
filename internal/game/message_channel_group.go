@@ -43,7 +43,7 @@ func handleGroupConnected(conn *connections.RRConn) {
 	//sendGoToZone(conn, body, "dungeon09_level00")//The Shadows Gate(2)
 	//sendGoToZone(conn, body, "dungeon11_level00")//Ballzack's Base Camp(2)
 	//sendGoToZone(conn, body, "dungeon15_level00")//Ratsputin's Holding Cell(2)
-	sendGoToZone(conn, body, "Tutorial")
+	//sendGoToZone(conn, body, "Tutorial")
 	//sendGoToZone(conn, body, "TestVendorLevelSpecArmor")
 	//sendGoToZone(conn, body, "TheHubPortals_Dungeon01")
 	//sendGoToZone(conn, body, "dungeon08_level00")//The Embercore Portal(2)
@@ -51,6 +51,6 @@ func handleGroupConnected(conn *connections.RRConn) {
 	//sendGoToZone(conn, body, "dungeon02_level08_boss")//Lair of the Snow Chieftain (2)
 
 	//sendGoToZone(conn, body, "dungeon16_level00")//The Mutantmania Training Center (2)
-	//sendGoToZone(conn, body, "town")//townston
+	sendGoToZone(conn, body, "town") //townston
 
 }

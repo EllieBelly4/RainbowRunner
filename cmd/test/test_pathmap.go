@@ -9,19 +9,25 @@ import (
 	"os"
 )
 
+type PathMap struct {
+	Width  int `json:"width"`
+	Height int `json:"height"`
+	Nodes  [][]Node
+}
+
 type Node struct {
-	Solid bool `json:"solid"`
-	Unk0  int  `json:"unk0"`
+	Solid  bool    `json:"solid"`
+	Height float32 `json:"height"`
 }
 
 func main() {
-	rawData, err := os.ReadFile("./tmp/pathmap.json")
+	rawData, err := os.ReadFile("./data/pathmaps/town_pathmap.json")
 
 	if err != nil {
 		panic(err)
 	}
 
-	var pathMap [][]Node
+	var pathMap PathMap
 
 	err = json.Unmarshal(rawData, &pathMap)
 
@@ -29,8 +35,8 @@ func main() {
 		panic(err)
 	}
 
-	sizeX := 25
-	sizeY := 25
+	sizeX := pathMap.Width
+	sizeY := pathMap.Height
 
 	img := image.NewRGBA(image.Rectangle{
 		Max: image.Point{
@@ -45,7 +51,7 @@ func main() {
 	for cx := 0; cx < sizeX; cx++ {
 		for cy := 0; cy < sizeY; cy++ {
 
-			nodes := pathMap[cx+cy*sizeX]
+			nodes := pathMap.Nodes[cx+cy*sizeX]
 
 			//if nodes == nil {
 			//	continue
@@ -65,7 +71,7 @@ func main() {
 
 					node := nodes[x+y*16]
 
-					heightPercent := float64(node.Unk0-low) / float64(heightRange)
+					heightPercent := float64(node.Height-low) / float64(heightRange)
 					heightColour := uint8(255 * heightPercent)
 
 					//offsetIndex :=
@@ -90,14 +96,16 @@ func main() {
 	png.Encode(f, img)
 }
 
-func getHeightRange(sizeX int, sizeY int, pathMap [][]Node) (highest int, lowest int) {
-	highest = math.MinInt32
-	lowest = math.MaxInt32
+func getHeightRange(sizeX int, sizeY int, pathMap PathMap) (highest float32, lowest float32) {
+	highest = math.MaxFloat32
+	lowest = math.SmallestNonzeroFloat32
+
+	nodes := pathMap.Nodes
 
 	for cx := 0; cx < sizeX; cx++ {
 		for cy := 0; cy < sizeY; cy++ {
 
-			nodes := pathMap[cx+cy*sizeX]
+			subNodes := nodes[cx+cy*sizeX]
 
 			//if nodes == nil {
 			//	continue
@@ -105,18 +113,18 @@ func getHeightRange(sizeX int, sizeY int, pathMap [][]Node) (highest int, lowest
 
 			for x := 0; x < 16; x++ {
 				for y := 0; y < 16; y++ {
-					if nodes == nil || len(nodes) == 0 {
+					if subNodes == nil || len(subNodes) == 0 {
 						continue
 					}
 
-					node := nodes[x+y*16]
+					node := subNodes[x+y*16]
 
-					if node.Unk0 > highest {
-						highest = node.Unk0
+					if node.Height > highest {
+						highest = node.Height
 					}
 
-					if node.Unk0 < lowest {
-						lowest = node.Unk0
+					if node.Height < lowest {
+						lowest = node.Height
 					}
 				}
 			}
