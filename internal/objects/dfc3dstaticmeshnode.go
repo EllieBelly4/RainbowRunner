@@ -3,6 +3,7 @@ package objects
 import (
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
+	"strings"
 )
 
 type DFC3DMeshNodeMaterialGroup struct {
@@ -32,6 +33,10 @@ type DFC3DStaticMeshNode struct {
 type DFCMeshMaterialRef struct {
 	ID   uint32
 	Name string
+}
+
+func (d DFCMeshMaterialRef) SafeName() string {
+	return strings.Replace(d.Name, " ", "_", -1)
 }
 
 func (d *DFC3DStaticMeshNode) ReadData(b *byter.Byter) {

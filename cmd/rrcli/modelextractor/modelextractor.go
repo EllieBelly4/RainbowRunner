@@ -141,8 +141,8 @@ func extractFromChildren(node objects.DRObject, objBuilder *OBJBuilder, mtlBuild
 				matrix.Values[2],
 			}}
 
-			addMeshToObj(objBuilder, mesh, subMatrix)
 			addMaterials(mesh, objBuilder, mtlBuilder)
+			addMeshToObj(objBuilder, mesh, subMatrix)
 		} else if mesh, ok := object.(*objects.DFC3DNode); ok {
 			extractFromChildren(mesh, objBuilder, mtlBuilder, matrix)
 		}
@@ -156,13 +156,13 @@ func addMaterials(mesh *objects.DFC3DStaticMeshNode, objBuilder *OBJBuilder, mtl
 		err := createMaterial(materialRef, objBuilder, mtlBuilder)
 
 		if err != nil {
-			fmt.Printf("could not add material %s: %s\n", materialRef.Name, err.Error())
+			fmt.Printf("could not add material %s: %s\n", materialRef.SafeName(), err.Error())
 		}
 	}
 }
 
 func createMaterial(ref objects.DFCMeshMaterialRef, objBuilder *OBJBuilder, mtlBuilder *MTLBuilder) error {
-	matFilePath := filepath.Join(basePath, ref.Name+".mat")
+	matFilePath := filepath.Join(basePath, ref.SafeName()+".mat")
 
 	drConfig, err := configparser.ParseAllFilesToDRConfig([]string{matFilePath}, basePath)
 
@@ -189,13 +189,13 @@ func createMaterial(ref objects.DFCMeshMaterialRef, objBuilder *OBJBuilder, mtlB
 	// 	-s u v w
 	// 	-t u v w
 	// 	-texres value
-	if !mtlBuilder.HasMaterial(ref.Name) {
-		mtlBuilder.WriteNewMaterial(ref.Name)
+	if !mtlBuilder.HasMaterial(ref.SafeName()) {
+		mtlBuilder.WriteNewMaterial(ref.SafeName())
 		for childName, childGroup := range drConfig.Classes.Children["material"].Entities[0].Children {
 			if childName == "texture" {
 				for _, texture := range childGroup.Entities {
 					textureFileName := texture.Properties["Filename"] + ".dds"
-					mtlBuilder.WriteNewTexture(ref.Name, MTLTexture{
+					mtlBuilder.WriteNewTexture(ref.SafeName(), MTLTexture{
 						Type:     MTLTextureTypeDiffuse,
 						Filename: textureFileName,
 					})
@@ -225,7 +225,7 @@ func createMaterial(ref objects.DFCMeshMaterialRef, objBuilder *OBJBuilder, mtlB
 						a := parseColour(colourProperties, "Alpha")
 
 						if r != nil && g != nil && b != nil {
-							mtlBuilder.WriteNewColour(ref.Name, MTLColour{
+							mtlBuilder.WriteNewColour(ref.SafeName(), MTLColour{
 								Type: colourTypeEnum,
 								R:    *r,
 								G:    *g,
@@ -234,7 +234,7 @@ func createMaterial(ref objects.DFCMeshMaterialRef, objBuilder *OBJBuilder, mtlB
 						}
 
 						if a != nil {
-							mtlBuilder.WriteNewAlpha(ref.Name, *a)
+							mtlBuilder.WriteNewAlpha(ref.SafeName(), *a)
 						}
 					}
 				}
@@ -305,10 +305,22 @@ func addMeshToObj(objBuilder *OBJBuilder, mesh *objects.DFC3DStaticMeshNode, mat
 	materialGroundIndex := 0
 	currentMaterialGroup := matGroups[materialGroundIndex]
 
+	foundMat := false
+
 	for _, material := range mesh.Materials {
 		if material.ID == currentMaterialGroup.MaterialID {
 			objBuilder.WriteUseMaterial(material)
+			foundMat = true
 			break
+		}
+	}
+
+	if !foundMat {
+		for _, material := range mesh.Materials {
+			if material.ID == 0 {
+				objBuilder.WriteUseMaterial(material)
+				break
+			}
 		}
 	}
 

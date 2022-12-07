@@ -92,7 +92,7 @@ func (w *OBJBuilder) WriteIncludeMTL(name string) {
 
 func (w *OBJBuilder) WriteUseMaterial(ref objects.DFCMeshMaterialRef) {
 	w.body.WriteString("usemtl ")
-	w.body.WriteString(ref.Name)
+	w.body.WriteString(ref.SafeName())
 	w.body.WriteRune('\n')
 }
 
