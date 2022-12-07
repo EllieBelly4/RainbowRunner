@@ -4,10 +4,13 @@ import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/lua"
+	"RainbowRunner/internal/pathfinding"
+	"RainbowRunner/internal/types"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 	log "github.com/sirupsen/logrus"
 	lua2 "github.com/yuin/gopher-lua"
+	"strings"
 	"sync"
 )
 
@@ -18,6 +21,7 @@ type Zone struct {
 	players    map[uint16]*RRPlayer
 	Scripts    *lua.LuaScriptGroup
 	BaseConfig *database.ZoneConfig
+	PathMap    *types.PathMap
 }
 
 func (z *Zone) Entities() []DRObject {
@@ -126,11 +130,13 @@ func (z *Zone) SpawnInit(entity DRObject, position *datatypes.Vector3Float32, ro
 }
 
 func (z *Zone) Init() {
-	z.Scripts = lua.GetScriptGroup("zones." + z.Name)
+	z.ReloadPathMap()
+
+	z.Scripts = lua.GetScriptGroup("zones." + strings.ToLower(z.Name))
 
 	log.Infof("initialising zone %s", z.Name)
 
-	config, err := database.GetZoneConfig(z.Name)
+	config, err := database.GetZoneConfig(strings.ToLower(z.Name))
 
 	if err != nil {
 		panic(err)
@@ -159,4 +165,8 @@ func (z *Zone) Init() {
 
 func (z *Zone) ClearEntities() {
 	z.entities = make(map[uint16]DRObject)
+}
+
+func (z *Zone) ReloadPathMap() {
+	z.PathMap = pathfinding.LoadPathMap(z.Name)
 }
