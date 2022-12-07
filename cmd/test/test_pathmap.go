@@ -5,11 +5,13 @@ import (
 	"image"
 	"image/color"
 	"image/png"
+	"math"
 	"os"
 )
 
 type Node struct {
 	Solid bool `json:"solid"`
+	Unk0  int  `json:"unk0"`
 }
 
 func main() {
@@ -37,6 +39,9 @@ func main() {
 		},
 	})
 
+	high, low := getHeightRange(sizeX, sizeY, pathMap)
+	heightRange := high - low
+
 	for cx := 0; cx < sizeX; cx++ {
 		for cy := 0; cy < sizeY; cy++ {
 
@@ -60,6 +65,9 @@ func main() {
 
 					node := nodes[x+y*16]
 
+					heightPercent := float64(node.Unk0-low) / float64(heightRange)
+					heightColour := uint8(255 * heightPercent)
+
 					//offsetIndex :=
 					//	cx*16 + // Chunk X * Chunk Pixels(16)
 					//		x + // Inner X
@@ -67,7 +75,7 @@ func main() {
 					//		y*sizeX*16 // Inner Y * Chunk Count X * Chunk Pixels(16)
 
 					if node.Solid {
-						colour = color.RGBA{A: 255}
+						colour = color.RGBA{R: heightColour, G: heightColour, B: heightColour, A: 255}
 					}
 
 					img.Set(chunkX-y, chunkY-x, colour)
@@ -80,4 +88,40 @@ func main() {
 	f.Truncate(0)
 
 	png.Encode(f, img)
+}
+
+func getHeightRange(sizeX int, sizeY int, pathMap [][]Node) (highest int, lowest int) {
+	highest = math.MinInt32
+	lowest = math.MaxInt32
+
+	for cx := 0; cx < sizeX; cx++ {
+		for cy := 0; cy < sizeY; cy++ {
+
+			nodes := pathMap[cx+cy*sizeX]
+
+			//if nodes == nil {
+			//	continue
+			//}
+
+			for x := 0; x < 16; x++ {
+				for y := 0; y < 16; y++ {
+					if nodes == nil || len(nodes) == 0 {
+						continue
+					}
+
+					node := nodes[x+y*16]
+
+					if node.Unk0 > highest {
+						highest = node.Unk0
+					}
+
+					if node.Unk0 < lowest {
+						lowest = node.Unk0
+					}
+				}
+			}
+		}
+	}
+
+	return highest, lowest
 }

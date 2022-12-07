@@ -4,6 +4,7 @@ import (
 	lua2 "RainbowRunner/internal/lua"
 	"RainbowRunner/pkg/datatypes"
 	lua "github.com/yuin/gopher-lua"
+	"strings"
 )
 
 type ZoneLuaFunctions struct {
@@ -25,7 +26,7 @@ func (f ZoneLuaFunctions) LoadNPCFromConfig(s *lua.LState) int {
 	z := lua2.CheckReferenceValue[Zone](s, 1)
 	npcID := s.CheckString(2)
 
-	npcConfig, ok := z.BaseConfig.NPCs[npcID]
+	npcConfig, ok := z.BaseConfig.NPCs[strings.ToLower(npcID)]
 
 	if !ok {
 		s.RaiseError("could not find NPC config with ID: " + npcID)

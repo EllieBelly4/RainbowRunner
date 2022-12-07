@@ -1,7 +1,6 @@
 package game
 
 import (
-	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/objects"
@@ -91,10 +90,6 @@ func handleZoneJoin(conn *connections.RRConn) {
 	player.CurrentCharacter.OnZoneJoin(player)
 	player.OnZoneJoin()
 
-	if config.Config.Welcome.SendWelcomeMessage {
-		SendWelcomeMessage(player)
-	}
-
 	//if player.Zone.Name == "town" {
 	//	for i, entityStrings := range entitiesToSpawn {
 	//		objects.CreateNPC(player, player.Zone, datatypes.Transform{
@@ -153,9 +148,43 @@ func handleZoneJoin(conn *connections.RRConn) {
 	if rrPlayer.Zone.Name == "town" {
 		avatar.Warp(106342/256, -46263/256, 12778/256)
 		//avatar.SendPosition()
+	} else if rrPlayer.Zone.Name == "dungeon03_level00" {
+		avatar.Warp(100, 150, 7700/256)
+		//avatar.SendPosition()
 	} else if rrPlayer.Zone.Name == "dungeon16_level00" {
 		avatar.Warp(0, 0, 15000/256)
-		//avatar.SendPosition()
+	} else if rrPlayer.Zone.Name == "dungeon02_level00" {
+		avatar.Warp(-150, 500, 2700/256)
+	} else if rrPlayer.Zone.Name == "dungeon04_level00" {
+		avatar.Warp(100, 500, 2700/256)
+	} else if rrPlayer.Zone.Name == "dungeon05_level00" {
+		avatar.Warp(0, -50, 10000/256)
+	} else if rrPlayer.Zone.Name == "dungeon06_level00" {
+		avatar.Warp(600, 0, 6500/256)
+	} else if rrPlayer.Zone.Name == "dungeon09_level00" {
+		avatar.Warp(75, -50, 12500/256)
+	} else if rrPlayer.Zone.Name == "dungeon11_level00" {
+		avatar.Warp(75, 150, 2000/256)
+	} else if rrPlayer.Zone.Name == "dungeon15_level00" {
+		avatar.Warp(75, 150, 2000/256)
+	} else if rrPlayer.Zone.Name == "Tutorial" {
+		avatar.Warp(750, 450, 10000/256)
+	} else if rrPlayer.Zone.Name == "TestVendorLevelSpecArmor" {
+		avatar.Warp(0, 100, 5000/256)
+	} else if rrPlayer.Zone.Name == "TheHubPortals_Dungeon01" {
+		avatar.Warp(600, -100, 5000/256)
+	} else if rrPlayer.Zone.Name == "dungeon08_level00" {
+		avatar.Warp(0, 0, 5000/256)
+	} else if rrPlayer.Zone.Name == "pvp_start" {
+		avatar.Warp(-200, -200, 5000/256)
+	} else if rrPlayer.Zone.Name == "dungeon02_level08_boss" {
+		avatar.Warp(-200, -200, 5000/256)
+	} else if rrPlayer.Zone.Name == "d06_l01_q05" {
+		avatar.Warp(150, -200, 15000/256)
+	} else if rrPlayer.Zone.Name == "d06_l07_q05" {
+		avatar.Warp(150, -200, 15000/256)
+	} else if rrPlayer.Zone.Name == "epic01_central" {
+		avatar.Warp(-250, 250, 75000/256)
 	}
 
 	avatar.SendFollowClient()
@@ -194,15 +223,6 @@ func handleZoneJoin(conn *connections.RRConn) {
 	//WriteCompressedA(conn, 0x01, 0x0f, cmd)
 
 	//WriteCompressedA(conn, 0x01, 0x0f, body)
-}
-
-func SendWelcomeMessage(player *objects.RRPlayer) {
-	msg := messages.ChatMessage{
-		Channel: messages.MessageChannelSourceGlobalAnnouncement,
-		Message: config.Config.Welcome.Message,
-	}
-
-	player.Conn.SendMessage(msg)
 }
 
 func sendGoToZone(conn *connections.RRConn, body *byter.Byter, zone string) {
