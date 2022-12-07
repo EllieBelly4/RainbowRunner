@@ -191,6 +191,9 @@ func (u *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 
 	responseMoves := make([]UnitPathPosition, 0)
 
+	currentZone := Players.Players[conn.GetID()].Zone
+
+	//TODO remove avatar object usage from here
 	avatar := Players.Players[conn.GetID()].CurrentCharacter.GetChildByGCNativeType("Avatar").(*Avatar)
 
 	for i := 0; i < count; i++ {
@@ -218,6 +221,11 @@ func (u *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 		u.Position.X = pos.X
 		u.Position.Y = pos.Y
 		u.Position.Z = 0
+
+		if currentZone.PathMap != nil {
+			u.Position.Z = currentZone.PathMap.HeightAt(u.Position)
+		}
+
 		u.Rotation = degrees
 
 		//conn.Player.SendPosition(moveUpdateType)
@@ -250,6 +258,11 @@ func (u *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 				Y: pos.Y,
 			},
 		})
+	}
+
+	if currentZone.PathMap != nil {
+		gridPos := currentZone.PathMap.WorldPosToGridCoords(u.Position)
+		logrus.Infof("Current coords: %d, %d height: %f", gridPos.X, gridPos.Y, u.Position.Z)
 	}
 
 	//TODO replace this

@@ -26,8 +26,8 @@ func main() {
 
 	objBuilder := modelextractor.NewOBJBuilder()
 
-	sizeX := pathMap.Width
-	sizeY := pathMap.Height
+	sizeX := pathMap.ChunkWidth
+	sizeY := pathMap.ChunkHeight
 
 	high, low := pathMap.GetHeightRange()
 	heightRange := high - low
@@ -42,7 +42,7 @@ func main() {
 			for x := 0; x < 16; x++ {
 				for y := 0; y < 16; y++ {
 					chunkX := ((sizeX - 1) - (cx)) * 16
-					chunkY := ((sizeY - 1) - (cy)) * 16
+					chunkY := cy * 16
 
 					if nodes == nil || len(nodes) == 0 {
 						continue
@@ -53,9 +53,9 @@ func main() {
 					heightPercent := float64(node.Height-low) / float64(heightRange)
 
 					objBuilder.WriteVert(datatypes.Vector3Float32{
-						X: float32(chunkX - y),
+						X: float32(chunkY + x),
 						Y: node.Height / 10,
-						Z: float32(chunkY - x),
+						Z: float32(chunkX - y),
 					})
 
 					gosucks.VAR(chunkY, chunkX, heightPercent)

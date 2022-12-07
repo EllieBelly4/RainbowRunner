@@ -55,7 +55,7 @@ func (p *Avatar) Tick() {
 	}
 
 	if config.Config.SendMovementMessages {
-		player := Players.GetPlayer(uint16(p.OwnerID()))
+		player := Players.GetPlayer(p.OwnerID())
 		unitBehavior := p.GetChildByGCNativeType("UnitBehavior").(*UnitBehavior)
 
 		CEWriter := NewClientEntityWriterWithByter()

@@ -168,5 +168,5 @@ func (z *Zone) ClearEntities() {
 }
 
 func (z *Zone) ReloadPathMap() {
-	z.PathMap = pathfinding.LoadPathMap(z.Name)
+	z.PathMap = pathfinding.ReloadPathMap(z.Name)
 }

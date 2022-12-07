@@ -1,33 +1,22 @@
 package main
 
 import (
+	"RainbowRunner/internal/types"
 	"encoding/json"
 	"image"
 	"image/color"
 	"image/png"
-	"math"
 	"os"
 )
 
-type PathMap struct {
-	Width  int `json:"width"`
-	Height int `json:"height"`
-	Nodes  [][]Node
-}
-
-type Node struct {
-	Solid  bool    `json:"solid"`
-	Height float32 `json:"height"`
-}
-
 func main() {
-	rawData, err := os.ReadFile("./data/pathmaps/town_pathmap.json")
+	rawData, err := os.ReadFile("./data/pathmaps/tutorial_pathmap.json")
 
 	if err != nil {
 		panic(err)
 	}
 
-	var pathMap PathMap
+	var pathMap types.PathMap
 
 	err = json.Unmarshal(rawData, &pathMap)
 
@@ -35,8 +24,8 @@ func main() {
 		panic(err)
 	}
 
-	sizeX := pathMap.Width
-	sizeY := pathMap.Height
+	sizeX := pathMap.ChunkWidth
+	sizeY := pathMap.ChunkHeight
 
 	img := image.NewRGBA(image.Rectangle{
 		Max: image.Point{
@@ -45,12 +34,11 @@ func main() {
 		},
 	})
 
-	high, low := getHeightRange(sizeX, sizeY, pathMap)
+	high, low := pathMap.GetHeightRange()
 	heightRange := high - low
 
 	for cx := 0; cx < sizeX; cx++ {
 		for cy := 0; cy < sizeY; cy++ {
-
 			nodes := pathMap.Nodes[cx+cy*sizeX]
 
 			//if nodes == nil {
@@ -59,13 +47,18 @@ func main() {
 
 			for x := 0; x < 16; x++ {
 				for y := 0; y < 16; y++ {
+					//chunkX := cx * 16
 					chunkX := ((sizeX - 1) - (cx)) * 16
-					chunkY := ((sizeY - 1) - (cy)) * 16
+					chunkY := cy * 16
+					//chunkY := ((sizeY - 1) - (cy)) * 16
 
 					colour := color.RGBA{R: 255, G: 255, B: 255, A: 255}
 
+					px := chunkY + x
+					py := chunkX - y
+
 					if nodes == nil || len(nodes) == 0 {
-						img.Set(chunkX-x, chunkY-y, colour)
+						img.Set(px, py, colour)
 						continue
 					}
 
@@ -84,7 +77,7 @@ func main() {
 						colour = color.RGBA{R: heightColour, G: heightColour, B: heightColour, A: 255}
 					}
 
-					img.Set(chunkX-y, chunkY-x, colour)
+					img.Set(px, py, colour)
 				}
 			}
 		}
@@ -94,42 +87,4 @@ func main() {
 	f.Truncate(0)
 
 	png.Encode(f, img)
-}
-
-func getHeightRange(sizeX int, sizeY int, pathMap PathMap) (highest float32, lowest float32) {
-	highest = math.MaxFloat32
-	lowest = math.SmallestNonzeroFloat32
-
-	nodes := pathMap.Nodes
-
-	for cx := 0; cx < sizeX; cx++ {
-		for cy := 0; cy < sizeY; cy++ {
-
-			subNodes := nodes[cx+cy*sizeX]
-
-			//if nodes == nil {
-			//	continue
-			//}
-
-			for x := 0; x < 16; x++ {
-				for y := 0; y < 16; y++ {
-					if subNodes == nil || len(subNodes) == 0 {
-						continue
-					}
-
-					node := subNodes[x+y*16]
-
-					if node.Height > highest {
-						highest = node.Height
-					}
-
-					if node.Height < lowest {
-						lowest = node.Height
-					}
-				}
-			}
-		}
-	}
-
-	return highest, lowest
 }

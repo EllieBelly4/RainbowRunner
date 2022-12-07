@@ -58,7 +58,7 @@ func (c *DRClass) Slot() types.EquipmentSlot {
 	slotInt, err := strconv.Atoi(desc.Entities[0].Properties["SlotType"])
 
 	if err != nil {
-		panic(err)
+		panic(fmt.Sprintf("%s does not have a valid slot: ", c.Name) + err.Error())
 	}
 
 	return types.EquipmentSlot(slotInt)
