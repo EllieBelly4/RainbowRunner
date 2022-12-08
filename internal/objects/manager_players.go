@@ -87,6 +87,11 @@ func (m *PlayerManager) AfterTick() {
 	clientEntityWriter := NewClientEntityWriter(body)
 
 	for _, player := range m.Players {
+		if !player.Spawned {
+			player.MessageQueue.Clear(message.QueueTypeClientEntity)
+			continue
+		}
+
 		clientEntitySend := false
 
 		clientEntityWriter.BeginStream()

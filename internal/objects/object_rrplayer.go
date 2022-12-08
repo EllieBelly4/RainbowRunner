@@ -18,9 +18,11 @@ type RRPlayer struct {
 	Zone               *Zone
 	ClientEntityWriter *ClientEntityWriter
 	MessageQueue       *message.Queue
+	Spawned            bool
 }
 
 func (p *RRPlayer) OnZoneJoin() {
+	p.Spawned = true
 	entities := p.Zone.Entities()
 
 	for _, entity := range entities {
@@ -52,6 +54,7 @@ func (p *RRPlayer) OnZoneJoin() {
 }
 
 func (p *RRPlayer) LeaveCurrentZone() {
+	p.Spawned = false
 	p.Zone.RemovePlayer(int(p.CurrentCharacter.ID()))
 	p.MessageQueue.Clear(message.QueueTypeClientEntity)
 
