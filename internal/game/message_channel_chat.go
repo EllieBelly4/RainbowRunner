@@ -100,6 +100,10 @@ func sendTell(player *objects.RRPlayer, msg string, target *objects.RRPlayer) er
 func handleIndirectChatMessageSent(player *objects.RRPlayer, conn *connections.RRConn, reader *byter.Byter, channel messages.ClientMessageChannelSource) error {
 	msg := reader.CString()
 
+	if strings.HasPrefix(msg, "@") {
+		chatCommander.Execute(player, msg)
+	}
+
 	// 0x00 Looks like message reading
 	//
 	// read 1 byte (A)

@@ -3,6 +3,7 @@ package game
 import (
 	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
+	"RainbowRunner/internal/game/chatcommander"
 	"RainbowRunner/internal/objects"
 	"RainbowRunner/pkg/byter"
 	"encoding/hex"
@@ -11,6 +12,7 @@ import (
 	"net"
 )
 
+var chatCommander = chatcommander.NewChatCommander()
 var Connections = make(map[int]*connections.RRConn)
 
 func StartGameServer() {
