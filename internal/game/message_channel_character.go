@@ -295,17 +295,17 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 
 	//r := rand.New(rand.NewSource(time.Now().Unix()))
 
-	//AddEquipment(avatarEquipment, manipulators,
-	//	"PlateArmor3PAL.PlateArmor3-7",
-	//	//objects.ArmourMap["armor"][int(r.Int63())%len(objects.ArmourMap["armor"])],
-	//	"PlateBoots3PAL.PlateBoots3-7",
-	//	//objects.ArmourMap["boots"][int(r.Int63())%len(objects.ArmourMap["boots"])],
-	//	"PlateHelm3PAL.PlateHelm3-7",
-	//	//objects.ArmourMap["helm"][int(r.Int63())%len(objects.ArmourMap["helm"])],
-	//	"PlateGloves3PAL.PlateGloves3-7",
-	//	//objects.ArmourMap["gloves"][int(r.Int63())%len(objects.ArmourMap["gloves"])],
-	//	"CrystalMythicPAL.CrystalMythicShield1",
-	//)
+	AddEquipment(avatarEquipment, manipulators,
+		"PlateArmor3PAL.PlateArmor3-7",
+		//objects.ArmourMap["armor"][int(r.Int63())%len(objects.ArmourMap["armor"])],
+		"PlateBoots3PAL.PlateBoots3-7",
+		//objects.ArmourMap["boots"][int(r.Int63())%len(objects.ArmourMap["boots"])],
+		"PlateHelm3PAL.PlateHelm3-7",
+		//objects.ArmourMap["helm"][int(r.Int63())%len(objects.ArmourMap["helm"])],
+		"PlateGloves3PAL.PlateGloves3-7",
+		//objects.ArmourMap["gloves"][int(r.Int63())%len(objects.ArmourMap["gloves"])],
+		"CrystalMythicPAL.CrystalMythicShield1",
+	)
 
 	//manipulators.AddChild(armor)
 	//manipulators.AddChild(weapon)
