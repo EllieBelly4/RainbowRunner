@@ -12,7 +12,7 @@ import (
 
 func ExecuteLua(player *objects.RRPlayer, args []string) {
 	if len(args) < 1 {
-		SendLuaErrorMessageResponse(player, "You must provide a script name with function name. Ex: @exec general.gotozone town")
+		SendLuaErrorMessageResponse(player, "You must provide a script name with function name. Ex: @exec general.changeZone town")
 		return
 	}
 
