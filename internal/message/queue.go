@@ -73,6 +73,17 @@ func (q *Queue) IsEmpty(queueType QueueType) bool {
 	return len(q.queues[queueType]) == 0
 }
 
+func (q *Queue) Clear(queueType QueueType) {
+	q.Lock()
+	defer q.Unlock()
+
+	if _, ok := q.queues[queueType]; !ok {
+		return
+	}
+
+	q.queues[queueType] = make([]*QueueItem, 0)
+}
+
 func NewQueue() *Queue {
 	return &Queue{queues: map[QueueType][]*QueueItem{}}
 }

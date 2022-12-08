@@ -4,6 +4,7 @@ import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/game/components/behavior"
+	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/pkg/byter"
 	"fmt"
 	"math/rand"
@@ -13,7 +14,7 @@ import (
 type Player struct {
 	*GCObject
 	Name      string
-	CurrentHP uint32
+	CurrentHP uint32 // This is probably a DRFloat
 }
 
 func (p *Player) Type() DRObjectType {
@@ -74,6 +75,29 @@ func (p *Player) WriteSynch(b *byter.Byter) {
 
 func (p *Player) OnZoneJoin(rrPlayer *RRPlayer) {
 	SendCreateNewPlayerEntity(rrPlayer, p)
+}
+
+func (p *Player) ChangeZone(name string) {
+	rrPlayer := Players.Players[int(p.OwnerID())]
+
+	if rrPlayer.Zone != nil {
+		rrPlayer.LeaveCurrentZone()
+	}
+
+	Zones.PlayerJoin(name, rrPlayer)
+
+	body := byter.NewLEByter(make([]byte, 0, 1024))
+	body.WriteByte(byte(messages.ZoneChannel))
+	body.WriteByte(0x00)
+	//body.WriteCString("TheHub")
+	//body.WriteCString("Tutorial")
+	body.WriteCString(name)
+	body.WriteUInt32(0xBEEFBEEF)
+	body.WriteByte(0x01)
+	body.WriteByte(0xFF)
+	body.WriteCString("world.town.quest.Q01_a1")
+	body.WriteUInt32(0x01)
+	connections.WriteCompressedA(rrPlayer.Conn, 0x01, 0x0f, body)
 }
 
 func SendCreateNewPlayerEntity(rrplayer *RRPlayer, p *Player) {

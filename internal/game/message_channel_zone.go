@@ -230,21 +230,9 @@ func handleZoneJoin(conn *connections.RRConn) {
 	//WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
-func sendGoToZone(conn *connections.RRConn, body *byter.Byter, zone string) {
-	objects.Zones.PlayerJoin(zone, objects.Players.Players[conn.GetID()])
-
-	body = byter.NewLEByter(make([]byte, 0, 1024))
-	body.WriteByte(byte(messages.ZoneChannel))
-	body.WriteByte(0x00)
-	//body.WriteCString("TheHub")
-	//body.WriteCString("Tutorial")
-	body.WriteCString(zone)
-	body.WriteUInt32(0xBEEFBEEF)
-	body.WriteByte(0x01)
-	body.WriteByte(0xFF)
-	body.WriteCString("world.town.quest.Q01_a1")
-	body.WriteUInt32(0x01)
-	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
+func sendGoToZone(conn *connections.RRConn, zone string) {
+	player := objects.Players.Players[conn.GetID()].CurrentCharacter
+	player.ChangeZone(zone)
 }
 
 func SendWelcomeMessage(player *objects.RRPlayer) {

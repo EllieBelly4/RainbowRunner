@@ -19,6 +19,7 @@ func RegisterLuaGlobals(state *lua.LState) {
 	registerLuaUnit(state)
 	registerLuaNPC(state)
 	registerLuaZone(state)
+	registerLuaPlayer(state)
 }
 
 func luaMethodsExtend(child map[string]lua.LGFunction, parent func() map[string]lua.LGFunction) map[string]lua.LGFunction {

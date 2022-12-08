@@ -44,3 +44,8 @@ func (p *RRPlayer) OnZoneJoin() {
 		p.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeCreateNPC)
 	}
 }
+
+func (p *RRPlayer) LeaveCurrentZone() {
+	p.Zone.RemovePlayer(int(p.CurrentCharacter.ID()))
+	p.MessageQueue.Clear(message.QueueTypeClientEntity)
+}
