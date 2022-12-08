@@ -1,6 +1,7 @@
 package objects
 
 import (
+	"RainbowRunner/internal/connections"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 )
@@ -40,6 +41,7 @@ type DRObject interface {
 	ReadData(b *byter.Byter)
 	WalkChildren(f func(object DRObject))
 	RemoveChildAt(i int)
+	SetOwner(conn *connections.RRConn)
 }
 
 type DRItem interface {

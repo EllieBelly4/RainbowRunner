@@ -398,7 +398,9 @@ func (u *UnitBehavior) handleExecuteActivate(reader *byter.Byter, responseID byt
 	logrus.Infof("execute Activate responseID %x", msgIdMaybe)
 
 	targetID := reader.UInt16()
-	targetEntity := Entities.FindByID(targetID)
+
+	targetEntity := u.EntityProperties.Zone.FindEntityByID(targetID)
+	//targetEntity := Entities.FindByID(targetID)
 
 	if targetEntity == nil {
 		return errors.New(fmt.Sprintf("could not find target entity with ID %d", targetID))

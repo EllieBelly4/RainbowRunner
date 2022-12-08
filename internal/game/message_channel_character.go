@@ -82,7 +82,16 @@ func handleCharacterPlay(conn *connections.RRConn, reader *byter.Byter) {
 	reader.UInt8()
 	reader.UInt8()
 	slot := reader.UInt8()
-	objects.Players.Players[conn.GetID()].CurrentCharacter = objects.Players.Players[conn.GetID()].Characters[slot]
+
+	character := objects.Players.Players[conn.GetID()].Characters[slot]
+	objects.Players.Players[conn.GetID()].CurrentCharacter = character
+
+	character.WalkChildren(func(object objects.DRObject) {
+		props := object.RREntityProperties()
+
+		props.Conn = conn
+		props.OwnerID = uint16(conn.GetID())
+	})
 
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.CharacterChannel))
@@ -183,13 +192,14 @@ func sendPlayer(character *objects.Player, client *connections.RRConnClient, bod
 func loadAvatar(player *objects.Player) *objects.Avatar {
 	avatar := getAvatar(player.RREntityProperties().Conn)
 
-	objects.Entities.RegisterAll(player.EntityProperties.Conn, avatar)
+	// TODO look
+	//objects.Entities.RegisterAll(player.EntityProperties.Conn, avatar)
 	return avatar
 }
 
 func loadPlayer(client *connections.RRConnClient) *objects.Player {
 	player := objects.NewPlayer("Ellie")
-	objects.Entities.RegisterAll(client, player.Children()...)
+	//objects.Entities.RegisterAll(client, player.Children()...)
 	return player
 }
 
@@ -261,7 +271,7 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 
 	manipulator := objects.NewGCObject("Manipulator")
 	//manipulator.GCType = "base.MeleeUnit.Manipulators.PrimaryWeapon"
-	objects.Entities.RegisterAll(conn, manipulator)
+	//objects.Entities.RegisterAll(conn, manipulator)
 
 	unitContainer := objects.NewUnitContainer(manipulator, "EllieUnitContainer", avatar)
 	//unitContainer.GCType = "unitcontainer"

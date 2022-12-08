@@ -23,7 +23,7 @@ func StartGameLoop() {
 				job()
 			}
 
-			objects.Entities.Tick()
+			objects.Zones.Tick()
 
 			//if global.Tick%150 == 0 {
 			//	for _, player := range objects.Players.Players {

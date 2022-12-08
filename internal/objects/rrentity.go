@@ -12,6 +12,11 @@ type RREntityProperties struct {
 	Zone    *Zone
 }
 
+func (p *RREntityProperties) SetOwner(id uint16) {
+	p.Conn = Players.GetPlayer(id).Conn
+	p.OwnerID = id
+}
+
 type RREntity struct {
 	Object  DRObject
 	OwnerID int

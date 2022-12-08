@@ -2,6 +2,7 @@ package objects
 
 import (
 	"RainbowRunner/internal/message"
+	"RainbowRunner/internal/types"
 	byter "RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 	"errors"
@@ -17,6 +18,7 @@ type UnitContainer struct {
 }
 
 func (u *UnitContainer) ReadUpdate(body *byter.Byter) error {
+	zone := u.RREntityProperties().Zone
 	op := body.Byte()
 
 	switch op {
@@ -36,9 +38,12 @@ func (u *UnitContainer) ReadUpdate(body *byter.Byter) error {
 		avatarUnitBehaviour := u.Avatar.GetUnitBehaviour()
 
 		itemObject := NewItemObject("itemobject", item)
+		itemObject.RREntityProperties().SetOwner(u.OwnerID())
 		itemObject.WorldPosition = avatarUnitBehaviour.Position
+		zone.AddEntity(types.UInt16(u.OwnerID()), itemObject)
+
 		fmt.Printf("Avatar Pos: %d, %d", avatarUnitBehaviour.Position.X, avatarUnitBehaviour.Position.Y)
-		Entities.RegisterAll(u.RREntityProperties().Conn, itemObject)
+
 		CEWriter.Create(itemObject)
 		CEWriter.Init(itemObject)
 
@@ -211,9 +216,9 @@ func NewUnitContainer(manipulator DRObject, name string, avatar *Avatar) *UnitCo
 	container := NewComponent("unitcontainer", "UnitContainer")
 	container.GCLabel = name
 
-	if manipulator.RREntityProperties().ID == 0 {
-		panic("Register component before passing it to unit container")
-	}
+	//if manipulator.RREntityProperties().ID == 0 {
+	//	panic("Register component before passing it to unit container")
+	//}
 
 	return &UnitContainer{
 		Component:   container,

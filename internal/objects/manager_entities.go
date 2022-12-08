@@ -49,15 +49,6 @@ func (m *EntityManager) RegisterAll(owner connections.Connection, objects ...DRO
 	}
 }
 
-func (m *EntityManager) Tick() {
-	m.RLock()
-	defer m.RUnlock()
-
-	for _, entity := range m.Entities {
-		entity.Tick()
-	}
-}
-
 func (m *EntityManager) FindByID(id uint16) DRObject {
 	m.RLock()
 	defer m.RUnlock()

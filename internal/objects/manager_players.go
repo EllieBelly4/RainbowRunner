@@ -58,7 +58,7 @@ func (m *PlayerManager) OnDisconnect(id int) {
 		}
 	}
 
-	Entities.RemoveOwnedBy(id)
+	//Entities.RemoveOwnedBy(id)
 
 	delete(Players.Players, id)
 }

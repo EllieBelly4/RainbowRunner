@@ -148,10 +148,9 @@ func handleZoneJoin(conn *connections.RRConn) {
 	//FF FF # Per Path (idk)
 	//
 	//06 #end`))
-	rrPlayer := objects.Players.Players[conn.GetID()]
 
-	avatar := objects.Players.Players[conn.GetID()].CurrentCharacter.GetChildByGCNativeType("Avatar").(*objects.Avatar)
-	lcZoneName := strings.ToLower(rrPlayer.Zone.Name)
+	avatar := player.CurrentCharacter.GetChildByGCNativeType("Avatar").(*objects.Avatar)
+	lcZoneName := strings.ToLower(player.Zone.Name)
 	if lcZoneName == "town" {
 		avatar.Warp(106342/256, -46263/256, 12778/256)
 		//avatar.SendPosition()

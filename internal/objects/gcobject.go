@@ -2,6 +2,7 @@ package objects
 
 import (
 	"RainbowRunner/internal/config"
+	"RainbowRunner/internal/connections"
 	"RainbowRunner/pkg/byter"
 	"fmt"
 	"regexp"
@@ -27,6 +28,10 @@ type GCObject struct {
 	GCType           string
 	Properties       []GCObjectProperty
 	EntityHandler    EntityMessageHandler
+}
+
+func (g *GCObject) SetOwner(conn *connections.RRConn) {
+	g.RREntityProperties().SetOwner(uint16(conn.GetID()))
 }
 
 func (g *GCObject) RemoveChildAt(i int) {

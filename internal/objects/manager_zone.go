@@ -2,6 +2,7 @@ package objects
 
 import (
 	"RainbowRunner/internal/config"
+	"RainbowRunner/internal/types"
 	"crypto/md5"
 	"encoding/binary"
 	"sync"
@@ -20,7 +21,7 @@ func (m *ZoneManager) PlayerJoin(zoneName string, player *RRPlayer) {
 	player.Zone = zone
 
 	for _, child := range player.CurrentCharacter.Children() {
-		zone.AddEntity(child)
+		zone.AddEntity(types.UInt16(uint16(player.Conn.GetID())), child)
 	}
 
 	zone.AddPlayer(player)
@@ -60,11 +61,6 @@ func (m *ZoneManager) CreateZone(name string) *Zone {
 	return z
 }
 
-func (m *ZoneManager) Spawn(npc *GCObject) {
-	Entities.RegisterAll(nil, npc)
-
-}
-
 func (m *ZoneManager) Zone(s string) *Zone {
 	return m.getOrCreateZone(s)
 }
@@ -80,6 +76,15 @@ func (m *ZoneManager) GetZones() []*Zone {
 	}
 
 	return list
+}
+
+func (m *ZoneManager) Tick() {
+	m.RLock()
+	defer m.RUnlock()
+
+	for _, zone := range m.Zones {
+		zone.Tick()
+	}
 }
 
 func NewZoneManager() *ZoneManager {

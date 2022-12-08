@@ -1,6 +1,7 @@
 package objects
 
 import (
+	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/lua"
@@ -8,6 +9,7 @@ import (
 	"RainbowRunner/internal/types"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
+	"fmt"
 	log "github.com/sirupsen/logrus"
 	lua2 "github.com/yuin/gopher-lua"
 	"strings"
@@ -55,9 +57,6 @@ func (z *Zone) RemovePlayer(id int) {
 	z.Lock()
 	defer z.Unlock()
 
-	//TODO consider removing global entity manager and replace with Zone specific lists
-	Entities.RemoveOwnedBy(id)
-
 	delete(z.players, uint16(id))
 
 	toDelete := make([]uint16, 0, 1024)
@@ -74,22 +73,47 @@ func (z *Zone) RemovePlayer(id int) {
 	}
 }
 
-func (z *Zone) AddEntity(entity DRObject) {
+func (z *Zone) AddEntity(owner *uint16, entity DRObject) {
 	z.setZone(entity)
 
-	z.entities[uint16(entity.RREntityProperties().ID)] = entity
+	z.Lock()
+	defer z.Unlock()
+
+	z.GiveID(entity)
+
+	if owner != nil {
+		entity.RREntityProperties().SetOwner(*owner)
+	}
+
+	entity.WalkChildren(func(object DRObject) {
+		z.GiveID(object)
+
+		if owner != nil {
+			object.RREntityProperties().SetOwner(*owner)
+		}
+	})
+
+	id := uint16(entity.RREntityProperties().ID)
+
+	if _, ok := z.entities[id]; ok {
+		return
+	}
+
+	z.entities[id] = entity
 }
 
 func (z *Zone) AddPlayer(player *RRPlayer) {
+	z.Lock()
+	defer z.Unlock()
+
 	z.players[uint16(player.Conn.GetID())] = player
 }
 
 func (z *Zone) Spawn(entity DRObject) {
-	Entities.RegisterAll(nil, entity)
+	//Entities.RegisterAll(nil, entity)
 
+	z.AddEntity(nil, entity)
 	log.Infof("spawning entity '%s' in zone '%s'", entity.GetGCObject().GCType, z.Name)
-
-	z.AddEntity(entity)
 }
 
 func (z *Zone) setZone(entities ...DRObject) {
@@ -100,6 +124,9 @@ func (z *Zone) setZone(entities ...DRObject) {
 }
 
 func (z *Zone) SendToAll(body *byter.Byter) {
+	z.RLock()
+	defer z.RUnlock()
+
 	for _, player := range z.players {
 		connections.WriteCompressedASimple(player.Conn, body)
 	}
@@ -168,9 +195,46 @@ func (z *Zone) Init() {
 }
 
 func (z *Zone) ClearEntities() {
+	z.Lock()
+	defer z.Unlock()
+
 	z.entities = make(map[uint16]DRObject)
 }
 
 func (z *Zone) ReloadPathMap() {
 	z.PathMap = pathfinding.ReloadPathMap(z.Name)
+}
+
+func (z *Zone) Tick() {
+	es := z.Entities()
+
+	for _, entity := range es {
+		if entity == nil {
+			continue
+		}
+		entity.Tick()
+	}
+}
+
+func (z *Zone) FindEntityByID(id uint16) DRObject {
+	z.RLock()
+	defer z.RUnlock()
+	for _, entity := range z.entities {
+		if entity.RREntityProperties().ID == uint32(id) {
+			return entity
+		}
+	}
+	return nil
+}
+
+func (z *Zone) GiveID(entity DRObject) {
+	eProps := entity.RREntityProperties()
+
+	if eProps.ID == 0 {
+		eProps.ID = uint32(NewID())
+	}
+
+	if config.Config.Logging.LogIDs {
+		fmt.Printf("%d - %s(%s)\n", eProps.ID, entity.GetGCObject().GCType, entity.GetGCObject().GCLabel)
+	}
 }

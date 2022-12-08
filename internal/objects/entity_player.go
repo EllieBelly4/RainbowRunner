@@ -4,6 +4,7 @@ import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/game/components/behavior"
+	"RainbowRunner/internal/types"
 	"RainbowRunner/pkg/byter"
 	"fmt"
 	"math/rand"
@@ -89,6 +90,7 @@ func (p *Player) ChangeZone(name string) {
 }
 
 func SendCreateNewPlayerEntity(rrplayer *RRPlayer, p *Player) {
+	zone := rrplayer.Zone
 	//clientEntityWriter := rrplayer.ClientEntityWriter
 	//equippedItems := getRandomEquipment()
 	avatar := p.GetChildByGCNativeType("Avatar")
@@ -132,18 +134,21 @@ func SendCreateNewPlayerEntity(rrplayer *RRPlayer, p *Player) {
 	//clientEntityWriter.CreateComponent(fighterEquipment, avatar)
 
 	questManager := p.GetChildByGCType("QuestManager")
+	ownerID := types.UInt16(uint16(rrplayer.Conn.GetID()))
+
 	if questManager == nil {
 		questManager = NewQuestManager()
-		Entities.RegisterAll(conn, questManager)
 	}
+
+	zone.AddEntity(ownerID, questManager)
 	clientEntityWriter.CreateComponentAndInit(questManager, p)
 
 	dialogManager := p.GetChildByGCType("DialogManager")
 	if dialogManager == nil {
 		dialogManager = NewDialogManager()
-		Entities.RegisterAll(conn, dialogManager)
 	}
 
+	zone.AddEntity(ownerID, dialogManager)
 	clientEntityWriter.CreateComponentAndInit(dialogManager, p)
 
 	//addCreateComponent(body, 0x01, 0x0C, "AvatarMetrics")
