@@ -2,6 +2,8 @@ package objects
 
 import (
 	"RainbowRunner/internal/config"
+	"crypto/md5"
+	"encoding/binary"
 	"sync"
 )
 
@@ -43,8 +45,12 @@ func (m *ZoneManager) getOrCreateZone(zoneName string) *Zone {
 }
 
 func (m *ZoneManager) CreateZone(name string) *Zone {
+	nameHashBytes := md5.Sum([]byte(name))
+	nameHash := binary.LittleEndian.Uint32(nameHashBytes[:])
+
 	z := &Zone{
 		Name:     name,
+		ID:       nameHash,
 		entities: make(map[uint16]DRObject),
 		players:  make(map[uint16]*RRPlayer),
 	}

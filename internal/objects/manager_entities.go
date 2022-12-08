@@ -8,6 +8,7 @@ import (
 	"sync"
 )
 
+// TODO consider removing/refactoring this entire thing as entities probably need to be separated by zones
 var Entities *EntityManager
 
 // Reserving 10 IDs for player characters

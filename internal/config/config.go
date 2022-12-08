@@ -11,6 +11,7 @@ type LoggingOptions struct {
 	LogMoves             bool            `mapstructure:"log_moves"`
 	LogReceivedMoves     bool            `mapstructure:"log_received_moves"`
 	LogGenericSent       bool            `mapstructure:"log_generic_sent"`
+	LogChangeZone        bool            `mapstructure:"log_change_zone"`
 	LogSmallAs           bool            `mapstructure:"log_small_as"`
 	LogHashes            bool            `mapstructure:"log_hashes"`
 	LogGCObjectSerialise bool            `mapstructure:"log_gc_object_serialise"`

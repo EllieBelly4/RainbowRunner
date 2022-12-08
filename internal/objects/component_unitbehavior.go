@@ -261,8 +261,8 @@ func (u *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 	}
 
 	if currentZone.PathMap != nil {
-		gridPos := currentZone.PathMap.WorldPosToGridCoords(u.Position)
-		logrus.Infof("Current coords: %d, %d height: %f", gridPos.X, gridPos.Y, u.Position.Z)
+		//gridPos := currentZone.PathMap.WorldPosToGridCoords(u.Position)
+		//logrus.Infof("Current coords: %d, %d height: %f", gridPos.X, gridPos.Y, u.Position.Z)
 	}
 
 	//TODO replace this

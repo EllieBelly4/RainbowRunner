@@ -22,6 +22,7 @@ type Zone struct {
 	Scripts    *lua.LuaScriptGroup
 	BaseConfig *database.ZoneConfig
 	PathMap    *types.PathMap
+	ID         uint32
 }
 
 func (z *Zone) Entities() []DRObject {
@@ -53,6 +54,9 @@ func (z *Zone) Players() []*RRPlayer {
 func (z *Zone) RemovePlayer(id int) {
 	z.Lock()
 	defer z.Unlock()
+
+	//TODO consider removing global entity manager and replace with Zone specific lists
+	Entities.RemoveOwnedBy(id)
 
 	delete(z.players, uint16(id))
 

@@ -58,12 +58,12 @@ func handleConnection(conn net.Conn) {
 	)
 	objects.Players.Register(rrconn)
 
-	Connections[int(rrconn.Client.ID)] = rrconn
+	Connections[rrconn.Client.ID] = rrconn
 
 	defer func(conn net.Conn) {
 		rrconn.IsConnected = false
 		err := conn.Close()
-		objects.Players.OnDisconnect(int(rrconn.Client.ID))
+		objects.Players.OnDisconnect(rrconn.Client.ID)
 		if err != nil {
 			panic(err)
 		}

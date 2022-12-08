@@ -6,6 +6,7 @@ import (
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/objects"
 	byter "RainbowRunner/pkg/byter"
+	"strings"
 )
 
 type ZoneChannelMessage byte
@@ -38,12 +39,14 @@ func handleZoneChannelMessages(conn *connections.RRConn, msgSubType uint8, reade
 }
 
 func handleZoneJoin(conn *connections.RRConn) {
+	player := objects.Players.GetPlayer(uint16(conn.GetID()))
+
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.ZoneChannel))
-	body.WriteByte(0x01)
+	body.WriteByte(byte(messages.ZoneMessageReady))
 	//body.WriteByte(0x02) // Other acceptable values
 	//body.WriteByte(0x05) // Other acceptable values
-	body.WriteUInt32(0xFEEDBABA) // World ID
+	body.WriteUInt32(player.Zone.ID) // World ID
 
 	// MiniMapExplored::ReadExploredBits
 	// dungeon00_level01 - 0x12
@@ -64,8 +67,6 @@ func handleZoneJoin(conn *connections.RRConn) {
 	body.WriteUInt32(0x01)
 	body.WriteUInt32(0x01)
 	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
-
-	player := objects.Players.Players[conn.GetID()]
 
 	//entitiesToSpawn := [][]string{
 	//	{"npc.Avatar.Female.base.NPC_Amazon1_Base", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
@@ -150,45 +151,46 @@ func handleZoneJoin(conn *connections.RRConn) {
 	rrPlayer := objects.Players.Players[conn.GetID()]
 
 	avatar := objects.Players.Players[conn.GetID()].CurrentCharacter.GetChildByGCNativeType("Avatar").(*objects.Avatar)
-	if rrPlayer.Zone.Name == "town" {
+	lcZoneName := strings.ToLower(rrPlayer.Zone.Name)
+	if lcZoneName == "town" {
 		avatar.Warp(106342/256, -46263/256, 12778/256)
 		//avatar.SendPosition()
-	} else if rrPlayer.Zone.Name == "dungeon03_level00" {
+	} else if lcZoneName == "dungeon03_level00" {
 		avatar.Warp(100, 150, 7700/256)
 		//avatar.SendPosition()
-	} else if rrPlayer.Zone.Name == "dungeon16_level00" {
+	} else if lcZoneName == "dungeon16_level00" {
 		avatar.Warp(0, 0, 15000/256)
-	} else if rrPlayer.Zone.Name == "dungeon02_level00" {
+	} else if lcZoneName == "dungeon02_level00" {
 		avatar.Warp(-150, 500, 2700/256)
-	} else if rrPlayer.Zone.Name == "dungeon04_level00" {
+	} else if lcZoneName == "dungeon04_level00" {
 		avatar.Warp(100, 500, 2700/256)
-	} else if rrPlayer.Zone.Name == "dungeon05_level00" {
+	} else if lcZoneName == "dungeon05_level00" {
 		avatar.Warp(0, -50, 10000/256)
-	} else if rrPlayer.Zone.Name == "dungeon06_level00" {
+	} else if lcZoneName == "dungeon06_level00" {
 		avatar.Warp(600, 0, 6500/256)
-	} else if rrPlayer.Zone.Name == "dungeon09_level00" {
+	} else if lcZoneName == "dungeon09_level00" {
 		avatar.Warp(75, -50, 12500/256)
-	} else if rrPlayer.Zone.Name == "dungeon11_level00" {
+	} else if lcZoneName == "dungeon11_level00" {
 		avatar.Warp(75, 150, 2000/256)
-	} else if rrPlayer.Zone.Name == "dungeon15_level00" {
+	} else if lcZoneName == "dungeon15_level00" {
 		avatar.Warp(75, 150, 2000/256)
-	} else if rrPlayer.Zone.Name == "Tutorial" {
+	} else if lcZoneName == "tutorial" {
 		avatar.Warp(750, 450, 10000/256)
-	} else if rrPlayer.Zone.Name == "TestVendorLevelSpecArmor" {
+	} else if lcZoneName == "testvendorlevelspecarmor" {
 		avatar.Warp(0, 100, 5000/256)
-	} else if rrPlayer.Zone.Name == "TheHubPortals_Dungeon01" {
+	} else if lcZoneName == "thehubportals_dungeon01" {
 		avatar.Warp(600, -100, 5000/256)
-	} else if rrPlayer.Zone.Name == "dungeon08_level00" {
+	} else if lcZoneName == "dungeon08_level00" {
 		avatar.Warp(0, 0, 5000/256)
-	} else if rrPlayer.Zone.Name == "pvp_start" {
+	} else if lcZoneName == "pvp_start" {
 		avatar.Warp(-200, -200, 5000/256)
-	} else if rrPlayer.Zone.Name == "dungeon02_level08_boss" {
+	} else if lcZoneName == "dungeon02_level08_boss" {
 		avatar.Warp(-200, -200, 5000/256)
-	} else if rrPlayer.Zone.Name == "d06_l01_q05" {
+	} else if lcZoneName == "d06_l01_q05" {
 		avatar.Warp(150, -200, 15000/256)
-	} else if rrPlayer.Zone.Name == "d06_l07_q05" {
+	} else if lcZoneName == "d06_l07_q05" {
 		avatar.Warp(150, -200, 15000/256)
-	} else if rrPlayer.Zone.Name == "epic01_central" {
+	} else if lcZoneName == "epic01_central" {
 		avatar.Warp(-250, 250, 75000/256)
 	}
 

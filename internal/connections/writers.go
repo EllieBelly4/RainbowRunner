@@ -2,7 +2,6 @@ package connections
 
 import (
 	"RainbowRunner/internal/config"
-	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/pkg/byter"
 	"bytes"
 	"compress/zlib"
@@ -45,11 +44,11 @@ func WriteCompressedA(conn Connection, dest uint8, messageType uint8, body *byte
 	response.WriteByte(0x00)
 	response.WriteUInt32(uint32(len(body.Data())))
 
-	if len(body.Buffer) >= 2 && config.Config.Logging.LogGenericSent {
-		fmt.Printf(">>>>> send [%s-%d] len %d\n", messages.Channel(body.Data()[0]).String(), body.Data()[1], len(body.Buffer))
-	} else {
-		//fmt.Printf(">>>>> send [nochannel] len %d\n", len(body.Buffer))
-	}
+	//if len(body.Buffer) >= 2 && config.Config.Logging.LogGenericSent {
+	//	fmt.Printf(">>>>> send [%s-%d] len %d\n", messages.Channel(body.Data()[0]).String(), body.Data()[1], len(body.Buffer))
+	//} else {
+	//	//fmt.Printf(">>>>> send [nochannel] len %d\n", len(body.Buffer))
+	//}
 
 	response.WriteBuffer(b)
 

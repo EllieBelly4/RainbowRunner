@@ -4,7 +4,6 @@ import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/game/components/behavior"
-	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/pkg/byter"
 	"fmt"
 	"math/rand"
@@ -22,15 +21,17 @@ func (p *Player) Type() DRObjectType {
 }
 
 func (p *Player) WriteInit(b *byter.Byter) {
+	rrPlayer := Players.Players[int(p.OwnerID())]
+
 	// Init PLAYER /////////////////////////////////////////
 	b.WriteCString("Ellie")
 	b.WriteUInt32(0x01)
 	b.WriteUInt32(0x01)
 	b.WriteByte(0x01)
 
-	b.WriteUInt32(0xFEEDBABA) // World ID
-	b.WriteUInt32(1001)       // PvP wins
-	b.WriteUInt32(1000)       // PvP rating?, 0 = ???
+	b.WriteUInt32(rrPlayer.Zone.ID) // World ID
+	b.WriteUInt32(1001)             // PvP wins
+	b.WriteUInt32(1000)             // PvP rating?, 0 = ???
 
 	// Here goes PvP Team
 	// Null string
@@ -84,20 +85,7 @@ func (p *Player) ChangeZone(name string) {
 		rrPlayer.LeaveCurrentZone()
 	}
 
-	Zones.PlayerJoin(name, rrPlayer)
-
-	body := byter.NewLEByter(make([]byte, 0, 1024))
-	body.WriteByte(byte(messages.ZoneChannel))
-	body.WriteByte(0x00)
-	//body.WriteCString("TheHub")
-	//body.WriteCString("Tutorial")
-	body.WriteCString(name)
-	body.WriteUInt32(0xBEEFBEEF)
-	body.WriteByte(0x01)
-	body.WriteByte(0xFF)
-	body.WriteCString("world.town.quest.Q01_a1")
-	body.WriteUInt32(0x01)
-	connections.WriteCompressedA(rrPlayer.Conn, 0x01, 0x0f, body)
+	rrPlayer.JoinZone(name)
 }
 
 func SendCreateNewPlayerEntity(rrplayer *RRPlayer, p *Player) {
