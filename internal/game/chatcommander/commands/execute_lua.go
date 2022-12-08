@@ -69,7 +69,7 @@ func ExecuteLua(player *objects.RRPlayer, args []string) {
 
 	argLen := len(args) - 1
 
-	for i := 0; i < argLen; i++ {
+	for i := 1; i < len(args); i++ {
 		state.Push(lua2.LString(args[i]))
 	}
 
