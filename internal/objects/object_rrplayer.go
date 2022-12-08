@@ -24,7 +24,7 @@ func (p *RRPlayer) OnZoneJoin() {
 	entities := p.Zone.Entities()
 
 	for _, entity := range entities {
-		if entity == p.CurrentCharacter.GetChildByGCNativeType("Avatar") {
+		if int(entity.OwnerID()) == p.Conn.GetID() {
 			continue
 		}
 

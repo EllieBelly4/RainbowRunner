@@ -223,6 +223,19 @@ func (z *Zone) FindEntityByID(id uint16) DRObject {
 		if entity.RREntityProperties().ID == uint32(id) {
 			return entity
 		}
+
+		var foundEntity DRObject = nil
+
+		entity.WalkChildren(func(object DRObject) {
+			// TODO optimise this, no need to loop all children when found
+			if object.RREntityProperties().ID == uint32(id) {
+				foundEntity = object
+			}
+		})
+
+		if foundEntity != nil {
+			return foundEntity
+		}
 	}
 	return nil
 }

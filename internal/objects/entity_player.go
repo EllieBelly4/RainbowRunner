@@ -6,7 +6,9 @@ import (
 	"RainbowRunner/internal/game/components/behavior"
 	"RainbowRunner/internal/types"
 	"RainbowRunner/pkg/byter"
+	"encoding/hex"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"math/rand"
 	"time"
 )
@@ -524,6 +526,8 @@ func SendCreateNewPlayerEntity(rrplayer *RRPlayer, p *Player) {
 
 	body.WriteByte(70) // Now connected
 	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
+
+	log.Info(fmt.Sprintf("Sent: \n%s", hex.Dump(body.Data())))
 }
 
 var r = rand.New(rand.NewSource(time.Now().Unix()))
