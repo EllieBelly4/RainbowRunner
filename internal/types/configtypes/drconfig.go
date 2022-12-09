@@ -250,3 +250,47 @@ func (c *DRConfig) generateCategoryMap(classes map[string]*DRClassChildGroup, ou
 		}
 	}
 }
+
+func (c *DRConfig) List(maxDepth int, predicate func(group *DRClassChildGroup) bool) ([]*DRClassChildGroup, error) {
+	results := make([]*DRClassChildGroup, 0, 1024)
+
+	results = addChildrenUntilDepth(maxDepth,
+		predicate,
+		c.Classes.Children, results)
+
+	return results, nil
+}
+
+func addChildrenUntilDepth(
+	maxDepth int,
+	predicate func(group *DRClassChildGroup) bool,
+	children map[string]*DRClassChildGroup,
+	results []*DRClassChildGroup,
+) []*DRClassChildGroup {
+	for gName, group := range children {
+		group.Name = gName
+
+		if !predicate(group) {
+			continue
+		}
+
+		truncateAtDepth(group, maxDepth, 0)
+
+		results = append(results, group)
+	}
+
+	return results
+}
+
+func truncateAtDepth(group *DRClassChildGroup, maxDepth int, currentDepth int) {
+	for _, entity := range group.Entities {
+		if currentDepth >= maxDepth {
+			entity.Children = nil
+		} else {
+			for gName, childGroup := range entity.Children {
+				childGroup.Name = gName
+				truncateAtDepth(childGroup, maxDepth, currentDepth+1)
+			}
+		}
+	}
+}

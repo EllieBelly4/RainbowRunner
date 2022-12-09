@@ -12,7 +12,7 @@ import (
 )
 
 var categoryInputFile string
-var minDepth int
+var categoryMinDepth int
 var regexpFilter string
 
 var getCategoryCommand = &cobra.Command{
@@ -36,7 +36,7 @@ var getCategoryCommand = &cobra.Command{
 		gcTypes, err := configparser.GetGCTypesByCategory(
 			category,
 			categoryConfig,
-			minDepth,
+			categoryMinDepth,
 			regex,
 		)
 
@@ -83,6 +83,6 @@ var getCategoryCommand = &cobra.Command{
 func InitGetCategoryCommand() {
 	getCategoryCommand.PersistentFlags().StringVarP(&categoryInputFile, "category-input-config-file", "c", "resources/Dumps/generated/drcategories.json", "-f resources/Dumps/generated/drcategories.json")
 
-	getCategoryCommand.Flags().IntVarP(&minDepth, "min-depth", "m", -1, "-m 5")
+	getCategoryCommand.Flags().IntVarP(&categoryMinDepth, "min-depth", "m", -1, "-m 5")
 	getCategoryCommand.Flags().StringVarP(&regexpFilter, "regexp-filter", "x", "", "-x \"^[0-9]+\"")
 }
