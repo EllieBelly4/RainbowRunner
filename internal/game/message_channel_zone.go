@@ -61,7 +61,7 @@ func handleZoneJoin(conn *connections.RRConn) {
 
 	body = byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.ZoneChannel))
-	body.WriteByte(0x05)
+	body.WriteByte(byte(messages.ZoneMessageInstanceCount))
 
 	// Adds two separate values into the ZoneClient
 	body.WriteUInt32(0x01)
@@ -89,7 +89,7 @@ func handleZoneJoin(conn *connections.RRConn) {
 
 	SendInterval(conn)
 
-	player.CurrentCharacter.OnZoneJoin(player)
+	player.CurrentCharacter.SendCreateNewPlayerEntity(player)
 	player.OnZoneJoin()
 
 	if config.Config.Welcome.SendWelcomeMessage {
@@ -159,6 +159,8 @@ func handleZoneJoin(conn *connections.RRConn) {
 		//avatar.SendPosition()
 	} else if lcZoneName == "dungeon16_level00" {
 		avatar.Warp(0, 0, 15000/256)
+	} else if lcZoneName == "dungeon00_level01" {
+		avatar.Warp(-200, 0, 10)
 	} else if lcZoneName == "dungeon02_level00" {
 		avatar.Warp(-150, 500, 2700/256)
 	} else if lcZoneName == "dungeon04_level00" {
@@ -173,6 +175,8 @@ func handleZoneJoin(conn *connections.RRConn) {
 		avatar.Warp(75, 150, 2000/256)
 	} else if lcZoneName == "dungeon15_level00" {
 		avatar.Warp(75, 150, 2000/256)
+	} else if lcZoneName == "dungeon15_level01" {
+		avatar.Warp(-200, 150, 20)
 	} else if lcZoneName == "tutorial" {
 		avatar.Warp(750, 450, 10000/256)
 	} else if lcZoneName == "testvendorlevelspecarmor" {

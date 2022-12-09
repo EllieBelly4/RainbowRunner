@@ -1,5 +1,6 @@
 send_movement_messages: true
 reinitialise_zones_on_enter: false
+default_zone: town
 welcome:
   send_welcome_message: true
   message: |
@@ -11,6 +12,7 @@ network:
   game_server_port: 2603
   game_server_ip: 127.0.0.1
 logging:
+  log_change_zone: false
   log_moves: false
   log_received_moves: false
   log_generic_sent: false

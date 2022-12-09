@@ -52,7 +52,15 @@ func (g *GCObject) ReadUpdate(reader *byter.Byter) error {
 }
 
 func (g *GCObject) WriteSynch(b *byter.Byter) {
-	b.WriteByte(0x00)
+	flag := 0x02
+	// TODO consider checking the zone to see if it's a town, as it is 0x02 will work in town
+	//b.WriteByte(0x00) // 0x00 If in town
+	b.WriteByte(byte(flag)) // 0x02 If in dungeon
+
+	if flag == 0x02 {
+		// This value must be exactly 0x47E00 but I do not know why.
+		b.WriteUInt32(0x47E00) // Unk - EntitySynchInfo::ReadFromStream
+	}
 }
 
 func (g *GCObject) Tick() {

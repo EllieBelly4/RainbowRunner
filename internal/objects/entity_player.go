@@ -77,10 +77,6 @@ func (p *Player) WriteSynch(b *byter.Byter) {
 	b.WriteUInt32(p.CurrentHP)
 }
 
-func (p *Player) OnZoneJoin(rrPlayer *RRPlayer) {
-	SendCreateNewPlayerEntity(rrPlayer, p)
-}
-
 func (p *Player) ChangeZone(name string) {
 	rrPlayer := Players.Players[int(p.OwnerID())]
 
@@ -91,7 +87,7 @@ func (p *Player) ChangeZone(name string) {
 	rrPlayer.JoinZone(name)
 }
 
-func SendCreateNewPlayerEntity(rrplayer *RRPlayer, p *Player) {
+func (p *Player) SendCreateNewPlayerEntity(rrplayer *RRPlayer) {
 	zone := rrplayer.Zone
 	//clientEntityWriter := rrplayer.ClientEntityWriter
 	//equippedItems := getRandomEquipment()

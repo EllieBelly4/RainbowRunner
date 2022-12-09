@@ -95,14 +95,14 @@ func (p *Avatar) SendFollowClient() {
 	//writer.BeginStream()
 	CEWriter.BeginComponentUpdate(p.GetChildByGCNativeType("UnitBehavior"))
 
-	CEWriter.Body.WriteByte(0x64)
-	CEWriter.Body.WriteByte(0x01)
+	CEWriter.Body.WriteByte(0x64) // Update type - something to do with client control
+	CEWriter.Body.WriteByte(0x01) // Client control on or off
 
 	CEWriter.WriteSynch(p)
 
 	player := Players.GetPlayer(uint16(p.OwnerID()))
 
-	player.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeCreateNPC)
+	player.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeOther)
 
 	//writer.EndStream()
 	//p.Send(CEWriter.Body)

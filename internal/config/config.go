@@ -41,9 +41,11 @@ type RRConfig struct {
 	Logging                  LoggingOptions `mapstructure:"logging"`
 	ReinitialiseZonesOnEnter bool           `mapstructure:"reinitialise_zones_on_enter"`
 	Welcome                  WelcomeOptions `mapstructure:"welcome"`
+	DefaultZone              string         `mapstructure:"default_zone"`
 }
 
 func Load() {
+	viper.SetDefault("default_zone", "town")
 	viper.SetDefault("network.login_server_port", 2110)
 	viper.SetDefault("network.game_server_port", 2603)
 	viper.SetDefault("network.game_server_ip", "127.0.0.1")
