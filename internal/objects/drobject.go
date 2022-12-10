@@ -42,6 +42,7 @@ type DRObject interface {
 	WalkChildren(f func(object DRObject))
 	RemoveChildAt(i int)
 	SetOwner(conn *connections.RRConn)
+	String() string
 }
 
 type DRItem interface {

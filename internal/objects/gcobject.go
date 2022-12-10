@@ -30,6 +30,14 @@ type GCObject struct {
 	EntityHandler    EntityMessageHandler
 }
 
+func (g *GCObject) String() string {
+	return fmt.Sprintf("(%d - 0x%x) %s OwnedBy: %d",
+		g.EntityProperties.ID, g.EntityProperties.ID,
+		g.GCType,
+		g.EntityProperties.OwnerID,
+	)
+}
+
 func (g *GCObject) SetOwner(conn *connections.RRConn) {
 	g.RREntityProperties().SetOwner(uint16(conn.GetID()))
 }

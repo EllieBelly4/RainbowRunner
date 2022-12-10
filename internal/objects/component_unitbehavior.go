@@ -4,7 +4,6 @@ import (
 	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/components/behavior"
-	"RainbowRunner/internal/message"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 	"encoding/hex"
@@ -405,25 +404,14 @@ func (u *UnitBehavior) handleExecuteActivate(reader *byter.Byter, responseID byt
 	if targetEntity == nil {
 		return errors.New(fmt.Sprintf("could not find target entity with ID %d", targetID))
 	}
+	activateable, ok := targetEntity.(IActivatable)
 
-	CEWriter := NewClientEntityWriterWithByter()
-
-	CEWriter.BeginComponentUpdate(u)
-
-	CEWriter.CreateActionResponse(behavior.BehaviourActionActivate, responseID)
-
-	activateAction := behavior.Activate{
-		TargetEntityID: targetID,
+	if !ok {
+		logrus.Errorf("tried to activate non-activatable: %s", targetEntity.String())
+		return nil
 	}
 
-	activateAction.InitWithoutOpCode(CEWriter.Body)
-
-	CEWriter.WriteSynch(u)
-
-	Players.GetPlayer(u.OwnerID()).MessageQueue.Enqueue(
-		message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeBehaviourAction,
-	)
-
+	activateable.Activate(Players.GetPlayer(u.OwnerID()), responseID)
 	return nil
 }
 
