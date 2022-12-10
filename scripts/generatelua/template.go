@@ -1,4 +1,6 @@
-package objects
+package main
+
+const templateString = `package objects
 
 import (
 	lua2 "github.com/yuin/gopher-lua"
@@ -31,3 +33,4 @@ func newLua{{ .Struct.Name }}(l *lua2.LState) int {
 	l.Push(ud)
 	return 1
 }
+`
