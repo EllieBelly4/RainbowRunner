@@ -1,0 +1,33 @@
+package objects
+
+import (
+	lua2 "github.com/yuin/gopher-lua"
+)
+
+const {{ .StructTypeNameVar }} = "{{ .Struct.Name }}"
+
+func registerLua{{ .Struct.Name }}(state *lua2.LState) {
+	mt := state.NewTypeMetatable({{ .StructTypeNameVar }})
+	state.SetGlobal("{{ .Struct.Name }}", mt)
+	state.SetField(mt, "new", state.NewFunction(newLua{{ .Struct.Name }}))
+	state.SetField(mt, "__index", state.SetFuncs(state.NewTable(),
+		luaMethods{{ .Struct.Name }}(),
+	))
+}
+
+func luaMethods{{ .Struct.Name }}() map[string]lua2.LGFunction {
+	return luaMethodsExtend(map[string]lua2.LGFunction{
+
+	}, luaMethodsDRObject)
+}
+
+func newLua{{ .Struct.Name }}(l *lua2.LState) int {
+	obj := New{{ .Struct.Name }}(l.CheckString(1), l.CheckString(2))
+
+	ud := l.NewUserData()
+	ud.Value = obj
+
+	l.SetMetatable(ud, l.GetTypeMetatable({{ .StructTypeNameVar }}))
+	l.Push(ud)
+	return 1
+}
