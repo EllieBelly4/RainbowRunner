@@ -1,6 +1,9 @@
 package objects
 
-import "RainbowRunner/pkg/byter"
+import (
+	"RainbowRunner/pkg/byter"
+	log "github.com/sirupsen/logrus"
+)
 
 type ZonePortal struct {
 	*WorldEntity
@@ -9,10 +12,21 @@ type ZonePortal struct {
 	Width  uint16
 	Height uint16
 	Unk4   uint32
+
+	Target string
 }
 
 func (z ZonePortal) Activate(player *RRPlayer, u *UnitBehavior, id byte) {
 	z.WorldEntity.Activate(player, u, id)
+
+	tZone := Zones.GetOrCreateZone(z.Target)
+
+	if tZone == nil {
+		log.Errorf("could not find zone %s", z.Target)
+		return
+	}
+
+	player.JoinZone(tZone)
 }
 
 func (z ZonePortal) WriteInit(b *byter.Byter) {

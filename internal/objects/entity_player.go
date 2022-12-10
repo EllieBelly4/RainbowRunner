@@ -77,16 +77,6 @@ func (p *Player) WriteSynch(b *byter.Byter) {
 	b.WriteUInt32(p.CurrentHP)
 }
 
-func (p *Player) ChangeZone(name string) {
-	rrPlayer := Players.Players[int(p.OwnerID())]
-
-	if rrPlayer.Zone != nil {
-		rrPlayer.LeaveCurrentZone()
-	}
-
-	rrPlayer.JoinZone(name)
-}
-
 func (p *Player) SendCreateNewPlayerEntity(rrplayer *RRPlayer) {
 	zone := rrplayer.Zone
 	//clientEntityWriter := rrplayer.ClientEntityWriter

@@ -2,6 +2,7 @@ package objects
 
 import (
 	"RainbowRunner/internal/lua"
+	log "github.com/sirupsen/logrus"
 	lua2 "github.com/yuin/gopher-lua"
 )
 
@@ -28,7 +29,16 @@ func luaPlayerChangeZone(state *lua2.LState) int {
 
 	zoneName := state.CheckString(2)
 
-	player.ChangeZone(zoneName)
+	rrPlayer := Players.GetPlayer(uint16(player.ID()))
+
+	tZone := Zones.GetOrCreateZone(zoneName)
+
+	if tZone == nil {
+		log.Errorf("could not find zone %s", zoneName)
+		return 0
+	}
+
+	rrPlayer.JoinZone(tZone)
 
 	return 0
 }

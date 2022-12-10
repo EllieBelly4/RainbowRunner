@@ -6,6 +6,7 @@ import (
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/objects"
 	byter "RainbowRunner/pkg/byter"
+	log "github.com/sirupsen/logrus"
 	"strings"
 )
 
@@ -235,9 +236,17 @@ func handleZoneJoin(conn *connections.RRConn) {
 	//WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
-func sendGoToZone(conn *connections.RRConn, zone string) {
-	player := objects.Players.Players[conn.GetID()].CurrentCharacter
-	player.ChangeZone(zone)
+func sendGoToZone(conn *connections.RRConn, zoneName string) {
+	rrPlayer := objects.Players.Players[conn.GetID()]
+
+	tZone := objects.Zones.GetOrCreateZone(zoneName)
+
+	if tZone == nil {
+		log.Errorf("could not find zone %s", zoneName)
+		return
+	}
+
+	rrPlayer.JoinZone(tZone)
 }
 
 func SendWelcomeMessage(player *objects.RRPlayer) {

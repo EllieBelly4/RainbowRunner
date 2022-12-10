@@ -53,7 +53,7 @@ func (p *RRPlayer) OnZoneJoin() {
 	}
 }
 
-func (p *RRPlayer) LeaveCurrentZone() {
+func (p *RRPlayer) LeaveZone() {
 	p.Spawned = false
 	p.Zone.RemovePlayer(int(p.CurrentCharacter.ID()))
 	p.MessageQueue.Clear(message.QueueTypeClientEntity)
@@ -69,15 +69,20 @@ func (p *RRPlayer) LeaveCurrentZone() {
 	}
 }
 
-func (p *RRPlayer) JoinZone(name string) {
-	Zones.PlayerJoin(name, p)
+func (p *RRPlayer) JoinZone(zone *Zone) {
+	if p.Zone != nil {
+		p.LeaveZone()
+	}
+
+	p.Zone = zone
+	zone.AddPlayer(p)
 
 	body := byter.NewLEByter(make([]byte, 0, 1024))
 	body.WriteByte(byte(messages.ZoneChannel))
 	body.WriteByte(byte(messages.ZoneMessageConnected))
 	//body.WriteCString("TheHub")
 	//body.WriteCString("Tutorial")
-	body.WriteCString(name)
+	body.WriteCString(zone.Name)
 	body.WriteUInt32(0xBEEFBEEF)
 	body.WriteByte(0x01)
 	body.WriteByte(0xFF)

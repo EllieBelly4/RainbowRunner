@@ -17,6 +17,7 @@ func registerLuaZonePortal(state *lua2.LState) {
 
 func luaMethodsZonePortal() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
+		"target": luaGenericGetSetString[*ZonePortal](func(v *ZonePortal) *string { return &v.Target }),
 		"width":  luaGenericGetSetNumber[*ZonePortal, uint16](func(v *ZonePortal) *uint16 { return &v.Width }),
 		"height": luaGenericGetSetNumber[*ZonePortal, uint16](func(v *ZonePortal) *uint16 { return &v.Height }),
 		"unk4":   luaGenericGetSetNumber[*ZonePortal, uint32](func(v *ZonePortal) *uint32 { return &v.Unk4 }),

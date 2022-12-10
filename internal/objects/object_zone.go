@@ -104,9 +104,12 @@ func (z *Zone) AddEntity(owner *uint16, entity DRObject) {
 
 func (z *Zone) AddPlayer(player *RRPlayer) {
 	z.Lock()
-	defer z.Unlock()
-
 	z.players[uint16(player.Conn.GetID())] = player
+	z.Unlock()
+
+	for _, child := range player.CurrentCharacter.Children() {
+		z.AddEntity(types.UInt16(uint16(player.Conn.GetID())), child)
+	}
 }
 
 func (z *Zone) Spawn(entity DRObject) {

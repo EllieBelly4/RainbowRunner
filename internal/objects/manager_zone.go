@@ -2,7 +2,6 @@ package objects
 
 import (
 	"RainbowRunner/internal/config"
-	"RainbowRunner/internal/types"
 	"crypto/md5"
 	"encoding/binary"
 	"sync"
@@ -15,19 +14,7 @@ type ZoneManager struct {
 	Zones map[string]*Zone
 }
 
-func (m *ZoneManager) PlayerJoin(zoneName string, player *RRPlayer) {
-	zone := m.getOrCreateZone(zoneName)
-
-	player.Zone = zone
-
-	for _, child := range player.CurrentCharacter.Children() {
-		zone.AddEntity(types.UInt16(uint16(player.Conn.GetID())), child)
-	}
-
-	zone.AddPlayer(player)
-}
-
-func (m *ZoneManager) getOrCreateZone(zoneName string) *Zone {
+func (m *ZoneManager) GetOrCreateZone(zoneName string) *Zone {
 	if _, ok := m.Zones[zoneName]; !ok {
 		m.CreateZone(zoneName)
 		m.Zones[zoneName].Init()
@@ -62,7 +49,7 @@ func (m *ZoneManager) CreateZone(name string) *Zone {
 }
 
 func (m *ZoneManager) Zone(s string) *Zone {
-	return m.getOrCreateZone(s)
+	return m.GetOrCreateZone(s)
 }
 
 func (m *ZoneManager) GetZones() []*Zone {
