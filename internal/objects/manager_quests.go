@@ -47,16 +47,18 @@ func (q QuestManager) WriteInit(b *byter.Byter) {
 		"world.dungeon00.quest.Q02_a4",
 	}
 
-	questCount := len(quests)
-	b.WriteByte(byte(questCount)) // Probably quest count
+	// Setting this to more than 0 makes the player a questgiver with an exclamation mark and everything
+	questgiverQuestCount0 := 0
+	b.WriteByte(byte(questgiverQuestCount0)) // Probably quest count
 
-	for i := 0; i < questCount; i++ {
+	for i := 0; i < questgiverQuestCount0; i++ {
 		// Cannot resolve ArchetypeRef<class Entity> - Reference with name 'something' cannot be found
-		b.WriteCString("something") // Unk
+		// "Entity" works
+		b.WriteCString("Entity") // Unk
 
-		anotherCount := 1
+		questgiverQuestCount1 := 1
 
-		b.WriteByte(byte(anotherCount))
+		b.WriteByte(byte(questgiverQuestCount1))
 		writeGCType(b, quests[i])
 	}
 

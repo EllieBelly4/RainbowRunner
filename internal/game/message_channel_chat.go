@@ -7,6 +7,7 @@ import (
 	"RainbowRunner/pkg/byter"
 	"errors"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"regexp"
 	"strings"
 )
@@ -101,7 +102,13 @@ func handleIndirectChatMessageSent(player *objects.RRPlayer, conn *connections.R
 	msg := reader.CString()
 
 	if strings.HasPrefix(msg, "@") {
-		chatCommander.Execute(player, msg)
+		err := chatCommander.Execute(player, msg)
+
+		if err != nil {
+			log.Error(err.Error())
+		}
+
+		return err
 	}
 
 	// 0x00 Looks like message reading

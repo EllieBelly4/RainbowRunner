@@ -4,8 +4,8 @@ import (
 	commands2 "RainbowRunner/internal/game/chatcommander/commands"
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/objects"
+	"errors"
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"regexp"
 	"strings"
 )
@@ -22,19 +22,17 @@ var commandSplitRegex = regexp.MustCompile(`(?:^@|)(?:(".*"|\S+)(?: |$))+?`)
 type ChatCommander struct {
 }
 
-func (c ChatCommander) Execute(player *objects.RRPlayer, msg string) {
+func (c ChatCommander) Execute(player *objects.RRPlayer, msg string) error {
 	if !strings.HasPrefix(msg, "@") {
-		log.Errorf("chat command does not start with a @ and is not valid: %s", msg)
 		SendErrorMessageResponse(player, fmt.Sprintf("chat command does not start with a @ and is not valid: %s", msg))
-		return
+		return errors.New(fmt.Sprintf("chat command does not start with a @ and is not valid: %s", msg))
 	}
 
 	splitCmd := commandSplitRegex.FindAll([]byte(msg), -1)
 
 	if len(splitCmd) == 0 {
-		log.Errorf("unable to parse chat command: %s", msg)
 		SendErrorMessageResponse(player, fmt.Sprintf("unable to parse chat command: %s", msg))
-		return
+		return errors.New(fmt.Sprintf("unable to parse chat command: %s", msg))
 	}
 
 	commandName := strings.Trim(string(splitCmd[0][1:]), " ")
@@ -43,8 +41,7 @@ func (c ChatCommander) Execute(player *objects.RRPlayer, msg string) {
 
 	if !ok {
 		SendErrorMessageResponse(player, fmt.Sprintf("could not find command: %s", commandName))
-		log.Errorf("could not find command: %s", commandName)
-		return
+		return errors.New(fmt.Sprintf("could not find command: %s", commandName))
 	}
 
 	args := make([]string, 0, len(splitCmd)-1)
@@ -58,6 +55,7 @@ func (c ChatCommander) Execute(player *objects.RRPlayer, msg string) {
 	}
 
 	cmd(player, args)
+	return nil
 }
 
 func SendErrorMessageResponse(player *objects.RRPlayer, s string) {
