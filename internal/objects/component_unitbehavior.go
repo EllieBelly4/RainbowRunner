@@ -411,7 +411,7 @@ func (u *UnitBehavior) handleExecuteActivate(reader *byter.Byter, responseID byt
 		return nil
 	}
 
-	activateable.Activate(Players.GetPlayer(u.OwnerID()), responseID)
+	activateable.Activate(Players.GetPlayer(u.OwnerID()), u, responseID)
 	return nil
 }
 

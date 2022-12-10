@@ -11,6 +11,10 @@ type ZonePortal struct {
 	Unk4   uint32
 }
 
+func (z ZonePortal) Activate(player *RRPlayer, u *UnitBehavior, id byte) {
+	z.WorldEntity.Activate(player, u, id)
+}
+
 func (z ZonePortal) WriteInit(b *byter.Byter) {
 	z.WorldEntity.WriteInit(b)
 
