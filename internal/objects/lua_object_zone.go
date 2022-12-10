@@ -46,9 +46,7 @@ func (f ZoneLuaFunctions) Spawn(state *lua.LState) int {
 	ud := state.CheckUserData(2)
 
 	switch ud.Value.(type) {
-	case *NPC:
-		return LuaZoneSpawnEntity(state)
-	case *WorldEntity:
+	case DRObject:
 		return LuaZoneSpawnEntity(state)
 	default:
 		state.RaiseError("cannot spawn given entity type ")

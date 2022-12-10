@@ -10,8 +10,11 @@ import (
 	"strings"
 )
 
-var commands = map[string]func(player *objects.RRPlayer, args []string){
+var commands = map[string]commands2.ChatCommandHandler{
 	"exec": commands2.ExecuteLua,
+	"z": commands2.AliasCustom(commands2.ExecuteLua, func(player *objects.RRPlayer, args []string) []string {
+		return []string{"general.changeZone", args[0]}
+	}),
 }
 
 var commandSplitRegex = regexp.MustCompile(`(?:^@|)(?:(".*"|\S+)(?: |$))+?`)
