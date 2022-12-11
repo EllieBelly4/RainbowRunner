@@ -13,6 +13,9 @@ import (
 )
 
 func registerLuaNPC(state *lua2.LState) {
+	// Ensure the import is referenced in code
+	_ = lua.LuaScript{}
+
 	mt := state.NewTypeMetatable("NPC")
 	state.SetGlobal("NPC", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaNPC))
@@ -35,13 +38,9 @@ func luaMethodsNPC() map[string]lua2.LGFunction {
 		},
 	}, luaMethodsUnit)
 }
-
 func newLuaNPC(l *lua2.LState) int {
-	obj := NewNPC(
-		l.CheckString(1),
-		l.CheckString(2),
-		lua.CheckValue[datatypes.Vector3Float32](l, 3),
-		float32(l.CheckNumber(4)),
+	obj := NewNPC(string(l.CheckString(1)), string(l.CheckString(2)),
+		lua.CheckValue[datatypes.Vector3Float32](l, 3), float32(l.CheckNumber(4)),
 	)
 	ud := l.NewUserData()
 	ud.Value = obj

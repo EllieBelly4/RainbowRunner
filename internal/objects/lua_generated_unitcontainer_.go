@@ -12,6 +12,9 @@ import (
 )
 
 func registerLuaUnitContainer(state *lua2.LState) {
+	// Ensure the import is referenced in code
+	_ = lua.LuaScript{}
+
 	mt := state.NewTypeMetatable("UnitContainer")
 	state.SetGlobal("UnitContainer", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaUnitContainer))
@@ -69,8 +72,7 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 		"writeRemoveItem": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[UnitContainer](l, 1)
 			obj.WriteRemoveItem(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
-				uint32(l.CheckNumber(2)),
+				lua.CheckReferenceValue[byter.Byter](l, 1), uint32(l.CheckNumber(2)),
 			)
 
 			return 0
@@ -101,11 +103,9 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 		},
 	}, luaMethodsComponent)
 }
-
 func newLuaUnitContainer(l *lua2.LState) int {
 	obj := NewUnitContainer(
-		lua.CheckValue[DRObject](l, 1),
-		l.CheckString(2),
+		lua.CheckValue[DRObject](l, 1), string(l.CheckString(2)),
 		lua.CheckReferenceValue[Avatar](l, 3),
 	)
 	ud := l.NewUserData()

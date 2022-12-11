@@ -13,6 +13,9 @@ import (
 )
 
 func registerLuaGCObject(state *lua2.LState) {
+	// Ensure the import is referenced in code
+	_ = lua.LuaScript{}
+
 	mt := state.NewTypeMetatable("GCObject")
 	state.SetGlobal("GCObject", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaGCObject))
@@ -54,9 +57,7 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 		},
 		"removeChildAt": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[GCObject](l, 1)
-			obj.RemoveChildAt(
-				int(l.CheckNumber(1)),
-			)
+			obj.RemoveChildAt(int(l.CheckNumber(1)))
 
 			return 0
 		},
@@ -174,9 +175,7 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 		},
 		"getChildByGCNativeType": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[GCObject](l, 1)
-			res0 := obj.GetChildByGCNativeType(
-				l.CheckString(1),
-			)
+			res0 := obj.GetChildByGCNativeType(string(l.CheckString(1)))
 			ud := l.NewUserData()
 			ud.Value = res0
 			l.SetMetatable(ud, l.GetTypeMetatable("DRObject"))
@@ -186,9 +185,7 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 		},
 		"getChildByGCType": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[GCObject](l, 1)
-			res0 := obj.GetChildByGCType(
-				l.CheckString(1),
-			)
+			res0 := obj.GetChildByGCType(string(l.CheckString(1)))
 			ud := l.NewUserData()
 			ud.Value = res0
 			l.SetMetatable(ud, l.GetTypeMetatable("DRObject"))
@@ -198,9 +195,7 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 		},
 		"setVersion": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[GCObject](l, 1)
-			obj.SetVersion(
-				uint8(l.CheckNumber(1)),
-			)
+			obj.SetVersion(uint8(l.CheckNumber(1)))
 
 			return 0
 		},
@@ -222,11 +217,8 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 		},
 	})
 }
-
 func newLuaGCObject(l *lua2.LState) int {
-	obj := NewGCObject(
-		l.CheckString(1),
-	)
+	obj := NewGCObject(string(l.CheckString(1)))
 	ud := l.NewUserData()
 	ud.Value = obj
 

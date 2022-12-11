@@ -12,6 +12,9 @@ import (
 )
 
 func registerLuaMerchant(state *lua2.LState) {
+	// Ensure the import is referenced in code
+	_ = lua.LuaScript{}
+
 	mt := state.NewTypeMetatable("Merchant")
 	state.SetGlobal("Merchant", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaMerchant))
@@ -44,11 +47,8 @@ func luaMethodsMerchant() map[string]lua2.LGFunction {
 		},
 	}, luaMethodsContainer)
 }
-
 func newLuaMerchant(l *lua2.LState) int {
-	obj := NewMerchant(
-		l.CheckString(1),
-	)
+	obj := NewMerchant(string(l.CheckString(1)))
 	ud := l.NewUserData()
 	ud.Value = obj
 

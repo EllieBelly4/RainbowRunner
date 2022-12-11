@@ -12,6 +12,9 @@ import (
 )
 
 func registerLuaContainer(state *lua2.LState) {
+	// Ensure the import is referenced in code
+	_ = lua.LuaScript{}
+
 	mt := state.NewTypeMetatable("Container")
 	state.SetGlobal("Container", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaContainer))
@@ -32,12 +35,8 @@ func luaMethodsContainer() map[string]lua2.LGFunction {
 		},
 	}, luaMethodsComponent)
 }
-
 func newLuaContainer(l *lua2.LState) int {
-	obj := NewContainer(
-		l.CheckString(1),
-		l.CheckString(2),
-	)
+	obj := NewContainer(string(l.CheckString(1)), string(l.CheckString(2)))
 	ud := l.NewUserData()
 	ud.Value = obj
 

@@ -13,6 +13,9 @@ import (
 )
 
 func registerLuaZone(state *lua2.LState) {
+	// Ensure the import is referenced in code
+	_ = lua.LuaScript{}
+
 	mt := state.NewTypeMetatable("Zone")
 	state.SetGlobal("Zone", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaZone))

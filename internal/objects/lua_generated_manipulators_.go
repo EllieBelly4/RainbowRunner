@@ -13,6 +13,9 @@ import (
 )
 
 func registerLuaManipulators(state *lua2.LState) {
+	// Ensure the import is referenced in code
+	_ = lua.LuaScript{}
+
 	mt := state.NewTypeMetatable("Manipulators")
 	state.SetGlobal("Manipulators", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaManipulators))
@@ -33,9 +36,7 @@ func luaMethodsManipulators() map[string]lua2.LGFunction {
 		},
 		"removeEquipmentByID": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Manipulators](l, 1)
-			obj.RemoveEquipmentByID(
-				uint32(l.CheckNumber(1)),
-			)
+			obj.RemoveEquipmentByID(uint32(l.CheckNumber(1)))
 
 			return 0
 		},
@@ -59,11 +60,8 @@ func luaMethodsManipulators() map[string]lua2.LGFunction {
 		},
 	}, luaMethodsComponent)
 }
-
 func newLuaManipulators(l *lua2.LState) int {
-	obj := NewManipulators(
-		l.CheckString(1),
-	)
+	obj := NewManipulators(string(l.CheckString(1)))
 	ud := l.NewUserData()
 	ud.Value = obj
 

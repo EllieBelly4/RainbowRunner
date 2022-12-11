@@ -12,6 +12,9 @@ import (
 )
 
 func registerLuaAvatarMetrics(state *lua2.LState) {
+	// Ensure the import is referenced in code
+	_ = lua.LuaScript{}
+
 	mt := state.NewTypeMetatable("AvatarMetrics")
 	state.SetGlobal("AvatarMetrics", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaAvatarMetrics))
@@ -32,12 +35,8 @@ func luaMethodsAvatarMetrics() map[string]lua2.LGFunction {
 		},
 	}, luaMethodsComponent)
 }
-
 func newLuaAvatarMetrics(l *lua2.LState) int {
-	obj := NewAvatarMetrics(
-		uint32(l.CheckNumber(1)),
-		l.CheckString(2),
-	)
+	obj := NewAvatarMetrics(uint32(l.CheckNumber(1)), string(l.CheckString(2)))
 	ud := l.NewUserData()
 	ud.Value = obj
 

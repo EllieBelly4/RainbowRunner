@@ -13,6 +13,9 @@ import (
 )
 
 func registerLuaEquipmentInventory(state *lua2.LState) {
+	// Ensure the import is referenced in code
+	_ = lua.LuaScript{}
+
 	mt := state.NewTypeMetatable("EquipmentInventory")
 	state.SetGlobal("EquipmentInventory", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaEquipmentInventory))
@@ -67,10 +70,8 @@ func luaMethodsEquipmentInventory() map[string]lua2.LGFunction {
 		},
 	}, luaMethodsComponent)
 }
-
 func newLuaEquipmentInventory(l *lua2.LState) int {
-	obj := NewEquipmentInventory(
-		l.CheckString(1),
+	obj := NewEquipmentInventory(string(l.CheckString(1)),
 		lua.CheckReferenceValue[Avatar](l, 2),
 	)
 	ud := l.NewUserData()

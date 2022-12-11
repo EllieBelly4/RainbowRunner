@@ -13,6 +13,9 @@ import (
 )
 
 func registerLuaEquipment(state *lua2.LState) {
+	// Ensure the import is referenced in code
+	_ = lua.LuaScript{}
+
 	mt := state.NewTypeMetatable("Equipment")
 	state.SetGlobal("Equipment", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaEquipment))
@@ -41,11 +44,8 @@ func luaMethodsEquipment() map[string]lua2.LGFunction {
 		},
 	}, luaMethodsItem)
 }
-
 func newLuaEquipment(l *lua2.LState) int {
-	obj := NewEquipment(
-		l.CheckString(1),
-		l.CheckString(2),
+	obj := NewEquipment(string(l.CheckString(1)), string(l.CheckString(2)),
 		lua.CheckValue[ItemType](l, 3),
 		lua.CheckValue[types.EquipmentSlot](l, 4),
 	)

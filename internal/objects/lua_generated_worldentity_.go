@@ -13,6 +13,9 @@ import (
 )
 
 func registerLuaWorldEntity(state *lua2.LState) {
+	// Ensure the import is referenced in code
+	_ = lua.LuaScript{}
+
 	mt := state.NewTypeMetatable("WorldEntity")
 	state.SetGlobal("WorldEntity", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaWorldEntity))
@@ -49,9 +52,7 @@ func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 		},
 		"setRotation": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[WorldEntity](l, 1)
-			obj.SetRotation(
-				float32(l.CheckNumber(1)),
-			)
+			obj.SetRotation(float32(l.CheckNumber(1)))
 
 			return 0
 		},
@@ -75,11 +76,8 @@ func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 		},
 	}, luaMethodsGCObject)
 }
-
 func newLuaWorldEntity(l *lua2.LState) int {
-	obj := NewWorldEntity(
-		l.CheckString(1),
-	)
+	obj := NewWorldEntity(string(l.CheckString(1)))
 	ud := l.NewUserData()
 	ud.Value = obj
 

@@ -12,6 +12,9 @@ import (
 )
 
 func registerLuaZonePortal(state *lua2.LState) {
+	// Ensure the import is referenced in code
+	_ = lua.LuaScript{}
+
 	mt := state.NewTypeMetatable("ZonePortal")
 	state.SetGlobal("ZonePortal", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaZonePortal))
@@ -48,12 +51,8 @@ func luaMethodsZonePortal() map[string]lua2.LGFunction {
 		},
 	}, luaMethodsWorldEntity)
 }
-
 func newLuaZonePortal(l *lua2.LState) int {
-	obj := NewZonePortal(
-		l.CheckString(1),
-		l.CheckString(2),
-	)
+	obj := NewZonePortal(string(l.CheckString(1)), string(l.CheckString(2)))
 	ud := l.NewUserData()
 	ud.Value = obj
 

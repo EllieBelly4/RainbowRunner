@@ -13,6 +13,9 @@ import (
 )
 
 func registerLuaItem(state *lua2.LState) {
+	// Ensure the import is referenced in code
+	_ = lua.LuaScript{}
+
 	mt := state.NewTypeMetatable("Item")
 	state.SetGlobal("Item", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaItem))
@@ -44,10 +47,8 @@ func luaMethodsItem() map[string]lua2.LGFunction {
 		},
 	}, luaMethodsGCObject)
 }
-
 func newLuaItem(l *lua2.LState) int {
-	obj := NewItem(
-		l.CheckString(1),
+	obj := NewItem(string(l.CheckString(1)),
 		lua.CheckValue[ItemType](l, 2),
 	)
 	ud := l.NewUserData()

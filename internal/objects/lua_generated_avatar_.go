@@ -12,6 +12,9 @@ import (
 )
 
 func registerLuaAvatar(state *lua2.LState) {
+	// Ensure the import is referenced in code
+	_ = lua.LuaScript{}
+
 	mt := state.NewTypeMetatable("Avatar")
 	state.SetGlobal("Avatar", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaAvatar))
@@ -87,22 +90,13 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 		},
 		"warp": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Avatar](l, 1)
-			obj.Warp(
-				float32(l.CheckNumber(1)),
-				float32(l.CheckNumber(2)),
-				float32(l.CheckNumber(3)),
-			)
+			obj.Warp(float32(l.CheckNumber(1)), float32(l.CheckNumber(2)), float32(l.CheckNumber(3)))
 
 			return 0
 		},
 		"sendMoveTo": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Avatar](l, 1)
-			obj.SendMoveTo(
-				uint8(l.CheckNumber(1)),
-				uint16(l.CheckNumber(2)),
-				float32(l.CheckNumber(3)),
-				float32(l.CheckNumber(4)),
-			)
+			obj.SendMoveTo(uint8(l.CheckNumber(1)), uint16(l.CheckNumber(2)), float32(l.CheckNumber(3)), float32(l.CheckNumber(4)))
 
 			return 0
 		},
@@ -138,11 +132,8 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 		},
 	}, luaMethodsGCObject)
 }
-
 func newLuaAvatar(l *lua2.LState) int {
-	obj := NewAvatar(
-		l.CheckString(1),
-	)
+	obj := NewAvatar(string(l.CheckString(1)))
 	ud := l.NewUserData()
 	ud.Value = obj
 

@@ -12,6 +12,9 @@ import (
 )
 
 func registerLuaSkills(state *lua2.LState) {
+	// Ensure the import is referenced in code
+	_ = lua.LuaScript{}
+
 	mt := state.NewTypeMetatable("Skills")
 	state.SetGlobal("Skills", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaSkills))
@@ -32,11 +35,8 @@ func luaMethodsSkills() map[string]lua2.LGFunction {
 		},
 	}, luaMethodsComponent)
 }
-
 func newLuaSkills(l *lua2.LState) int {
-	obj := NewSkills(
-		l.CheckString(1),
-	)
+	obj := NewSkills(string(l.CheckString(1)))
 	ud := l.NewUserData()
 	ud.Value = obj
 

@@ -12,6 +12,9 @@ import (
 )
 
 func registerLuaMonsterBehavior2(state *lua2.LState) {
+	// Ensure the import is referenced in code
+	_ = lua.LuaScript{}
+
 	mt := state.NewTypeMetatable("MonsterBehavior2")
 	state.SetGlobal("MonsterBehavior2", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaMonsterBehavior2))
@@ -32,11 +35,8 @@ func luaMethodsMonsterBehavior2() map[string]lua2.LGFunction {
 		},
 	}, luaMethodsUnitBehavior)
 }
-
 func newLuaMonsterBehavior2(l *lua2.LState) int {
-	obj := NewMonsterBehavior2(
-		l.CheckString(1),
-	)
+	obj := NewMonsterBehavior2(string(l.CheckString(1)))
 	ud := l.NewUserData()
 	ud.Value = obj
 

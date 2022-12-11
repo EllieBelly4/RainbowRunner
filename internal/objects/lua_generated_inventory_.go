@@ -12,6 +12,9 @@ import (
 )
 
 func registerLuaInventory(state *lua2.LState) {
+	// Ensure the import is referenced in code
+	_ = lua.LuaScript{}
+
 	mt := state.NewTypeMetatable("Inventory")
 	state.SetGlobal("Inventory", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaInventory))
@@ -58,9 +61,7 @@ func luaMethodsInventory() map[string]lua2.LGFunction {
 		},
 		"removeItemByIndex": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Inventory](l, 1)
-			res0 := obj.RemoveItemByIndex(
-				int(l.CheckNumber(1)),
-			)
+			res0 := obj.RemoveItemByIndex(int(l.CheckNumber(1)))
 			ud := l.NewUserData()
 			ud.Value = res0
 			l.SetMetatable(ud, l.GetTypeMetatable("DRObject"))
@@ -70,10 +71,8 @@ func luaMethodsInventory() map[string]lua2.LGFunction {
 		},
 	}, luaMethodsGCObject)
 }
-
 func newLuaInventory(l *lua2.LState) int {
-	obj := NewInventory(
-		l.CheckString(1),
+	obj := NewInventory(string(l.CheckString(1)),
 		lua.CheckValue[byte](l, 2),
 	)
 	ud := l.NewUserData()

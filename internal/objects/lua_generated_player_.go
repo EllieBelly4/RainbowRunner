@@ -12,6 +12,9 @@ import (
 )
 
 func registerLuaPlayer(state *lua2.LState) {
+	// Ensure the import is referenced in code
+	_ = lua.LuaScript{}
+
 	mt := state.NewTypeMetatable("Player")
 	state.SetGlobal("Player", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaPlayer))
@@ -76,11 +79,8 @@ func luaMethodsPlayer() map[string]lua2.LGFunction {
 		},
 	}, luaMethodsGCObject)
 }
-
 func newLuaPlayer(l *lua2.LState) int {
-	obj := NewPlayer(
-		l.CheckString(1),
-	)
+	obj := NewPlayer(string(l.CheckString(1)))
 	ud := l.NewUserData()
 	ud.Value = obj
 

@@ -12,6 +12,9 @@ import (
 )
 
 func registerLuaUnitBehavior(state *lua2.LState) {
+	// Ensure the import is referenced in code
+	_ = lua.LuaScript{}
+
 	mt := state.NewTypeMetatable("UnitBehavior")
 	state.SetGlobal("UnitBehavior", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaUnitBehavior))
@@ -63,11 +66,7 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 		},
 		"warp": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[UnitBehavior](l, 1)
-			obj.Warp(
-				float32(l.CheckNumber(1)),
-				float32(l.CheckNumber(2)),
-				float32(l.CheckNumber(3)),
-			)
+			obj.Warp(float32(l.CheckNumber(1)), float32(l.CheckNumber(2)), float32(l.CheckNumber(3)))
 
 			return 0
 		},
@@ -81,11 +80,8 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 		},
 	}, luaMethodsComponent)
 }
-
 func newLuaUnitBehavior(l *lua2.LState) int {
-	obj := NewUnitBehavior(
-		l.CheckString(1),
-	)
+	obj := NewUnitBehavior(string(l.CheckString(1)))
 	ud := l.NewUserData()
 	ud.Value = obj
 

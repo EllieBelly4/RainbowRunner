@@ -12,6 +12,9 @@ import (
 )
 
 func registerLuaModifiers(state *lua2.LState) {
+	// Ensure the import is referenced in code
+	_ = lua.LuaScript{}
+
 	mt := state.NewTypeMetatable("Modifiers")
 	state.SetGlobal("Modifiers", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaModifiers))
@@ -32,11 +35,8 @@ func luaMethodsModifiers() map[string]lua2.LGFunction {
 		},
 	}, luaMethodsComponent)
 }
-
 func newLuaModifiers(l *lua2.LState) int {
-	obj := NewModifiers(
-		l.CheckString(1),
-	)
+	obj := NewModifiers(string(l.CheckString(1)))
 	ud := l.NewUserData()
 	ud.Value = obj
 

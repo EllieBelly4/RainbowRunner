@@ -189,7 +189,17 @@ func (z *Zone) Init() {
 	defer state.Close()
 
 	RegisterLuaGlobals(state)
-	AddZoneToState(state, z)
+	//func AddZoneToState(L *lua.LState, z *Zone) {
+	//	ud := L.NewUserData()
+	//	ud.Value = z
+	//	L.SetMetatable(ud, L.GetTypeMetatable(luaZoneTypeName))
+	//	L.SetGlobal("currentZone", ud)
+	//}
+
+	ud := state.NewUserData()
+	ud.Value = z
+	state.SetMetatable(ud, state.GetTypeMetatable("Zone"))
+	state.SetGlobal("currentZone", ud)
 
 	err = script.Execute(state)
 

@@ -13,6 +13,9 @@ import (
 )
 
 func registerLuaUnit(state *lua2.LState) {
+	// Ensure the import is referenced in code
+	_ = lua.LuaScript{}
+
 	mt := state.NewTypeMetatable("Unit")
 	state.SetGlobal("Unit", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaUnit))
@@ -57,11 +60,8 @@ func luaMethodsUnit() map[string]lua2.LGFunction {
 		},
 	}, luaMethodsWorldEntity)
 }
-
 func newLuaUnit(l *lua2.LState) int {
-	obj := NewUnit(
-		l.CheckString(1),
-	)
+	obj := NewUnit(string(l.CheckString(1)))
 	ud := l.NewUserData()
 	ud.Value = obj
 
