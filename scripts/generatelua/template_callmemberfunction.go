@@ -37,9 +37,9 @@ const (
 		{{- range $i, $result := .Method.Results }}
 			{{- $resVarName := printf "res%d" $i }}
 			{{- if isNumberType $result }}
-			l.Push(lua2.LNumber({{ $resVarName }}.({{ $result.FullTypeString }})))
+			l.Push(lua2.LNumber({{ $resVarName }}))
 			{{- else if isStringType $result }}
-			l.Push(lua2.LString({{ $resVarName }}.({{ $result.FullTypeString }})))
+			l.Push(lua2.LString({{ $resVarName }}))
 			{{- else }}
 			ud := l.NewUserData()
 			ud.Value = {{ $resVarName }}

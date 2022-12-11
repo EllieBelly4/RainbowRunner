@@ -5,6 +5,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+//go:generate go run ../../scripts/generatelua -type=ZonePortal -extends=WorldEntity
 type ZonePortal struct {
 	*WorldEntity
 	Unk0   string

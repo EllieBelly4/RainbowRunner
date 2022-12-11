@@ -13,6 +13,7 @@ import (
 	"time"
 )
 
+//go:generate go run ../../scripts/generatelua -type=Player -extends=GCObject
 type Player struct {
 	*GCObject
 	Name      string

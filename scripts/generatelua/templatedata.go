@@ -3,11 +3,13 @@ package main
 import (
 	"fmt"
 	"strings"
+	"unicode"
 )
 
 type TemplateData struct {
 	Struct  *StructDef
 	Imports []*ImportDef
+	Extends []*FuncDef
 }
 
 func (t *TemplateData) StructTypeNameVar() string {
@@ -49,11 +51,30 @@ func IsStringType(t IValueType) bool {
 }
 
 func (f *FieldDef) NameCamelcase() string {
-	return strings.ToLower(f.Name[0:1]) + f.Name[1:]
+	return camelcaseVarName(f.Name)
+}
+
+func camelcaseVarName(name string) string {
+	var s strings.Builder
+
+	lowered := false
+
+	for _, c := range name {
+		if !lowered && unicode.IsUpper(c) {
+			s.WriteRune(unicode.ToLower(c))
+			continue
+		} else {
+			lowered = true
+		}
+
+		s.WriteRune(c)
+	}
+
+	return s.String()
 }
 
 func (f *FuncDef) NameCamelcase() string {
-	return strings.ToLower(f.Name[0:1]) + f.Name[1:]
+	return camelcaseVarName(f.Name)
 }
 
 func (i *ImportDef) ImportString() string {
@@ -66,4 +87,18 @@ func (i *ImportDef) ImportString() string {
 	s += "\"" + i.Path + "\""
 
 	return s
+}
+
+func (t *TemplateData) ExtendsString() string {
+	var s strings.Builder
+
+	for i, f := range t.Extends {
+		if i > 0 {
+			s.WriteString(", ")
+		}
+
+		s.WriteString(f.Name)
+	}
+
+	return s.String()
 }

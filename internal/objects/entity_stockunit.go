@@ -2,6 +2,7 @@ package objects
 
 import "RainbowRunner/pkg/byter"
 
+//go:generate go run ../../scripts/generatelua -type=StockUnit -extends=Unit
 type StockUnit struct {
 	*Unit
 }

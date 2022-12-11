@@ -128,18 +128,16 @@ type StructDef struct {
 }
 
 var (
-	typeDefs = make(map[string]any)
+	typeDefs = make(map[string]*FuncDef)
 )
 
-func addAllMemberFunctions(structs map[string]*StructDef, defs map[string]any, p *packages.Package) {
+func addAllMemberFunctions(structs map[string]*StructDef, defs map[string]*FuncDef, p *packages.Package) {
 	for _, f := range p.Syntax {
 		for _, decl := range f.Decls {
 			if funcDecl, ok := decl.(*ast.FuncDecl); ok {
 				funcDef := NewFuncDef(funcDecl)
 
-				if funcDef.IsExported {
-					defs[funcDef.Name] = funcDef
-				}
+				defs[funcDef.Name] = funcDef
 
 				if funcDecl.Recv != nil {
 					for _, field := range funcDecl.Recv.List {
@@ -286,6 +284,17 @@ func NewFuncDef(decl *ast.FuncDecl) *FuncDef {
 		funcDef.Params = make([]*FuncParamDef, 0)
 
 		for _, field := range decl.Type.Params.List {
+			if field.Names == nil {
+				funcParamDef := &FuncParamDef{
+					ValueType: ValueType{},
+				}
+
+				addValueType(field, &funcParamDef.ValueType)
+
+				funcDef.Params = append(funcDef.Params, funcParamDef)
+				continue
+			}
+
 			for _, fieldName := range field.Names {
 				funcParamDef := &FuncParamDef{
 					ValueType: ValueType{
@@ -304,21 +313,28 @@ func NewFuncDef(decl *ast.FuncDecl) *FuncDef {
 		funcDef.Results = make([]*FuncResultDef, 0)
 
 		for _, field := range decl.Type.Results.List {
-			fieldName := ""
+			if field.Names == nil {
+				funcResultDef := &FuncResultDef{
+					ValueType: ValueType{},
+				}
 
-			if field.Names != nil {
-				fieldName = field.Names[0].Name
+				addValueType(field, &funcResultDef.ValueType)
+
+				funcDef.Results = append(funcDef.Results, funcResultDef)
+				continue
 			}
 
-			funcResultDef := &FuncResultDef{
-				ValueType: ValueType{
-					Name: fieldName,
-				},
+			for _, fieldName := range field.Names {
+				funcResultDef := &FuncResultDef{
+					ValueType: ValueType{
+						Name: fieldName.Name,
+					},
+				}
+
+				addValueType(field, &funcResultDef.ValueType)
+
+				funcDef.Results = append(funcDef.Results, funcResultDef)
 			}
-
-			addValueType(field, &funcResultDef.ValueType)
-
-			funcDef.Results = append(funcDef.Results, funcResultDef)
 		}
 	}
 
@@ -329,11 +345,12 @@ func addValueType(field *ast.Field, funcParamDef *ValueType) {
 	if ident, ok := field.Type.(*ast.Ident); ok {
 		funcParamDef.ParamType = ident.Name
 	} else if star, ok := field.Type.(*ast.StarExpr); ok {
+		funcParamDef.IsPointer = true
+
 		if selectorExpr, ok := star.X.(*ast.SelectorExpr); ok {
 			pkgString := types.ExprString(selectorExpr.X)
 			funcParamDef.Package = pkgString
 			funcParamDef.ParamType = selectorExpr.Sel.Name
-			funcParamDef.IsPointer = true
 		} else if ident2, ok := star.X.(*ast.Ident); ok {
 			funcParamDef.ParamType = ident2.Name
 		}
@@ -344,6 +361,8 @@ func addValueType(field *ast.Field, funcParamDef *ValueType) {
 		if _, ok := selector.X.(*ast.StarExpr); ok {
 			funcParamDef.IsPointer = true
 		}
+	} else {
+		funcParamDef.ParamType = types.ExprString(field.Type)
 	}
 }
 

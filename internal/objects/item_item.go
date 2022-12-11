@@ -5,6 +5,7 @@ import (
 	"RainbowRunner/pkg/datatypes"
 )
 
+//go:generate go run ../../scripts/generatelua -type=Item -extends=GCObject
 type Item struct {
 	*GCObject
 	ModCount          int

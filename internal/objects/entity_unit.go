@@ -9,6 +9,7 @@ type IUnit interface {
 	GetUnit() *Unit
 }
 
+//go:generate go run ../../scripts/generateLua/ -type=Unit -extends=WorldEntity
 type Unit struct {
 	*WorldEntity
 	HP        int

@@ -9,6 +9,7 @@ type IInventory interface {
 	GetInventory() *Inventory
 }
 
+//go:generate go run ../../scripts/generatelua -type=Inventory -extends=GCObject
 type Inventory struct {
 	*GCObject
 

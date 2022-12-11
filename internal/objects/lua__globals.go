@@ -10,7 +10,6 @@ func RegisterLuaGlobals(state *lua.LState) {
 	registerLuaVector2(state)
 	registerLuaVector3(state)
 	registerLuaGCObject(state)
-	registerLuaDrobject(state)
 	registerLuaComponent(state)
 	registerLuaInventory(state)
 	registerLuaMerchant(state)
@@ -24,14 +23,16 @@ func RegisterLuaGlobals(state *lua.LState) {
 	registerLuaUnitBehavior(state)
 }
 
-func luaMethodsExtend(child map[string]lua.LGFunction, parent func() map[string]lua.LGFunction) map[string]lua.LGFunction {
+func luaMethodsExtend(child map[string]lua.LGFunction, parents ...func() map[string]lua.LGFunction) map[string]lua.LGFunction {
 	newMethods := make(map[string]lua.LGFunction)
 
-	for key, value := range child {
-		newMethods[key] = value
+	for _, parent := range parents {
+		for key, value := range parent() {
+			newMethods[key] = value
+		}
 	}
 
-	for key, value := range parent() {
+	for key, value := range child {
 		newMethods[key] = value
 	}
 

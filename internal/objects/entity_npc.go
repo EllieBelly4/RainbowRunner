@@ -3,13 +3,11 @@ package objects
 import (
 	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/game/components/behavior"
-	"RainbowRunner/internal/global"
-	"RainbowRunner/internal/message"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 )
 
-//go:generate go run ../../scripts/generateLua/ -type=NPC
+//go:generate go run ../../scripts/generateLua/ -type=NPC -extends=Unit
 type NPC struct {
 	*StockUnit
 
@@ -74,61 +72,6 @@ func (n *NPC) addBehaviour(behaviourType string) {
 	//}
 
 	n.AddChild(unitBehavior)
-}
-
-func CreateNPC(player *RRPlayer, zone *Zone, transform datatypes.Transform, npcType, behaviourType string) {
-	npc := NewNPC(npcType, behaviourType, transform.Position, transform.Rotation)
-
-	npc.WorldPosition = transform.Position
-	npc.Rotation = transform.Rotation
-
-	unitBehavior := NewMonsterBehavior2(behaviourType)
-
-	unitBehavior.Action1 = &behavior.MoveTo{
-		PosX: uint32(npc.WorldPosition.X),
-		PosY: uint32(npc.WorldPosition.Y),
-	}
-
-	//unitBehavior.Action2 = &behavior.WarpTo{
-	//	PosX: uint32(npc.WorldPosition.X),
-	//	PosY: uint32(npc.WorldPosition.Y),
-	//}
-
-	npc.AddChild(unitBehavior)
-
-	skills := NewSkills("skills")
-	npc.AddChild(skills)
-
-	manipulators := NewManipulators("manipulators")
-	npc.AddChild(manipulators)
-
-	modifiers := NewModifiers("modifiers")
-	npc.AddChild(modifiers)
-
-	zone.Spawn(npc)
-
-	//clientEntityWriter := NewClientEntityWriterWithByter()
-	//clientEntityWriter.BeginStream()
-
-	global.JobQueue.Enqueue(func() {
-		CEWriter := NewClientEntityWriterWithByter()
-		CEWriter.Create(npc)
-		CEWriter.CreateComponentAndInit(skills, npc)
-		CEWriter.CreateComponentAndInit(manipulators, npc)
-		CEWriter.CreateComponentAndInit(modifiers, npc)
-		// Adding unit behavior makes the NPC move in a random direction, missing something here
-		//player.ClientEntityWriter.CreateComponent(unitBehavior, npc)
-		CEWriter.Init(npc)
-		player.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeCreateNPC)
-	})
-
-	//player.ClientEntityWriter.EndStream()
-
-	//helpers.WriteCompressedASimple(player.Conn, player.ClientEntityWriter.Body)
-
-	//unitBehavior.Warp(106342, -46263, 12778)
-	//unitBehavior.Warp(0, 0, 0)
-	//unitBehavior.SendPosition()
 }
 
 func NewNPCFromConfig(config *database.NPCConfig) *NPC {

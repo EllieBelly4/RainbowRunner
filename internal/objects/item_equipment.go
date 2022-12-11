@@ -16,6 +16,7 @@ const (
 	ItemRangedWeapon ItemType = "RangedWeapon"
 )
 
+//go:generate go run ../../scripts/generatelua -type=Equipment -extends=Item
 type Equipment struct {
 	*Item
 	Slot types.EquipmentSlot

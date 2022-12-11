@@ -16,7 +16,7 @@ type IUnitBehavior interface {
 	GetUnitBehavior() *UnitBehavior
 }
 
-//go:generate go run ../../scripts/generateLua/ -type=UnitBehavior
+//go:generate go run ../../scripts/generateLua/ -type=UnitBehavior -extends=Component
 type UnitBehavior struct {
 	*Component
 	LastPosition   datatypes.Vector3Float32

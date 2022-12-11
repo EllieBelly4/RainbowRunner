@@ -16,6 +16,7 @@ import (
 	"sync"
 )
 
+//go:generate go run ../../scripts/generatelua -type=Zone
 type Zone struct {
 	sync.RWMutex
 	Name       string
@@ -252,5 +253,14 @@ func (z *Zone) GiveID(entity DRObject) {
 
 	if config.Config.Logging.LogIDs {
 		fmt.Printf("%d - %s(%s)\n", eProps.ID, entity.GetGCObject().GCType, entity.GetGCObject().GCLabel)
+	}
+}
+
+func NewZone(name string, id uint32) *Zone {
+	return &Zone{
+		Name:     name,
+		ID:       id,
+		entities: make(map[uint16]DRObject),
+		players:  make(map[uint16]*RRPlayer),
 	}
 }

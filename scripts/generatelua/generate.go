@@ -11,18 +11,26 @@ import (
 	"golang.org/x/tools/go/packages"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"text/template"
 )
 
 var (
 	typeName = flag.String("type", "", "Comma separated list of types to generate lua wrappers for")
+	extends  = flag.String("extends", "", "Comma separated list of types to extend")
 )
 
 func main() {
 	flag.Parse()
 	structs := make(map[string]*StructDef)
 	imports := make(map[string]*ImportDef)
+
+	splitExtends := strings.Split(*extends, ",")
+
+	if splitExtends[0] == "" {
+		splitExtends = nil
+	}
 
 	fileName := os.Getenv("GOFILE")
 	cwd, err := os.Getwd()
@@ -51,9 +59,15 @@ func main() {
 
 	addAllMemberFunctions(structs, typeDefs, pkg[0])
 
+	extendFuncs, err := getExtendFuncs(splitExtends, typeDefs)
+
+	if err != nil {
+		panic(err)
+	}
+
 	typeNames := strings.Split(*typeName, ",")
 
-	err = executeGenerate(imports, structs, typeNames, cwd)
+	err = executeGenerate(extendFuncs, imports, structs, typeNames, cwd)
 
 	if err != nil {
 		panic(err)
@@ -69,7 +83,40 @@ func main() {
 	//fmt.Println(string(data))
 }
 
-func executeGenerate(imports map[string]*ImportDef, structs map[string]*StructDef, typeNames []string, cwd string) error {
+func getExtendFuncs(splitExtends []string, funcDefs map[string]*FuncDef) ([]*FuncDef, error) {
+	if splitExtends == nil || len(splitExtends) == 0 {
+		return nil, nil
+	}
+
+	allFuncDefs := make([]*FuncDef, 0)
+
+	lgFuncRegex := regexp.MustCompile(`map\[string]lua[0-9]?.LGFunction`)
+
+	for _, extend := range splitExtends {
+		funcName := fmt.Sprintf("luaMethods%s", extend)
+
+		if _, ok := funcDefs[funcName]; !ok {
+			return nil, errors.New(fmt.Sprintf("could not find methods function to extend %s", funcName))
+		}
+
+		fun := funcDefs[funcName]
+
+		if len(fun.Results) != 1 {
+			return nil, errors.New(fmt.Sprintf("extend function %s does not return a table", funcName))
+		}
+
+		// TODO maybe do some proper type checking here
+		if !lgFuncRegex.Match([]byte(fun.Results[0].ParamType)) {
+			return nil, errors.New(fmt.Sprintf("extend function %s does not return a table", funcName))
+		}
+
+		allFuncDefs = append(allFuncDefs, fun)
+	}
+
+	return allFuncDefs, nil
+}
+
+func executeGenerate(splitExtends []*FuncDef, imports map[string]*ImportDef, structs map[string]*StructDef, typeNames []string, cwd string) error {
 	fmt.Printf("Running %s go on %s\n", os.Args[0], os.Getenv("GOFILE"))
 
 	for _, name := range typeNames {
@@ -77,7 +124,7 @@ func executeGenerate(imports map[string]*ImportDef, structs map[string]*StructDe
 			return errors.New(fmt.Sprintf("could not find type %s in file", name))
 		}
 
-		data, err := generateWrapper(imports, structs[name])
+		data, err := generateWrapper(splitExtends, imports, structs[name])
 
 		if err != nil {
 			return err
@@ -85,7 +132,7 @@ func executeGenerate(imports map[string]*ImportDef, structs map[string]*StructDe
 
 		data = formatScript(data)
 
-		outputFile := filepath.Join(cwd, fmt.Sprintf("lua_%s_generated.go", strings.ToLower(name)))
+		outputFile := filepath.Join(cwd, fmt.Sprintf("lua_generated_%s_.go", strings.ToLower(name)))
 
 		err = os.WriteFile(outputFile, data, 0755)
 
@@ -108,7 +155,7 @@ func formatScript(data []byte) []byte {
 	return data
 }
 
-func generateWrapper(imports map[string]*ImportDef, def *StructDef) ([]byte, error) {
+func generateWrapper(extends []*FuncDef, imports map[string]*ImportDef, def *StructDef) ([]byte, error) {
 	t := template.New("wrapper")
 
 	t = t.Funcs(templateFuncMap)
@@ -124,6 +171,7 @@ func generateWrapper(imports map[string]*ImportDef, def *StructDef) ([]byte, err
 	data := &TemplateData{
 		Struct:  def,
 		Imports: requiredImports,
+		Extends: extends,
 	}
 
 	buf := &bytes.Buffer{}

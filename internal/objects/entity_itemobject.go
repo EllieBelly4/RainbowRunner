@@ -4,6 +4,7 @@ import (
 	"RainbowRunner/pkg/byter"
 )
 
+//go:generate go run ../../scripts/generatelua -type=ItemObject -extends=WorldEntity
 type ItemObject struct {
 	*WorldEntity
 	Item DRObject

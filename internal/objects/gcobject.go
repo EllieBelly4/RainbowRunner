@@ -21,6 +21,7 @@ type EntityMessageHandler interface {
 	ReadUpdate(reader *byter.Byter) error
 }
 
+//go:generate go run ../../scripts/generatelua -type=GCObject
 type GCObject struct {
 	EntityProperties RREntityProperties
 	Version          uint8

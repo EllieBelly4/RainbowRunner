@@ -9,6 +9,7 @@ type IWorldEntity interface {
 	GetWorldEntity() *WorldEntity
 }
 
+//go:generate go run ../../scripts/generatelua -type=WorldEntity -extends=GCObject
 type WorldEntity struct {
 	*GCObject
 	WorldPosition        datatypes.Vector3Float32

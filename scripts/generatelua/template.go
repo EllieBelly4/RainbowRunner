@@ -30,7 +30,9 @@ import (
 func registerLua{{ .Struct.Name }}(state *lua2.LState) {
 	mt := state.NewTypeMetatable("{{ .Struct.Name }}")
 	state.SetGlobal("{{ .Struct.Name }}", mt)
+{{- if .Struct.Constructor }}
 	state.SetField(mt, "new", state.NewFunction(newLua{{ .Struct.Name }}))
+{{- end }}
 	state.SetField(mt, "__index", state.SetFuncs(state.NewTable(),
 		luaMethods{{ .Struct.Name }}(),
 	))
@@ -60,13 +62,12 @@ func luaMethods{{ .Struct.Name }}() map[string]lua2.LGFunction {
 		{{- end }}
 		"{{ $method.NameCamelcase }}": {{ generateCallMemberFunction $struct $method }},
 {{- end }}
-	}, luaMethodsDRObject)
+	}, {{ .ExtendsString }})
 }
 
-func newLua{{ .Struct.Name }}(l *lua2.LState) int {
 {{- if .Struct.Constructor }}
+func newLua{{ .Struct.Name }}(l *lua2.LState) int {
     obj := {{ generateCallString .Struct.Constructor }}
-{{- end }}
 	ud := l.NewUserData()
 	ud.Value = obj
 
@@ -74,5 +75,6 @@ func newLua{{ .Struct.Name }}(l *lua2.LState) int {
 	l.Push(ud)
 	return 1
 }
+{{- end }}
 `
 )

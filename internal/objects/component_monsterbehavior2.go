@@ -4,6 +4,7 @@ import (
 	"RainbowRunner/pkg/byter"
 )
 
+//go:generate go run ../../scripts/generatelua -type=MonsterBehavior2 -extends=UnitBehavior
 type MonsterBehavior2 struct {
 	*UnitBehavior
 }
