@@ -47,16 +47,13 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 		},
 		"removePlayer": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Zone](l, 1)
-			obj.RemovePlayer(
-				int(l.CheckNumber(1)),
-			)
+			obj.RemovePlayer(int(l.CheckNumber(1)))
 
 			return 0
 		},
 		"addEntity": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Zone](l, 1)
-			obj.AddEntity(
-				uint16(l.CheckNumber(1)),
+			obj.AddEntity(func(v uint16) *uint16 { return &v }(uint16(l.CheckNumber(1))),
 				lua.CheckValue[DRObject](l, 2),
 			)
 
@@ -90,8 +87,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 			obj := lua.CheckReferenceValue[Zone](l, 1)
 			obj.SpawnInit(
 				lua.CheckValue[DRObject](l, 1),
-				lua.CheckReferenceValue[datatypes.Vector3Float32](l, 2),
-				float32(l.CheckNumber(3)),
+				lua.CheckReferenceValue[datatypes.Vector3Float32](l, 2), func(v float32) *float32 { return &v }(float32(l.CheckNumber(3))),
 			)
 
 			return 0
@@ -122,9 +118,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 		},
 		"findEntityByID": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Zone](l, 1)
-			res0 := obj.FindEntityByID(
-				uint16(l.CheckNumber(1)),
-			)
+			res0 := obj.FindEntityByID(uint16(l.CheckNumber(1)))
 			ud := l.NewUserData()
 			ud.Value = res0
 			l.SetMetatable(ud, l.GetTypeMetatable("DRObject"))
@@ -142,12 +136,8 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 		},
 	})
 }
-
 func newLuaZone(l *lua2.LState) int {
-	obj := NewZone(
-		l.CheckString(1),
-		uint32(l.CheckNumber(2)),
-	)
+	obj := NewZone(string(l.CheckString(1)), uint32(l.CheckNumber(2)))
 	ud := l.NewUserData()
 	ud.Value = obj
 

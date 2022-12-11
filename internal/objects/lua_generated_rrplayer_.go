@@ -11,6 +11,9 @@ import (
 )
 
 func registerLuaRRPlayer(state *lua2.LState) {
+	// Ensure the import is referenced in code
+	_ = lua.LuaScript{}
+
 	mt := state.NewTypeMetatable("RRPlayer")
 	state.SetGlobal("RRPlayer", mt)
 	state.SetField(mt, "__index", state.SetFuncs(state.NewTable(),

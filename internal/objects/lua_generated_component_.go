@@ -6,11 +6,12 @@ package objects
  */
 
 import (
-	lua "RainbowRunner/internal/lua"
+	"RainbowRunner/internal/lua"
 	lua2 "github.com/yuin/gopher-lua"
 )
 
 func registerLuaComponent(state *lua2.LState) {
+	_ = lua.LuaScript{}
 	mt := state.NewTypeMetatable("Component")
 	state.SetGlobal("Component", mt)
 	state.SetField(mt, "new", state.NewFunction(newLuaComponent))

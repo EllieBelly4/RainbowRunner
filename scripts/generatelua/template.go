@@ -28,6 +28,9 @@ import (
 )
 
 func registerLua{{ .Struct.Name }}(state *lua2.LState) {
+	// Ensure the import is referenced in code
+	_ = lua.LuaScript{}
+
 	mt := state.NewTypeMetatable("{{ .Struct.Name }}")
 	state.SetGlobal("{{ .Struct.Name }}", mt)
 {{- if .Struct.Constructor }}
