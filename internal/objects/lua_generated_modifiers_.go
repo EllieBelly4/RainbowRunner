@@ -28,12 +28,29 @@ func luaMethodsModifiers() map[string]lua2.LGFunction {
 		"writeInit": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Modifiers](l, 1)
 			obj.WriteInit(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
 		},
-	}, luaMethodsComponent)
+		"toLua": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[Modifiers](l, 1)
+			res0 := obj.ToLua(
+				lua.CheckReferenceValue[lua2.LState](l, 2),
+			)
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.Push(ud)
+
+			return 1
+		},
+		"Component": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[Modifiers](l, 1)
+			l.Push(obj.Component.ToLua(l))
+			return 1
+		},
+	})
 }
 func newLuaModifiers(l *lua2.LState) int {
 	obj := NewModifiers(string(l.CheckString(1)))
@@ -43,4 +60,12 @@ func newLuaModifiers(l *lua2.LState) int {
 	l.SetMetatable(ud, l.GetTypeMetatable("Modifiers"))
 	l.Push(ud)
 	return 1
+}
+
+func (m *Modifiers) ToLua(l *lua2.LState) lua2.LValue {
+	ud := l.NewUserData()
+	ud.Value = m
+
+	l.SetMetatable(ud, l.GetTypeMetatable("Modifiers"))
+	return ud
 }

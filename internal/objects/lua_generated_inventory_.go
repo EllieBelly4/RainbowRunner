@@ -38,7 +38,7 @@ func luaMethodsInventory() map[string]lua2.LGFunction {
 		"addChild": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Inventory](l, 1)
 			obj.AddChild(
-				lua.CheckValue[DRObject](l, 1),
+				lua.CheckValue[DRObject](l, 2),
 			)
 
 			return 0
@@ -46,7 +46,7 @@ func luaMethodsInventory() map[string]lua2.LGFunction {
 		"writeInit": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Inventory](l, 1)
 			obj.WriteInit(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
@@ -54,14 +54,14 @@ func luaMethodsInventory() map[string]lua2.LGFunction {
 		"writeInitData": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Inventory](l, 1)
 			obj.WriteInitData(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
 		},
 		"removeItemByIndex": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Inventory](l, 1)
-			res0 := obj.RemoveItemByIndex(int(l.CheckNumber(1)))
+			res0 := obj.RemoveItemByIndex(int(l.CheckNumber(2)))
 			ud := l.NewUserData()
 			ud.Value = res0
 			l.SetMetatable(ud, l.GetTypeMetatable("DRObject"))
@@ -69,7 +69,24 @@ func luaMethodsInventory() map[string]lua2.LGFunction {
 
 			return 1
 		},
-	}, luaMethodsGCObject)
+		"toLua": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[Inventory](l, 1)
+			res0 := obj.ToLua(
+				lua.CheckReferenceValue[lua2.LState](l, 2),
+			)
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.Push(ud)
+
+			return 1
+		},
+		"GCObject": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[Inventory](l, 1)
+			l.Push(obj.GCObject.ToLua(l))
+			return 1
+		},
+	})
 }
 func newLuaInventory(l *lua2.LState) int {
 	obj := NewInventory(string(l.CheckString(1)),
@@ -81,4 +98,12 @@ func newLuaInventory(l *lua2.LState) int {
 	l.SetMetatable(ud, l.GetTypeMetatable("Inventory"))
 	l.Push(ud)
 	return 1
+}
+
+func (i *Inventory) ToLua(l *lua2.LState) lua2.LValue {
+	ud := l.NewUserData()
+	ud.Value = i
+
+	l.SetMetatable(ud, l.GetTypeMetatable("Inventory"))
+	return ud
 }

@@ -31,12 +31,29 @@ func luaMethodsNPC() map[string]lua2.LGFunction {
 		"writeInit": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[NPC](l, 1)
 			obj.WriteInit(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
 		},
-	}, luaMethodsUnit)
+		"toLua": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[NPC](l, 1)
+			res0 := obj.ToLua(
+				lua.CheckReferenceValue[lua2.LState](l, 2),
+			)
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.Push(ud)
+
+			return 1
+		},
+		"Unit": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[NPC](l, 1)
+			l.Push(obj.Unit.ToLua(l))
+			return 1
+		},
+	})
 }
 func newLuaNPC(l *lua2.LState) int {
 	obj := NewNPC(string(l.CheckString(1)), string(l.CheckString(2)),
@@ -48,4 +65,12 @@ func newLuaNPC(l *lua2.LState) int {
 	l.SetMetatable(ud, l.GetTypeMetatable("NPC"))
 	l.Push(ud)
 	return 1
+}
+
+func (n *NPC) ToLua(l *lua2.LState) lua2.LValue {
+	ud := l.NewUserData()
+	ud.Value = n
+
+	l.SetMetatable(ud, l.GetTypeMetatable("NPC"))
+	return ud
 }

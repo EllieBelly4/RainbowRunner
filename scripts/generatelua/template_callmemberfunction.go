@@ -30,9 +30,9 @@ const (
 	{{- $resultsLen := len .Method.Results -}}
 
 	{{- if eq $resultsLen 0 }}
-	obj.{{ generateCallString .Method }}
+	obj.{{ generateCallString .Method 1 }}
 	{{- else }}
-	{{ .Method.ResultAssignmentString }} := obj.{{ generateCallString .Method -}}
+	{{ .Method.ResultAssignmentString }} := obj.{{ generateCallString .Method 1 -}}
 
 		{{- range $i, $result := .Method.Results }}
 			{{- $resVarName := printf "res%d" $i }}

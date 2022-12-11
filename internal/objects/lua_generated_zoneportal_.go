@@ -34,9 +34,9 @@ func luaMethodsZonePortal() map[string]lua2.LGFunction {
 		"activate": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[ZonePortal](l, 1)
 			obj.Activate(
-				lua.CheckReferenceValue[RRPlayer](l, 1),
-				lua.CheckReferenceValue[UnitBehavior](l, 2),
-				lua.CheckValue[byte](l, 3),
+				lua.CheckReferenceValue[RRPlayer](l, 2),
+				lua.CheckReferenceValue[UnitBehavior](l, 3),
+				lua.CheckValue[byte](l, 4),
 			)
 
 			return 0
@@ -44,12 +44,29 @@ func luaMethodsZonePortal() map[string]lua2.LGFunction {
 		"writeInit": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[ZonePortal](l, 1)
 			obj.WriteInit(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
 		},
-	}, luaMethodsWorldEntity)
+		"toLua": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[ZonePortal](l, 1)
+			res0 := obj.ToLua(
+				lua.CheckReferenceValue[lua2.LState](l, 2),
+			)
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.Push(ud)
+
+			return 1
+		},
+		"WorldEntity": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[ZonePortal](l, 1)
+			l.Push(obj.WorldEntity.ToLua(l))
+			return 1
+		},
+	})
 }
 func newLuaZonePortal(l *lua2.LState) int {
 	obj := NewZonePortal(string(l.CheckString(1)), string(l.CheckString(2)))
@@ -59,4 +76,12 @@ func newLuaZonePortal(l *lua2.LState) int {
 	l.SetMetatable(ud, l.GetTypeMetatable("ZonePortal"))
 	l.Push(ud)
 	return 1
+}
+
+func (z *ZonePortal) ToLua(l *lua2.LState) lua2.LValue {
+	ud := l.NewUserData()
+	ud.Value = z
+
+	l.SetMetatable(ud, l.GetTypeMetatable("ZonePortal"))
+	return ud
 }

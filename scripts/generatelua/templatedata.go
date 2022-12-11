@@ -9,7 +9,7 @@ import (
 type TemplateData struct {
 	Struct  *StructDef
 	Imports []*ImportDef
-	Extends []*FuncDef
+	Extends []*StructDef
 }
 
 func (t *TemplateData) StructTypeNameVar() string {
@@ -89,16 +89,16 @@ func (i *ImportDef) ImportString() string {
 	return s
 }
 
-func (t *TemplateData) ExtendsString() string {
-	var s strings.Builder
-
-	for i, f := range t.Extends {
-		if i > 0 {
-			s.WriteString(", ")
-		}
-
-		s.WriteString(f.Name)
-	}
-
-	return s.String()
-}
+//func (t *TemplateData) ExtendsString() string {
+//	var s strings.Builder
+//
+//	for i, f := range t.Extends {
+//		if i > 0 {
+//			s.WriteString(", ")
+//		}
+//
+//		s.WriteString(f.Name)
+//	}
+//
+//	return s.String()
+//}

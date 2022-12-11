@@ -28,12 +28,29 @@ func luaMethodsMonsterBehavior2() map[string]lua2.LGFunction {
 		"writeInit": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[MonsterBehavior2](l, 1)
 			obj.WriteInit(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
 		},
-	}, luaMethodsUnitBehavior)
+		"toLua": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[MonsterBehavior2](l, 1)
+			res0 := obj.ToLua(
+				lua.CheckReferenceValue[lua2.LState](l, 2),
+			)
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.Push(ud)
+
+			return 1
+		},
+		"UnitBehavior": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[MonsterBehavior2](l, 1)
+			l.Push(obj.UnitBehavior.ToLua(l))
+			return 1
+		},
+	})
 }
 func newLuaMonsterBehavior2(l *lua2.LState) int {
 	obj := NewMonsterBehavior2(string(l.CheckString(1)))
@@ -43,4 +60,12 @@ func newLuaMonsterBehavior2(l *lua2.LState) int {
 	l.SetMetatable(ud, l.GetTypeMetatable("MonsterBehavior2"))
 	l.Push(ud)
 	return 1
+}
+
+func (m *MonsterBehavior2) ToLua(l *lua2.LState) lua2.LValue {
+	ud := l.NewUserData()
+	ud.Value = m
+
+	l.SetMetatable(ud, l.GetTypeMetatable("MonsterBehavior2"))
+	return ud
 }

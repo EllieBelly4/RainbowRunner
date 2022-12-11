@@ -32,7 +32,7 @@ func luaMethodsItem() map[string]lua2.LGFunction {
 		"setInventoryPosition": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Item](l, 1)
 			obj.SetInventoryPosition(
-				lua.CheckValue[datatypes.Vector2](l, 1),
+				lua.CheckValue[datatypes.Vector2](l, 2),
 			)
 
 			return 0
@@ -40,12 +40,29 @@ func luaMethodsItem() map[string]lua2.LGFunction {
 		"writeInit": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Item](l, 1)
 			obj.WriteInit(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
 		},
-	}, luaMethodsGCObject)
+		"toLua": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[Item](l, 1)
+			res0 := obj.ToLua(
+				lua.CheckReferenceValue[lua2.LState](l, 2),
+			)
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.Push(ud)
+
+			return 1
+		},
+		"GCObject": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[Item](l, 1)
+			l.Push(obj.GCObject.ToLua(l))
+			return 1
+		},
+	})
 }
 func newLuaItem(l *lua2.LState) int {
 	obj := NewItem(string(l.CheckString(1)),
@@ -57,4 +74,12 @@ func newLuaItem(l *lua2.LState) int {
 	l.SetMetatable(ud, l.GetTypeMetatable("Item"))
 	l.Push(ud)
 	return 1
+}
+
+func (i *Item) ToLua(l *lua2.LState) lua2.LValue {
+	ud := l.NewUserData()
+	ud.Value = i
+
+	l.SetMetatable(ud, l.GetTypeMetatable("Item"))
+	return ud
 }

@@ -28,12 +28,29 @@ func luaMethodsStockUnit() map[string]lua2.LGFunction {
 		"writeInit": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[StockUnit](l, 1)
 			obj.WriteInit(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
 		},
-	}, luaMethodsUnit)
+		"toLua": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[StockUnit](l, 1)
+			res0 := obj.ToLua(
+				lua.CheckReferenceValue[lua2.LState](l, 2),
+			)
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.Push(ud)
+
+			return 1
+		},
+		"Unit": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[StockUnit](l, 1)
+			l.Push(obj.Unit.ToLua(l))
+			return 1
+		},
+	})
 }
 func newLuaStockUnit(l *lua2.LState) int {
 	obj := NewStockUnit(string(l.CheckString(1)))
@@ -43,4 +60,12 @@ func newLuaStockUnit(l *lua2.LState) int {
 	l.SetMetatable(ud, l.GetTypeMetatable("StockUnit"))
 	l.Push(ud)
 	return 1
+}
+
+func (s *StockUnit) ToLua(l *lua2.LState) lua2.LValue {
+	ud := l.NewUserData()
+	ud.Value = s
+
+	l.SetMetatable(ud, l.GetTypeMetatable("StockUnit"))
+	return ud
 }

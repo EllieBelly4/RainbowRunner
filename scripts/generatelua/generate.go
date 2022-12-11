@@ -23,8 +23,9 @@ var (
 
 func main() {
 	flag.Parse()
-	structs := make(map[string]*StructDef)
+	fileStructs := make(map[string]*StructDef)
 	imports := make(map[string]*ImportDef)
+	allStructs := make(map[string]*StructDef)
 
 	splitExtends := strings.Split(*extends, ",")
 
@@ -51,15 +52,27 @@ func main() {
 
 	addAllImports(imports, pkg[0])
 
-	err = parseFileStructDefinitionsFromString(pkg[0], structs, filePath)
+	err = parseFileStructDefinitionsFromString(pkg[0], fileStructs, filePath)
 
 	if err != nil {
 		panic(err)
 	}
 
-	addAllMemberFunctions(structs, typeDefs, pkg[0])
+	addAllMemberFunctions(fileStructs, typeDefs, pkg[0])
 
-	extendFuncs, err := getExtendFuncs(splitExtends, typeDefs)
+	err = getAllStructDefinitions(allStructs, cwd)
+
+	if err != nil {
+		panic(err)
+	}
+
+	//extendFuncs, err := getExtendFuncs(splitExtends, typeDefs)
+	//
+	//if err != nil {
+	//	panic(err)
+	//}
+
+	extendStructs, err := getExtendStructs(splitExtends, allStructs)
 
 	if err != nil {
 		panic(err)
@@ -67,13 +80,13 @@ func main() {
 
 	typeNames := strings.Split(*typeName, ",")
 
-	err = executeGenerate(extendFuncs, imports, structs, typeNames, cwd)
+	err = executeGenerate(extendStructs, imports, fileStructs, typeNames, cwd)
 
 	if err != nil {
 		panic(err)
 	}
 
-	data, err := json.MarshalIndent(structs, "", "  ")
+	data, err := json.MarshalIndent(fileStructs, "", "  ")
 
 	if err != nil {
 		panic(err)
@@ -81,6 +94,20 @@ func main() {
 
 	gosucks.VAR(data)
 	//fmt.Println(string(data))
+}
+
+func getExtendStructs(splitExtends []string, structs map[string]*StructDef) ([]*StructDef, error) {
+	ret := make([]*StructDef, 0)
+
+	for _, extend := range splitExtends {
+		if _, ok := structs[extend]; !ok {
+			return nil, errors.New(fmt.Sprintf("could not find type %s", extend))
+		}
+
+		ret = append(ret, structs[extend])
+	}
+
+	return ret, nil
 }
 
 func getExtendFuncs(splitExtends []string, funcDefs map[string]*FuncDef) ([]*FuncDef, error) {
@@ -116,7 +143,7 @@ func getExtendFuncs(splitExtends []string, funcDefs map[string]*FuncDef) ([]*Fun
 	return allFuncDefs, nil
 }
 
-func executeGenerate(splitExtends []*FuncDef, imports map[string]*ImportDef, structs map[string]*StructDef, typeNames []string, cwd string) error {
+func executeGenerate(splitExtends []*StructDef, imports map[string]*ImportDef, structs map[string]*StructDef, typeNames []string, cwd string) error {
 	fmt.Printf("Running %s go on %s\n", os.Args[0], os.Getenv("GOFILE"))
 
 	for _, name := range typeNames {
@@ -155,7 +182,7 @@ func formatScript(data []byte) []byte {
 	return data
 }
 
-func generateWrapper(extends []*FuncDef, imports map[string]*ImportDef, def *StructDef) ([]byte, error) {
+func generateWrapper(extends []*StructDef, imports map[string]*ImportDef, def *StructDef) ([]byte, error) {
 	t := template.New("wrapper")
 
 	t = t.Funcs(templateFuncMap)

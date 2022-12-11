@@ -38,12 +38,29 @@ func luaMethodsItemObject() map[string]lua2.LGFunction {
 		"writeInit": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[ItemObject](l, 1)
 			obj.WriteInit(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
 		},
-	}, luaMethodsWorldEntity)
+		"toLua": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[ItemObject](l, 1)
+			res0 := obj.ToLua(
+				lua.CheckReferenceValue[lua2.LState](l, 2),
+			)
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.Push(ud)
+
+			return 1
+		},
+		"WorldEntity": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[ItemObject](l, 1)
+			l.Push(obj.WorldEntity.ToLua(l))
+			return 1
+		},
+	})
 }
 func newLuaItemObject(l *lua2.LState) int {
 	obj := NewItemObject(string(l.CheckString(1)),
@@ -55,4 +72,12 @@ func newLuaItemObject(l *lua2.LState) int {
 	l.SetMetatable(ud, l.GetTypeMetatable("ItemObject"))
 	l.Push(ud)
 	return 1
+}
+
+func (i *ItemObject) ToLua(l *lua2.LState) lua2.LValue {
+	ud := l.NewUserData()
+	ud.Value = i
+
+	l.SetMetatable(ud, l.GetTypeMetatable("ItemObject"))
+	return ud
 }

@@ -28,6 +28,18 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
 		"name": luaGenericGetSetString[Zone](func(v Zone) *string { return &v.Name }),
 		"id":   luaGenericGetSetNumber[Zone, uint32](func(v Zone) *uint32 { return &v.ID }),
+		"toLua": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[Zone](l, 1)
+			res0 := obj.ToLua(
+				lua.CheckReferenceValue[lua2.LState](l, 2),
+			)
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.Push(ud)
+
+			return 1
+		},
 		"entities": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Zone](l, 1)
 			res0 := obj.Entities()
@@ -50,14 +62,14 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 		},
 		"removePlayer": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Zone](l, 1)
-			obj.RemovePlayer(int(l.CheckNumber(1)))
+			obj.RemovePlayer(int(l.CheckNumber(2)))
 
 			return 0
 		},
 		"addEntity": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Zone](l, 1)
-			obj.AddEntity(func(v uint16) *uint16 { return &v }(uint16(l.CheckNumber(1))),
-				lua.CheckValue[DRObject](l, 2),
+			obj.AddEntity(func(v uint16) *uint16 { return &v }(uint16(l.CheckNumber(2))),
+				lua.CheckValue[DRObject](l, 3),
 			)
 
 			return 0
@@ -65,7 +77,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 		"addPlayer": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Zone](l, 1)
 			obj.AddPlayer(
-				lua.CheckReferenceValue[RRPlayer](l, 1),
+				lua.CheckReferenceValue[RRPlayer](l, 2),
 			)
 
 			return 0
@@ -73,7 +85,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 		"spawn": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Zone](l, 1)
 			obj.Spawn(
-				lua.CheckValue[DRObject](l, 1),
+				lua.CheckValue[DRObject](l, 2),
 			)
 
 			return 0
@@ -81,7 +93,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 		"sendToAll": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Zone](l, 1)
 			obj.SendToAll(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
@@ -89,11 +101,21 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 		"spawnInit": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Zone](l, 1)
 			obj.SpawnInit(
-				lua.CheckValue[DRObject](l, 1),
-				lua.CheckReferenceValue[datatypes.Vector3Float32](l, 2), func(v float32) *float32 { return &v }(float32(l.CheckNumber(3))),
+				lua.CheckValue[DRObject](l, 2),
+				lua.CheckReferenceValue[datatypes.Vector3Float32](l, 3), func(v float32) *float32 { return &v }(float32(l.CheckNumber(4))),
 			)
 
 			return 0
+		},
+		"loadNPCFromConfig": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[Zone](l, 1)
+			res0 := obj.LoadNPCFromConfig(string(l.CheckString(2)))
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("NPC"))
+			l.Push(ud)
+
+			return 1
 		},
 		"init": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Zone](l, 1)
@@ -121,7 +143,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 		},
 		"findEntityByID": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Zone](l, 1)
-			res0 := obj.FindEntityByID(uint16(l.CheckNumber(1)))
+			res0 := obj.FindEntityByID(uint16(l.CheckNumber(2)))
 			ud := l.NewUserData()
 			ud.Value = res0
 			l.SetMetatable(ud, l.GetTypeMetatable("DRObject"))
@@ -132,7 +154,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 		"giveID": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Zone](l, 1)
 			obj.GiveID(
-				lua.CheckValue[DRObject](l, 1),
+				lua.CheckValue[DRObject](l, 2),
 			)
 
 			return 0
@@ -147,4 +169,12 @@ func newLuaZone(l *lua2.LState) int {
 	l.SetMetatable(ud, l.GetTypeMetatable("Zone"))
 	l.Push(ud)
 	return 1
+}
+
+func (z *Zone) ToLua(l *lua2.LState) lua2.LValue {
+	ud := l.NewUserData()
+	ud.Value = z
+
+	l.SetMetatable(ud, l.GetTypeMetatable("Zone"))
+	return ud
 }

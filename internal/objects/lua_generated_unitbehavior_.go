@@ -39,7 +39,7 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 		"writeMoveUpdate": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[UnitBehavior](l, 1)
 			obj.WriteMoveUpdate(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
@@ -47,7 +47,7 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 		"writeInit": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[UnitBehavior](l, 1)
 			obj.WriteInit(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
@@ -55,7 +55,7 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 		"readUpdate": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[UnitBehavior](l, 1)
 			res0 := obj.ReadUpdate(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 			ud := l.NewUserData()
 			ud.Value = res0
@@ -66,19 +66,36 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 		},
 		"warp": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[UnitBehavior](l, 1)
-			obj.Warp(float32(l.CheckNumber(1)), float32(l.CheckNumber(2)), float32(l.CheckNumber(3)))
+			obj.Warp(float32(l.CheckNumber(2)), float32(l.CheckNumber(3)), float32(l.CheckNumber(4)))
 
 			return 0
 		},
 		"writeWarp": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[UnitBehavior](l, 1)
 			obj.WriteWarp(
-				lua.CheckReferenceValue[ClientEntityWriter](l, 1),
+				lua.CheckReferenceValue[ClientEntityWriter](l, 2),
 			)
 
 			return 0
 		},
-	}, luaMethodsComponent)
+		"toLua": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[UnitBehavior](l, 1)
+			res0 := obj.ToLua(
+				lua.CheckReferenceValue[lua2.LState](l, 2),
+			)
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.Push(ud)
+
+			return 1
+		},
+		"Component": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[UnitBehavior](l, 1)
+			l.Push(obj.Component.ToLua(l))
+			return 1
+		},
+	})
 }
 func newLuaUnitBehavior(l *lua2.LState) int {
 	obj := NewUnitBehavior(string(l.CheckString(1)))
@@ -88,4 +105,12 @@ func newLuaUnitBehavior(l *lua2.LState) int {
 	l.SetMetatable(ud, l.GetTypeMetatable("UnitBehavior"))
 	l.Push(ud)
 	return 1
+}
+
+func (u *UnitBehavior) ToLua(l *lua2.LState) lua2.LValue {
+	ud := l.NewUserData()
+	ud.Value = u
+
+	l.SetMetatable(ud, l.GetTypeMetatable("UnitBehavior"))
+	return ud
 }

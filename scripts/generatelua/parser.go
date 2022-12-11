@@ -127,6 +127,10 @@ type StructDef struct {
 	Constructor *FuncDef
 }
 
+func (s *StructDef) MemberInitial() string {
+	return strings.ToLower(s.Name[:1])
+}
+
 var (
 	typeDefs = make(map[string]*FuncDef)
 )
@@ -163,9 +167,9 @@ func addAllMemberFunctions(structs map[string]*StructDef, defs map[string]*FuncD
 	}
 }
 
-func getAllStructDefinitions(structs map[string]*StructDef) error {
+func getAllStructDefinitions(structs map[string]*StructDef, cwd string) error {
 	fset := token.NewFileSet()
-	pkgs, err := parser.ParseDir(fset, "internal/objects", nil, parser.AllErrors)
+	pkgs, err := parser.ParseDir(fset, cwd, nil, parser.AllErrors)
 	if err != nil {
 		return err
 	}

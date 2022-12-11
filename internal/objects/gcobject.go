@@ -33,6 +33,10 @@ type GCObject struct {
 	EntityHandler    EntityMessageHandler
 }
 
+func (g *GCObject) GCObject() *GCObject {
+	return g
+}
+
 func (g *GCObject) Activate(player *RRPlayer, u *UnitBehavior, responseID byte) {
 	CEWriter := NewClientEntityWriterWithByter()
 

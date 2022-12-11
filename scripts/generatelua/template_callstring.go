@@ -8,16 +8,17 @@ import (
 
 const (
 	//language=gotemplate
-	callStringTemplate = `{{ .Name }}(
-{{- range $i, $param := .Params -}}
+	callStringTemplate = `{{ .Func.Name }}(
+{{- range $i, $param := .Func.Params -}}
+	{{- $ii := add $i $.StartOffset -}}
 	{{- if isNumberType $param }}
-	{{- generateCheckNumber $param $i}},
+	{{- generateCheckNumber $param $ii}},
 	{{- else if isStringType $param }}
-	{{- generateCheckString $param $i}},
+	{{- generateCheckString $param $ii}},
 	{{- else if $param.IsPointer }}
-	lua.CheckReferenceValue[{{ $param.FullTypeString }}](l, {{ add $i 1 }}),
+	lua.CheckReferenceValue[{{ $param.FullTypeString }}](l, {{ add $ii 1 }}),
 	{{- else }}
-	lua.CheckValue[{{ $param.FullTypeString }}](l, {{ add $i 1 }}),
+	lua.CheckValue[{{ $param.FullTypeString }}](l, {{ add $ii 1 }}),
 	{{- end }}
 {{- end }}
 )`
@@ -47,7 +48,7 @@ func pointerWrapValue(param FuncParamDef, s string) string {
 	return fmt.Sprintf("func(v %s) *%s {return &v}(%s)", param.FullTypeString(), param.FullTypeString(), s)
 }
 
-func GenerateCallString(def FuncDef) string {
+func GenerateCallString(def FuncDef, startOffset int) string {
 	t := template.New("callStringTemplate")
 
 	t.Funcs(template.FuncMap{
@@ -66,7 +67,13 @@ func GenerateCallString(def FuncDef) string {
 
 	var b strings.Builder
 
-	err = t.Execute(&b, def)
+	err = t.Execute(&b, struct {
+		Func        FuncDef
+		StartOffset int
+	}{
+		Func:        def,
+		StartOffset: startOffset,
+	})
 
 	if err != nil {
 		panic(err)

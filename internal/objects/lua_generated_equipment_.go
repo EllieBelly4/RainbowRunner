@@ -29,7 +29,7 @@ func luaMethodsEquipment() map[string]lua2.LGFunction {
 		"writeInit": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Equipment](l, 1)
 			obj.WriteInit(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
@@ -37,12 +37,29 @@ func luaMethodsEquipment() map[string]lua2.LGFunction {
 		"writeManipulatorInit": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Equipment](l, 1)
 			obj.WriteManipulatorInit(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
 		},
-	}, luaMethodsItem)
+		"toLua": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[Equipment](l, 1)
+			res0 := obj.ToLua(
+				lua.CheckReferenceValue[lua2.LState](l, 2),
+			)
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.Push(ud)
+
+			return 1
+		},
+		"Item": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[Equipment](l, 1)
+			l.Push(obj.Item.ToLua(l))
+			return 1
+		},
+	})
 }
 func newLuaEquipment(l *lua2.LState) int {
 	obj := NewEquipment(string(l.CheckString(1)), string(l.CheckString(2)),
@@ -55,4 +72,12 @@ func newLuaEquipment(l *lua2.LState) int {
 	l.SetMetatable(ud, l.GetTypeMetatable("Equipment"))
 	l.Push(ud)
 	return 1
+}
+
+func (e *Equipment) ToLua(l *lua2.LState) lua2.LValue {
+	ud := l.NewUserData()
+	ud.Value = e
+
+	l.SetMetatable(ud, l.GetTypeMetatable("Equipment"))
+	return ud
 }

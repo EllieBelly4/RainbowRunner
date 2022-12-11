@@ -40,7 +40,7 @@ func luaMethodsPlayer() map[string]lua2.LGFunction {
 		"writeInit": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Player](l, 1)
 			obj.WriteInit(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
@@ -48,7 +48,7 @@ func luaMethodsPlayer() map[string]lua2.LGFunction {
 		"writeUpdate": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Player](l, 1)
 			obj.WriteUpdate(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
@@ -56,7 +56,7 @@ func luaMethodsPlayer() map[string]lua2.LGFunction {
 		"writeFullGCObject": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Player](l, 1)
 			obj.WriteFullGCObject(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
@@ -64,7 +64,7 @@ func luaMethodsPlayer() map[string]lua2.LGFunction {
 		"writeSynch": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Player](l, 1)
 			obj.WriteSynch(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
@@ -72,12 +72,35 @@ func luaMethodsPlayer() map[string]lua2.LGFunction {
 		"sendCreateNewPlayerEntity": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Player](l, 1)
 			obj.SendCreateNewPlayerEntity(
-				lua.CheckReferenceValue[RRPlayer](l, 1),
+				lua.CheckReferenceValue[RRPlayer](l, 2),
 			)
 
 			return 0
 		},
-	}, luaMethodsGCObject)
+		"changeZone": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[Player](l, 1)
+			obj.ChangeZone(string(l.CheckString(2)))
+
+			return 0
+		},
+		"toLua": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[Player](l, 1)
+			res0 := obj.ToLua(
+				lua.CheckReferenceValue[lua2.LState](l, 2),
+			)
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.Push(ud)
+
+			return 1
+		},
+		"GCObject": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[Player](l, 1)
+			l.Push(obj.GCObject.ToLua(l))
+			return 1
+		},
+	})
 }
 func newLuaPlayer(l *lua2.LState) int {
 	obj := NewPlayer(string(l.CheckString(1)))
@@ -87,4 +110,12 @@ func newLuaPlayer(l *lua2.LState) int {
 	l.SetMetatable(ud, l.GetTypeMetatable("Player"))
 	l.Push(ud)
 	return 1
+}
+
+func (p *Player) ToLua(l *lua2.LState) lua2.LValue {
+	ud := l.NewUserData()
+	ud.Value = p
+
+	l.SetMetatable(ud, l.GetTypeMetatable("Player"))
+	return ud
 }

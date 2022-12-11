@@ -28,7 +28,7 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 		"readUpdate": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[UnitContainer](l, 1)
 			res0 := obj.ReadUpdate(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 			ud := l.NewUserData()
 			ud.Value = res0
@@ -40,7 +40,7 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 		"writeFullGCObject": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[UnitContainer](l, 1)
 			obj.WriteFullGCObject(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
@@ -48,7 +48,7 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 		"setActiveItem": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[UnitContainer](l, 1)
 			obj.SetActiveItem(
-				lua.CheckValue[DRObject](l, 1),
+				lua.CheckValue[DRObject](l, 2),
 			)
 
 			return 0
@@ -56,7 +56,7 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 		"writeSetActiveItem": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[UnitContainer](l, 1)
 			obj.WriteSetActiveItem(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
@@ -64,7 +64,7 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 		"writeClearActiveItem": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[UnitContainer](l, 1)
 			obj.WriteClearActiveItem(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
@@ -72,7 +72,7 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 		"writeRemoveItem": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[UnitContainer](l, 1)
 			obj.WriteRemoveItem(
-				lua.CheckReferenceValue[byter.Byter](l, 1), uint32(l.CheckNumber(2)),
+				lua.CheckReferenceValue[byter.Byter](l, 2), uint32(l.CheckNumber(3)),
 			)
 
 			return 0
@@ -80,11 +80,11 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 		"writeAddItem": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[UnitContainer](l, 1)
 			obj.WriteAddItem(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
-				lua.CheckValue[DRObject](l, 2),
-				lua.CheckReferenceValue[Inventory](l, 3),
-				lua.CheckValue[byte](l, 4),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
+				lua.CheckValue[DRObject](l, 3),
+				lua.CheckReferenceValue[Inventory](l, 4),
 				lua.CheckValue[byte](l, 5),
+				lua.CheckValue[byte](l, 6),
 			)
 
 			return 0
@@ -92,7 +92,7 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 		"getInventoryByID": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[UnitContainer](l, 1)
 			res0 := obj.GetInventoryByID(
-				lua.CheckValue[byte](l, 1),
+				lua.CheckValue[byte](l, 2),
 			)
 			ud := l.NewUserData()
 			ud.Value = res0
@@ -101,7 +101,24 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 
 			return 1
 		},
-	}, luaMethodsComponent)
+		"toLua": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[UnitContainer](l, 1)
+			res0 := obj.ToLua(
+				lua.CheckReferenceValue[lua2.LState](l, 2),
+			)
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.Push(ud)
+
+			return 1
+		},
+		"Component": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[UnitContainer](l, 1)
+			l.Push(obj.Component.ToLua(l))
+			return 1
+		},
+	})
 }
 func newLuaUnitContainer(l *lua2.LState) int {
 	obj := NewUnitContainer(
@@ -114,4 +131,12 @@ func newLuaUnitContainer(l *lua2.LState) int {
 	l.SetMetatable(ud, l.GetTypeMetatable("UnitContainer"))
 	l.Push(ud)
 	return 1
+}
+
+func (u *UnitContainer) ToLua(l *lua2.LState) lua2.LValue {
+	ud := l.NewUserData()
+	ud.Value = u
+
+	l.SetMetatable(ud, l.GetTypeMetatable("UnitContainer"))
+	return ud
 }

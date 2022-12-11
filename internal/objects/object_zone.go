@@ -164,6 +164,18 @@ func (z *Zone) SpawnInit(entity DRObject, position *datatypes.Vector3Float32, ro
 	z.Spawn(entity)
 }
 
+func (z *Zone) LoadNPCFromConfig(id string) *NPC {
+	npcConfig, ok := z.BaseConfig.NPCs[strings.ToLower(id)]
+
+	if !ok {
+		log.Errorf("npc '%s' not found in zone '%s'", id, z.Name)
+		return nil
+	}
+
+	npc := NewNPCFromConfig(npcConfig)
+	return npc
+}
+
 func (z *Zone) Init() {
 	z.ReloadPathMap()
 
@@ -196,10 +208,7 @@ func (z *Zone) Init() {
 	//	L.SetGlobal("currentZone", ud)
 	//}
 
-	ud := state.NewUserData()
-	ud.Value = z
-	state.SetMetatable(ud, state.GetTypeMetatable("Zone"))
-	state.SetGlobal("currentZone", ud)
+	state.SetGlobal("currentZone", z.ToLua(state))
 
 	err = script.Execute(state)
 

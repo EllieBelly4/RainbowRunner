@@ -29,7 +29,7 @@ func luaMethodsEquipmentInventory() map[string]lua2.LGFunction {
 		"addChild": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[EquipmentInventory](l, 1)
 			obj.AddChild(
-				lua.CheckValue[DRObject](l, 1),
+				lua.CheckValue[DRObject](l, 2),
 			)
 
 			return 0
@@ -37,7 +37,7 @@ func luaMethodsEquipmentInventory() map[string]lua2.LGFunction {
 		"readUpdate": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[EquipmentInventory](l, 1)
 			res0 := obj.ReadUpdate(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 			ud := l.NewUserData()
 			ud.Value = res0
@@ -49,7 +49,7 @@ func luaMethodsEquipmentInventory() map[string]lua2.LGFunction {
 		"removeEquipmentBySlot": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[EquipmentInventory](l, 1)
 			res0 := obj.RemoveEquipmentBySlot(
-				lua.CheckValue[types.EquipmentSlot](l, 1),
+				lua.CheckValue[types.EquipmentSlot](l, 2),
 			)
 			ud := l.NewUserData()
 			ud.Value = res0
@@ -68,7 +68,24 @@ func luaMethodsEquipmentInventory() map[string]lua2.LGFunction {
 
 			return 1
 		},
-	}, luaMethodsComponent)
+		"toLua": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[EquipmentInventory](l, 1)
+			res0 := obj.ToLua(
+				lua.CheckReferenceValue[lua2.LState](l, 2),
+			)
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.Push(ud)
+
+			return 1
+		},
+		"Component": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[EquipmentInventory](l, 1)
+			l.Push(obj.Component.ToLua(l))
+			return 1
+		},
+	})
 }
 func newLuaEquipmentInventory(l *lua2.LState) int {
 	obj := NewEquipmentInventory(string(l.CheckString(1)),
@@ -80,4 +97,12 @@ func newLuaEquipmentInventory(l *lua2.LState) int {
 	l.SetMetatable(ud, l.GetTypeMetatable("EquipmentInventory"))
 	l.Push(ud)
 	return 1
+}
+
+func (e *EquipmentInventory) ToLua(l *lua2.LState) lua2.LValue {
+	ud := l.NewUserData()
+	ud.Value = e
+
+	l.SetMetatable(ud, l.GetTypeMetatable("EquipmentInventory"))
+	return ud
 }

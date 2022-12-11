@@ -65,12 +65,20 @@ func luaMethods{{ .Struct.Name }}() map[string]lua2.LGFunction {
 		{{- end }}
 		"{{ $method.NameCamelcase }}": {{ generateCallMemberFunction $struct $method }},
 {{- end }}
-	}, {{ .ExtendsString }})
+
+{{- range $i, $extend := .Extends }}
+		"{{ $extend.Name }}": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[{{ $struct.Name }}](l, 1)
+			l.Push(obj.{{ $extend.Name }}.ToLua(l))
+			return 1
+		},
+{{- end }}
+	})
 }
 
 {{- if .Struct.Constructor }}
 func newLua{{ .Struct.Name }}(l *lua2.LState) int {
-    obj := {{ generateCallString .Struct.Constructor }}
+    obj := {{ generateCallString .Struct.Constructor 0 }}
 	ud := l.NewUserData()
 	ud.Value = obj
 
@@ -79,5 +87,13 @@ func newLua{{ .Struct.Name }}(l *lua2.LState) int {
 	return 1
 }
 {{- end }}
+
+func ({{ .Struct.MemberInitial }} *{{ .Struct.Name }}) ToLua(l *lua2.LState) lua2.LValue {
+	ud := l.NewUserData()
+	ud.Value = {{ .Struct.MemberInitial }}
+
+	l.SetMetatable(ud, l.GetTypeMetatable("{{ .Struct.Name }}"))
+	return ud
+}
 `
 )

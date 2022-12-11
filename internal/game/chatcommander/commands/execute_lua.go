@@ -65,7 +65,7 @@ func ExecuteLua(player *objects.RRPlayer, args []string) {
 	}
 
 	state.Push(funky)
-	state.Push(objects.LuaPlayerToCustomData(state, player.CurrentCharacter))
+	state.Push(player.CurrentCharacter.ToLua(state))
 
 	argLen := len(args) - 1
 

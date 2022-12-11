@@ -28,12 +28,29 @@ func luaMethodsSkills() map[string]lua2.LGFunction {
 		"writeInit": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Skills](l, 1)
 			obj.WriteInit(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
 		},
-	}, luaMethodsComponent)
+		"toLua": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[Skills](l, 1)
+			res0 := obj.ToLua(
+				lua.CheckReferenceValue[lua2.LState](l, 2),
+			)
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.Push(ud)
+
+			return 1
+		},
+		"Component": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[Skills](l, 1)
+			l.Push(obj.Component.ToLua(l))
+			return 1
+		},
+	})
 }
 func newLuaSkills(l *lua2.LState) int {
 	obj := NewSkills(string(l.CheckString(1)))
@@ -43,4 +60,12 @@ func newLuaSkills(l *lua2.LState) int {
 	l.SetMetatable(ud, l.GetTypeMetatable("Skills"))
 	l.Push(ud)
 	return 1
+}
+
+func (s *Skills) ToLua(l *lua2.LState) lua2.LValue {
+	ud := l.NewUserData()
+	ud.Value = s
+
+	l.SetMetatable(ud, l.GetTypeMetatable("Skills"))
+	return ud
 }

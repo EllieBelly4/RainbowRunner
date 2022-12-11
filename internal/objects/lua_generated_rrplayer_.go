@@ -23,6 +23,18 @@ func registerLuaRRPlayer(state *lua2.LState) {
 
 func luaMethodsRRPlayer() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
+		"toLua": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[RRPlayer](l, 1)
+			res0 := obj.ToLua(
+				lua.CheckReferenceValue[lua2.LState](l, 2),
+			)
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.Push(ud)
+
+			return 1
+		},
 		"onZoneJoin": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[RRPlayer](l, 1)
 			obj.OnZoneJoin()
@@ -38,10 +50,18 @@ func luaMethodsRRPlayer() map[string]lua2.LGFunction {
 		"joinZone": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[RRPlayer](l, 1)
 			obj.JoinZone(
-				lua.CheckReferenceValue[Zone](l, 1),
+				lua.CheckReferenceValue[Zone](l, 2),
 			)
 
 			return 0
 		},
 	})
+}
+
+func (r *RRPlayer) ToLua(l *lua2.LState) lua2.LValue {
+	ud := l.NewUserData()
+	ud.Value = r
+
+	l.SetMetatable(ud, l.GetTypeMetatable("RRPlayer"))
+	return ud
 }

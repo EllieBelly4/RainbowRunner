@@ -23,7 +23,25 @@ func registerLuaComponent(state *lua2.LState) {
 }
 
 func luaMethodsComponent() map[string]lua2.LGFunction {
-	return luaMethodsExtend(map[string]lua2.LGFunction{}, luaMethodsGCObject)
+	return luaMethodsExtend(map[string]lua2.LGFunction{
+		"toLua": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[Component](l, 1)
+			res0 := obj.ToLua(
+				lua.CheckReferenceValue[lua2.LState](l, 2),
+			)
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.Push(ud)
+
+			return 1
+		},
+		"GCObject": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[Component](l, 1)
+			l.Push(obj.GCObject.ToLua(l))
+			return 1
+		},
+	})
 }
 func newLuaComponent(l *lua2.LState) int {
 	obj := NewComponent(string(l.CheckString(1)), string(l.CheckString(2)))
@@ -33,4 +51,12 @@ func newLuaComponent(l *lua2.LState) int {
 	l.SetMetatable(ud, l.GetTypeMetatable("Component"))
 	l.Push(ud)
 	return 1
+}
+
+func (c *Component) ToLua(l *lua2.LState) lua2.LValue {
+	ud := l.NewUserData()
+	ud.Value = c
+
+	l.SetMetatable(ud, l.GetTypeMetatable("Component"))
+	return ud
 }

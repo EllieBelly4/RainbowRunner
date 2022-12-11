@@ -30,12 +30,22 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 		"gcnativeType": luaGenericGetSetString[GCObject](func(v GCObject) *string { return &v.GCNativeType }),
 		"gclabel":      luaGenericGetSetString[GCObject](func(v GCObject) *string { return &v.GCLabel }),
 		"gctype":       luaGenericGetSetString[GCObject](func(v GCObject) *string { return &v.GCType }),
+		"gcobject": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[GCObject](l, 1)
+			res0 := obj.GCObject()
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("GCObject"))
+			l.Push(ud)
+
+			return 1
+		},
 		"activate": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[GCObject](l, 1)
 			obj.Activate(
-				lua.CheckReferenceValue[RRPlayer](l, 1),
-				lua.CheckReferenceValue[UnitBehavior](l, 2),
-				lua.CheckValue[byte](l, 3),
+				lua.CheckReferenceValue[RRPlayer](l, 2),
+				lua.CheckReferenceValue[UnitBehavior](l, 3),
+				lua.CheckValue[byte](l, 4),
 			)
 
 			return 0
@@ -50,14 +60,14 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 		"setOwner": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[GCObject](l, 1)
 			obj.SetOwner(
-				lua.CheckReferenceValue[connections.RRConn](l, 1),
+				lua.CheckReferenceValue[connections.RRConn](l, 2),
 			)
 
 			return 0
 		},
 		"removeChildAt": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[GCObject](l, 1)
-			obj.RemoveChildAt(int(l.CheckNumber(1)))
+			obj.RemoveChildAt(int(l.CheckNumber(2)))
 
 			return 0
 		},
@@ -81,7 +91,7 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 		"readUpdate": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[GCObject](l, 1)
 			res0 := obj.ReadUpdate(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 			ud := l.NewUserData()
 			ud.Value = res0
@@ -93,7 +103,7 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 		"writeSynch": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[GCObject](l, 1)
 			obj.WriteSynch(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
@@ -117,7 +127,7 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 		"writeInit": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[GCObject](l, 1)
 			obj.WriteInit(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
@@ -125,7 +135,7 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 		"writeUpdate": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[GCObject](l, 1)
 			obj.WriteUpdate(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
@@ -160,7 +170,7 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 		"writeFullGCObject": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[GCObject](l, 1)
 			obj.WriteFullGCObject(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
@@ -168,14 +178,14 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 		"addChild": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[GCObject](l, 1)
 			obj.AddChild(
-				lua.CheckValue[DRObject](l, 1),
+				lua.CheckValue[DRObject](l, 2),
 			)
 
 			return 0
 		},
 		"getChildByGCNativeType": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[GCObject](l, 1)
-			res0 := obj.GetChildByGCNativeType(string(l.CheckString(1)))
+			res0 := obj.GetChildByGCNativeType(string(l.CheckString(2)))
 			ud := l.NewUserData()
 			ud.Value = res0
 			l.SetMetatable(ud, l.GetTypeMetatable("DRObject"))
@@ -185,7 +195,7 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 		},
 		"getChildByGCType": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[GCObject](l, 1)
-			res0 := obj.GetChildByGCType(string(l.CheckString(1)))
+			res0 := obj.GetChildByGCType(string(l.CheckString(2)))
 			ud := l.NewUserData()
 			ud.Value = res0
 			l.SetMetatable(ud, l.GetTypeMetatable("DRObject"))
@@ -195,14 +205,14 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 		},
 		"setVersion": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[GCObject](l, 1)
-			obj.SetVersion(uint8(l.CheckNumber(1)))
+			obj.SetVersion(uint8(l.CheckNumber(2)))
 
 			return 0
 		},
 		"readData": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[GCObject](l, 1)
 			obj.ReadData(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
@@ -210,10 +220,22 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 		"walkChildren": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[GCObject](l, 1)
 			obj.WalkChildren(
-				lua.CheckValue[func(object DRObject)](l, 1),
+				lua.CheckValue[func(object DRObject)](l, 2),
 			)
 
 			return 0
+		},
+		"toLua": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[GCObject](l, 1)
+			res0 := obj.ToLua(
+				lua.CheckReferenceValue[lua2.LState](l, 2),
+			)
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.Push(ud)
+
+			return 1
 		},
 	})
 }
@@ -225,4 +247,12 @@ func newLuaGCObject(l *lua2.LState) int {
 	l.SetMetatable(ud, l.GetTypeMetatable("GCObject"))
 	l.Push(ud)
 	return 1
+}
+
+func (g *GCObject) ToLua(l *lua2.LState) lua2.LValue {
+	ud := l.NewUserData()
+	ud.Value = g
+
+	l.SetMetatable(ud, l.GetTypeMetatable("GCObject"))
+	return ud
 }

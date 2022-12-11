@@ -29,22 +29,22 @@ func luaMethodsManipulators() map[string]lua2.LGFunction {
 		"writeInit": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Manipulators](l, 1)
 			obj.WriteInit(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
 		},
 		"removeEquipmentByID": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Manipulators](l, 1)
-			obj.RemoveEquipmentByID(uint32(l.CheckNumber(1)))
+			obj.RemoveEquipmentByID(uint32(l.CheckNumber(2)))
 
 			return 0
 		},
 		"writeRemoveItem": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Manipulators](l, 1)
 			obj.WriteRemoveItem(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
-				lua.CheckValue[types.EquipmentSlot](l, 2),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
+				lua.CheckValue[types.EquipmentSlot](l, 3),
 			)
 
 			return 0
@@ -52,13 +52,30 @@ func luaMethodsManipulators() map[string]lua2.LGFunction {
 		"writeAddItem": func(l *lua2.LState) int {
 			obj := lua.CheckReferenceValue[Manipulators](l, 1)
 			obj.WriteAddItem(
-				lua.CheckReferenceValue[byter.Byter](l, 1),
-				lua.CheckReferenceValue[Equipment](l, 2),
+				lua.CheckReferenceValue[byter.Byter](l, 2),
+				lua.CheckReferenceValue[Equipment](l, 3),
 			)
 
 			return 0
 		},
-	}, luaMethodsComponent)
+		"toLua": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[Manipulators](l, 1)
+			res0 := obj.ToLua(
+				lua.CheckReferenceValue[lua2.LState](l, 2),
+			)
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.Push(ud)
+
+			return 1
+		},
+		"Component": func(l *lua2.LState) int {
+			obj := lua.CheckReferenceValue[Manipulators](l, 1)
+			l.Push(obj.Component.ToLua(l))
+			return 1
+		},
+	})
 }
 func newLuaManipulators(l *lua2.LState) int {
 	obj := NewManipulators(string(l.CheckString(1)))
@@ -68,4 +85,12 @@ func newLuaManipulators(l *lua2.LState) int {
 	l.SetMetatable(ud, l.GetTypeMetatable("Manipulators"))
 	l.Push(ud)
 	return 1
+}
+
+func (m *Manipulators) ToLua(l *lua2.LState) lua2.LValue {
+	ud := l.NewUserData()
+	ud.Value = m
+
+	l.SetMetatable(ud, l.GetTypeMetatable("Manipulators"))
+	return ud
 }
