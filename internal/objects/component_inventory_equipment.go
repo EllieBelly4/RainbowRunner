@@ -8,6 +8,7 @@ import (
 	"fmt"
 )
 
+//go:generate go run ../../scripts/generatelua -type=EquipmentInventory -extends=Component
 type EquipmentInventory struct {
 	*Component
 	Avatar *Avatar
@@ -209,7 +210,7 @@ func (n *EquipmentInventory) addAddItemMessage(CEWriter *ClientEntityWriter, ite
 	return nil
 }
 
-func NewInventoryEquipment(gcType string, avatar *Avatar) *EquipmentInventory {
+func NewEquipmentInventory(gcType string, avatar *Avatar) *EquipmentInventory {
 	component := NewComponent(gcType, "Equipment")
 
 	return &EquipmentInventory{

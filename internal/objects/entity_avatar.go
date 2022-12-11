@@ -9,6 +9,7 @@ import (
 	"fmt"
 )
 
+//go:generate go run ../../scripts/generatelua -type=Avatar -extends=GCObject
 type Avatar struct {
 	*GCObject
 	IsMoving           bool

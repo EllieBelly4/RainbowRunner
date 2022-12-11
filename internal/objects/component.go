@@ -4,6 +4,7 @@ import (
 	"strings"
 )
 
+//go:generate go run ../../scripts/generatelua -type=Component -extends=GCObject
 type Component struct {
 	*GCObject
 }

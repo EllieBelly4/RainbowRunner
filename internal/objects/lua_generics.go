@@ -5,7 +5,7 @@ import (
 	lua2 "github.com/yuin/gopher-lua"
 )
 
-func luaGenericGetSetNumber[T any, K byte | uint16 | uint32 | int8 | int16 | int32 | int | uint](
+func luaGenericGetSetNumber[T any, K byte | uint16 | uint32 | int8 | int16 | int32 | int | uint | float32 | float64](
 	valueCallback func(val T) *K,
 ) lua2.LGFunction {
 	return func(state *lua2.LState) int {

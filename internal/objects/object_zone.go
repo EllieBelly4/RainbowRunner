@@ -16,6 +16,7 @@ import (
 	"sync"
 )
 
+//go:generate go run ../../scripts/generatelua -type=Zone
 type Zone struct {
 	sync.RWMutex
 	Name       string
@@ -112,13 +113,6 @@ func (z *Zone) AddPlayer(player *RRPlayer) {
 	}
 }
 
-func (z *Zone) Spawn(entity DRObject) {
-	//Entities.RegisterAll(nil, entity)
-
-	z.AddEntity(nil, entity)
-	log.Infof("spawning entity '%s' in zone '%s'", entity.GetGCObject().GCType, z.Name)
-}
-
 func (z *Zone) setZone(entities ...DRObject) {
 	for _, entity := range entities {
 		entity.RREntityProperties().Zone = z
@@ -135,32 +129,34 @@ func (z *Zone) SendToAll(body *byter.Byter) {
 	}
 }
 
-func (z *Zone) SpawnInit(entity DRObject, position *datatypes.Vector3Float32, rotation *float32) {
+func (z *Zone) Spawn(entity DRObject, position datatypes.Vector3Float32, rotation float32) {
 	if _, ok := entity.(IWorldEntity); ok {
 		worldEntity := entity.(IWorldEntity).GetWorldEntity()
 
-		if position != nil {
-			worldEntity.WorldPosition = *position
-		}
-
-		if rotation != nil {
-			worldEntity.Rotation = *rotation
-		}
+		worldEntity.WorldPosition = position
+		worldEntity.Rotation = rotation
 	}
 
 	if unitBehavior, ok := entity.GetChildByGCNativeType("UnitBehavior").(IUnitBehavior); unitBehavior != nil && ok {
 		behavior := unitBehavior.GetUnitBehavior()
 
-		if position != nil {
-			behavior.Position = *position
-		}
-
-		if rotation != nil {
-			behavior.Rotation = *rotation
-		}
+		behavior.Position = position
+		behavior.Rotation = rotation
 	}
 
-	z.Spawn(entity)
+	z.AddEntity(nil, entity)
+}
+
+func (z *Zone) LoadNPCFromConfig(id string) *NPC {
+	npcConfig, ok := z.BaseConfig.NPCs[strings.ToLower(id)]
+
+	if !ok {
+		log.Errorf("npc '%s' not found in zone '%s'", id, z.Name)
+		return nil
+	}
+
+	npc := NewNPCFromConfig(npcConfig)
+	return npc
 }
 
 func (z *Zone) Init() {
@@ -188,7 +184,14 @@ func (z *Zone) Init() {
 	defer state.Close()
 
 	RegisterLuaGlobals(state)
-	AddZoneToState(state, z)
+	//func AddZoneToState(L *lua.LState, z *Zone) {
+	//	ud := L.NewUserData()
+	//	ud.Value = z
+	//	L.SetMetatable(ud, L.GetTypeMetatable(luaZoneTypeName))
+	//	L.SetGlobal("currentZone", ud)
+	//}
+
+	state.SetGlobal("currentZone", z.ToLua(state))
 
 	err = script.Execute(state)
 
@@ -252,5 +255,14 @@ func (z *Zone) GiveID(entity DRObject) {
 
 	if config.Config.Logging.LogIDs {
 		fmt.Printf("%d - %s(%s)\n", eProps.ID, entity.GetGCObject().GCType, entity.GetGCObject().GCLabel)
+	}
+}
+
+func NewZone(name string, id uint32) *Zone {
+	return &Zone{
+		Name:     name,
+		ID:       id,
+		entities: make(map[uint16]DRObject),
+		players:  make(map[uint16]*RRPlayer),
 	}
 }

@@ -9,6 +9,7 @@ import (
 	"fmt"
 )
 
+//go:generate go run ../../scripts/generatelua -type=UnitContainer -extends=Component
 type UnitContainer struct {
 	*Component
 

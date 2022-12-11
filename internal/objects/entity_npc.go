@@ -9,6 +9,7 @@ import (
 	"RainbowRunner/pkg/datatypes"
 )
 
+//go:generate go run ../../scripts/generateLua/ -type=NPC -extends=Unit
 type NPC struct {
 	*StockUnit
 
@@ -104,7 +105,7 @@ func CreateNPC(player *RRPlayer, zone *Zone, transform datatypes.Transform, npcT
 	modifiers := NewModifiers("modifiers")
 	npc.AddChild(modifiers)
 
-	zone.Spawn(npc)
+	zone.Spawn(npc, npc.WorldPosition, npc.Rotation)
 
 	//clientEntityWriter := NewClientEntityWriterWithByter()
 	//clientEntityWriter.BeginStream()

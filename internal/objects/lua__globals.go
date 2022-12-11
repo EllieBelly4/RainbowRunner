@@ -5,32 +5,21 @@ import (
 	lua "github.com/yuin/gopher-lua"
 )
 
+//go:generate go run ../../scripts/generateluaregistrations
 func RegisterLuaGlobals(state *lua.LState) {
-	registerLuaBit32(state)
-	registerLuaVector2(state)
-	registerLuaVector3(state)
-	registerLuaGCObject(state)
-	registerLuaDrobject(state)
-	registerLuaComponent(state)
-	registerLuaInventory(state)
-	registerLuaMerchant(state)
-	registerLuaMonsterBehavior2(state)
-	registerLuaWorldEntity(state)
-	registerLuaUnit(state)
-	registerLuaNPC(state)
-	registerLuaZone(state)
-	registerLuaPlayer(state)
-	registerLuaZonePortal(state)
+	registerAllLuaFunctions(state)
 }
 
-func luaMethodsExtend(child map[string]lua.LGFunction, parent func() map[string]lua.LGFunction) map[string]lua.LGFunction {
+func luaMethodsExtend(child map[string]lua.LGFunction, parents ...func() map[string]lua.LGFunction) map[string]lua.LGFunction {
 	newMethods := make(map[string]lua.LGFunction)
 
-	for key, value := range child {
-		newMethods[key] = value
+	for _, parent := range parents {
+		for key, value := range parent() {
+			newMethods[key] = value
+		}
 	}
 
-	for key, value := range parent() {
+	for key, value := range child {
 		newMethods[key] = value
 	}
 
