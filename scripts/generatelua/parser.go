@@ -1,139 +1,18 @@
 package main
 
 import (
+	"errors"
+	"fmt"
 	"go/ast"
 	"go/parser"
 	"go/token"
 	types "go/types"
 	"golang.org/x/tools/go/packages"
+	"regexp"
 	"strings"
 )
 
-// IValueType interface for ValueType
-type IValueType interface {
-	GetParamType() string
-	GetPackage() string
-}
-
-type ValueType struct {
-	Name      string
-	ParamType string
-	Package   string
-	IsPointer bool
-}
-
-// GetParamType method for ValueType that returns the ParamType
-func (v *ValueType) GetParamType() string {
-	return v.ParamType
-}
-
-// GetPackage method for ValueType that returns the Package
-func (v *ValueType) GetPackage() string {
-	return v.Package
-}
-
-type FuncParamDef struct {
-	ValueType
-}
-
-func (f *StructDef) FullTypeString() string {
-	return f.Name
-}
-
-func (f *StructDef) GetRequiredImports(importDefs map[string]*ImportDef) []*ImportDef {
-	imports := make(map[string]bool)
-
-	for _, method := range f.Methods {
-		if !method.IsExported {
-			continue
-		}
-
-		for _, param := range method.Params {
-			if param.Package != "" {
-				imports[param.Package] = true
-			}
-		}
-	}
-
-	if f.Constructor != nil {
-		for _, param := range f.Constructor.Params {
-			if param.Package != "" {
-				imports[param.Package] = true
-			}
-		}
-	}
-
-	for _, field := range f.Fields {
-		if !field.IsExported {
-			continue
-		}
-
-		// These types must be mirrored in the template or the imports will be wrong
-		if !IsStringType(field) ||
-			!IsNumberType(field) {
-			continue
-		}
-
-		if field.Package != "" {
-			imports[field.Package] = true
-		}
-	}
-
-	res := make([]*ImportDef, 0)
-
-	for name, _ := range imports {
-		res = append(res, importDefs[name])
-	}
-
-	return res
-}
-
-func (v *ValueType) FullTypeString() string {
-	s := ""
-
-	if v.Package != "" {
-		s = v.Package + "."
-	}
-
-	s += v.ParamType
-
-	return s
-}
-
-type FuncResultDef struct {
-	ValueType
-}
-
-type FieldDef struct {
-	ValueType
-	IsExported bool
-	field      *ast.Field
-}
-
-type FuncDef struct {
-	Name     string
-	funcType *ast.FuncType
-
-	Params     []*FuncParamDef
-	IsExported bool
-	Results    []*FuncResultDef
-}
-
-type StructDef struct {
-	Name        string
-	structType  *ast.StructType
-	Fields      []*FieldDef
-	Methods     []*FuncDef
-	Constructor *FuncDef
-}
-
-func (s *StructDef) MemberInitial() string {
-	return strings.ToLower(s.Name[:1])
-}
-
-var (
-	typeDefs = make(map[string]*FuncDef)
-)
+var ()
 
 func addAllMemberFunctions(structs map[string]*StructDef, defs map[string]*FuncDef, p *packages.Package) {
 	for _, f := range p.Syntax {
@@ -374,11 +253,6 @@ func addValueType(field *ast.Field, funcParamDef *ValueType) {
 	}
 }
 
-type ImportDef struct {
-	Name *string
-	Path string
-}
-
 func addAllImports(imports map[string]*ImportDef, p *packages.Package) {
 	for _, file := range p.Syntax {
 		for _, i := range file.Imports {
@@ -404,4 +278,51 @@ func addAllImports(imports map[string]*ImportDef, p *packages.Package) {
 			imports[key] = i2
 		}
 	}
+}
+
+func getExtendStructs(splitExtends []string, structs map[string]*StructDef) ([]*StructDef, error) {
+	ret := make([]*StructDef, 0)
+
+	for _, extend := range splitExtends {
+		if _, ok := structs[extend]; !ok {
+			return nil, errors.New(fmt.Sprintf("could not find type %s", extend))
+		}
+
+		ret = append(ret, structs[extend])
+	}
+
+	return ret, nil
+}
+
+func getExtendFuncs(splitExtends []string, funcDefs map[string]*FuncDef) ([]*FuncDef, error) {
+	if splitExtends == nil || len(splitExtends) == 0 {
+		return nil, nil
+	}
+
+	allFuncDefs := make([]*FuncDef, 0)
+
+	lgFuncRegex := regexp.MustCompile(`map\[string]lua[0-9]?.LGFunction`)
+
+	for _, extend := range splitExtends {
+		funcName := fmt.Sprintf("luaMethods%s", extend)
+
+		if _, ok := funcDefs[funcName]; !ok {
+			return nil, errors.New(fmt.Sprintf("could not find methods function to extend %s", funcName))
+		}
+
+		fun := funcDefs[funcName]
+
+		if len(fun.Results) != 1 {
+			return nil, errors.New(fmt.Sprintf("extend function %s does not return a table", funcName))
+		}
+
+		// TODO maybe do some proper type checking here
+		if !lgFuncRegex.Match([]byte(fun.Results[0].ParamType)) {
+			return nil, errors.New(fmt.Sprintf("extend function %s does not return a table", funcName))
+		}
+
+		allFuncDefs = append(allFuncDefs, fun)
+	}
+
+	return allFuncDefs, nil
 }

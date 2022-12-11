@@ -1,0 +1,35 @@
+package objects
+
+import lua2 "github.com/yuin/gopher-lua"
+
+func registerAllLuaFunctions(state *lua2.LState) {
+	registerLuaVector3(state)
+	registerLuaVector2(state)
+	registerLuaBit32(state)
+	registerLuaAvatar(state)
+	registerLuaAvatarMetrics(state)
+	registerLuaComponent(state)
+	registerLuaContainer(state)
+	registerLuaEquipment(state)
+	registerLuaEquipmentInventory(state)
+	registerLuaGCObject(state)
+	registerLuaInventory(state)
+	registerLuaItem(state)
+	registerLuaItemObject(state)
+	registerLuaManipulators(state)
+	registerLuaMerchant(state)
+	registerLuaMerchantInventory(state)
+	registerLuaModifiers(state)
+	registerLuaMonsterBehavior2(state)
+	registerLuaNPC(state)
+	registerLuaPlayer(state)
+	registerLuaRRPlayer(state)
+	registerLuaSkills(state)
+	registerLuaStockUnit(state)
+	registerLuaUnit(state)
+	registerLuaUnitBehavior(state)
+	registerLuaUnitContainer(state)
+	registerLuaWorldEntity(state)
+	registerLuaZone(state)
+	registerLuaZonePortal(state)
+}

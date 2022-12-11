@@ -2,16 +2,15 @@ package main
 
 import (
 	"RainbowRunner/internal/gosucks"
+	"RainbowRunner/scripts/common"
 	"bytes"
 	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
-	"go/format"
 	"golang.org/x/tools/go/packages"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 	"text/template"
 )
@@ -26,6 +25,7 @@ func main() {
 	fileStructs := make(map[string]*StructDef)
 	imports := make(map[string]*ImportDef)
 	allStructs := make(map[string]*StructDef)
+	funcDefs := make(map[string]*FuncDef)
 
 	splitExtends := strings.Split(*extends, ",")
 
@@ -58,7 +58,7 @@ func main() {
 		panic(err)
 	}
 
-	addAllMemberFunctions(fileStructs, typeDefs, pkg[0])
+	addAllMemberFunctions(fileStructs, funcDefs, pkg[0])
 
 	err = getAllStructDefinitions(allStructs, cwd)
 
@@ -66,7 +66,7 @@ func main() {
 		panic(err)
 	}
 
-	extendFuncs, err := getExtendFuncs(splitExtends, typeDefs)
+	extendFuncs, err := getExtendFuncs(splitExtends, funcDefs)
 
 	if err != nil {
 		panic(err)
@@ -96,53 +96,6 @@ func main() {
 	//fmt.Println(string(data))
 }
 
-func getExtendStructs(splitExtends []string, structs map[string]*StructDef) ([]*StructDef, error) {
-	ret := make([]*StructDef, 0)
-
-	for _, extend := range splitExtends {
-		if _, ok := structs[extend]; !ok {
-			return nil, errors.New(fmt.Sprintf("could not find type %s", extend))
-		}
-
-		ret = append(ret, structs[extend])
-	}
-
-	return ret, nil
-}
-
-func getExtendFuncs(splitExtends []string, funcDefs map[string]*FuncDef) ([]*FuncDef, error) {
-	if splitExtends == nil || len(splitExtends) == 0 {
-		return nil, nil
-	}
-
-	allFuncDefs := make([]*FuncDef, 0)
-
-	lgFuncRegex := regexp.MustCompile(`map\[string]lua[0-9]?.LGFunction`)
-
-	for _, extend := range splitExtends {
-		funcName := fmt.Sprintf("luaMethods%s", extend)
-
-		if _, ok := funcDefs[funcName]; !ok {
-			return nil, errors.New(fmt.Sprintf("could not find methods function to extend %s", funcName))
-		}
-
-		fun := funcDefs[funcName]
-
-		if len(fun.Results) != 1 {
-			return nil, errors.New(fmt.Sprintf("extend function %s does not return a table", funcName))
-		}
-
-		// TODO maybe do some proper type checking here
-		if !lgFuncRegex.Match([]byte(fun.Results[0].ParamType)) {
-			return nil, errors.New(fmt.Sprintf("extend function %s does not return a table", funcName))
-		}
-
-		allFuncDefs = append(allFuncDefs, fun)
-	}
-
-	return allFuncDefs, nil
-}
-
 func executeGenerate(splitExtends []*FuncDef, imports map[string]*ImportDef, structs map[string]*StructDef, typeNames []string, cwd string) error {
 	fmt.Printf("Running %s go on %s\n", os.Args[0], os.Getenv("GOFILE"))
 
@@ -157,7 +110,7 @@ func executeGenerate(splitExtends []*FuncDef, imports map[string]*ImportDef, str
 			return err
 		}
 
-		data = formatScript(data)
+		data = common.FormatScript(data)
 
 		outputFile := filepath.Join(cwd, fmt.Sprintf("lua_generated_%s.go", strings.ToLower(name)))
 
@@ -169,17 +122,6 @@ func executeGenerate(splitExtends []*FuncDef, imports map[string]*ImportDef, str
 	}
 
 	return nil
-}
-
-// formatScript formats a byte array of golang using go/format
-func formatScript(data []byte) []byte {
-	data, err := format.Source(data)
-
-	if err != nil {
-		panic(err)
-	}
-
-	return data
 }
 
 func generateWrapper(extends []*FuncDef, imports map[string]*ImportDef, def *StructDef) ([]byte, error) {
