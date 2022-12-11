@@ -7,32 +7,13 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"go/ast"
-	"go/parser"
-	"go/token"
+	"go/format"
+	"golang.org/x/tools/go/packages"
 	"os"
 	"path/filepath"
 	"strings"
 	"text/template"
 )
-
-type FieldDef struct {
-	Name  string
-	field *ast.Field
-}
-
-type FuncDef struct {
-	Name     string
-	funcType *ast.FuncType
-}
-
-type StructDef struct {
-	Name        string
-	structType  *ast.StructType
-	Fields      []*FieldDef
-	Methods     []*FuncDef
-	Constructor *FuncDef
-}
 
 var (
 	typeName = flag.String("type", "", "Comma separated list of types to generate lua wrappers for")
@@ -41,6 +22,7 @@ var (
 func main() {
 	flag.Parse()
 	structs := make(map[string]*StructDef)
+	imports := make(map[string]bool)
 
 	fileName := os.Getenv("GOFILE")
 	cwd, err := os.Getwd()
@@ -48,21 +30,29 @@ func main() {
 		panic(err)
 	}
 
-	extensionlessFileName := strings.Split(fileName, ".go")[0]
-
-	outputFile := filepath.Join(cwd, fmt.Sprintf("lua_%s_generated.go", extensionlessFileName))
 	filePath := filepath.Join(cwd, fileName)
 
 	//err := getAllStructDefinitions(structs)
-	err = parseFileStructDefinitionsFromString(structs, filePath)
+	pkg, err := packages.Load(&packages.Config{
+		Mode: packages.NeedName | packages.NeedTypes | packages.NeedTypesSizes | packages.NeedTypesInfo | packages.NeedSyntax,
+	}, cwd)
 
 	if err != nil {
 		panic(err)
 	}
 
+	err = parseFileStructDefinitionsFromString(pkg[0], structs, filePath)
+
+	if err != nil {
+		panic(err)
+	}
+
+	addAllMemberFunctions(structs, typeDefs, pkg[0])
+	addAllImports(imports, pkg[0])
+
 	typeNames := strings.Split(*typeName, ",")
 
-	err = executeGenerate(structs, typeNames, outputFile)
+	err = executeGenerate(imports, structs, typeNames, cwd)
 
 	if err != nil {
 		panic(err)
@@ -74,10 +64,19 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println(string(data))
+	gosucks.VAR(data)
+	//fmt.Println(string(data))
 }
 
-func executeGenerate(structs map[string]*StructDef, typeNames []string, outputFile string) error {
+func addAllImports(imports map[string]bool, p *packages.Package) {
+	for _, file := range p.Syntax {
+		for _, i := range file.Imports {
+			imports[i.Path.Value] = true
+		}
+	}
+}
+
+func executeGenerate(imports map[string]bool, structs map[string]*StructDef, typeNames []string, cwd string) error {
 	fmt.Printf("Running %s go on %s\n", os.Args[0], os.Getenv("GOFILE"))
 
 	for _, name := range typeNames {
@@ -85,11 +84,15 @@ func executeGenerate(structs map[string]*StructDef, typeNames []string, outputFi
 			return errors.New(fmt.Sprintf("could not find type %s in file", name))
 		}
 
-		data, err := generateWrapper(structs[name])
+		data, err := generateWrapper(imports, structs[name])
 
 		if err != nil {
 			return err
 		}
+
+		data = formatScript(data)
+
+		outputFile := filepath.Join(cwd, fmt.Sprintf("lua_%s_generated.go", strings.ToLower(name)))
 
 		err = os.WriteFile(outputFile, data, 0755)
 
@@ -101,15 +104,37 @@ func executeGenerate(structs map[string]*StructDef, typeNames []string, outputFi
 	return nil
 }
 
-func generateWrapper(def *StructDef) ([]byte, error) {
-	t, err := template.New("wrapper").Parse(templateString)
+// formatScript formats a byte array of golang using go/format
+func formatScript(data []byte) []byte {
+	data, err := format.Source(data)
+
+	if err != nil {
+		panic(err)
+	}
+
+	return data
+}
+
+func generateWrapper(imports map[string]bool, def *StructDef) ([]byte, error) {
+	t := template.New("wrapper")
+
+	t = t.Funcs(templateFuncMap)
+
+	t, err := t.Parse(templateString)
 
 	if err != nil {
 		return nil, err
 	}
 
+	importStrings := make([]string, 0)
+
+	for k, _ := range imports {
+		importStrings = append(importStrings, k)
+	}
+
 	data := &TemplateData{
-		Struct: def,
+		Struct:  def,
+		Imports: importStrings,
 	}
 
 	buf := &bytes.Buffer{}
@@ -121,135 +146,4 @@ func generateWrapper(def *StructDef) ([]byte, error) {
 	}
 
 	return buf.Bytes(), nil
-}
-
-func getAllStructDefinitions(structs map[string]*StructDef) error {
-	// Parse the package using the Go parser
-	fset := token.NewFileSet()
-	pkgs, err := parser.ParseDir(fset, "internal/objects", nil, parser.AllErrors)
-	if err != nil {
-		return err
-	}
-
-	// Iterate over the packages and their files
-	for _, pkg := range pkgs {
-		for _, file := range pkg.Files {
-			err := parseFileStructDefinitions(structs, file)
-			if err != nil {
-				return err
-			}
-		}
-	}
-	return nil
-}
-
-func parseFileStructDefinitionsFromString(structs map[string]*StructDef, file string) error {
-	fset := token.NewFileSet()
-	pkgs, err := parser.ParseFile(fset, file, nil, parser.AllErrors)
-	if err != nil {
-		return err
-	}
-
-	return parseFileStructDefinitions(structs, pkgs)
-}
-
-func parseFileStructDefinitions(structs map[string]*StructDef, file *ast.File) error {
-	// Iterate over the top-level declarations in the file
-	for _, decl := range file.Decls {
-		// Check if the declaration is a GenDecl
-		if genDecl, ok := decl.(*ast.GenDecl); ok {
-			// Check if the GenDecl is a type declaration
-			if genDecl.Tok == token.TYPE {
-				// Iterate over the GenDecl's specifications
-				for _, spec := range genDecl.Specs {
-					// Check if the specification is a type spec
-					if typeSpec, ok := spec.(*ast.TypeSpec); ok {
-						// Check if the type is a struct
-						if structType, ok := typeSpec.Type.(*ast.StructType); ok {
-							// Print the name of the struct
-							fmt.Printf("%s=========\n", typeSpec.Name)
-
-							structName := typeSpec.Name.String()
-							if _, ok := structs[structName]; !ok {
-								structs[structName] = &StructDef{
-									Name:       structName,
-									structType: structType,
-								}
-							}
-
-							// Iterate over the fields in the struct
-							for _, field := range structType.Fields.List {
-								if field.Names == nil {
-									//if star, ok := field.Type.(*ast.StarExpr); ok {
-									//	if starIdent, ok := star.X.(*ast.Ident); ok {
-									//		//fmt.Println(starIdent)
-									//	}
-									//}
-								} else {
-									if structs[structName].Fields == nil {
-										structs[structName].Fields = make([]*FieldDef, 0)
-									}
-
-									structs[structName].Fields = append(structs[structName].Fields, &FieldDef{
-										Name:  field.Names[0].String(),
-										field: field,
-									})
-
-									// Print the name and type of each field
-									//fmt.Printf("%s: %s\n", field.Names[0], field.Type)
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-
-		if funcDecl, ok := decl.(*ast.FuncDecl); ok {
-			funcName := funcDecl.Name.String()
-
-			funcDef := &FuncDef{
-				Name:     funcName,
-				funcType: funcDecl.Type,
-			}
-
-			if strings.HasPrefix(funcName, "New") {
-				structName := strings.Replace(funcName, "New", "", 1)
-
-				if _, ok := structs[structName]; !ok {
-					structs[structName] = &StructDef{
-						Name: structName,
-					}
-				}
-
-				structs[structName].Constructor = funcDef
-			}
-
-			if funcDecl.Recv == nil {
-				continue
-			}
-
-			structName := ""
-
-			if starExpr, ok := funcDecl.Recv.List[0].Type.(*ast.StarExpr); ok {
-				structName = starExpr.X.(*ast.Ident).Name
-			} else {
-				continue
-			}
-
-			if _, ok := structs[structName]; !ok {
-				structs[structName] = &StructDef{
-					Name: structName,
-				}
-			}
-
-			if structs[structName].Methods == nil {
-				structs[structName].Methods = make([]*FuncDef, 0)
-			}
-
-			structs[structName].Methods = append(structs[structName].Methods, funcDef)
-			gosucks.VAR(funcDecl)
-		}
-	}
-	return nil
 }
