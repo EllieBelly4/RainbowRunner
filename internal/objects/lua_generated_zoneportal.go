@@ -11,6 +11,14 @@ import (
 	lua2 "github.com/yuin/gopher-lua"
 )
 
+type IZonePortal interface {
+	GetZonePortal() *ZonePortal
+}
+
+func (z *ZonePortal) GetZonePortal() *ZonePortal {
+	return z
+}
+
 func registerLuaZonePortal(state *lua2.LState) {
 	// Ensure the import is referenced in code
 	_ = lua.LuaScript{}
@@ -25,48 +33,43 @@ func registerLuaZonePortal(state *lua2.LState) {
 
 func luaMethodsZonePortal() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
-		"unk0":   luaGenericGetSetString[ZonePortal](func(v ZonePortal) *string { return &v.Unk0 }),
-		"unk1":   luaGenericGetSetString[ZonePortal](func(v ZonePortal) *string { return &v.Unk1 }),
-		"width":  luaGenericGetSetNumber[ZonePortal, uint16](func(v ZonePortal) *uint16 { return &v.Width }),
-		"height": luaGenericGetSetNumber[ZonePortal, uint16](func(v ZonePortal) *uint16 { return &v.Height }),
-		"unk4":   luaGenericGetSetNumber[ZonePortal, uint32](func(v ZonePortal) *uint32 { return &v.Unk4 }),
-		"target": luaGenericGetSetString[ZonePortal](func(v ZonePortal) *string { return &v.Target }),
+		"unk0":   luaGenericGetSetString[IZonePortal](func(v IZonePortal) *string { return &v.GetZonePortal().Unk0 }),
+		"unk1":   luaGenericGetSetString[IZonePortal](func(v IZonePortal) *string { return &v.GetZonePortal().Unk1 }),
+		"width":  luaGenericGetSetNumber[IZonePortal](func(v IZonePortal) *uint16 { return &v.GetZonePortal().Width }),
+		"height": luaGenericGetSetNumber[IZonePortal](func(v IZonePortal) *uint16 { return &v.GetZonePortal().Height }),
+		"unk4":   luaGenericGetSetNumber[IZonePortal](func(v IZonePortal) *uint32 { return &v.GetZonePortal().Unk4 }),
+		"target": luaGenericGetSetString[IZonePortal](func(v IZonePortal) *string { return &v.GetZonePortal().Target }),
 		"activate": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[ZonePortal](l, 1)
+			objInterface := lua.CheckInterfaceValue[IZonePortal](l, 1)
+			obj := objInterface.GetZonePortal()
 			obj.Activate(
 				lua.CheckReferenceValue[RRPlayer](l, 2),
-				lua.CheckReferenceValue[UnitBehavior](l, 3),
-				lua.CheckValue[byte](l, 4),
+				lua.CheckReferenceValue[UnitBehavior](l, 3), byte(l.CheckNumber(4)),
 			)
 
 			return 0
 		},
 		"writeInit": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[ZonePortal](l, 1)
+			objInterface := lua.CheckInterfaceValue[IZonePortal](l, 1)
+			obj := objInterface.GetZonePortal()
 			obj.WriteInit(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
 		},
-		"toLua": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[ZonePortal](l, 1)
-			res0 := obj.ToLua(
-				lua.CheckReferenceValue[lua2.LState](l, 2),
-			)
+		"getZonePortal": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IZonePortal](l, 1)
+			obj := objInterface.GetZonePortal()
+			res0 := obj.GetZonePortal()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.SetMetatable(ud, l.GetTypeMetatable("ZonePortal"))
 			l.Push(ud)
 
 			return 1
 		},
-		"WorldEntity": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[ZonePortal](l, 1)
-			l.Push(obj.WorldEntity.ToLua(l))
-			return 1
-		},
-	})
+	}, luaMethodsWorldEntity)
 }
 func newLuaZonePortal(l *lua2.LState) int {
 	obj := NewZonePortal(string(l.CheckString(1)), string(l.CheckString(2)))

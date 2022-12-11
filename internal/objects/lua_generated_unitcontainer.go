@@ -11,6 +11,14 @@ import (
 	lua2 "github.com/yuin/gopher-lua"
 )
 
+type IUnitContainer interface {
+	GetUnitContainer() *UnitContainer
+}
+
+func (u *UnitContainer) GetUnitContainer() *UnitContainer {
+	return u
+}
+
 func registerLuaUnitContainer(state *lua2.LState) {
 	// Ensure the import is referenced in code
 	_ = lua.LuaScript{}
@@ -26,7 +34,8 @@ func registerLuaUnitContainer(state *lua2.LState) {
 func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
 		"readUpdate": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[UnitContainer](l, 1)
+			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
+			obj := objInterface.GetUnitContainer()
 			res0 := obj.ReadUpdate(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
@@ -38,7 +47,8 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 			return 1
 		},
 		"writeFullGCObject": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[UnitContainer](l, 1)
+			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
+			obj := objInterface.GetUnitContainer()
 			obj.WriteFullGCObject(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
@@ -46,7 +56,8 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 			return 0
 		},
 		"setActiveItem": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[UnitContainer](l, 1)
+			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
+			obj := objInterface.GetUnitContainer()
 			obj.SetActiveItem(
 				lua.CheckValue[DRObject](l, 2),
 			)
@@ -54,7 +65,8 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 			return 0
 		},
 		"writeSetActiveItem": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[UnitContainer](l, 1)
+			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
+			obj := objInterface.GetUnitContainer()
 			obj.WriteSetActiveItem(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
@@ -62,7 +74,8 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 			return 0
 		},
 		"writeClearActiveItem": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[UnitContainer](l, 1)
+			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
+			obj := objInterface.GetUnitContainer()
 			obj.WriteClearActiveItem(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
@@ -70,7 +83,8 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 			return 0
 		},
 		"writeRemoveItem": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[UnitContainer](l, 1)
+			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
+			obj := objInterface.GetUnitContainer()
 			obj.WriteRemoveItem(
 				lua.CheckReferenceValue[byter.Byter](l, 2), uint32(l.CheckNumber(3)),
 			)
@@ -78,22 +92,20 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 			return 0
 		},
 		"writeAddItem": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[UnitContainer](l, 1)
+			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
+			obj := objInterface.GetUnitContainer()
 			obj.WriteAddItem(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 				lua.CheckValue[DRObject](l, 3),
-				lua.CheckReferenceValue[Inventory](l, 4),
-				lua.CheckValue[byte](l, 5),
-				lua.CheckValue[byte](l, 6),
+				lua.CheckReferenceValue[Inventory](l, 4), byte(l.CheckNumber(5)), byte(l.CheckNumber(6)),
 			)
 
 			return 0
 		},
 		"getInventoryByID": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[UnitContainer](l, 1)
-			res0 := obj.GetInventoryByID(
-				lua.CheckValue[byte](l, 2),
-			)
+			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
+			obj := objInterface.GetUnitContainer()
+			res0 := obj.GetInventoryByID(byte(l.CheckNumber(2)))
 			ud := l.NewUserData()
 			ud.Value = res0
 			l.SetMetatable(ud, l.GetTypeMetatable("Inventory"))
@@ -101,24 +113,18 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 
 			return 1
 		},
-		"toLua": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[UnitContainer](l, 1)
-			res0 := obj.ToLua(
-				lua.CheckReferenceValue[lua2.LState](l, 2),
-			)
+		"getUnitContainer": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
+			obj := objInterface.GetUnitContainer()
+			res0 := obj.GetUnitContainer()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.SetMetatable(ud, l.GetTypeMetatable("UnitContainer"))
 			l.Push(ud)
 
 			return 1
 		},
-		"Component": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[UnitContainer](l, 1)
-			l.Push(obj.Component.ToLua(l))
-			return 1
-		},
-	})
+	}, luaMethodsComponent)
 }
 func newLuaUnitContainer(l *lua2.LState) int {
 	obj := NewUnitContainer(

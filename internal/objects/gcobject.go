@@ -100,10 +100,6 @@ func (g *GCObject) Tick() {
 
 }
 
-func (g *GCObject) GetGCObject() *GCObject {
-	return g
-}
-
 func (g *GCObject) WriteInit(b *byter.Byter) {
 	fmt.Printf("GCObject init for %s (%s: %s) not implemented but ignoring\n", g.GCLabel, g.GCType, g.GCNativeType)
 }
@@ -355,4 +351,20 @@ func ReadData(b *byter.Byter) DRObject {
 	gcObject.ReadData(b)
 
 	return gcObject
+}
+
+func (g *GCObject) RemoveChildrenByGCNativeType(gcNativeType string) int {
+	toRemove := make([]int, 0, 0)
+
+	for i, child := range g.Children() {
+		if child.GetGCObject().GCNativeType == gcNativeType {
+			toRemove = append(toRemove, i)
+		}
+	}
+
+	for _, i := range toRemove {
+		g.RemoveChildAt(i)
+	}
+
+	return len(toRemove)
 }

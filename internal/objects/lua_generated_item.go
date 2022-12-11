@@ -12,6 +12,14 @@ import (
 	lua2 "github.com/yuin/gopher-lua"
 )
 
+type IItem interface {
+	GetItem() *Item
+}
+
+func (i *Item) GetItem() *Item {
+	return i
+}
+
 func registerLuaItem(state *lua2.LState) {
 	// Ensure the import is referenced in code
 	_ = lua.LuaScript{}
@@ -26,11 +34,12 @@ func registerLuaItem(state *lua2.LState) {
 
 func luaMethodsItem() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
-		"modCount": luaGenericGetSetNumber[Item, int](func(v Item) *int { return &v.ModCount }),
-		"mod":      luaGenericGetSetString[Item](func(v Item) *string { return &v.Mod }),
-		"index":    luaGenericGetSetNumber[Item, int](func(v Item) *int { return &v.Index }),
+		"modCount": luaGenericGetSetNumber[IItem](func(v IItem) *int { return &v.GetItem().ModCount }),
+		"mod":      luaGenericGetSetString[IItem](func(v IItem) *string { return &v.GetItem().Mod }),
+		"index":    luaGenericGetSetNumber[IItem](func(v IItem) *int { return &v.GetItem().Index }),
 		"setInventoryPosition": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Item](l, 1)
+			objInterface := lua.CheckInterfaceValue[IItem](l, 1)
+			obj := objInterface.GetItem()
 			obj.SetInventoryPosition(
 				lua.CheckValue[datatypes.Vector2](l, 2),
 			)
@@ -38,31 +47,26 @@ func luaMethodsItem() map[string]lua2.LGFunction {
 			return 0
 		},
 		"writeInit": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Item](l, 1)
+			objInterface := lua.CheckInterfaceValue[IItem](l, 1)
+			obj := objInterface.GetItem()
 			obj.WriteInit(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
 		},
-		"toLua": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Item](l, 1)
-			res0 := obj.ToLua(
-				lua.CheckReferenceValue[lua2.LState](l, 2),
-			)
+		"getItem": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IItem](l, 1)
+			obj := objInterface.GetItem()
+			res0 := obj.GetItem()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.SetMetatable(ud, l.GetTypeMetatable("Item"))
 			l.Push(ud)
 
 			return 1
 		},
-		"GCObject": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Item](l, 1)
-			l.Push(obj.GCObject.ToLua(l))
-			return 1
-		},
-	})
+	}, luaMethodsGCObject)
 }
 func newLuaItem(l *lua2.LState) int {
 	obj := NewItem(string(l.CheckString(1)),

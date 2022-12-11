@@ -11,6 +11,14 @@ import (
 	lua2 "github.com/yuin/gopher-lua"
 )
 
+type ISkills interface {
+	GetSkills() *Skills
+}
+
+func (s *Skills) GetSkills() *Skills {
+	return s
+}
+
 func registerLuaSkills(state *lua2.LState) {
 	// Ensure the import is referenced in code
 	_ = lua.LuaScript{}
@@ -26,31 +34,26 @@ func registerLuaSkills(state *lua2.LState) {
 func luaMethodsSkills() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
 		"writeInit": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Skills](l, 1)
+			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
+			obj := objInterface.GetSkills()
 			obj.WriteInit(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
 		},
-		"toLua": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Skills](l, 1)
-			res0 := obj.ToLua(
-				lua.CheckReferenceValue[lua2.LState](l, 2),
-			)
+		"getSkills": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
+			obj := objInterface.GetSkills()
+			res0 := obj.GetSkills()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.SetMetatable(ud, l.GetTypeMetatable("Skills"))
 			l.Push(ud)
 
 			return 1
 		},
-		"Component": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Skills](l, 1)
-			l.Push(obj.Component.ToLua(l))
-			return 1
-		},
-	})
+	}, luaMethodsComponent)
 }
 func newLuaSkills(l *lua2.LState) int {
 	obj := NewSkills(string(l.CheckString(1)))

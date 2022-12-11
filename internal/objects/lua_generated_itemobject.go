@@ -11,6 +11,14 @@ import (
 	lua2 "github.com/yuin/gopher-lua"
 )
 
+type IItemObject interface {
+	GetItemObject() *ItemObject
+}
+
+func (i *ItemObject) GetItemObject() *ItemObject {
+	return i
+}
+
 func registerLuaItemObject(state *lua2.LState) {
 	// Ensure the import is referenced in code
 	_ = lua.LuaScript{}
@@ -26,7 +34,8 @@ func registerLuaItemObject(state *lua2.LState) {
 func luaMethodsItemObject() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
 		"type": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[ItemObject](l, 1)
+			objInterface := lua.CheckInterfaceValue[IItemObject](l, 1)
+			obj := objInterface.GetItemObject()
 			res0 := obj.Type()
 			ud := l.NewUserData()
 			ud.Value = res0
@@ -36,31 +45,26 @@ func luaMethodsItemObject() map[string]lua2.LGFunction {
 			return 1
 		},
 		"writeInit": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[ItemObject](l, 1)
+			objInterface := lua.CheckInterfaceValue[IItemObject](l, 1)
+			obj := objInterface.GetItemObject()
 			obj.WriteInit(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
 		},
-		"toLua": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[ItemObject](l, 1)
-			res0 := obj.ToLua(
-				lua.CheckReferenceValue[lua2.LState](l, 2),
-			)
+		"getItemObject": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IItemObject](l, 1)
+			obj := objInterface.GetItemObject()
+			res0 := obj.GetItemObject()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.SetMetatable(ud, l.GetTypeMetatable("ItemObject"))
 			l.Push(ud)
 
 			return 1
 		},
-		"WorldEntity": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[ItemObject](l, 1)
-			l.Push(obj.WorldEntity.ToLua(l))
-			return 1
-		},
-	})
+	}, luaMethodsWorldEntity)
 }
 func newLuaItemObject(l *lua2.LState) int {
 	obj := NewItemObject(string(l.CheckString(1)),

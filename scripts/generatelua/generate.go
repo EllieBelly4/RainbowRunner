@@ -66,21 +66,21 @@ func main() {
 		panic(err)
 	}
 
-	//extendFuncs, err := getExtendFuncs(splitExtends, typeDefs)
-	//
-	//if err != nil {
-	//	panic(err)
-	//}
-
-	extendStructs, err := getExtendStructs(splitExtends, allStructs)
+	extendFuncs, err := getExtendFuncs(splitExtends, typeDefs)
 
 	if err != nil {
 		panic(err)
 	}
 
+	//extendStructs, err := getExtendStructs(splitExtends, allStructs)
+	//
+	//if err != nil {
+	//	panic(err)
+	//}
+
 	typeNames := strings.Split(*typeName, ",")
 
-	err = executeGenerate(extendStructs, imports, fileStructs, typeNames, cwd)
+	err = executeGenerate(extendFuncs, imports, fileStructs, typeNames, cwd)
 
 	if err != nil {
 		panic(err)
@@ -143,7 +143,7 @@ func getExtendFuncs(splitExtends []string, funcDefs map[string]*FuncDef) ([]*Fun
 	return allFuncDefs, nil
 }
 
-func executeGenerate(splitExtends []*StructDef, imports map[string]*ImportDef, structs map[string]*StructDef, typeNames []string, cwd string) error {
+func executeGenerate(splitExtends []*FuncDef, imports map[string]*ImportDef, structs map[string]*StructDef, typeNames []string, cwd string) error {
 	fmt.Printf("Running %s go on %s\n", os.Args[0], os.Getenv("GOFILE"))
 
 	for _, name := range typeNames {
@@ -159,7 +159,7 @@ func executeGenerate(splitExtends []*StructDef, imports map[string]*ImportDef, s
 
 		data = formatScript(data)
 
-		outputFile := filepath.Join(cwd, fmt.Sprintf("lua_generated_%s_.go", strings.ToLower(name)))
+		outputFile := filepath.Join(cwd, fmt.Sprintf("lua_generated_%s.go", strings.ToLower(name)))
 
 		err = os.WriteFile(outputFile, data, 0755)
 
@@ -182,7 +182,7 @@ func formatScript(data []byte) []byte {
 	return data
 }
 
-func generateWrapper(extends []*StructDef, imports map[string]*ImportDef, def *StructDef) ([]byte, error) {
+func generateWrapper(extends []*FuncDef, imports map[string]*ImportDef, def *StructDef) ([]byte, error) {
 	t := template.New("wrapper")
 
 	t = t.Funcs(templateFuncMap)

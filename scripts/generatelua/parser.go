@@ -143,6 +143,10 @@ func addAllMemberFunctions(structs map[string]*StructDef, defs map[string]*FuncD
 
 				defs[funcDef.Name] = funcDef
 
+				if funcDef.Name == "ToLua" {
+					continue
+				}
+
 				if funcDecl.Recv != nil {
 					for _, field := range funcDecl.Recv.List {
 						if field.Names != nil {

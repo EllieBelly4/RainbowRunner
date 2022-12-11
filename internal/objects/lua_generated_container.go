@@ -11,6 +11,14 @@ import (
 	lua2 "github.com/yuin/gopher-lua"
 )
 
+type IContainer interface {
+	GetContainer() *Container
+}
+
+func (c *Container) GetContainer() *Container {
+	return c
+}
+
 func registerLuaContainer(state *lua2.LState) {
 	// Ensure the import is referenced in code
 	_ = lua.LuaScript{}
@@ -26,31 +34,26 @@ func registerLuaContainer(state *lua2.LState) {
 func luaMethodsContainer() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
 		"writeInit": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Container](l, 1)
+			objInterface := lua.CheckInterfaceValue[IContainer](l, 1)
+			obj := objInterface.GetContainer()
 			obj.WriteInit(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
 		},
-		"toLua": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Container](l, 1)
-			res0 := obj.ToLua(
-				lua.CheckReferenceValue[lua2.LState](l, 2),
-			)
+		"getContainer": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IContainer](l, 1)
+			obj := objInterface.GetContainer()
+			res0 := obj.GetContainer()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.SetMetatable(ud, l.GetTypeMetatable("Container"))
 			l.Push(ud)
 
 			return 1
 		},
-		"Component": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Container](l, 1)
-			l.Push(obj.Component.ToLua(l))
-			return 1
-		},
-	})
+	}, luaMethodsComponent)
 }
 func newLuaContainer(l *lua2.LState) int {
 	obj := NewContainer(string(l.CheckString(1)), string(l.CheckString(2)))

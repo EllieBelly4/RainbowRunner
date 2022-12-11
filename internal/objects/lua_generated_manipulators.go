@@ -12,6 +12,14 @@ import (
 	lua2 "github.com/yuin/gopher-lua"
 )
 
+type IManipulators interface {
+	GetManipulators() *Manipulators
+}
+
+func (m *Manipulators) GetManipulators() *Manipulators {
+	return m
+}
+
 func registerLuaManipulators(state *lua2.LState) {
 	// Ensure the import is referenced in code
 	_ = lua.LuaScript{}
@@ -27,7 +35,8 @@ func registerLuaManipulators(state *lua2.LState) {
 func luaMethodsManipulators() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
 		"writeInit": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Manipulators](l, 1)
+			objInterface := lua.CheckInterfaceValue[IManipulators](l, 1)
+			obj := objInterface.GetManipulators()
 			obj.WriteInit(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
@@ -35,13 +44,15 @@ func luaMethodsManipulators() map[string]lua2.LGFunction {
 			return 0
 		},
 		"removeEquipmentByID": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Manipulators](l, 1)
+			objInterface := lua.CheckInterfaceValue[IManipulators](l, 1)
+			obj := objInterface.GetManipulators()
 			obj.RemoveEquipmentByID(uint32(l.CheckNumber(2)))
 
 			return 0
 		},
 		"writeRemoveItem": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Manipulators](l, 1)
+			objInterface := lua.CheckInterfaceValue[IManipulators](l, 1)
+			obj := objInterface.GetManipulators()
 			obj.WriteRemoveItem(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 				lua.CheckValue[types.EquipmentSlot](l, 3),
@@ -50,7 +61,8 @@ func luaMethodsManipulators() map[string]lua2.LGFunction {
 			return 0
 		},
 		"writeAddItem": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Manipulators](l, 1)
+			objInterface := lua.CheckInterfaceValue[IManipulators](l, 1)
+			obj := objInterface.GetManipulators()
 			obj.WriteAddItem(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 				lua.CheckReferenceValue[Equipment](l, 3),
@@ -58,24 +70,18 @@ func luaMethodsManipulators() map[string]lua2.LGFunction {
 
 			return 0
 		},
-		"toLua": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Manipulators](l, 1)
-			res0 := obj.ToLua(
-				lua.CheckReferenceValue[lua2.LState](l, 2),
-			)
+		"getManipulators": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IManipulators](l, 1)
+			obj := objInterface.GetManipulators()
+			res0 := obj.GetManipulators()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.SetMetatable(ud, l.GetTypeMetatable("Manipulators"))
 			l.Push(ud)
 
 			return 1
 		},
-		"Component": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Manipulators](l, 1)
-			l.Push(obj.Component.ToLua(l))
-			return 1
-		},
-	})
+	}, luaMethodsComponent)
 }
 func newLuaManipulators(l *lua2.LState) int {
 	obj := NewManipulators(string(l.CheckString(1)))

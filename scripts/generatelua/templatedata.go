@@ -9,7 +9,7 @@ import (
 type TemplateData struct {
 	Struct  *StructDef
 	Imports []*ImportDef
-	Extends []*StructDef
+	Extends []*FuncDef
 }
 
 func (t *TemplateData) StructTypeNameVar() string {
@@ -23,7 +23,8 @@ func Add(a, b int) int {
 func IsNumberType(t IValueType) bool {
 	tString := t.GetParamType()
 
-	if tString == "int" ||
+	if tString == "byte" ||
+		tString == "int" ||
 		tString == "int8" ||
 		tString == "int16" ||
 		tString == "int32" ||
@@ -89,16 +90,16 @@ func (i *ImportDef) ImportString() string {
 	return s
 }
 
-//func (t *TemplateData) ExtendsString() string {
-//	var s strings.Builder
-//
-//	for i, f := range t.Extends {
-//		if i > 0 {
-//			s.WriteString(", ")
-//		}
-//
-//		s.WriteString(f.Name)
-//	}
-//
-//	return s.String()
-//}
+func (t *TemplateData) ExtendsString() string {
+	var s strings.Builder
+
+	for i, f := range t.Extends {
+		if i > 0 {
+			s.WriteString(", ")
+		}
+
+		s.WriteString(f.Name)
+	}
+
+	return s.String()
+}

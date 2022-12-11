@@ -27,6 +27,14 @@ import (
 	{{- end }}
 )
 
+type I{{ .Struct.Name }} interface {
+	Get{{ .Struct.Name }}() *{{ .Struct.Name }}
+}
+
+func ({{ .Struct.MemberInitial }} *{{ .Struct.Name }}) Get{{ .Struct.Name }}() *{{ .Struct.Name }} {
+	return {{ .Struct.MemberInitial }}
+}
+
 func registerLua{{ .Struct.Name }}(state *lua2.LState) {
 	// Ensure the import is referenced in code
 	_ = lua.LuaScript{}
@@ -51,12 +59,12 @@ func luaMethods{{ .Struct.Name }}() map[string]lua2.LGFunction {
 		{{- end }}
 
 		{{- if isStringType $field }}
-		"{{ $field.NameCamelcase }}": luaGenericGetSetString[{{ $struct.FullTypeString }}](func(v {{ $struct.FullTypeString }}) *string { return &v.{{ $field.Name }} }),
+		"{{ $field.NameCamelcase }}": luaGenericGetSetString[I{{ $struct.Name }}](func(v I{{ $struct.Name }}) *string { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
 		{{- else if isNumberType $field }}
-		"{{ $field.NameCamelcase }}": luaGenericGetSetNumber[{{ $struct.FullTypeString }}, {{ $field.FullTypeString }}](func(v {{ $struct.FullTypeString }}) *{{ $field.FullTypeString }} { return &v.{{ $field.Name }} }),
+		"{{ $field.NameCamelcase }}": luaGenericGetSetNumber[I{{ $struct.Name }}](func(v I{{ $struct.Name }}) *{{ $field.FullTypeString }} { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
 		{{- end }}
 	{{- end }}
-{{- end -}}
+{{- end }}
 
 {{- $struct := .Struct }}
 {{- range $i, $method := .Struct.Methods }}
@@ -66,14 +74,7 @@ func luaMethods{{ .Struct.Name }}() map[string]lua2.LGFunction {
 		"{{ $method.NameCamelcase }}": {{ generateCallMemberFunction $struct $method }},
 {{- end }}
 
-{{- range $i, $extend := .Extends }}
-		"{{ $extend.Name }}": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[{{ $struct.Name }}](l, 1)
-			l.Push(obj.{{ $extend.Name }}.ToLua(l))
-			return 1
-		},
-{{- end }}
-	})
+	}, {{ .ExtendsString }})
 }
 
 {{- if .Struct.Constructor }}

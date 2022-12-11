@@ -11,6 +11,14 @@ import (
 	lua2 "github.com/yuin/gopher-lua"
 )
 
+type IPlayer interface {
+	GetPlayer() *Player
+}
+
+func (p *Player) GetPlayer() *Player {
+	return p
+}
+
 func registerLuaPlayer(state *lua2.LState) {
 	// Ensure the import is referenced in code
 	_ = lua.LuaScript{}
@@ -25,10 +33,11 @@ func registerLuaPlayer(state *lua2.LState) {
 
 func luaMethodsPlayer() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
-		"name":      luaGenericGetSetString[Player](func(v Player) *string { return &v.Name }),
-		"currentHP": luaGenericGetSetNumber[Player, uint32](func(v Player) *uint32 { return &v.CurrentHP }),
+		"name":      luaGenericGetSetString[IPlayer](func(v IPlayer) *string { return &v.GetPlayer().Name }),
+		"currentHP": luaGenericGetSetNumber[IPlayer](func(v IPlayer) *uint32 { return &v.GetPlayer().CurrentHP }),
 		"type": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Player](l, 1)
+			objInterface := lua.CheckInterfaceValue[IPlayer](l, 1)
+			obj := objInterface.GetPlayer()
 			res0 := obj.Type()
 			ud := l.NewUserData()
 			ud.Value = res0
@@ -38,7 +47,8 @@ func luaMethodsPlayer() map[string]lua2.LGFunction {
 			return 1
 		},
 		"writeInit": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Player](l, 1)
+			objInterface := lua.CheckInterfaceValue[IPlayer](l, 1)
+			obj := objInterface.GetPlayer()
 			obj.WriteInit(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
@@ -46,7 +56,8 @@ func luaMethodsPlayer() map[string]lua2.LGFunction {
 			return 0
 		},
 		"writeUpdate": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Player](l, 1)
+			objInterface := lua.CheckInterfaceValue[IPlayer](l, 1)
+			obj := objInterface.GetPlayer()
 			obj.WriteUpdate(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
@@ -54,7 +65,8 @@ func luaMethodsPlayer() map[string]lua2.LGFunction {
 			return 0
 		},
 		"writeFullGCObject": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Player](l, 1)
+			objInterface := lua.CheckInterfaceValue[IPlayer](l, 1)
+			obj := objInterface.GetPlayer()
 			obj.WriteFullGCObject(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
@@ -62,7 +74,8 @@ func luaMethodsPlayer() map[string]lua2.LGFunction {
 			return 0
 		},
 		"writeSynch": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Player](l, 1)
+			objInterface := lua.CheckInterfaceValue[IPlayer](l, 1)
+			obj := objInterface.GetPlayer()
 			obj.WriteSynch(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
@@ -70,7 +83,8 @@ func luaMethodsPlayer() map[string]lua2.LGFunction {
 			return 0
 		},
 		"sendCreateNewPlayerEntity": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Player](l, 1)
+			objInterface := lua.CheckInterfaceValue[IPlayer](l, 1)
+			obj := objInterface.GetPlayer()
 			obj.SendCreateNewPlayerEntity(
 				lua.CheckReferenceValue[RRPlayer](l, 2),
 			)
@@ -78,29 +92,24 @@ func luaMethodsPlayer() map[string]lua2.LGFunction {
 			return 0
 		},
 		"changeZone": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Player](l, 1)
+			objInterface := lua.CheckInterfaceValue[IPlayer](l, 1)
+			obj := objInterface.GetPlayer()
 			obj.ChangeZone(string(l.CheckString(2)))
 
 			return 0
 		},
-		"toLua": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Player](l, 1)
-			res0 := obj.ToLua(
-				lua.CheckReferenceValue[lua2.LState](l, 2),
-			)
+		"getPlayer": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IPlayer](l, 1)
+			obj := objInterface.GetPlayer()
+			res0 := obj.GetPlayer()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.SetMetatable(ud, l.GetTypeMetatable("Player"))
 			l.Push(ud)
 
 			return 1
 		},
-		"GCObject": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Player](l, 1)
-			l.Push(obj.GCObject.ToLua(l))
-			return 1
-		},
-	})
+	}, luaMethodsGCObject)
 }
 func newLuaPlayer(l *lua2.LState) int {
 	obj := NewPlayer(string(l.CheckString(1)))

@@ -11,6 +11,14 @@ import (
 	lua2 "github.com/yuin/gopher-lua"
 )
 
+type IMerchant interface {
+	GetMerchant() *Merchant
+}
+
+func (m *Merchant) GetMerchant() *Merchant {
+	return m
+}
+
 func registerLuaMerchant(state *lua2.LState) {
 	// Ensure the import is referenced in code
 	_ = lua.LuaScript{}
@@ -26,7 +34,8 @@ func registerLuaMerchant(state *lua2.LState) {
 func luaMethodsMerchant() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
 		"writeInit": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Merchant](l, 1)
+			objInterface := lua.CheckInterfaceValue[IMerchant](l, 1)
+			obj := objInterface.GetMerchant()
 			obj.WriteInit(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
@@ -34,10 +43,9 @@ func luaMethodsMerchant() map[string]lua2.LGFunction {
 			return 0
 		},
 		"getInventoryByID": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Merchant](l, 1)
-			res0 := obj.GetInventoryByID(
-				lua.CheckValue[byte](l, 2),
-			)
+			objInterface := lua.CheckInterfaceValue[IMerchant](l, 1)
+			obj := objInterface.GetMerchant()
+			res0 := obj.GetInventoryByID(byte(l.CheckNumber(2)))
 			ud := l.NewUserData()
 			ud.Value = res0
 			l.SetMetatable(ud, l.GetTypeMetatable("Inventory"))
@@ -45,24 +53,18 @@ func luaMethodsMerchant() map[string]lua2.LGFunction {
 
 			return 1
 		},
-		"toLua": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Merchant](l, 1)
-			res0 := obj.ToLua(
-				lua.CheckReferenceValue[lua2.LState](l, 2),
-			)
+		"getMerchant": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IMerchant](l, 1)
+			obj := objInterface.GetMerchant()
+			res0 := obj.GetMerchant()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.SetMetatable(ud, l.GetTypeMetatable("Merchant"))
 			l.Push(ud)
 
 			return 1
 		},
-		"Container": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Merchant](l, 1)
-			l.Push(obj.Container.ToLua(l))
-			return 1
-		},
-	})
+	}, luaMethodsContainer)
 }
 func newLuaMerchant(l *lua2.LState) int {
 	obj := NewMerchant(string(l.CheckString(1)))

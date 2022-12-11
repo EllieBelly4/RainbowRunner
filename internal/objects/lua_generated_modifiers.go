@@ -11,6 +11,14 @@ import (
 	lua2 "github.com/yuin/gopher-lua"
 )
 
+type IModifiers interface {
+	GetModifiers() *Modifiers
+}
+
+func (m *Modifiers) GetModifiers() *Modifiers {
+	return m
+}
+
 func registerLuaModifiers(state *lua2.LState) {
 	// Ensure the import is referenced in code
 	_ = lua.LuaScript{}
@@ -26,31 +34,26 @@ func registerLuaModifiers(state *lua2.LState) {
 func luaMethodsModifiers() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
 		"writeInit": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Modifiers](l, 1)
+			objInterface := lua.CheckInterfaceValue[IModifiers](l, 1)
+			obj := objInterface.GetModifiers()
 			obj.WriteInit(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
 		},
-		"toLua": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Modifiers](l, 1)
-			res0 := obj.ToLua(
-				lua.CheckReferenceValue[lua2.LState](l, 2),
-			)
+		"getModifiers": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IModifiers](l, 1)
+			obj := objInterface.GetModifiers()
+			res0 := obj.GetModifiers()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.SetMetatable(ud, l.GetTypeMetatable("Modifiers"))
 			l.Push(ud)
 
 			return 1
 		},
-		"Component": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Modifiers](l, 1)
-			l.Push(obj.Component.ToLua(l))
-			return 1
-		},
-	})
+	}, luaMethodsComponent)
 }
 func newLuaModifiers(l *lua2.LState) int {
 	obj := NewModifiers(string(l.CheckString(1)))

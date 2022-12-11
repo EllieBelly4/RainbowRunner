@@ -10,6 +10,14 @@ import (
 	lua2 "github.com/yuin/gopher-lua"
 )
 
+type IComponent interface {
+	GetComponent() *Component
+}
+
+func (c *Component) GetComponent() *Component {
+	return c
+}
+
 func registerLuaComponent(state *lua2.LState) {
 	// Ensure the import is referenced in code
 	_ = lua.LuaScript{}
@@ -24,24 +32,18 @@ func registerLuaComponent(state *lua2.LState) {
 
 func luaMethodsComponent() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
-		"toLua": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Component](l, 1)
-			res0 := obj.ToLua(
-				lua.CheckReferenceValue[lua2.LState](l, 2),
-			)
+		"getComponent": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IComponent](l, 1)
+			obj := objInterface.GetComponent()
+			res0 := obj.GetComponent()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.SetMetatable(ud, l.GetTypeMetatable("Component"))
 			l.Push(ud)
 
 			return 1
 		},
-		"GCObject": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Component](l, 1)
-			l.Push(obj.GCObject.ToLua(l))
-			return 1
-		},
-	})
+	}, luaMethodsGCObject)
 }
 func newLuaComponent(l *lua2.LState) int {
 	obj := NewComponent(string(l.CheckString(1)), string(l.CheckString(2)))

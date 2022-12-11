@@ -5,10 +5,6 @@ import (
 	"RainbowRunner/pkg/datatypes"
 )
 
-type IWorldEntity interface {
-	GetWorldEntity() *WorldEntity
-}
-
 //go:generate go run ../../scripts/generatelua -type=WorldEntity -extends=GCObject
 type WorldEntity struct {
 	*GCObject
@@ -22,10 +18,6 @@ type WorldEntity struct {
 	Unk2Case byte
 	Unk4Case uint32
 	Unk8Case uint32
-}
-
-func (n *WorldEntity) GetWorldEntity() *WorldEntity {
-	return n
 }
 
 func (n *WorldEntity) SetPosition(position datatypes.Vector3Float32) {

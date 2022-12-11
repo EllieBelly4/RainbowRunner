@@ -12,6 +12,14 @@ import (
 	lua2 "github.com/yuin/gopher-lua"
 )
 
+type IEquipmentInventory interface {
+	GetEquipmentInventory() *EquipmentInventory
+}
+
+func (e *EquipmentInventory) GetEquipmentInventory() *EquipmentInventory {
+	return e
+}
+
 func registerLuaEquipmentInventory(state *lua2.LState) {
 	// Ensure the import is referenced in code
 	_ = lua.LuaScript{}
@@ -27,7 +35,8 @@ func registerLuaEquipmentInventory(state *lua2.LState) {
 func luaMethodsEquipmentInventory() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
 		"addChild": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[EquipmentInventory](l, 1)
+			objInterface := lua.CheckInterfaceValue[IEquipmentInventory](l, 1)
+			obj := objInterface.GetEquipmentInventory()
 			obj.AddChild(
 				lua.CheckValue[DRObject](l, 2),
 			)
@@ -35,7 +44,8 @@ func luaMethodsEquipmentInventory() map[string]lua2.LGFunction {
 			return 0
 		},
 		"readUpdate": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[EquipmentInventory](l, 1)
+			objInterface := lua.CheckInterfaceValue[IEquipmentInventory](l, 1)
+			obj := objInterface.GetEquipmentInventory()
 			res0 := obj.ReadUpdate(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
@@ -47,7 +57,8 @@ func luaMethodsEquipmentInventory() map[string]lua2.LGFunction {
 			return 1
 		},
 		"removeEquipmentBySlot": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[EquipmentInventory](l, 1)
+			objInterface := lua.CheckInterfaceValue[IEquipmentInventory](l, 1)
+			obj := objInterface.GetEquipmentInventory()
 			res0 := obj.RemoveEquipmentBySlot(
 				lua.CheckValue[types.EquipmentSlot](l, 2),
 			)
@@ -59,7 +70,8 @@ func luaMethodsEquipmentInventory() map[string]lua2.LGFunction {
 			return 1
 		},
 		"getEquipment": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[EquipmentInventory](l, 1)
+			objInterface := lua.CheckInterfaceValue[IEquipmentInventory](l, 1)
+			obj := objInterface.GetEquipmentInventory()
 			res0 := obj.GetEquipment()
 			ud := l.NewUserData()
 			ud.Value = res0
@@ -68,24 +80,18 @@ func luaMethodsEquipmentInventory() map[string]lua2.LGFunction {
 
 			return 1
 		},
-		"toLua": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[EquipmentInventory](l, 1)
-			res0 := obj.ToLua(
-				lua.CheckReferenceValue[lua2.LState](l, 2),
-			)
+		"getEquipmentInventory": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IEquipmentInventory](l, 1)
+			obj := objInterface.GetEquipmentInventory()
+			res0 := obj.GetEquipmentInventory()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.SetMetatable(ud, l.GetTypeMetatable("EquipmentInventory"))
 			l.Push(ud)
 
 			return 1
 		},
-		"Component": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[EquipmentInventory](l, 1)
-			l.Push(obj.Component.ToLua(l))
-			return 1
-		},
-	})
+	}, luaMethodsComponent)
 }
 func newLuaEquipmentInventory(l *lua2.LState) int {
 	obj := NewEquipmentInventory(string(l.CheckString(1)),

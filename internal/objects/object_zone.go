@@ -113,13 +113,6 @@ func (z *Zone) AddPlayer(player *RRPlayer) {
 	}
 }
 
-func (z *Zone) Spawn(entity DRObject) {
-	//Entities.RegisterAll(nil, entity)
-
-	z.AddEntity(nil, entity)
-	log.Infof("spawning entity '%s' in zone '%s'", entity.GetGCObject().GCType, z.Name)
-}
-
 func (z *Zone) setZone(entities ...DRObject) {
 	for _, entity := range entities {
 		entity.RREntityProperties().Zone = z
@@ -136,32 +129,22 @@ func (z *Zone) SendToAll(body *byter.Byter) {
 	}
 }
 
-func (z *Zone) SpawnInit(entity DRObject, position *datatypes.Vector3Float32, rotation *float32) {
+func (z *Zone) Spawn(entity DRObject, position datatypes.Vector3Float32, rotation float32) {
 	if _, ok := entity.(IWorldEntity); ok {
 		worldEntity := entity.(IWorldEntity).GetWorldEntity()
 
-		if position != nil {
-			worldEntity.WorldPosition = *position
-		}
-
-		if rotation != nil {
-			worldEntity.Rotation = *rotation
-		}
+		worldEntity.WorldPosition = position
+		worldEntity.Rotation = rotation
 	}
 
 	if unitBehavior, ok := entity.GetChildByGCNativeType("UnitBehavior").(IUnitBehavior); unitBehavior != nil && ok {
 		behavior := unitBehavior.GetUnitBehavior()
 
-		if position != nil {
-			behavior.Position = *position
-		}
-
-		if rotation != nil {
-			behavior.Rotation = *rotation
-		}
+		behavior.Position = position
+		behavior.Rotation = rotation
 	}
 
-	z.Spawn(entity)
+	z.AddEntity(nil, entity)
 }
 
 func (z *Zone) LoadNPCFromConfig(id string) *NPC {

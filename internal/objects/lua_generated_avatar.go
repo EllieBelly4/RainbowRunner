@@ -11,6 +11,14 @@ import (
 	lua2 "github.com/yuin/gopher-lua"
 )
 
+type IAvatar interface {
+	GetAvatar() *Avatar
+}
+
+func (a *Avatar) GetAvatar() *Avatar {
+	return a
+}
+
 func registerLuaAvatar(state *lua2.LState) {
 	// Ensure the import is referenced in code
 	_ = lua.LuaScript{}
@@ -25,10 +33,12 @@ func registerLuaAvatar(state *lua2.LState) {
 
 func luaMethodsAvatar() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
-		"rotation":   luaGenericGetSetNumber[Avatar, int32](func(v Avatar) *int32 { return &v.Rotation }),
-		"moveUpdate": luaGenericGetSetNumber[Avatar, int](func(v Avatar) *int { return &v.MoveUpdate }),
+		"rotation":           luaGenericGetSetNumber[IAvatar](func(v IAvatar) *int32 { return &v.GetAvatar().Rotation }),
+		"clientUpdateNumber": luaGenericGetSetNumber[IAvatar](func(v IAvatar) *byte { return &v.GetAvatar().ClientUpdateNumber }),
+		"moveUpdate":         luaGenericGetSetNumber[IAvatar](func(v IAvatar) *int { return &v.GetAvatar().MoveUpdate }),
 		"type": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Avatar](l, 1)
+			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
+			obj := objInterface.GetAvatar()
 			res0 := obj.Type()
 			ud := l.NewUserData()
 			ud.Value = res0
@@ -38,7 +48,8 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 			return 1
 		},
 		"writeFullGCObject": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Avatar](l, 1)
+			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
+			obj := objInterface.GetAvatar()
 			obj.WriteFullGCObject(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
@@ -46,7 +57,8 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 			return 0
 		},
 		"writeInit": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Avatar](l, 1)
+			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
+			obj := objInterface.GetAvatar()
 			obj.WriteInit(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
@@ -54,7 +66,8 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 			return 0
 		},
 		"writeUpdate": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Avatar](l, 1)
+			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
+			obj := objInterface.GetAvatar()
 			obj.WriteUpdate(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
@@ -62,20 +75,23 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 			return 0
 		},
 		"tick": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Avatar](l, 1)
+			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
+			obj := objInterface.GetAvatar()
 			obj.Tick()
 
 			return 0
 		},
 		"getUnitBehaviourID": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Avatar](l, 1)
+			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
+			obj := objInterface.GetAvatar()
 			res0 := obj.GetUnitBehaviourID()
 			l.Push(lua2.LNumber(res0))
 
 			return 1
 		},
 		"send": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Avatar](l, 1)
+			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
+			obj := objInterface.GetAvatar()
 			obj.Send(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
@@ -83,25 +99,29 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 			return 0
 		},
 		"sendFollowClient": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Avatar](l, 1)
+			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
+			obj := objInterface.GetAvatar()
 			obj.SendFollowClient()
 
 			return 0
 		},
 		"warp": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Avatar](l, 1)
+			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
+			obj := objInterface.GetAvatar()
 			obj.Warp(float32(l.CheckNumber(2)), float32(l.CheckNumber(3)), float32(l.CheckNumber(4)))
 
 			return 0
 		},
 		"sendMoveTo": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Avatar](l, 1)
+			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
+			obj := objInterface.GetAvatar()
 			obj.SendMoveTo(uint8(l.CheckNumber(2)), uint16(l.CheckNumber(3)), float32(l.CheckNumber(4)), float32(l.CheckNumber(5)))
 
 			return 0
 		},
 		"getUnitContainer": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Avatar](l, 1)
+			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
+			obj := objInterface.GetAvatar()
 			res0 := obj.GetUnitContainer()
 			ud := l.NewUserData()
 			ud.Value = res0
@@ -111,7 +131,8 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 			return 1
 		},
 		"getManipulators": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Avatar](l, 1)
+			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
+			obj := objInterface.GetAvatar()
 			res0 := obj.GetManipulators()
 			ud := l.NewUserData()
 			ud.Value = res0
@@ -121,7 +142,8 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 			return 1
 		},
 		"getUnitBehaviour": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Avatar](l, 1)
+			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
+			obj := objInterface.GetAvatar()
 			res0 := obj.GetUnitBehaviour()
 			ud := l.NewUserData()
 			ud.Value = res0
@@ -130,24 +152,18 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 
 			return 1
 		},
-		"toLua": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Avatar](l, 1)
-			res0 := obj.ToLua(
-				lua.CheckReferenceValue[lua2.LState](l, 2),
-			)
+		"getAvatar": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
+			obj := objInterface.GetAvatar()
+			res0 := obj.GetAvatar()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.SetMetatable(ud, l.GetTypeMetatable("Avatar"))
 			l.Push(ud)
 
 			return 1
 		},
-		"GCObject": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Avatar](l, 1)
-			l.Push(obj.GCObject.ToLua(l))
-			return 1
-		},
-	})
+	}, luaMethodsGCObject)
 }
 func newLuaAvatar(l *lua2.LState) int {
 	obj := NewAvatar(string(l.CheckString(1)))

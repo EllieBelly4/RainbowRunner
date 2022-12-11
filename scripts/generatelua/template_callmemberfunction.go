@@ -25,7 +25,8 @@ func (f *FuncDef) ResultAssignmentString() string {
 const (
 	//language=gotemplate
 	callMemberFunctionTemplate string = `func (l *lua2.LState) int {
-	obj := lua.CheckReferenceValue[{{ .Struct.FullTypeString }}](l, 1)
+	objInterface := lua.CheckInterfaceValue[I{{ .Struct.FullTypeString }}](l, 1)
+	obj := objInterface.Get{{ .Struct.Name }}()
 	
 	{{- $resultsLen := len .Method.Results -}}
 

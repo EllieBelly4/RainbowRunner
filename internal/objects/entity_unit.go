@@ -5,10 +5,6 @@ import (
 	"RainbowRunner/pkg/datatypes"
 )
 
-type IUnit interface {
-	GetUnit() *Unit
-}
-
 //go:generate go run ../../scripts/generateLua/ -type=Unit -extends=WorldEntity
 type Unit struct {
 	*WorldEntity
@@ -24,10 +20,6 @@ type Unit struct {
 	Unk40Case2        uint16
 	Unk40Case3        byte
 	Unk80Case         byte
-}
-
-func (n *Unit) GetUnit() *Unit {
-	return n
 }
 
 func (u *Unit) WriteInit(b *byter.Byter) {

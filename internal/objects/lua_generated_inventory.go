@@ -11,6 +11,14 @@ import (
 	lua2 "github.com/yuin/gopher-lua"
 )
 
+type IInventory interface {
+	GetInventory() *Inventory
+}
+
+func (i *Inventory) GetInventory() *Inventory {
+	return i
+}
+
 func registerLuaInventory(state *lua2.LState) {
 	// Ensure the import is referenced in code
 	_ = lua.LuaScript{}
@@ -25,18 +33,10 @@ func registerLuaInventory(state *lua2.LState) {
 
 func luaMethodsInventory() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
-		"getInventory": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Inventory](l, 1)
-			res0 := obj.GetInventory()
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("Inventory"))
-			l.Push(ud)
-
-			return 1
-		},
+		"inventoryID": luaGenericGetSetNumber[IInventory](func(v IInventory) *byte { return &v.GetInventory().InventoryID }),
 		"addChild": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Inventory](l, 1)
+			objInterface := lua.CheckInterfaceValue[IInventory](l, 1)
+			obj := objInterface.GetInventory()
 			obj.AddChild(
 				lua.CheckValue[DRObject](l, 2),
 			)
@@ -44,7 +44,8 @@ func luaMethodsInventory() map[string]lua2.LGFunction {
 			return 0
 		},
 		"writeInit": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Inventory](l, 1)
+			objInterface := lua.CheckInterfaceValue[IInventory](l, 1)
+			obj := objInterface.GetInventory()
 			obj.WriteInit(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
@@ -52,7 +53,8 @@ func luaMethodsInventory() map[string]lua2.LGFunction {
 			return 0
 		},
 		"writeInitData": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Inventory](l, 1)
+			objInterface := lua.CheckInterfaceValue[IInventory](l, 1)
+			obj := objInterface.GetInventory()
 			obj.WriteInitData(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
@@ -60,7 +62,8 @@ func luaMethodsInventory() map[string]lua2.LGFunction {
 			return 0
 		},
 		"removeItemByIndex": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Inventory](l, 1)
+			objInterface := lua.CheckInterfaceValue[IInventory](l, 1)
+			obj := objInterface.GetInventory()
 			res0 := obj.RemoveItemByIndex(int(l.CheckNumber(2)))
 			ud := l.NewUserData()
 			ud.Value = res0
@@ -69,29 +72,21 @@ func luaMethodsInventory() map[string]lua2.LGFunction {
 
 			return 1
 		},
-		"toLua": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Inventory](l, 1)
-			res0 := obj.ToLua(
-				lua.CheckReferenceValue[lua2.LState](l, 2),
-			)
+		"getInventory": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IInventory](l, 1)
+			obj := objInterface.GetInventory()
+			res0 := obj.GetInventory()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.SetMetatable(ud, l.GetTypeMetatable("Inventory"))
 			l.Push(ud)
 
 			return 1
 		},
-		"GCObject": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[Inventory](l, 1)
-			l.Push(obj.GCObject.ToLua(l))
-			return 1
-		},
-	})
+	}, luaMethodsGCObject)
 }
 func newLuaInventory(l *lua2.LState) int {
-	obj := NewInventory(string(l.CheckString(1)),
-		lua.CheckValue[byte](l, 2),
-	)
+	obj := NewInventory(string(l.CheckString(1)), byte(l.CheckNumber(2)))
 	ud := l.NewUserData()
 	ud.Value = obj
 

@@ -11,6 +11,14 @@ import (
 	lua2 "github.com/yuin/gopher-lua"
 )
 
+type IAvatarMetrics interface {
+	GetAvatarMetrics() *AvatarMetrics
+}
+
+func (a *AvatarMetrics) GetAvatarMetrics() *AvatarMetrics {
+	return a
+}
+
 func registerLuaAvatarMetrics(state *lua2.LState) {
 	// Ensure the import is referenced in code
 	_ = lua.LuaScript{}
@@ -26,31 +34,26 @@ func registerLuaAvatarMetrics(state *lua2.LState) {
 func luaMethodsAvatarMetrics() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
 		"writeFullGCObject": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[AvatarMetrics](l, 1)
+			objInterface := lua.CheckInterfaceValue[IAvatarMetrics](l, 1)
+			obj := objInterface.GetAvatarMetrics()
 			obj.WriteFullGCObject(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
 		},
-		"toLua": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[AvatarMetrics](l, 1)
-			res0 := obj.ToLua(
-				lua.CheckReferenceValue[lua2.LState](l, 2),
-			)
+		"getAvatarMetrics": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IAvatarMetrics](l, 1)
+			obj := objInterface.GetAvatarMetrics()
+			res0 := obj.GetAvatarMetrics()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.SetMetatable(ud, l.GetTypeMetatable("AvatarMetrics"))
 			l.Push(ud)
 
 			return 1
 		},
-		"Component": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[AvatarMetrics](l, 1)
-			l.Push(obj.Component.ToLua(l))
-			return 1
-		},
-	})
+	}, luaMethodsComponent)
 }
 func newLuaAvatarMetrics(l *lua2.LState) int {
 	obj := NewAvatarMetrics(uint32(l.CheckNumber(1)), string(l.CheckString(2)))

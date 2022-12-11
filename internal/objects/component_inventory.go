@@ -5,20 +5,12 @@ import (
 	"fmt"
 )
 
-type IInventory interface {
-	GetInventory() *Inventory
-}
-
 //go:generate go run ../../scripts/generatelua -type=Inventory -extends=GCObject
 type Inventory struct {
 	*GCObject
 
 	itemID      int
 	InventoryID byte
-}
-
-func (i *Inventory) GetInventory() *Inventory {
-	return i
 }
 
 func (i *Inventory) AddChild(child DRObject) {
@@ -93,16 +85,6 @@ func NewInventory(gcType string, index byte) *Inventory {
 	return &Inventory{
 		GCObject: gcObject,
 		// TODO figure out how to set inventory ID properly, client is always using 1
-		InventoryID: index,
-	}
-}
-
-func NewMerchantInventory(gcType string, index byte) *Inventory {
-	gcObject := NewGCObject("MerchantInventory")
-	gcObject.GCType = gcType
-
-	return &Inventory{
-		GCObject:    gcObject,
 		InventoryID: index,
 	}
 }

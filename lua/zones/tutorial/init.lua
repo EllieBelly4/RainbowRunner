@@ -135,9 +135,9 @@ function spawnHermitVendor()
     behaviour = MonsterBehavior2.new("npc.Base.Behavior")
     vendor:addChild(behaviour)
 
-    merchant = Merchant.new(" world.tutorial.npc.HermitVendor.Merchant.Weapons")
+    merchant = Merchant.new("world.tutorial.npc.HermitVendor.Merchant.Weapons")
 
-    inventory1 = MerchantInventory.new(" world.tutorial.npc.HermitVendor.Merchant.Weapons", 1)
+    inventory1 = MerchantInventory.new("world.tutorial.npc.HermitVendor.Merchant.Weapons", 1)
     --inventory2 = MerchantInventory.new("world.town.npc.VendorWeapon2.Merchant.Armor", 2)
     -- inventory3 = MerchantInventory.new("world.town.npc.VendorWeapon2.Merchant.Superior", 3)
 
@@ -148,19 +148,19 @@ function spawnHermitVendor()
     vendor:addChild(merchant)
 
     vendor:level(100)
-    vendor:flags(0xFF)
+    vendor:unitFlags(0xFF)
     vendor:hp(1000)
     vendor:mp(2000)
 
-    vendor:unitUnk10Case(0xFF)
+    vendor:unk10Case(0xFF)
 
-    vendor:unitUnk20CaseEntityID(0xFFFF)
-    vendor:unitUnk40Case0(0xFFFF)
-    vendor:unitUnk40Case1(0xFFFF)
-    vendor:unitUnk40Case2(0xFFFF)
+    vendor:unk20CaseEntityID(0xFFFF)
+    vendor:unk40Case0(0xFFFF)
+    vendor:unk40Case1(0xFFFF)
+    vendor:unk40Case2(0xFFFF)
 
-    vendor:unitUnk40Case3(0xFF)
-    vendor:unitUnk80Case(0xFF)
+    vendor:unk40Case3(0xFF)
+    vendor:unk80Case(0xFF)
 
     vendor:worldEntityFlags(0x7)
 

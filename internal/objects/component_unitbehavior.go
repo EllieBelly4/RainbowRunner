@@ -12,10 +12,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type IUnitBehavior interface {
-	GetUnitBehavior() *UnitBehavior
-}
-
 //go:generate go run ../../scripts/generateLua/ -type=UnitBehavior -extends=Component
 type UnitBehavior struct {
 	*Component
@@ -25,10 +21,6 @@ type UnitBehavior struct {
 	UnitMoverFlags byte
 	Action1        behavior.Action
 	Action2        behavior.Action
-}
-
-func (u *UnitBehavior) GetUnitBehavior() *UnitBehavior {
-	return u
 }
 
 type UnitBehaviorHandler struct {

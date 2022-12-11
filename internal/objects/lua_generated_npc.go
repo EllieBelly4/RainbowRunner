@@ -12,6 +12,14 @@ import (
 	lua2 "github.com/yuin/gopher-lua"
 )
 
+type INPC interface {
+	GetNPC() *NPC
+}
+
+func (n *NPC) GetNPC() *NPC {
+	return n
+}
+
 func registerLuaNPC(state *lua2.LState) {
 	// Ensure the import is referenced in code
 	_ = lua.LuaScript{}
@@ -26,34 +34,29 @@ func registerLuaNPC(state *lua2.LState) {
 
 func luaMethodsNPC() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
-		"name":  luaGenericGetSetString[NPC](func(v NPC) *string { return &v.Name }),
-		"level": luaGenericGetSetNumber[NPC, int32](func(v NPC) *int32 { return &v.Level }),
+		"name":  luaGenericGetSetString[INPC](func(v INPC) *string { return &v.GetNPC().Name }),
+		"level": luaGenericGetSetNumber[INPC](func(v INPC) *int32 { return &v.GetNPC().Level }),
 		"writeInit": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[NPC](l, 1)
+			objInterface := lua.CheckInterfaceValue[INPC](l, 1)
+			obj := objInterface.GetNPC()
 			obj.WriteInit(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
 		},
-		"toLua": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[NPC](l, 1)
-			res0 := obj.ToLua(
-				lua.CheckReferenceValue[lua2.LState](l, 2),
-			)
+		"getNPC": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[INPC](l, 1)
+			obj := objInterface.GetNPC()
+			res0 := obj.GetNPC()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.SetMetatable(ud, l.GetTypeMetatable("NPC"))
 			l.Push(ud)
 
 			return 1
 		},
-		"Unit": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[NPC](l, 1)
-			l.Push(obj.Unit.ToLua(l))
-			return 1
-		},
-	})
+	}, luaMethodsUnit)
 }
 func newLuaNPC(l *lua2.LState) int {
 	obj := NewNPC(string(l.CheckString(1)), string(l.CheckString(2)),

@@ -11,6 +11,14 @@ import (
 	lua2 "github.com/yuin/gopher-lua"
 )
 
+type IStockUnit interface {
+	GetStockUnit() *StockUnit
+}
+
+func (s *StockUnit) GetStockUnit() *StockUnit {
+	return s
+}
+
 func registerLuaStockUnit(state *lua2.LState) {
 	// Ensure the import is referenced in code
 	_ = lua.LuaScript{}
@@ -26,31 +34,26 @@ func registerLuaStockUnit(state *lua2.LState) {
 func luaMethodsStockUnit() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
 		"writeInit": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[StockUnit](l, 1)
+			objInterface := lua.CheckInterfaceValue[IStockUnit](l, 1)
+			obj := objInterface.GetStockUnit()
 			obj.WriteInit(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
 		},
-		"toLua": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[StockUnit](l, 1)
-			res0 := obj.ToLua(
-				lua.CheckReferenceValue[lua2.LState](l, 2),
-			)
+		"getStockUnit": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IStockUnit](l, 1)
+			obj := objInterface.GetStockUnit()
+			res0 := obj.GetStockUnit()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.SetMetatable(ud, l.GetTypeMetatable("StockUnit"))
 			l.Push(ud)
 
 			return 1
 		},
-		"Unit": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[StockUnit](l, 1)
-			l.Push(obj.Unit.ToLua(l))
-			return 1
-		},
-	})
+	}, luaMethodsUnit)
 }
 func newLuaStockUnit(l *lua2.LState) int {
 	obj := NewStockUnit(string(l.CheckString(1)))

@@ -10,6 +10,14 @@ import (
 	lua2 "github.com/yuin/gopher-lua"
 )
 
+type IRRPlayer interface {
+	GetRRPlayer() *RRPlayer
+}
+
+func (r *RRPlayer) GetRRPlayer() *RRPlayer {
+	return r
+}
+
 func registerLuaRRPlayer(state *lua2.LState) {
 	// Ensure the import is referenced in code
 	_ = lua.LuaScript{}
@@ -23,32 +31,34 @@ func registerLuaRRPlayer(state *lua2.LState) {
 
 func luaMethodsRRPlayer() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
-		"toLua": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[RRPlayer](l, 1)
-			res0 := obj.ToLua(
-				lua.CheckReferenceValue[lua2.LState](l, 2),
-			)
+		"getRRPlayer": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IRRPlayer](l, 1)
+			obj := objInterface.GetRRPlayer()
+			res0 := obj.GetRRPlayer()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.SetMetatable(ud, l.GetTypeMetatable("RRPlayer"))
 			l.Push(ud)
 
 			return 1
 		},
 		"onZoneJoin": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[RRPlayer](l, 1)
+			objInterface := lua.CheckInterfaceValue[IRRPlayer](l, 1)
+			obj := objInterface.GetRRPlayer()
 			obj.OnZoneJoin()
 
 			return 0
 		},
 		"leaveZone": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[RRPlayer](l, 1)
+			objInterface := lua.CheckInterfaceValue[IRRPlayer](l, 1)
+			obj := objInterface.GetRRPlayer()
 			obj.LeaveZone()
 
 			return 0
 		},
 		"joinZone": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[RRPlayer](l, 1)
+			objInterface := lua.CheckInterfaceValue[IRRPlayer](l, 1)
+			obj := objInterface.GetRRPlayer()
 			obj.JoinZone(
 				lua.CheckReferenceValue[Zone](l, 2),
 			)

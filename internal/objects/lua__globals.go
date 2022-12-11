@@ -21,6 +21,7 @@ func RegisterLuaGlobals(state *lua.LState) {
 	registerLuaPlayer(state)
 	registerLuaZonePortal(state)
 	registerLuaUnitBehavior(state)
+	registerLuaMerchantInventory(state)
 }
 
 func luaMethodsExtend(child map[string]lua.LGFunction, parents ...func() map[string]lua.LGFunction) map[string]lua.LGFunction {

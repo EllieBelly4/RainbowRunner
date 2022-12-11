@@ -260,7 +260,7 @@ function spawnVendorWeapon2()
     vendor:addChild(merchant)
 
     vendor:level(100)
-    vendor:flags(0xFF)
+    vendor:unitFlags(0xFF)
     vendor:hp(1000)
     vendor:mp(2000)
 

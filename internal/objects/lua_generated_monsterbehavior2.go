@@ -11,6 +11,14 @@ import (
 	lua2 "github.com/yuin/gopher-lua"
 )
 
+type IMonsterBehavior2 interface {
+	GetMonsterBehavior2() *MonsterBehavior2
+}
+
+func (m *MonsterBehavior2) GetMonsterBehavior2() *MonsterBehavior2 {
+	return m
+}
+
 func registerLuaMonsterBehavior2(state *lua2.LState) {
 	// Ensure the import is referenced in code
 	_ = lua.LuaScript{}
@@ -26,31 +34,26 @@ func registerLuaMonsterBehavior2(state *lua2.LState) {
 func luaMethodsMonsterBehavior2() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
 		"writeInit": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[MonsterBehavior2](l, 1)
+			objInterface := lua.CheckInterfaceValue[IMonsterBehavior2](l, 1)
+			obj := objInterface.GetMonsterBehavior2()
 			obj.WriteInit(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
 		},
-		"toLua": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[MonsterBehavior2](l, 1)
-			res0 := obj.ToLua(
-				lua.CheckReferenceValue[lua2.LState](l, 2),
-			)
+		"getMonsterBehavior2": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IMonsterBehavior2](l, 1)
+			obj := objInterface.GetMonsterBehavior2()
+			res0 := obj.GetMonsterBehavior2()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("lua2.LValue"))
+			l.SetMetatable(ud, l.GetTypeMetatable("MonsterBehavior2"))
 			l.Push(ud)
 
 			return 1
 		},
-		"UnitBehavior": func(l *lua2.LState) int {
-			obj := lua.CheckReferenceValue[MonsterBehavior2](l, 1)
-			l.Push(obj.UnitBehavior.ToLua(l))
-			return 1
-		},
-	})
+	}, luaMethodsUnitBehavior)
 }
 func newLuaMonsterBehavior2(l *lua2.LState) int {
 	obj := NewMonsterBehavior2(string(l.CheckString(1)))
