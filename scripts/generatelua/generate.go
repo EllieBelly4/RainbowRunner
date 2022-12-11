@@ -22,7 +22,7 @@ var (
 func main() {
 	flag.Parse()
 	structs := make(map[string]*StructDef)
-	imports := make(map[string]bool)
+	imports := make(map[string]*ImportDef)
 
 	fileName := os.Getenv("GOFILE")
 	cwd, err := os.Getwd()
@@ -41,6 +41,8 @@ func main() {
 		panic(err)
 	}
 
+	addAllImports(imports, pkg[0])
+
 	err = parseFileStructDefinitionsFromString(pkg[0], structs, filePath)
 
 	if err != nil {
@@ -48,7 +50,6 @@ func main() {
 	}
 
 	addAllMemberFunctions(structs, typeDefs, pkg[0])
-	addAllImports(imports, pkg[0])
 
 	typeNames := strings.Split(*typeName, ",")
 
@@ -68,15 +69,7 @@ func main() {
 	//fmt.Println(string(data))
 }
 
-func addAllImports(imports map[string]bool, p *packages.Package) {
-	for _, file := range p.Syntax {
-		for _, i := range file.Imports {
-			imports[i.Path.Value] = true
-		}
-	}
-}
-
-func executeGenerate(imports map[string]bool, structs map[string]*StructDef, typeNames []string, cwd string) error {
+func executeGenerate(imports map[string]*ImportDef, structs map[string]*StructDef, typeNames []string, cwd string) error {
 	fmt.Printf("Running %s go on %s\n", os.Args[0], os.Getenv("GOFILE"))
 
 	for _, name := range typeNames {
@@ -115,7 +108,7 @@ func formatScript(data []byte) []byte {
 	return data
 }
 
-func generateWrapper(imports map[string]bool, def *StructDef) ([]byte, error) {
+func generateWrapper(imports map[string]*ImportDef, def *StructDef) ([]byte, error) {
 	t := template.New("wrapper")
 
 	t = t.Funcs(templateFuncMap)
@@ -126,15 +119,11 @@ func generateWrapper(imports map[string]bool, def *StructDef) ([]byte, error) {
 		return nil, err
 	}
 
-	importStrings := make([]string, 0)
-
-	for k, _ := range imports {
-		importStrings = append(importStrings, k)
-	}
+	requiredImports := def.GetRequiredImports(imports)
 
 	data := &TemplateData{
 		Struct:  def,
-		Imports: importStrings,
+		Imports: requiredImports,
 	}
 
 	buf := &bytes.Buffer{}

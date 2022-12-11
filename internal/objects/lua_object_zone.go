@@ -37,7 +37,7 @@ func (f ZoneLuaFunctions) LoadNPCFromConfig(s *lua.LState) int {
 	ud := s.NewUserData()
 	ud.Value = npc
 
-	s.SetMetatable(ud, s.GetTypeMetatable(luaNPCTypeName))
+	s.SetMetatable(ud, s.GetTypeMetatable("NPC"))
 	s.Push(ud)
 	return 1
 }

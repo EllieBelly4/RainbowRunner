@@ -40,6 +40,54 @@ func (f *StructDef) FullTypeString() string {
 	return f.Name
 }
 
+func (f *StructDef) GetRequiredImports(importDefs map[string]*ImportDef) []*ImportDef {
+	imports := make(map[string]bool)
+
+	for _, method := range f.Methods {
+		if !method.IsExported {
+			continue
+		}
+
+		for _, param := range method.Params {
+			if param.Package != "" {
+				imports[param.Package] = true
+			}
+		}
+	}
+
+	if f.Constructor != nil {
+		for _, param := range f.Constructor.Params {
+			if param.Package != "" {
+				imports[param.Package] = true
+			}
+		}
+	}
+
+	for _, field := range f.Fields {
+		if !field.IsExported {
+			continue
+		}
+
+		// These types must be mirrored in the template or the imports will be wrong
+		if !IsStringType(field) ||
+			!IsNumberType(field) {
+			continue
+		}
+
+		if field.Package != "" {
+			imports[field.Package] = true
+		}
+	}
+
+	res := make([]*ImportDef, 0)
+
+	for name, _ := range imports {
+		res = append(res, importDefs[name])
+	}
+
+	return res
+}
+
 func (v *ValueType) FullTypeString() string {
 	s := ""
 
@@ -295,6 +343,38 @@ func addValueType(field *ast.Field, funcParamDef *ValueType) {
 
 		if _, ok := selector.X.(*ast.StarExpr); ok {
 			funcParamDef.IsPointer = true
+		}
+	}
+}
+
+type ImportDef struct {
+	Name *string
+	Path string
+}
+
+func addAllImports(imports map[string]*ImportDef, p *packages.Package) {
+	for _, file := range p.Syntax {
+		for _, i := range file.Imports {
+			cleanPath := strings.ReplaceAll(i.Path.Value, "\"", "")
+			splitPath := strings.Split(cleanPath, "/")
+			splitPath = strings.Split(splitPath[len(splitPath)-1], "-")
+			finalSeg := splitPath[len(splitPath)-1]
+
+			key := finalSeg
+
+			if i.Name != nil {
+				key = i.Name.String()
+			}
+
+			i2 := &ImportDef{
+				Path: cleanPath,
+			}
+
+			if i.Name != nil {
+				i2.Name = &i.Name.Name
+			}
+
+			imports[key] = i2
 		}
 	}
 }

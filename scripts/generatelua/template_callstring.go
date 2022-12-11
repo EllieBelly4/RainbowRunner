@@ -11,8 +11,10 @@ const callStringTemplate = `{{ .Name }}(
 	{{ $param.FullTypeString }}(l.CheckNumber({{ add $i 1 }})),
 	{{- else if isStringType $param }}
 	l.CheckString({{ add $i 1 }}),
-	{{- else }}
+	{{- else if $param.IsPointer }}
 	lua.CheckReferenceValue[{{ $param.FullTypeString }}](l, {{ add $i 1 }}),
+	{{- else }}
+	lua.CheckValue[{{ $param.FullTypeString }}](l, {{ add $i 1 }}),
 	{{- end }}
 {{- end }}
 )`

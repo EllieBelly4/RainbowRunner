@@ -9,6 +9,7 @@ import (
 	"RainbowRunner/pkg/datatypes"
 )
 
+//go:generate go run ../../scripts/generateLua/ -type=NPC
 type NPC struct {
 	*StockUnit
 

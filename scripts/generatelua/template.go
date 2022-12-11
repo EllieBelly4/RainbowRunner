@@ -22,12 +22,13 @@ const (
 import (
 	lua2 "github.com/yuin/gopher-lua"
 	lua "RainbowRunner/internal/lua"
+	{{- range .Imports }}
+	{{ .ImportString }}
+	{{- end }}
 )
 
-const {{ .StructTypeNameVar }} = "{{ .Struct.Name }}"
-
 func registerLua{{ .Struct.Name }}(state *lua2.LState) {
-	mt := state.NewTypeMetatable({{ .StructTypeNameVar }})
+	mt := state.NewTypeMetatable("{{ .Struct.Name }}")
 	state.SetGlobal("{{ .Struct.Name }}", mt)
 	state.SetField(mt, "new", state.NewFunction(newLua{{ .Struct.Name }}))
 	state.SetField(mt, "__index", state.SetFuncs(state.NewTable(),
@@ -45,9 +46,9 @@ func luaMethods{{ .Struct.Name }}() map[string]lua2.LGFunction {
 		{{- end }}
 
 		{{- if isStringType $field }}
-		"{{ $field.Name }}": luaGenericGetSetString[{{ $struct.FullTypeString }}](func(v $struct.FullTypeString) *string { return &v.{{ $field.Name }} }),
+		"{{ $field.NameCamelcase }}": luaGenericGetSetString[{{ $struct.FullTypeString }}](func(v {{ $struct.FullTypeString }}) *string { return &v.{{ $field.Name }} }),
 		{{- else if isNumberType $field }}
-		"{{ $field.Name }}": luaGenericGetSetNumber[{{ $struct.FullTypeString }}, {{ $field.FullTypeString }}](func(v {{ $struct.FullTypeString }}) *{{ $field.FullTypeString }} { return &v.{{ $field.Name }} }),
+		"{{ $field.NameCamelcase }}": luaGenericGetSetNumber[{{ $struct.FullTypeString }}, {{ $field.FullTypeString }}](func(v {{ $struct.FullTypeString }}) *{{ $field.FullTypeString }} { return &v.{{ $field.Name }} }),
 		{{- end }}
 	{{- end }}
 {{- end -}}
@@ -57,7 +58,7 @@ func luaMethods{{ .Struct.Name }}() map[string]lua2.LGFunction {
 		{{- if not $method.IsExported }}
 		{{- continue }}
 		{{- end }}
-		"{{ $method.Name }}": {{ generateCallMemberFunction $struct $method }},
+		"{{ $method.NameCamelcase }}": {{ generateCallMemberFunction $struct $method }},
 {{- end }}
 	}, luaMethodsDRObject)
 }
@@ -69,7 +70,7 @@ func newLua{{ .Struct.Name }}(l *lua2.LState) int {
 	ud := l.NewUserData()
 	ud.Value = obj
 
-	l.SetMetatable(ud, l.GetTypeMetatable({{ .StructTypeNameVar }}))
+	l.SetMetatable(ud, l.GetTypeMetatable("{{ .Struct.Name }}"))
 	l.Push(ud)
 	return 1
 }

@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+	"strings"
 )
 
 type TemplateData struct {
 	Struct  *StructDef
-	Imports []string
+	Imports []*ImportDef
 }
 
 func (t *TemplateData) StructTypeNameVar() string {
@@ -45,4 +46,24 @@ func IsStringType(t IValueType) bool {
 	}
 
 	return false
+}
+
+func (f *FieldDef) NameCamelcase() string {
+	return strings.ToLower(f.Name[0:1]) + f.Name[1:]
+}
+
+func (f *FuncDef) NameCamelcase() string {
+	return strings.ToLower(f.Name[0:1]) + f.Name[1:]
+}
+
+func (i *ImportDef) ImportString() string {
+	s := ""
+
+	if i.Name != nil {
+		s += *i.Name + " "
+	}
+
+	s += "\"" + i.Path + "\""
+
+	return s
 }
