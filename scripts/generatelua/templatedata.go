@@ -1,7 +1,10 @@
 package main
 
 import (
+	"RainbowRunner/internal/gosucks"
 	"fmt"
+	"go/types"
+	"golang.org/x/tools/go/packages"
 	"strings"
 	"unicode"
 )
@@ -11,6 +14,8 @@ type TemplateData struct {
 	Imports []*ImportDef
 	Extends []*FuncDef
 }
+
+var packageCache = make(map[string]*packages.Package)
 
 func (t *TemplateData) StructTypeNameVar() string {
 	return fmt.Sprintf("lua%sTypeName", t.Struct.Name)
@@ -102,4 +107,51 @@ func (t *TemplateData) ExtendsString() string {
 	}
 
 	return s.String()
+}
+
+func IsLuaConvertible(t *FieldDef) bool {
+	pkg := getPackage(t.Package)
+
+	fullTypeName := pkg.PkgPath + "." + t.ParamType
+
+	for _, f := range pkg.TypesInfo.Types {
+		if f.Type.String() == fullTypeName {
+			if named, ok := f.Type.(*types.Named); ok {
+				for i := 0; i < named.NumMethods(); i++ {
+					m := named.Method(i)
+
+					if m.Name() == "ToLua" {
+						return true
+					}
+				}
+			}
+		}
+	}
+	gosucks.VAR(pkg)
+
+	return false
+}
+
+func getPackage(p string) *packages.Package {
+	if p == "" {
+		return currentPkg
+	}
+
+	pkg, ok := packageCache[p]
+
+	if ok {
+		return pkg
+	}
+
+	allPkgs, err := packages.Load(&packages.Config{
+		Mode: packages.NeedName | packages.NeedTypes | packages.NeedTypesSizes | packages.NeedTypesInfo | packages.NeedSyntax,
+	}, imports[p].Path)
+
+	if err != nil {
+		panic(err)
+	}
+
+	packageCache[p] = allPkgs[0]
+
+	return allPkgs[0]
 }

@@ -2,6 +2,7 @@ package datatypes
 
 import (
 	"fmt"
+	lua "github.com/yuin/gopher-lua"
 	"math"
 )
 
@@ -102,4 +103,11 @@ func (f Vector3Float32) MultiplyByFloat32(i float32) Vector3Float32 {
 type Transform struct {
 	Position Vector3Float32
 	Rotation float32
+}
+
+func (f Vector3Float32) ToLua(state *lua.LState) lua.LValue {
+	ud := state.NewUserData()
+	ud.Value = f
+	state.SetMetatable(ud, state.GetTypeMetatable("Vector3"))
+	return ud
 }

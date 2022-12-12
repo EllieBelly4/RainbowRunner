@@ -29,6 +29,7 @@ func registerLuaUnitContainer(state *lua2.LState) {
 
 func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
+		"avatar": luaGenericGetSetValue[IUnitContainer, *Avatar](func(v IUnitContainer) **Avatar { return &v.GetUnitContainer().Avatar }),
 		"readUpdate": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
 			obj := objInterface.GetUnitContainer()

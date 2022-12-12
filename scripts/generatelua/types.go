@@ -97,8 +97,9 @@ func (f *StructDef) GetRequiredImports(importDefs map[string]*ImportDef) []*Impo
 		}
 
 		// These types must be mirrored in the template or the imports will be wrong
-		if !IsStringType(field) ||
-			!IsNumberType(field) {
+		if !IsStringType(field) &&
+			!IsNumberType(field) &&
+			!IsLuaConvertible(field) {
 			continue
 		}
 
@@ -126,6 +127,16 @@ func (v *ValueType) FullTypeString() string {
 	s += v.ParamType
 
 	return s
+}
+
+func (v *ValueType) FullTypeStringWithPtr() string {
+	typeString := v.FullTypeString()
+
+	if v.IsPointer {
+		typeString = "*" + typeString
+	}
+
+	return typeString
 }
 
 func (s *StructDef) MemberInitial() string {

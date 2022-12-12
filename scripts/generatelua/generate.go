@@ -20,12 +20,16 @@ var (
 	extends  = flag.String("extends", "", "Comma separated list of types to extend")
 )
 
+var (
+	fileStructs = make(map[string]*StructDef)
+	imports     = make(map[string]*ImportDef)
+	allStructs  = make(map[string]*StructDef)
+	funcDefs    = make(map[string]*FuncDef)
+	currentPkg  *packages.Package
+)
+
 func main() {
 	flag.Parse()
-	fileStructs := make(map[string]*StructDef)
-	imports := make(map[string]*ImportDef)
-	allStructs := make(map[string]*StructDef)
-	funcDefs := make(map[string]*FuncDef)
 
 	splitExtends := strings.Split(*extends, ",")
 
@@ -50,15 +54,17 @@ func main() {
 		panic(err)
 	}
 
-	addAllImports(imports, pkg[0])
+	currentPkg = pkg[0]
 
-	err = parseFileStructDefinitionsFromString(pkg[0], fileStructs, filePath)
+	addAllImports(imports, currentPkg)
+
+	err = parseFileStructDefinitionsFromString(currentPkg, fileStructs, filePath)
 
 	if err != nil {
 		panic(err)
 	}
 
-	addAllMemberFunctions(fileStructs, funcDefs, pkg[0])
+	addAllMemberFunctions(fileStructs, funcDefs, currentPkg)
 
 	err = getAllStructDefinitions(allStructs, cwd)
 

@@ -8,6 +8,7 @@ var templateFuncMap = template.FuncMap{
 	"isStringType":               IsStringType,
 	"generateCallString":         GenerateCallString,
 	"generateCallMemberFunction": GenerateCallMemberFunction,
+	"isLuaConvertible":           IsLuaConvertible,
 }
 
 const (
@@ -58,6 +59,8 @@ func luaMethods{{ .Struct.Name }}() map[string]lua2.LGFunction {
 		"{{ $field.NameCamelcase }}": luaGenericGetSetString[I{{ $struct.Name }}](func(v I{{ $struct.Name }}) *string { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
 		{{- else if isNumberType $field }}
 		"{{ $field.NameCamelcase }}": luaGenericGetSetNumber[I{{ $struct.Name }}](func(v I{{ $struct.Name }}) *{{ $field.FullTypeString }} { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
+		{{- else if isLuaConvertible $field }}
+		"{{ $field.NameCamelcase }}": luaGenericGetSetValue[I{{ $struct.Name }}, {{ $field.FullTypeStringWithPtr }}](func(v I{{ $struct.Name }}) *{{ $field.FullTypeStringWithPtr }} { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
 		{{- end }}
 	{{- end }}
 {{- end }}

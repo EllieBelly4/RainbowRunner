@@ -12,8 +12,6 @@ import (
 	"strings"
 )
 
-var ()
-
 func addAllMemberFunctions(structs map[string]*StructDef, defs map[string]*FuncDef, p *packages.Package) {
 	for _, f := range p.Syntax {
 		for _, decl := range f.Decls {

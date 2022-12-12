@@ -30,6 +30,7 @@ func registerLuaEquipmentInventory(state *lua2.LState) {
 
 func luaMethodsEquipmentInventory() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
+		"avatar": luaGenericGetSetValue[IEquipmentInventory, *Avatar](func(v IEquipmentInventory) **Avatar { return &v.GetEquipmentInventory().Avatar }),
 		"addChild": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IEquipmentInventory](l, 1)
 			obj := objInterface.GetEquipmentInventory()

@@ -10,6 +10,10 @@ func RegisterLuaGlobals(state *lua.LState) {
 	registerAllLuaFunctions(state)
 }
 
+type ILuaConvertible interface {
+	ToLua(state *lua.LState) lua.LValue
+}
+
 func luaMethodsExtend(child map[string]lua.LGFunction, parents ...func() map[string]lua.LGFunction) map[string]lua.LGFunction {
 	newMethods := make(map[string]lua.LGFunction)
 
