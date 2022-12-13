@@ -47,12 +47,12 @@ func IsNumberType(t IValueType) bool {
 	return false
 }
 
-func IsStringType(t IValueType) bool {
-	if t.GetParamType() == "string" {
-		return true
-	}
+func IsBoolType(v IValueType) bool {
+	return v.GetParamType() == "bool"
+}
 
-	return false
+func IsStringType(t IValueType) bool {
+	return t.GetParamType() == "string"
 }
 
 func (f *FieldDef) NameCamelcase() string {

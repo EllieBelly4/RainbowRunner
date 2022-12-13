@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"go/ast"
 	"strings"
 )
@@ -141,4 +142,28 @@ func (v *ValueType) FullTypeStringWithPtr() string {
 
 func (s *StructDef) MemberInitial() string {
 	return strings.ToLower(s.Name[:1])
+}
+
+func (v ValueType) IsStringType() bool {
+	return v.GetParamType() == "string"
+}
+
+func (v ValueType) IsNumberType() bool {
+	return IsNumberType(&v)
+}
+
+func (f *FuncDef) ResultAssignmentString() string {
+	if len(f.Results) == 0 {
+		return ""
+	}
+
+	resNames := make([]string, len(f.Results))
+
+	for i := 0; i < len(f.Results); i++ {
+		resNames[i] = fmt.Sprintf("res%d", i)
+	}
+
+	s := strings.Join(resNames, ", ")
+
+	return s
 }

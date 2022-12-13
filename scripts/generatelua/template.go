@@ -4,11 +4,16 @@ import "text/template"
 
 var templateFuncMap = template.FuncMap{
 	"add":                        Add,
-	"isNumberType":               IsNumberType,
-	"isStringType":               IsStringType,
 	"generateCallString":         GenerateCallString,
 	"generateCallMemberFunction": GenerateCallMemberFunction,
-	"isFieldLuaConvertible":      IsFieldLuaConvertible,
+}
+
+var typeCheckFunctions = template.FuncMap{
+	"isStringType":           IsStringType,
+	"isNumberType":           IsNumberType,
+	"isBoolType":             IsBoolType,
+	"isFieldLuaConvertible":  IsFieldLuaConvertible,
+	"isResultLuaConvertible": IsResultLuaConvertible,
 }
 
 const (
@@ -59,6 +64,8 @@ func luaMethods{{ .Struct.Name }}() map[string]lua2.LGFunction {
 		"{{ $field.NameCamelcase }}": luaGenericGetSetString[I{{ $struct.Name }}](func(v I{{ $struct.Name }}) *string { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
 		{{- else if isNumberType $field }}
 		"{{ $field.NameCamelcase }}": luaGenericGetSetNumber[I{{ $struct.Name }}](func(v I{{ $struct.Name }}) *{{ $field.FullTypeString }} { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
+		{{- else if isBoolType $field }}
+		"{{ $field.NameCamelcase }}": luaGenericGetSetBool[I{{ $struct.Name }}](func(v I{{ $struct.Name }}) *bool { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
 		{{- else if isFieldLuaConvertible $field }}
 		"{{ $field.NameCamelcase }}": luaGenericGetSetValue[I{{ $struct.Name }}, {{ $field.FullTypeStringWithPtr }}](func(v I{{ $struct.Name }}) *{{ $field.FullTypeStringWithPtr }} { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
 		{{- end }}

@@ -92,6 +92,9 @@ func NewUnit(gcType string) *Unit {
 	worldEntity := NewWorldEntity(gcType)
 	worldEntity.GCType = gcType
 
+	//worldEntity.WorldEntityFlags = 0x07
+	//worldEntity.WorldEntityInitFlags
+
 	return &Unit{
 		Level:       1,
 		HP:          100,

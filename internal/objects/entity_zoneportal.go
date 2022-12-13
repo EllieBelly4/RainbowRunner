@@ -44,6 +44,7 @@ func (z ZonePortal) WriteInit(b *byter.Byter) {
 func NewZonePortal(unk0, unk1 string) *ZonePortal {
 	worldEntity := NewWorldEntity("misc.ZonePortal")
 	worldEntity.GCNativeType = "zoneportal"
+	worldEntity.WorldEntityFlags = 0x07
 
 	return &ZonePortal{
 		WorldEntity: worldEntity,

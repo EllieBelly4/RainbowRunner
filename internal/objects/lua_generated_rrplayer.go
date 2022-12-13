@@ -29,6 +29,7 @@ func luaMethodsRRPlayer() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
 		"currentCharacter": luaGenericGetSetValue[IRRPlayer, *Player](func(v IRRPlayer) **Player { return &v.GetRRPlayer().CurrentCharacter }),
 		"zone":             luaGenericGetSetValue[IRRPlayer, *Zone](func(v IRRPlayer) **Zone { return &v.GetRRPlayer().Zone }),
+		"spawned":          luaGenericGetSetBool[IRRPlayer](func(v IRRPlayer) *bool { return &v.GetRRPlayer().Spawned }),
 		"getRRPlayer": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IRRPlayer](l, 1)
 			obj := objInterface.GetRRPlayer()
