@@ -1,0 +1,4006 @@
+{
+  "AdminUI": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "AdminUI",
+    "class_type": 0,
+    "something_class_type": 11
+  },
+  "AttributeUtil": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "AttributeUtil",
+    "class_type": 2,
+    "something_class_type": 12
+  },
+  "AvatarControl": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "AvatarControl",
+    "class_type": 4,
+    "something_class_type": 1082
+  },
+  "CharacterSelectionUI": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "CharacterSelectionUI",
+    "class_type": 6,
+    "something_class_type": 74
+  },
+  "ChatControl": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ChatControl",
+    "class_type": 7,
+    "something_class_type": 1194
+  },
+  "CheckpointDialog": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "CheckpointDialog",
+    "class_type": 8,
+    "something_class_type": 1322
+  },
+  "Compass": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Compass",
+    "class_type": 9,
+    "something_class_type": 1546
+  },
+  "DefaultWorldInputHandler": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DefaultWorldInputHandler",
+    "class_type": 11,
+    "something_class_type": 6152
+  },
+  "DialogControl": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DialogControl",
+    "class_type": 13,
+    "something_class_type": 24586
+  },
+  "GeneralOptions": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "GeneralOptions",
+    "class_type": 15,
+    "something_class_type": 49162
+  },
+  "GroupInviteDialog": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "GroupInviteDialog",
+    "class_type": 16,
+    "something_class_type": 81930
+  },
+  "HotIconControl": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "HotIconControl",
+    "class_type": 17,
+    "something_class_type": 132106
+  },
+  "HotItemList": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "HotItemList",
+    "class_type": 18,
+    "something_class_type": 263210
+  },
+  "InputOptions": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "InputOptions",
+    "class_type": 19,
+    "something_class_type": 540682
+  },
+  "InviteInputHandler": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "InviteInputHandler",
+    "class_type": 20,
+    "something_class_type": 1052680
+  },
+  "LoadingScreenProperties": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "LoadingScreenProperties",
+    "class_type": 21,
+    "something_class_type": 6291464
+  },
+  "LoadingScreenList": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "LoadingScreenList",
+    "class_type": 23,
+    "something_class_type": 12582920
+  },
+  "LoadingScreenManager": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "LoadingScreenManager",
+    "class_type": 24,
+    "something_class_type": 20971528
+  },
+  "LoadingScreen": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "LoadingScreen",
+    "class_type": 25,
+    "something_class_type": 33570826
+  },
+  "LoginUI": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "LoginUI",
+    "class_type": 26,
+    "something_class_type": 67125258
+  },
+  "MessageBoxOkay": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "MessageBoxOkay",
+    "class_type": 27,
+    "something_class_type": 402653194
+  },
+  "MessageBoxYN": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "MessageBoxYN",
+    "class_type": 29,
+    "something_class_type": 805306378
+  },
+  "MiniMapUI": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "MiniMapUI",
+    "class_type": 30,
+    "something_class_type": 1073742858
+  },
+  "ModListControl": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ModListControl",
+    "class_type": 31,
+    "something_class_type": 2147483658
+  },
+  "NPCDialog": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "NPCDialog",
+    "class_type": 32,
+    "something_class_type": 1066
+  },
+  "Options": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Options",
+    "class_type": 33,
+    "something_class_type": 16394
+  },
+  "PosseInviteDialog": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "PosseInviteDialog",
+    "class_type": 34,
+    "something_class_type": 16394
+  },
+  "PVPScoreDialog": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "PVPScoreDialog",
+    "class_type": 35,
+    "something_class_type": 10
+  },
+  "RespawnDialog": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "RespawnDialog",
+    "class_type": 36,
+    "something_class_type": 10
+  },
+  "ServerConnectionStatus": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ServerConnectionStatus",
+    "class_type": 37,
+    "something_class_type": 16394
+  },
+  "ServerSelection": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ServerSelection",
+    "class_type": 38,
+    "something_class_type": 16394
+  },
+  "SkillTrainerDialog": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SkillTrainerDialog",
+    "class_type": 39,
+    "something_class_type": 1066
+  },
+  "SoundOptions": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SoundOptions",
+    "class_type": 40,
+    "something_class_type": 16394
+  },
+  "StatusControl": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "StatusControl",
+    "class_type": 41,
+    "something_class_type": 1034
+  },
+  "SyncErrorRespawnDialog": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SyncErrorRespawnDialog",
+    "class_type": 42,
+    "something_class_type": 10
+  },
+  "TaskControl": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "TaskControl",
+    "class_type": 43,
+    "something_class_type": 1066
+  },
+  "TemplateControl": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "TemplateControl",
+    "class_type": 14,
+    "something_class_type": 16394
+  },
+  "UserContextMenu": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "UserContextMenu",
+    "class_type": 44,
+    "something_class_type": 16394
+  },
+  "WorldCamera": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "WorldCamera",
+    "class_type": 45,
+    "something_class_type": 8
+  },
+  "WorldCameraSettings": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "WorldCameraSettings",
+    "class_type": 47,
+    "something_class_type": 4194312
+  },
+  "WorldControl": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "WorldControl",
+    "class_type": 10,
+    "something_class_type": 1034
+  },
+  "WorldGroupPanel": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "WorldGroupPanel",
+    "class_type": 48,
+    "something_class_type": 10
+  },
+  "WorldInputHandler": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "WorldInputHandler",
+    "class_type": 12,
+    "something_class_type": 4104
+  },
+  "WorldPanel": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "WorldPanel",
+    "class_type": 5,
+    "something_class_type": 1066
+  },
+  "WorldUI": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "WorldUI",
+    "class_type": 49,
+    "something_class_type": 10
+  },
+  "WorldUIBannerAd": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "WorldUIBannerAd",
+    "class_type": 50,
+    "something_class_type": 16394
+  },
+  "BankControl": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "BankControl",
+    "class_type": 51,
+    "something_class_type": 1066
+  },
+  "ConsumeItemInputHandler": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ConsumeItemInputHandler",
+    "class_type": 52,
+    "something_class_type": 4104
+  },
+  "EquipmentControl": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "EquipmentControl",
+    "class_type": 53,
+    "something_class_type": 1066
+  },
+  "EquipmentIconControl": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "EquipmentIconControl",
+    "class_type": 54,
+    "something_class_type": 1034
+  },
+  "UseItemInputHandler": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "UseItemInputHandler",
+    "class_type": 55,
+    "something_class_type": 4104
+  },
+  "EquipmentList": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "EquipmentList",
+    "class_type": 56,
+    "something_class_type": 1066
+  },
+  "InventoryControl": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "InventoryControl",
+    "class_type": 57,
+    "something_class_type": 1066
+  },
+  "InventoryPanel": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "InventoryPanel",
+    "class_type": 58,
+    "something_class_type": 10
+  },
+  "ItemUtil": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ItemUtil",
+    "class_type": 59,
+    "something_class_type": 8
+  },
+  "MerchantControl": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "MerchantControl",
+    "class_type": 60,
+    "something_class_type": 1066
+  },
+  "TradeControl": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "TradeControl",
+    "class_type": 61,
+    "something_class_type": 1066
+  },
+  "TradeOverFlowControl": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "TradeOverFlowControl",
+    "class_type": 62,
+    "something_class_type": 1066
+  },
+  "SkillEquipInputHandler": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SkillEquipInputHandler",
+    "class_type": 63,
+    "something_class_type": 4104
+  },
+  "SkillIconControl": {
+    "mask0": 1,
+    "mask1": 0,
+    "name": "SkillIconControl",
+    "class_type": 64,
+    "something_class_type": 1034
+  },
+  "UseSkillInputHandler": {
+    "mask0": 2,
+    "mask1": 0,
+    "name": "UseSkillInputHandler",
+    "class_type": 65,
+    "something_class_type": 4104
+  },
+  "SkillList": {
+    "mask0": 4,
+    "mask1": 0,
+    "name": "SkillList",
+    "class_type": 66,
+    "something_class_type": 1066
+  },
+  "SkillPanel": {
+    "mask0": 8,
+    "mask1": 0,
+    "name": "SkillPanel",
+    "class_type": 67,
+    "something_class_type": 1034
+  },
+  "SkillsControl": {
+    "mask0": 16,
+    "mask1": 0,
+    "name": "SkillsControl",
+    "class_type": 68,
+    "something_class_type": 1066
+  },
+  "FriendPanel": {
+    "mask0": 32,
+    "mask1": 0,
+    "name": "FriendPanel",
+    "class_type": 69,
+    "something_class_type": 16394
+  },
+  "GroupsPanel": {
+    "mask0": 64,
+    "mask1": 0,
+    "name": "GroupsPanel",
+    "class_type": 70,
+    "something_class_type": 16394
+  },
+  "IgnorePanel": {
+    "mask0": 128,
+    "mask1": 0,
+    "name": "IgnorePanel",
+    "class_type": 71,
+    "something_class_type": 16394
+  },
+  "SocialControl": {
+    "mask0": 256,
+    "mask1": 0,
+    "name": "SocialControl",
+    "class_type": 72,
+    "something_class_type": 1066
+  },
+  "WhoPanel": {
+    "mask0": 512,
+    "mask1": 0,
+    "name": "WhoPanel",
+    "class_type": 73,
+    "something_class_type": 16394
+  },
+  "PosseControl": {
+    "mask0": 1024,
+    "mask1": 0,
+    "name": "PosseControl",
+    "class_type": 74,
+    "something_class_type": 1066
+  },
+  "PosseInfoEditPanel": {
+    "mask0": 2048,
+    "mask1": 0,
+    "name": "PosseInfoEditPanel",
+    "class_type": 75,
+    "something_class_type": 16394
+  },
+  "PosseInfoPanel": {
+    "mask0": 4096,
+    "mask1": 0,
+    "name": "PosseInfoPanel",
+    "class_type": 76,
+    "something_class_type": 16394
+  },
+  "PosseRegistryDialog": {
+    "mask0": 8192,
+    "mask1": 0,
+    "name": "PosseRegistryDialog",
+    "class_type": 77,
+    "something_class_type": 1066
+  },
+  "PosseRosterPanel": {
+    "mask0": 16384,
+    "mask1": 0,
+    "name": "PosseRosterPanel",
+    "class_type": 78,
+    "something_class_type": 16394
+  },
+  "Animation": {
+    "mask0": 32768,
+    "mask1": 0,
+    "name": "Animation",
+    "class_type": 79,
+    "something_class_type": 4194312
+  },
+  "AnimationList": {
+    "mask0": 65536,
+    "mask1": 0,
+    "name": "AnimationList",
+    "class_type": 80,
+    "something_class_type": 4194312
+  },
+  "EntityObject": {
+    "mask0": 393216,
+    "mask1": 0,
+    "name": "EntityObject",
+    "class_type": 81,
+    "something_class_type": 4194312
+  },
+  "EntityObjectDesc": {
+    "mask0": 1572864,
+    "mask1": 32,
+    "name": "EntityObjectDesc",
+    "class_type": 83,
+    "something_class_type": 4194312
+  },
+  "StaticObject": {
+    "mask0": 2359296,
+    "mask1": 0,
+    "name": "StaticObject",
+    "class_type": 85,
+    "something_class_type": 4194312
+  },
+  "StaticObjectDesc": {
+    "mask0": 5242880,
+    "mask1": 32,
+    "name": "StaticObjectDesc",
+    "class_type": 86,
+    "something_class_type": 4194312
+  },
+  "Visual": {
+    "mask0": 8388608,
+    "mask1": 0,
+    "name": "Visual",
+    "class_type": 87,
+    "something_class_type": 4194312
+  },
+  "MountedVisual": {
+    "mask0": 25165824,
+    "mask1": 0,
+    "name": "MountedVisual",
+    "class_type": 88,
+    "something_class_type": 4194312
+  },
+  "DyeVisual": {
+    "mask0": 41943040,
+    "mask1": 0,
+    "name": "DyeVisual",
+    "class_type": 89,
+    "something_class_type": 4194312
+  },
+  "TypeSwitchVisual": {
+    "mask0": 75497472,
+    "mask1": 0,
+    "name": "TypeSwitchVisual",
+    "class_type": 90,
+    "something_class_type": 4194312
+  },
+  "RemoveNodeVisual": {
+    "mask0": 142606336,
+    "mask1": 0,
+    "name": "RemoveNodeVisual",
+    "class_type": 91,
+    "something_class_type": 4194312
+  },
+  "AnimateNodeVisual": {
+    "mask0": 276824064,
+    "mask1": 0,
+    "name": "AnimateNodeVisual",
+    "class_type": 92,
+    "something_class_type": 4194312
+  },
+  "World": {
+    "mask0": 536870912,
+    "mask1": 0,
+    "name": "World",
+    "class_type": 93,
+    "something_class_type": 4194312
+  },
+  "WorldEntity": {
+    "mask0": 3221225472,
+    "mask1": 0,
+    "name": "WorldEntity",
+    "class_type": 94,
+    "something_class_type": 4194312
+  },
+  "WorldEntityDesc": {
+    "mask0": 0,
+    "mask1": 35,
+    "name": "WorldEntityDesc",
+    "class_type": 96,
+    "something_class_type": 4194312
+  },
+  "WorldLight": {
+    "mask0": 262144,
+    "mask1": 4,
+    "name": "WorldLight",
+    "class_type": 98,
+    "something_class_type": 4194312
+  },
+  "WorldMap": {
+    "mask0": 0,
+    "mask1": 8,
+    "name": "WorldMap",
+    "class_type": 99,
+    "something_class_type": 4194312
+  },
+  "WorldMapRenderer": {
+    "mask0": 0,
+    "mask1": 16,
+    "name": "WorldMapRenderer",
+    "class_type": 100,
+    "something_class_type": 8
+  },
+  "WorldObject": {
+    "mask0": 262144,
+    "mask1": 0,
+    "name": "WorldObject",
+    "class_type": 82,
+    "something_class_type": 4194312
+  },
+  "WorldObjectDesc": {
+    "mask0": 1048576,
+    "mask1": 32,
+    "name": "WorldObjectDesc",
+    "class_type": 84,
+    "something_class_type": 4194312
+  },
+  "WorldObjectGroup": {
+    "mask0": 0,
+    "mask1": 64,
+    "name": "WorldObjectGroup",
+    "class_type": 102,
+    "something_class_type": 4194312
+  },
+  "WorldSceneManager": {
+    "mask0": 0,
+    "mask1": 128,
+    "name": "WorldSceneManager",
+    "class_type": 103,
+    "something_class_type": 8
+  },
+  "WorldTimer": {
+    "mask0": 0,
+    "mask1": 256,
+    "name": "WorldTimer",
+    "class_type": 104,
+    "something_class_type": 4194312
+  },
+  "GrassObject": {
+    "mask0": 262144,
+    "mask1": 512,
+    "name": "GrassObject",
+    "class_type": 105,
+    "something_class_type": 4194312
+  },
+  "LavaObject": {
+    "mask0": 262144,
+    "mask1": 1024,
+    "name": "LavaObject",
+    "class_type": 106,
+    "something_class_type": 4194312
+  },
+  "LavaObjectDesc": {
+    "mask0": 1048576,
+    "mask1": 2080,
+    "name": "LavaObjectDesc",
+    "class_type": 107,
+    "something_class_type": 4194312
+  },
+  "CollisionObject": {
+    "mask0": 0,
+    "mask1": 4096,
+    "name": "CollisionObject",
+    "class_type": 108,
+    "something_class_type": 8
+  },
+  "HybridCollisionObject": {
+    "mask0": 0,
+    "mask1": 12288,
+    "name": "HybridCollisionObject",
+    "class_type": 109,
+    "something_class_type": 8
+  },
+  "PolyCollisionObject": {
+    "mask0": 0,
+    "mask1": 20480,
+    "name": "PolyCollisionObject",
+    "class_type": 110,
+    "something_class_type": 8
+  },
+  "SimpleCollisionObject": {
+    "mask0": 0,
+    "mask1": 36864,
+    "name": "SimpleCollisionObject",
+    "class_type": 111,
+    "something_class_type": 8
+  },
+  "WorldCollisionManager": {
+    "mask0": 0,
+    "mask1": 65536,
+    "name": "WorldCollisionManager",
+    "class_type": 112,
+    "something_class_type": 8
+  },
+  "WorldCollisionObject": {
+    "mask0": 0,
+    "mask1": 131072,
+    "name": "WorldCollisionObject",
+    "class_type": 113,
+    "something_class_type": 8
+  },
+  "Attribute": {
+    "mask0": 0,
+    "mask1": 786432,
+    "name": "Attribute",
+    "class_type": 114,
+    "something_class_type": 4194312
+  },
+  "Avatar": {
+    "mask0": 3221225472,
+    "mask1": 70254592,
+    "name": "Avatar",
+    "class_type": 116,
+    "something_class_type": 4194312
+  },
+  "AvatarDesc": {
+    "mask0": 0,
+    "mask1": 146800675,
+    "name": "AvatarDesc",
+    "class_type": 118,
+    "something_class_type": 4194312
+  },
+  "AvatarMetrics": {
+    "mask0": 0,
+    "mask1": 16777216,
+    "name": "AvatarMetrics",
+    "class_type": 120,
+    "something_class_type": 4194312
+  },
+  "Damage": {
+    "mask0": 0,
+    "mask1": 33554432,
+    "name": "Damage",
+    "class_type": 121,
+    "something_class_type": 8
+  },
+  "Hero": {
+    "mask0": 3221225472,
+    "mask1": 69206016,
+    "name": "Hero",
+    "class_type": 117,
+    "something_class_type": 4194312
+  },
+  "HeroDesc": {
+    "mask0": 0,
+    "mask1": 142606371,
+    "name": "HeroDesc",
+    "class_type": 119,
+    "something_class_type": 4194312
+  },
+  "Manipulator": {
+    "mask0": 0,
+    "mask1": 268435456,
+    "name": "Manipulator",
+    "class_type": 124,
+    "something_class_type": 4194312
+  },
+  "ManipulatorDesc": {
+    "mask0": 0,
+    "mask1": 536870944,
+    "name": "ManipulatorDesc",
+    "class_type": 125,
+    "something_class_type": 4194312
+  },
+  "Manipulators": {
+    "mask0": 0,
+    "mask1": 3221225472,
+    "name": "Manipulators",
+    "class_type": 126,
+    "something_class_type": 4194312
+  },
+  "Modifier": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Modifier",
+    "class_type": 128,
+    "something_class_type": 4194312
+  },
+  "ModifierDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "ModifierDesc",
+    "class_type": 129,
+    "something_class_type": 4194312
+  },
+  "Modifiers": {
+    "mask0": 0,
+    "mask1": 2147483648,
+    "name": "Modifiers",
+    "class_type": 130,
+    "something_class_type": 4194312
+  },
+  "StockUnit": {
+    "mask0": 3221225472,
+    "mask1": 67108864,
+    "name": "StockUnit",
+    "class_type": 131,
+    "something_class_type": 4194312
+  },
+  "StockUnitDesc": {
+    "mask0": 0,
+    "mask1": 134217763,
+    "name": "StockUnitDesc",
+    "class_type": 132,
+    "something_class_type": 4194312
+  },
+  "SummonedUnit": {
+    "mask0": 3221225472,
+    "mask1": 67108864,
+    "name": "SummonedUnit",
+    "class_type": 133,
+    "something_class_type": 4194312
+  },
+  "SummonedUnitDesc": {
+    "mask0": 0,
+    "mask1": 134217763,
+    "name": "SummonedUnitDesc",
+    "class_type": 134,
+    "something_class_type": 4194312
+  },
+  "Unit": {
+    "mask0": 3221225472,
+    "mask1": 67108864,
+    "name": "Unit",
+    "class_type": 122,
+    "something_class_type": 4194312
+  },
+  "UnitDesc": {
+    "mask0": 0,
+    "mask1": 134217763,
+    "name": "UnitDesc",
+    "class_type": 123,
+    "something_class_type": 4194312
+  },
+  "Vehicle": {
+    "mask0": 3221225472,
+    "mask1": 67108864,
+    "name": "Vehicle",
+    "class_type": 135,
+    "something_class_type": 4194312
+  },
+  "VehicleDesc": {
+    "mask0": 0,
+    "mask1": 134217763,
+    "name": "VehicleDesc",
+    "class_type": 136,
+    "something_class_type": 4194312
+  },
+  "Action": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Action",
+    "class_type": 137,
+    "something_class_type": 4194312
+  },
+  "Behavior": {
+    "mask0": 0,
+    "mask1": 2147483648,
+    "name": "Behavior",
+    "class_type": 138,
+    "something_class_type": 4194312
+  },
+  "BehaviorDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "BehaviorDesc",
+    "class_type": 139,
+    "something_class_type": 4194312
+  },
+  "BlingGnomeBehavior": {
+    "mask0": 0,
+    "mask1": 2147483648,
+    "name": "BlingGnomeBehavior",
+    "class_type": 140,
+    "something_class_type": 4194312
+  },
+  "BlingGnomeBehaviorDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "BlingGnomeBehaviorDesc",
+    "class_type": 142,
+    "something_class_type": 4194312
+  },
+  "HenchmenBehaviorDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "HenchmenBehaviorDesc",
+    "class_type": 144,
+    "something_class_type": 4194312
+  },
+  "HenchmenBehavior": {
+    "mask0": 0,
+    "mask1": 2147483648,
+    "name": "HenchmenBehavior",
+    "class_type": 145,
+    "something_class_type": 4194312
+  },
+  "MonsterBehavior2": {
+    "mask0": 0,
+    "mask1": 2147483648,
+    "name": "MonsterBehavior2",
+    "class_type": 146,
+    "something_class_type": 4194312
+  },
+  "MonsterBehavior2Desc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "MonsterBehavior2Desc",
+    "class_type": 147,
+    "something_class_type": 4194312
+  },
+  "MonsterBehaviorDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "MonsterBehaviorDesc",
+    "class_type": 148,
+    "something_class_type": 4194312
+  },
+  "UnitAction": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "UnitAction",
+    "class_type": 149,
+    "something_class_type": 4194312
+  },
+  "UnitBehavior": {
+    "mask0": 0,
+    "mask1": 2147483648,
+    "name": "UnitBehavior",
+    "class_type": 141,
+    "something_class_type": 4194312
+  },
+  "UnitBehaviorDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "UnitBehaviorDesc",
+    "class_type": 143,
+    "something_class_type": 4194312
+  },
+  "Activate": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Activate",
+    "class_type": 150,
+    "something_class_type": 4194312
+  },
+  "Ambush": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Ambush",
+    "class_type": 151,
+    "something_class_type": 4194312
+  },
+  "AttackTarget2": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "AttackTarget2",
+    "class_type": 152,
+    "something_class_type": 4194312
+  },
+  "ConvertItemsToGold": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ConvertItemsToGold",
+    "class_type": 153,
+    "something_class_type": 4194312
+  },
+  "Die": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Die",
+    "class_type": 154,
+    "something_class_type": 4194312
+  },
+  "Dodge": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Dodge",
+    "class_type": 155,
+    "something_class_type": 4194312
+  },
+  "DoEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DoEffect",
+    "class_type": 156,
+    "something_class_type": 4194312
+  },
+  "FaceTarget": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "FaceTarget",
+    "class_type": 157,
+    "something_class_type": 4194312
+  },
+  "Flee": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Flee",
+    "class_type": 158,
+    "something_class_type": 4194312
+  },
+  "Follow": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Follow",
+    "class_type": 159,
+    "something_class_type": 4194312
+  },
+  "Hide": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Hide",
+    "class_type": 160,
+    "something_class_type": 4194312
+  },
+  "Idle": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Idle",
+    "class_type": 161,
+    "something_class_type": 4194312
+  },
+  "Immobilize": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Immobilize",
+    "class_type": 162,
+    "something_class_type": 4194312
+  },
+  "Kill": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Kill",
+    "class_type": 163,
+    "something_class_type": 4194312
+  },
+  "KnockBack": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "KnockBack",
+    "class_type": 164,
+    "something_class_type": 4194312
+  },
+  "KnockDown": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "KnockDown",
+    "class_type": 165,
+    "something_class_type": 4194312
+  },
+  "MoveInDirectionAction": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "MoveInDirectionAction",
+    "class_type": 166,
+    "something_class_type": 4194312
+  },
+  "MoveTo": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "MoveTo",
+    "class_type": 167,
+    "something_class_type": 4194312
+  },
+  "PlayAnimation": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "PlayAnimation",
+    "class_type": 168,
+    "something_class_type": 4194312
+  },
+  "Remove": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Remove",
+    "class_type": 169,
+    "something_class_type": 4194312
+  },
+  "Ressurect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Ressurect",
+    "class_type": 170,
+    "something_class_type": 4194312
+  },
+  "RetrieveItem": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "RetrieveItem",
+    "class_type": 171,
+    "something_class_type": 4194312
+  },
+  "SearchForAttack": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SearchForAttack",
+    "class_type": 172,
+    "something_class_type": 4194312
+  },
+  "SetBlocking": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SetBlocking",
+    "class_type": 173,
+    "something_class_type": 4194312
+  },
+  "Spawn": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Spawn",
+    "class_type": 174,
+    "something_class_type": 4194312
+  },
+  "SpawnAnimation": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpawnAnimation",
+    "class_type": 175,
+    "something_class_type": 4194312
+  },
+  "Stun": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Stun",
+    "class_type": 176,
+    "something_class_type": 4194312
+  },
+  "TurnAction": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "TurnAction",
+    "class_type": 177,
+    "something_class_type": 4194312
+  },
+  "UnSpawn": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "UnSpawn",
+    "class_type": 178,
+    "something_class_type": 4194312
+  },
+  "Wait": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Wait",
+    "class_type": 179,
+    "something_class_type": 4194312
+  },
+  "Wander": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Wander",
+    "class_type": 180,
+    "something_class_type": 4194312
+  },
+  "WarpTo": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "WarpTo",
+    "class_type": 181,
+    "something_class_type": 4194312
+  },
+  "AttributeTitle": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "AttributeTitle",
+    "class_type": 182,
+    "something_class_type": 4194312
+  },
+  "LevelTitle": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "LevelTitle",
+    "class_type": 183,
+    "something_class_type": 4194312
+  },
+  "ProfessionTitle": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ProfessionTitle",
+    "class_type": 184,
+    "something_class_type": 4194312
+  },
+  "TitleRange": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "TitleRange",
+    "class_type": 185,
+    "something_class_type": 4194312
+  },
+  "ActivePassiveSkill": {
+    "mask0": 0,
+    "mask1": 268435456,
+    "name": "ActivePassiveSkill",
+    "class_type": 186,
+    "something_class_type": 4194312
+  },
+  "ActivePassiveSkillDesc": {
+    "mask0": 0,
+    "mask1": 536870944,
+    "name": "ActivePassiveSkillDesc",
+    "class_type": 188,
+    "something_class_type": 4194312
+  },
+  "ActiveSkill": {
+    "mask0": 0,
+    "mask1": 268435456,
+    "name": "ActiveSkill",
+    "class_type": 190,
+    "something_class_type": 4194312
+  },
+  "ActiveSkillDesc": {
+    "mask0": 0,
+    "mask1": 536870944,
+    "name": "ActiveSkillDesc",
+    "class_type": 191,
+    "something_class_type": 4194312
+  },
+  "InnateSkill": {
+    "mask0": 0,
+    "mask1": 268435456,
+    "name": "InnateSkill",
+    "class_type": 192,
+    "something_class_type": 4194312
+  },
+  "InnateSkillDesc": {
+    "mask0": 0,
+    "mask1": 536870944,
+    "name": "InnateSkillDesc",
+    "class_type": 193,
+    "something_class_type": 4194312
+  },
+  "PassiveSkill": {
+    "mask0": 0,
+    "mask1": 268435456,
+    "name": "PassiveSkill",
+    "class_type": 194,
+    "something_class_type": 4194312
+  },
+  "PassiveSkillDesc": {
+    "mask0": 0,
+    "mask1": 536870944,
+    "name": "PassiveSkillDesc",
+    "class_type": 195,
+    "something_class_type": 4194312
+  },
+  "SimpleSkills": {
+    "mask0": 0,
+    "mask1": 2147483648,
+    "name": "SimpleSkills",
+    "class_type": 196,
+    "something_class_type": 4194312
+  },
+  "Skill": {
+    "mask0": 0,
+    "mask1": 268435456,
+    "name": "Skill",
+    "class_type": 187,
+    "something_class_type": 4194312
+  },
+  "SkillDesc": {
+    "mask0": 0,
+    "mask1": 536870944,
+    "name": "SkillDesc",
+    "class_type": 189,
+    "something_class_type": 4194312
+  },
+  "SkillProfessionDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "SkillProfessionDesc",
+    "class_type": 197,
+    "something_class_type": 4194312
+  },
+  "SkillProfession": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SkillProfession",
+    "class_type": 198,
+    "something_class_type": 4194312
+  },
+  "Skills": {
+    "mask0": 0,
+    "mask1": 2147483648,
+    "name": "Skills",
+    "class_type": 199,
+    "something_class_type": 4194312
+  },
+  "SkillsDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "SkillsDesc",
+    "class_type": 200,
+    "something_class_type": 4194312
+  },
+  "SkillSlot": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SkillSlot",
+    "class_type": 202,
+    "something_class_type": 4194312
+  },
+  "AvailableSkill": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "AvailableSkill",
+    "class_type": 203,
+    "something_class_type": 4194312
+  },
+  "AvailableProfession": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "AvailableProfession",
+    "class_type": 204,
+    "something_class_type": 4194312
+  },
+  "SkillTrainerDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "SkillTrainerDesc",
+    "class_type": 205,
+    "something_class_type": 4194312
+  },
+  "SkillTrainer": {
+    "mask0": 0,
+    "mask1": 2147483648,
+    "name": "SkillTrainer",
+    "class_type": 206,
+    "something_class_type": 4194312
+  },
+  "SpellEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellEffect",
+    "class_type": 207,
+    "something_class_type": 4194312
+  },
+  "Use": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Use",
+    "class_type": 208,
+    "something_class_type": 4194312
+  },
+  "UsePosition": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "UsePosition",
+    "class_type": 209,
+    "something_class_type": 4194312
+  },
+  "UseTarget": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "UseTarget",
+    "class_type": 210,
+    "something_class_type": 4194312
+  },
+  "SpellAOEEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellAOEEffect",
+    "class_type": 211,
+    "something_class_type": 4194312
+  },
+  "SpellBurstEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellBurstEffect",
+    "class_type": 212,
+    "something_class_type": 4194312
+  },
+  "SpellChainEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellChainEffect",
+    "class_type": 213,
+    "something_class_type": 4194312
+  },
+  "SpellChainProjectile": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellChainProjectile",
+    "class_type": 214,
+    "something_class_type": 4194312
+  },
+  "SpellChainProjectileDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "SpellChainProjectileDesc",
+    "class_type": 216,
+    "something_class_type": 4194312
+  },
+  "SpellConvertItemsToGoldEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellConvertItemsToGoldEffect",
+    "class_type": 217,
+    "something_class_type": 4194312
+  },
+  "SpellDamageEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellDamageEffect",
+    "class_type": 218,
+    "something_class_type": 4194312
+  },
+  "SpellDeSpawnEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellDeSpawnEffect",
+    "class_type": 219,
+    "something_class_type": 4194312
+  },
+  "SpellDFAEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellDFAEffect",
+    "class_type": 220,
+    "something_class_type": 4194312
+  },
+  "SpellDispelEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellDispelEffect",
+    "class_type": 221,
+    "something_class_type": 4194312
+  },
+  "SpellDropItemsEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellDropItemsEffect",
+    "class_type": 222,
+    "something_class_type": 4194312
+  },
+  "SpellEffectEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellEffectEffect",
+    "class_type": 223,
+    "something_class_type": 4194312
+  },
+  "SpellKnockBackEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellKnockBackEffect",
+    "class_type": 224,
+    "something_class_type": 4194312
+  },
+  "SpellKnockDownEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellKnockDownEffect",
+    "class_type": 225,
+    "something_class_type": 4194312
+  },
+  "SpellLearnSkillEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellLearnSkillEffect",
+    "class_type": 226,
+    "something_class_type": 4194312
+  },
+  "SpellForgetSkillEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellForgetSkillEffect",
+    "class_type": 227,
+    "something_class_type": 4194312
+  },
+  "SpellModEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellModEffect",
+    "class_type": 228,
+    "something_class_type": 4194312
+  },
+  "SpellProjectile": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellProjectile",
+    "class_type": 229,
+    "something_class_type": 4194312
+  },
+  "SpellProjectileDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "SpellProjectileDesc",
+    "class_type": 230,
+    "something_class_type": 4194312
+  },
+  "SpellProjectileEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellProjectileEffect",
+    "class_type": 231,
+    "something_class_type": 4194312
+  },
+  "SpellRadialEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellRadialEffect",
+    "class_type": 232,
+    "something_class_type": 4194312
+  },
+  "SpellRadialProjectile": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellRadialProjectile",
+    "class_type": 233,
+    "something_class_type": 4194312
+  },
+  "SpellRadialProjectileDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "SpellRadialProjectileDesc",
+    "class_type": 234,
+    "something_class_type": 4194312
+  },
+  "SpellRandomEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellRandomEffect",
+    "class_type": 235,
+    "something_class_type": 4194312
+  },
+  "SpellRemoveFromWorldEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellRemoveFromWorldEffect",
+    "class_type": 236,
+    "something_class_type": 4194312
+  },
+  "SpellRemoveModifierEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellRemoveModifierEffect",
+    "class_type": 237,
+    "something_class_type": 4194312
+  },
+  "SpellRessurectEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellRessurectEffect",
+    "class_type": 238,
+    "something_class_type": 4194312
+  },
+  "SpellSnapToGroundEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellSnapToGroundEffect",
+    "class_type": 239,
+    "something_class_type": 4194312
+  },
+  "SpellSoundEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellSoundEffect",
+    "class_type": 240,
+    "something_class_type": 4194312
+  },
+  "SpellSpawnEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellSpawnEffect",
+    "class_type": 241,
+    "something_class_type": 4194312
+  },
+  "SpellSwitchEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellSwitchEffect",
+    "class_type": 242,
+    "something_class_type": 4194312
+  },
+  "SpellTeleportEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellTeleportEffect",
+    "class_type": 243,
+    "something_class_type": 4194312
+  },
+  "SpellTownPortalEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellTownPortalEffect",
+    "class_type": 244,
+    "something_class_type": 4194312
+  },
+  "SpellWeaponDamageEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SpellWeaponDamageEffect",
+    "class_type": 245,
+    "something_class_type": 4194312
+  },
+  "AuraMod": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "AuraMod",
+    "class_type": 246,
+    "something_class_type": 4194312
+  },
+  "AuraModDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "AuraModDesc",
+    "class_type": 247,
+    "something_class_type": 4194312
+  },
+  "EffectMod": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "EffectMod",
+    "class_type": 248,
+    "something_class_type": 4194312
+  },
+  "EffectModDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "EffectModDesc",
+    "class_type": 249,
+    "something_class_type": 4194312
+  },
+  "AmbushSpawnPoint": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "AmbushSpawnPoint",
+    "class_type": 250,
+    "something_class_type": 4194312
+  },
+  "AmbushEncounterDesc": {
+    "mask0": 0,
+    "mask1": 35,
+    "name": "AmbushEncounterDesc",
+    "class_type": 251,
+    "something_class_type": 4194312
+  },
+  "AmbushEncounter": {
+    "mask0": 3221225472,
+    "mask1": 0,
+    "name": "AmbushEncounter",
+    "class_type": 252,
+    "something_class_type": 4194312
+  },
+  "Encounter": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Encounter",
+    "class_type": 253,
+    "something_class_type": 4194312
+  },
+  "EncounterObject": {
+    "mask0": 3221225472,
+    "mask1": 0,
+    "name": "EncounterObject",
+    "class_type": 254,
+    "something_class_type": 4194312
+  },
+  "EncounterPlaceholderEntity": {
+    "mask0": 3221225472,
+    "mask1": 0,
+    "name": "EncounterPlaceholderEntity",
+    "class_type": 256,
+    "something_class_type": 4194312
+  },
+  "EncounterTable": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "EncounterTable",
+    "class_type": 258,
+    "something_class_type": 4194312
+  },
+  "EncounterUnit": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "EncounterUnit",
+    "class_type": 259,
+    "something_class_type": 4194312
+  },
+  "PlaceholderEntity": {
+    "mask0": 3221225472,
+    "mask1": 0,
+    "name": "PlaceholderEntity",
+    "class_type": 257,
+    "something_class_type": 4194312
+  },
+  "RoomPlaceholderEntity": {
+    "mask0": 3221225472,
+    "mask1": 0,
+    "name": "RoomPlaceholderEntity",
+    "class_type": 260,
+    "something_class_type": 4194312
+  },
+  "SingleStaticObjectGenerator": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SingleStaticObjectGenerator",
+    "class_type": 261,
+    "something_class_type": 4194312
+  },
+  "SingleWorldEntityGenerator": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SingleWorldEntityGenerator",
+    "class_type": 263,
+    "something_class_type": 4194312
+  },
+  "StaticObjectPlaceholder": {
+    "mask0": 2359296,
+    "mask1": 0,
+    "name": "StaticObjectPlaceholder",
+    "class_type": 267,
+    "something_class_type": 4194312
+  },
+  "AttributeModifier": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "AttributeModifier",
+    "class_type": 270,
+    "something_class_type": 4194312
+  },
+  "AttributeModifierDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "AttributeModifierDesc",
+    "class_type": 271,
+    "something_class_type": 4194312
+  },
+  "CowardiceModifier": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "CowardiceModifier",
+    "class_type": 272,
+    "something_class_type": 4194312
+  },
+  "CowardiceModifierDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "CowardiceModifierDesc",
+    "class_type": 273,
+    "something_class_type": 4194312
+  },
+  "HealthModifier": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "HealthModifier",
+    "class_type": 274,
+    "something_class_type": 4194312
+  },
+  "HealthModifierDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "HealthModifierDesc",
+    "class_type": 275,
+    "something_class_type": 4194312
+  },
+  "ImmobilizeModifier": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ImmobilizeModifier",
+    "class_type": 276,
+    "something_class_type": 4194312
+  },
+  "ImmobilizeModifierDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "ImmobilizeModifierDesc",
+    "class_type": 277,
+    "something_class_type": 4194312
+  },
+  "LeachModifier": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "LeachModifier",
+    "class_type": 278,
+    "something_class_type": 4194312
+  },
+  "LeachModifierDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "LeachModifierDesc",
+    "class_type": 279,
+    "something_class_type": 4194312
+  },
+  "ManaShieldModifier": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ManaShieldModifier",
+    "class_type": 280,
+    "something_class_type": 4194312
+  },
+  "ManaShieldModifierDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "ManaShieldModifierDesc",
+    "class_type": 281,
+    "something_class_type": 4194312
+  },
+  "OverrideAnimationModifier": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "OverrideAnimationModifier",
+    "class_type": 282,
+    "something_class_type": 4194312
+  },
+  "OverrideAnimationModifierDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "OverrideAnimationModifierDesc",
+    "class_type": 283,
+    "something_class_type": 4194312
+  },
+  "ProcModifier": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ProcModifier",
+    "class_type": 284,
+    "something_class_type": 4194312
+  },
+  "ProcModifierDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "ProcModifierDesc",
+    "class_type": 285,
+    "something_class_type": 4194312
+  },
+  "ProcCondition": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ProcCondition",
+    "class_type": 286,
+    "something_class_type": 4194312
+  },
+  "PVPBalanceModifier": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "PVPBalanceModifier",
+    "class_type": 287,
+    "something_class_type": 4194312
+  },
+  "TriggerModifier": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "TriggerModifier",
+    "class_type": 288,
+    "something_class_type": 4194312
+  },
+  "TriggerModifierDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "TriggerModifierDesc",
+    "class_type": 289,
+    "something_class_type": 4194312
+  },
+  "AudioEvent": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "AudioEvent",
+    "class_type": 290,
+    "something_class_type": 8
+  },
+  "AudioUpdateEvent": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "AudioUpdateEvent",
+    "class_type": 291,
+    "something_class_type": 8
+  },
+  "RadialSoundNode": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "RadialSoundNode",
+    "class_type": 292,
+    "something_class_type": 8
+  },
+  "SoundEngine": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SoundEngine",
+    "class_type": 294,
+    "something_class_type": 4194312
+  },
+  "SoundEnvironment": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SoundEnvironment",
+    "class_type": 296,
+    "something_class_type": 4194312
+  },
+  "SoundList": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SoundList",
+    "class_type": 297,
+    "something_class_type": 4194312
+  },
+  "SoundNode": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SoundNode",
+    "class_type": 298,
+    "something_class_type": 4194312
+  },
+  "ActiveItem": {
+    "mask0": 0,
+    "mask1": 268435456,
+    "name": "ActiveItem",
+    "class_type": 299,
+    "something_class_type": 4194312
+  },
+  "ActiveItemDesc": {
+    "mask0": 0,
+    "mask1": 536870944,
+    "name": "ActiveItemDesc",
+    "class_type": 301,
+    "something_class_type": 4194312
+  },
+  "ActivePassiveItem": {
+    "mask0": 0,
+    "mask1": 268435456,
+    "name": "ActivePassiveItem",
+    "class_type": 303,
+    "something_class_type": 4194312
+  },
+  "ActivePassiveItemDesc": {
+    "mask0": 0,
+    "mask1": 536870944,
+    "name": "ActivePassiveItemDesc",
+    "class_type": 304,
+    "something_class_type": 4194312
+  },
+  "Container": {
+    "mask0": 0,
+    "mask1": 2147483648,
+    "name": "Container",
+    "class_type": 305,
+    "something_class_type": 4194312
+  },
+  "Currency": {
+    "mask0": 0,
+    "mask1": 268435456,
+    "name": "Currency",
+    "class_type": 306,
+    "something_class_type": 4194312
+  },
+  "Inventory": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Inventory",
+    "class_type": 307,
+    "something_class_type": 4194312
+  },
+  "InventoryDesc": {
+    "mask0": 0,
+    "mask1": 536870944,
+    "name": "InventoryDesc",
+    "class_type": 308,
+    "something_class_type": 4194312
+  },
+  "Item": {
+    "mask0": 0,
+    "mask1": 268435456,
+    "name": "Item",
+    "class_type": 300,
+    "something_class_type": 4194312
+  },
+  "ItemAttributeModifier": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ItemAttributeModifier",
+    "class_type": 309,
+    "something_class_type": 4194312
+  },
+  "ItemAttributeModifierDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "ItemAttributeModifierDesc",
+    "class_type": 311,
+    "something_class_type": 4194312
+  },
+  "ItemDesc": {
+    "mask0": 0,
+    "mask1": 536870944,
+    "name": "ItemDesc",
+    "class_type": 302,
+    "something_class_type": 4194312
+  },
+  "ItemModifier": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ItemModifier",
+    "class_type": 310,
+    "something_class_type": 4194312
+  },
+  "ItemModifierDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "ItemModifierDesc",
+    "class_type": 312,
+    "something_class_type": 4194312
+  },
+  "ItemObject": {
+    "mask0": 3221225472,
+    "mask1": 0,
+    "name": "ItemObject",
+    "class_type": 313,
+    "something_class_type": 4194312
+  },
+  "UnitContainer": {
+    "mask0": 0,
+    "mask1": 2147483648,
+    "name": "UnitContainer",
+    "class_type": 314,
+    "something_class_type": 4194312
+  },
+  "Armor": {
+    "mask0": 0,
+    "mask1": 268435456,
+    "name": "Armor",
+    "class_type": 315,
+    "something_class_type": 4194312
+  },
+  "ArmorDesc": {
+    "mask0": 0,
+    "mask1": 536870944,
+    "name": "ArmorDesc",
+    "class_type": 316,
+    "something_class_type": 4194312
+  },
+  "Equipment": {
+    "mask0": 0,
+    "mask1": 2147483648,
+    "name": "Equipment",
+    "class_type": 317,
+    "something_class_type": 4194312
+  },
+  "EquipmentDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "EquipmentDesc",
+    "class_type": 318,
+    "something_class_type": 4194312
+  },
+  "EquipmentSlot": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "EquipmentSlot",
+    "class_type": 319,
+    "something_class_type": 4194312
+  },
+  "MeleeWeapon": {
+    "mask0": 0,
+    "mask1": 268435456,
+    "name": "MeleeWeapon",
+    "class_type": 320,
+    "something_class_type": 4194312
+  },
+  "MeleeWeaponDesc": {
+    "mask0": 0,
+    "mask1": 536870944,
+    "name": "MeleeWeaponDesc",
+    "class_type": 322,
+    "something_class_type": 4194312
+  },
+  "Projectile": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Projectile",
+    "class_type": 324,
+    "something_class_type": 4194312
+  },
+  "RangedWeapon": {
+    "mask0": 0,
+    "mask1": 268435456,
+    "name": "RangedWeapon",
+    "class_type": 325,
+    "something_class_type": 4194312
+  },
+  "RangedWeaponDesc": {
+    "mask0": 0,
+    "mask1": 536870944,
+    "name": "RangedWeaponDesc",
+    "class_type": 326,
+    "something_class_type": 4194312
+  },
+  "Weapon": {
+    "mask0": 0,
+    "mask1": 268435456,
+    "name": "Weapon",
+    "class_type": 321,
+    "something_class_type": 4194312
+  },
+  "WeaponDesc": {
+    "mask0": 0,
+    "mask1": 536870944,
+    "name": "WeaponDesc",
+    "class_type": 323,
+    "something_class_type": 4194312
+  },
+  "Banker": {
+    "mask0": 0,
+    "mask1": 2147483648,
+    "name": "Banker",
+    "class_type": 327,
+    "something_class_type": 4194312
+  },
+  "Merchant": {
+    "mask0": 0,
+    "mask1": 2147483648,
+    "name": "Merchant",
+    "class_type": 328,
+    "something_class_type": 4194312
+  },
+  "MerchantInventory": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "MerchantInventory",
+    "class_type": 329,
+    "something_class_type": 4194312
+  },
+  "CurrencyGenerator": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "CurrencyGenerator",
+    "class_type": 330,
+    "something_class_type": 4194312
+  },
+  "RandomItemGenerator": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "RandomItemGenerator",
+    "class_type": 337,
+    "something_class_type": 4194312
+  },
+  "SingleItemGenerator": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SingleItemGenerator",
+    "class_type": 338,
+    "something_class_type": 4194312
+  },
+  "SingleItemModGenerator": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SingleItemModGenerator",
+    "class_type": 339,
+    "something_class_type": 4194312
+  },
+  "UseItem": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "UseItem",
+    "class_type": 340,
+    "something_class_type": 4194312
+  },
+  "UseItemPosition": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "UseItemPosition",
+    "class_type": 341,
+    "something_class_type": 4194312
+  },
+  "UseItemTarget": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "UseItemTarget",
+    "class_type": 342,
+    "something_class_type": 4194312
+  },
+  "AmbientRandomSound": {
+    "mask0": 262144,
+    "mask1": 0,
+    "name": "AmbientRandomSound",
+    "class_type": 343,
+    "something_class_type": 4194312
+  },
+  "AmbientSound": {
+    "mask0": 262144,
+    "mask1": 0,
+    "name": "AmbientSound",
+    "class_type": 344,
+    "something_class_type": 4194312
+  },
+  "AreaTrigger": {
+    "mask0": 3221225472,
+    "mask1": 0,
+    "name": "AreaTrigger",
+    "class_type": 255,
+    "something_class_type": 4194312
+  },
+  "Door": {
+    "mask0": 3221225472,
+    "mask1": 0,
+    "name": "Door",
+    "class_type": 345,
+    "something_class_type": 4194312
+  },
+  "DoorDesc": {
+    "mask0": 0,
+    "mask1": 35,
+    "name": "DoorDesc",
+    "class_type": 346,
+    "something_class_type": 4194312
+  },
+  "Effect": {
+    "mask0": 262144,
+    "mask1": 0,
+    "name": "Effect",
+    "class_type": 347,
+    "something_class_type": 4194312
+  },
+  "EffectDesc": {
+    "mask0": 1048576,
+    "mask1": 32,
+    "name": "EffectDesc",
+    "class_type": 348,
+    "something_class_type": 4194312
+  },
+  "NonCombatInteractive": {
+    "mask0": 3221225472,
+    "mask1": 67108864,
+    "name": "NonCombatInteractive",
+    "class_type": 349,
+    "something_class_type": 4194312
+  },
+  "NonCombatInteractiveDesc": {
+    "mask0": 0,
+    "mask1": 134217763,
+    "name": "NonCombatInteractiveDesc",
+    "class_type": 350,
+    "something_class_type": 4194312
+  },
+  "RadialSound": {
+    "mask0": 262144,
+    "mask1": 0,
+    "name": "RadialSound",
+    "class_type": 351,
+    "something_class_type": 4194312
+  },
+  "TownPortal": {
+    "mask0": 3221225472,
+    "mask1": 0,
+    "name": "TownPortal",
+    "class_type": 352,
+    "something_class_type": 4194312
+  },
+  "WaterObject": {
+    "mask0": 262144,
+    "mask1": 0,
+    "name": "WaterObject",
+    "class_type": 353,
+    "something_class_type": 4194312
+  },
+  "Waypoint": {
+    "mask0": 3221225472,
+    "mask1": 0,
+    "name": "Waypoint",
+    "class_type": 354,
+    "something_class_type": 4194312
+  },
+  "ZonePortal": {
+    "mask0": 3221225472,
+    "mask1": 0,
+    "name": "ZonePortal",
+    "class_type": 355,
+    "something_class_type": 4194312
+  },
+  "ZonePortalObject": {
+    "mask0": 393216,
+    "mask1": 0,
+    "name": "ZonePortalObject",
+    "class_type": 356,
+    "something_class_type": 4194312
+  },
+  "ZoneTrigger": {
+    "mask0": 3221225472,
+    "mask1": 0,
+    "name": "ZoneTrigger",
+    "class_type": 357,
+    "something_class_type": 4194312
+  },
+  "Player": {
+    "mask0": 2147483648,
+    "mask1": 0,
+    "name": "Player",
+    "class_type": 358,
+    "something_class_type": 4194312
+  },
+  "DialogElement": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DialogElement",
+    "class_type": 359,
+    "something_class_type": 4194312
+  },
+  "DialogDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "DialogDesc",
+    "class_type": 360,
+    "something_class_type": 4194312
+  },
+  "Dialog": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Dialog",
+    "class_type": 361,
+    "something_class_type": 4194312
+  },
+  "DialogManager": {
+    "mask0": 0,
+    "mask1": 2147483648,
+    "name": "DialogManager",
+    "class_type": 362,
+    "something_class_type": 4194312
+  },
+  "CheckpointDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "CheckpointDesc",
+    "class_type": 363,
+    "something_class_type": 4194312
+  },
+  "Checkpoint": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Checkpoint",
+    "class_type": 364,
+    "something_class_type": 4194312
+  },
+  "CheckpointEntityDesc": {
+    "mask0": 0,
+    "mask1": 35,
+    "name": "CheckpointEntityDesc",
+    "class_type": 365,
+    "something_class_type": 4194312
+  },
+  "CheckpointEntity": {
+    "mask0": 3221225472,
+    "mask1": 0,
+    "name": "CheckpointEntity",
+    "class_type": 366,
+    "something_class_type": 4194312
+  },
+  "GoToObjective": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "GoToObjective",
+    "class_type": 367,
+    "something_class_type": 4194312
+  },
+  "NPCTeleporter": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "NPCTeleporter",
+    "class_type": 369,
+    "something_class_type": 4194312
+  },
+  "QuestObjective": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "QuestObjective",
+    "class_type": 368,
+    "something_class_type": 4194312
+  },
+  "QuestDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "QuestDesc",
+    "class_type": 370,
+    "something_class_type": 4194312
+  },
+  "Quest": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Quest",
+    "class_type": 371,
+    "something_class_type": 4194312
+  },
+  "AvailableQuest": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "AvailableQuest",
+    "class_type": 372,
+    "something_class_type": 4194312
+  },
+  "QuestGiver": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "QuestGiver",
+    "class_type": 373,
+    "something_class_type": 4194312
+  },
+  "CompleteQuest": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "CompleteQuest",
+    "class_type": 374,
+    "something_class_type": 4194312
+  },
+  "QuestManager": {
+    "mask0": 0,
+    "mask1": 2147483648,
+    "name": "QuestManager",
+    "class_type": 375,
+    "something_class_type": 4194312
+  },
+  "KillObjective": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "KillObjective",
+    "class_type": 376,
+    "something_class_type": 4194312
+  },
+  "ItemObjective": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ItemObjective",
+    "class_type": 377,
+    "something_class_type": 4194312
+  },
+  "ActivateObjective": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ActivateObjective",
+    "class_type": 378,
+    "something_class_type": 4194312
+  },
+  "QuestTrigger": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "QuestTrigger",
+    "class_type": 379,
+    "something_class_type": 4194312
+  },
+  "KillDropTrigger": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "KillDropTrigger",
+    "class_type": 380,
+    "something_class_type": 4194312
+  },
+  "ActivateDropTrigger": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ActivateDropTrigger",
+    "class_type": 381,
+    "something_class_type": 4194312
+  },
+  "QuestUIDesc": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "QuestUIDesc",
+    "class_type": 382,
+    "something_class_type": 4194312
+  },
+  "DungeonGenerator": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DungeonGenerator",
+    "class_type": 383,
+    "something_class_type": 8
+  },
+  "DungeonNode": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DungeonNode",
+    "class_type": 384,
+    "something_class_type": 8
+  },
+  "LinkRoomNode": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "LinkRoomNode",
+    "class_type": 385,
+    "something_class_type": 4194312
+  },
+  "RoomNode": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "RoomNode",
+    "class_type": 386,
+    "something_class_type": 4194312
+  },
+  "Tile": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Tile",
+    "class_type": 387,
+    "something_class_type": 8
+  },
+  "CurveTable": {
+    "mask0": 0,
+    "mask1": 524288,
+    "name": "CurveTable",
+    "class_type": 115,
+    "something_class_type": 4194312
+  },
+  "CurveTableEntry": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "CurveTableEntry",
+    "class_type": 388,
+    "something_class_type": 4194312
+  },
+  "RPGSettings": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "RPGSettings",
+    "class_type": 389,
+    "something_class_type": 4194312
+  },
+  "PosseRegistry": {
+    "mask0": 0,
+    "mask1": 2147483648,
+    "name": "PosseRegistry",
+    "class_type": 390,
+    "something_class_type": 4194312
+  },
+  "ClientEntityManager": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ClientEntityManager",
+    "class_type": 391,
+    "something_class_type": 8
+  },
+  "Entity": {
+    "mask0": 2147483648,
+    "mask1": 0,
+    "name": "Entity",
+    "class_type": 95,
+    "something_class_type": 4194312
+  },
+  "EntityClient": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "EntityClient",
+    "class_type": 393,
+    "something_class_type": 8
+  },
+  "EntityComponent": {
+    "mask0": 0,
+    "mask1": 2147483648,
+    "name": "EntityComponent",
+    "class_type": 127,
+    "something_class_type": 4194312
+  },
+  "EntityComponentDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "EntityComponentDesc",
+    "class_type": 201,
+    "something_class_type": 4194312
+  },
+  "EntityDesc": {
+    "mask0": 0,
+    "mask1": 34,
+    "name": "EntityDesc",
+    "class_type": 97,
+    "something_class_type": 4194312
+  },
+  "EntityManager": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "EntityManager",
+    "class_type": 392,
+    "something_class_type": 8
+  },
+  "ServerEntityManager": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ServerEntityManager",
+    "class_type": 394,
+    "something_class_type": 8
+  },
+  "SubEntity": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SubEntity",
+    "class_type": 215,
+    "something_class_type": 4194312
+  },
+  "GCClass": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "GCClass",
+    "class_type": 395,
+    "something_class_type": 8
+  },
+  "GCMigrator": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "GCMigrator",
+    "class_type": 396,
+    "something_class_type": 8
+  },
+  "GCObject": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "GCObject",
+    "class_type": 22,
+    "something_class_type": 4194312
+  },
+  "GCObjectArray": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "GCObjectArray",
+    "class_type": 397,
+    "something_class_type": 4194312
+  },
+  "GCObjectArrayIterator": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "GCObjectArrayIterator",
+    "class_type": 398,
+    "something_class_type": 4194312
+  },
+  "GCObjectDesc": {
+    "mask0": 0,
+    "mask1": 32,
+    "name": "GCObjectDesc",
+    "class_type": 101,
+    "something_class_type": 4194312
+  },
+  "GCObjectIterator": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "GCObjectIterator",
+    "class_type": 399,
+    "something_class_type": 4194312
+  },
+  "GCObjectResourceLoader": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "GCObjectResourceLoader",
+    "class_type": 400,
+    "something_class_type": 8
+  },
+  "PkgGCObjectResourceLoader": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "PkgGCObjectResourceLoader",
+    "class_type": 402,
+    "something_class_type": 8
+  },
+  "GCResourceList": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "GCResourceList",
+    "class_type": 404,
+    "something_class_type": 4194312
+  },
+  "GCSoundRef": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "GCSoundRef",
+    "class_type": 405,
+    "something_class_type": 4194312
+  },
+  "GCD3DRef": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "GCD3DRef",
+    "class_type": 406,
+    "something_class_type": 4194312
+  },
+  "GCTextureRef": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "GCTextureRef",
+    "class_type": 407,
+    "something_class_type": 4194312
+  },
+  "GCMaterialRef": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "GCMaterialRef",
+    "class_type": 408,
+    "something_class_type": 4194312
+  },
+  "Snapshot": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Snapshot",
+    "class_type": 409,
+    "something_class_type": 8
+  },
+  "MessageService": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "MessageService",
+    "class_type": 410,
+    "something_class_type": 4194312
+  },
+  "Service": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Service",
+    "class_type": 295,
+    "something_class_type": 4194312
+  },
+  "GatewayClient": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "GatewayClient",
+    "class_type": 411,
+    "something_class_type": 4194312
+  },
+  "CharacterManagerClient": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "CharacterManagerClient",
+    "class_type": 412,
+    "something_class_type": 4194312
+  },
+  "GroupClient": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "GroupClient",
+    "class_type": 413,
+    "something_class_type": 4194312
+  },
+  "ZoneClient": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ZoneClient",
+    "class_type": 414,
+    "something_class_type": 4194312
+  },
+  "ZoneDef": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ZoneDef",
+    "class_type": 415,
+    "something_class_type": 4194312
+  },
+  "ZoneRegistry": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ZoneRegistry",
+    "class_type": 416,
+    "something_class_type": 8
+  },
+  "NetworkEvent": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "NetworkEvent",
+    "class_type": 417,
+    "something_class_type": 8
+  },
+  "EventManager": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "EventManager",
+    "class_type": 418,
+    "something_class_type": 4194312
+  },
+  "ChatClient": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ChatClient",
+    "class_type": 419,
+    "something_class_type": 4194312
+  },
+  "CoreChatContact": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "CoreChatContact",
+    "class_type": 420,
+    "something_class_type": 8
+  },
+  "RemoteUserSession": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "RemoteUserSession",
+    "class_type": 421,
+    "something_class_type": 8
+  },
+  "RemoteGroup": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "RemoteGroup",
+    "class_type": 422,
+    "something_class_type": 8
+  },
+  "UserManagerClient": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "UserManagerClient",
+    "class_type": 423,
+    "something_class_type": 4194312
+  },
+  "PVPAccessPoint": {
+    "mask0": 0,
+    "mask1": 2147483648,
+    "name": "PVPAccessPoint",
+    "class_type": 424,
+    "something_class_type": 4194312
+  },
+  "PVPMatch": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "PVPMatch",
+    "class_type": 425,
+    "something_class_type": 4194312
+  },
+  "PVPMatchController": {
+    "mask0": 2147483648,
+    "mask1": 0,
+    "name": "PVPMatchController",
+    "class_type": 426,
+    "something_class_type": 4194312
+  },
+  "PVPTeam": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "PVPTeam",
+    "class_type": 427,
+    "something_class_type": 4194312
+  },
+  "TradeClient": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "TradeClient",
+    "class_type": 428,
+    "something_class_type": 4194312
+  },
+  "PosseClient": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "PosseClient",
+    "class_type": 429,
+    "something_class_type": 4194312
+  },
+  "DFCCloneInterface": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCCloneInterface",
+    "class_type": 435,
+    "something_class_type": 8
+  },
+  "DFCEventHandlerNode": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCEventHandlerNode",
+    "class_type": 436,
+    "something_class_type": 8
+  },
+  "DFCNode": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCNode",
+    "class_type": 46,
+    "something_class_type": 8
+  },
+  "DFCProperty": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCProperty",
+    "class_type": 437,
+    "something_class_type": 8
+  },
+  "XMLNode": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "XMLNode",
+    "class_type": 438,
+    "something_class_type": 8
+  },
+  "DataNodeResourceLoader": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DataNodeResourceLoader",
+    "class_type": 439,
+    "something_class_type": 8
+  },
+  "PkgDataNodeResourceLoader": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "PkgDataNodeResourceLoader",
+    "class_type": 440,
+    "something_class_type": 8
+  },
+  "FileResourceLoader": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "FileResourceLoader",
+    "class_type": 401,
+    "something_class_type": 8
+  },
+  "NullResourceCache": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "NullResourceCache",
+    "class_type": 442,
+    "something_class_type": 8
+  },
+  "ObjectResourceLoader": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ObjectResourceLoader",
+    "class_type": 444,
+    "something_class_type": 8
+  },
+  "PkgObjectResourceLoader": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "PkgObjectResourceLoader",
+    "class_type": 445,
+    "something_class_type": 8
+  },
+  "PkgResourceLoader": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "PkgResourceLoader",
+    "class_type": 403,
+    "something_class_type": 8
+  },
+  "RawResourceContainer": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "RawResourceContainer",
+    "class_type": 446,
+    "something_class_type": 8
+  },
+  "ResourceCache": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ResourceCache",
+    "class_type": 443,
+    "something_class_type": 8
+  },
+  "ResourceContainer": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ResourceContainer",
+    "class_type": 447,
+    "something_class_type": 8
+  },
+  "ResourceLoader": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ResourceLoader",
+    "class_type": 441,
+    "something_class_type": 8
+  },
+  "SimpleResourceCache": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SimpleResourceCache",
+    "class_type": 448,
+    "something_class_type": 8
+  },
+  "BitFieldProperty": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "BitFieldProperty",
+    "class_type": 449,
+    "something_class_type": 8
+  },
+  "BoolProperty": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "BoolProperty",
+    "class_type": 451,
+    "something_class_type": 8
+  },
+  "DWORDProperty": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DWORDProperty",
+    "class_type": 452,
+    "something_class_type": 8
+  },
+  "EnumProperty": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "EnumProperty",
+    "class_type": 453,
+    "something_class_type": 8
+  },
+  "Fixed32Property": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Fixed32Property",
+    "class_type": 454,
+    "something_class_type": 8
+  },
+  "FloatProperty": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "FloatProperty",
+    "class_type": 455,
+    "something_class_type": 8
+  },
+  "IntProperty": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "IntProperty",
+    "class_type": 450,
+    "something_class_type": 8
+  },
+  "StringProperty": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "StringProperty",
+    "class_type": 456,
+    "something_class_type": 8
+  },
+  "VectorTypeProperty": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "VectorTypeProperty",
+    "class_type": 457,
+    "something_class_type": 8
+  },
+  "DFCChannel": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCChannel",
+    "class_type": 458,
+    "something_class_type": 8
+  },
+  "DFCMessage": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCMessage",
+    "class_type": 459,
+    "something_class_type": 8
+  },
+  "DFCMessageClient": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCMessageClient",
+    "class_type": 460,
+    "something_class_type": 8
+  },
+  "DFCMessagePipe": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCMessagePipe",
+    "class_type": 461,
+    "something_class_type": 8
+  },
+  "DFCMessageQueue": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCMessageQueue",
+    "class_type": 462,
+    "something_class_type": 8
+  },
+  "DFCMessageServer": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCMessageServer",
+    "class_type": 463,
+    "something_class_type": 8
+  },
+  "DFCSocketChannel": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCSocketChannel",
+    "class_type": 464,
+    "something_class_type": 8
+  },
+  "BitmapFont": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "BitmapFont",
+    "class_type": 465,
+    "something_class_type": 8
+  },
+  "DFCFont": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCFont",
+    "class_type": 466,
+    "something_class_type": 8
+  },
+  "DFCImage": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCImage",
+    "class_type": 467,
+    "something_class_type": 8
+  },
+  "DFCImageFactory": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCImageFactory",
+    "class_type": 468,
+    "something_class_type": 8
+  },
+  "DFCImageLoader": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCImageLoader",
+    "class_type": 469,
+    "something_class_type": 8
+  },
+  "DFCImageSurface": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCImageSurface",
+    "class_type": 470,
+    "something_class_type": 8
+  },
+  "DFCImageWriter": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCImageWriter",
+    "class_type": 471,
+    "something_class_type": 8
+  },
+  "FreetypeFont": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "FreetypeFont",
+    "class_type": 472,
+    "something_class_type": 8
+  },
+  "FreetypeTextureFont": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "FreetypeTextureFont",
+    "class_type": 473,
+    "something_class_type": 8
+  },
+  "FreetypeFontLoader": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "FreetypeFontLoader",
+    "class_type": 474,
+    "something_class_type": 8
+  },
+  "PkgFreetypeFontLoader": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "PkgFreetypeFontLoader",
+    "class_type": 475,
+    "something_class_type": 8
+  },
+  "DFC3DGraphics": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFC3DGraphics",
+    "class_type": 476,
+    "something_class_type": 8
+  },
+  "DFC3DIndexArray": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFC3DIndexArray",
+    "class_type": 477,
+    "something_class_type": 8
+  },
+  "SoftwareIndexArray": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SoftwareIndexArray",
+    "class_type": 478,
+    "something_class_type": 8
+  },
+  "DFC3DSkinMesh": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFC3DSkinMesh",
+    "class_type": 479,
+    "something_class_type": 8
+  },
+  "DFC3DStaticMesh": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFC3DStaticMesh",
+    "class_type": 480,
+    "something_class_type": 8
+  },
+  "DFC3DTexture": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFC3DTexture",
+    "class_type": 481,
+    "something_class_type": 8
+  },
+  "DFC3DTextureCache": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFC3DTextureCache",
+    "class_type": 482,
+    "something_class_type": 8
+  },
+  "DFC3DVertexArray": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFC3DVertexArray",
+    "class_type": 483,
+    "something_class_type": 8
+  },
+  "SoftwareVertexArray": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SoftwareVertexArray",
+    "class_type": 484,
+    "something_class_type": 8
+  },
+  "TexBuf": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "TexBuf",
+    "class_type": 485,
+    "something_class_type": 8
+  },
+  "TexBufResourceLoader": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "TexBufResourceLoader",
+    "class_type": 486,
+    "something_class_type": 8
+  },
+  "PkgTexBufResourceLoader": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "PkgTexBufResourceLoader",
+    "class_type": 487,
+    "something_class_type": 8
+  },
+  "DFC3DAnimationChannel": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFC3DAnimationChannel",
+    "class_type": 488,
+    "something_class_type": 8
+  },
+  "DFC3DAnimationController": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFC3DAnimationController",
+    "class_type": 489,
+    "something_class_type": 8
+  },
+  "DFC3DCamera": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFC3DCamera",
+    "class_type": 491,
+    "something_class_type": 8
+  },
+  "DFC3DChannel": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFC3DChannel",
+    "class_type": 492,
+    "something_class_type": 8
+  },
+  "DFC3DEventController": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFC3DEventController",
+    "class_type": 493,
+    "something_class_type": 8
+  },
+  "DFC3DKeyframeController": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFC3DKeyframeController",
+    "class_type": 494,
+    "something_class_type": 8
+  },
+  "DFC3DLightNode": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFC3DLightNode",
+    "class_type": 498,
+    "something_class_type": 8
+  },
+  "DFC3DMaterialNode": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFC3DMaterialNode",
+    "class_type": 499,
+    "something_class_type": 8
+  },
+  "DFC3DMultiMaterialNode": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFC3DMultiMaterialNode",
+    "class_type": 500,
+    "something_class_type": 8
+  },
+  "DFC3DNode": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFC3DNode",
+    "class_type": 293,
+    "something_class_type": 8
+  },
+  "DFCDRENode": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCDRENode",
+    "class_type": 501,
+    "something_class_type": 8
+  },
+  "DFC3DNodeController": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFC3DNodeController",
+    "class_type": 490,
+    "something_class_type": 8
+  },
+  "DFC3DSkinMeshNode": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFC3DSkinMeshNode",
+    "class_type": 502,
+    "something_class_type": 8
+  },
+  "DFC3DStaticMeshNode": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFC3DStaticMeshNode",
+    "class_type": 503,
+    "something_class_type": 8
+  },
+  "PolygonTrail": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "PolygonTrail",
+    "class_type": 504,
+    "something_class_type": 8
+  },
+  "AdvParticleSystem": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "AdvParticleSystem",
+    "class_type": 505,
+    "something_class_type": 8
+  },
+  "TargetColor": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "TargetColor",
+    "class_type": 506,
+    "something_class_type": 8
+  },
+  "TargetSize": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "TargetSize",
+    "class_type": 508,
+    "something_class_type": 8
+  },
+  "Acceleration": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Acceleration",
+    "class_type": 509,
+    "something_class_type": 8
+  },
+  "PointAcceleration": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "PointAcceleration",
+    "class_type": 510,
+    "something_class_type": 8
+  },
+  "OrbitLine": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "OrbitLine",
+    "class_type": 511,
+    "something_class_type": 8
+  },
+  "Gravitate": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Gravitate",
+    "class_type": 512,
+    "something_class_type": 8
+  },
+  "Trail": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Trail",
+    "class_type": 513,
+    "something_class_type": 8
+  },
+  "VerletEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "VerletEffect",
+    "class_type": 514,
+    "something_class_type": 8
+  },
+  "AgeStitch": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "AgeStitch",
+    "class_type": 515,
+    "something_class_type": 8
+  },
+  "Emitter": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Emitter",
+    "class_type": 516,
+    "something_class_type": 8
+  },
+  "SphereEmitter": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SphereEmitter",
+    "class_type": 517,
+    "something_class_type": 8
+  },
+  "RingEmitter": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "RingEmitter",
+    "class_type": 518,
+    "something_class_type": 8
+  },
+  "PlaneEmitter": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "PlaneEmitter",
+    "class_type": 519,
+    "something_class_type": 8
+  },
+  "ParticleEffect": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ParticleEffect",
+    "class_type": 507,
+    "something_class_type": 8
+  },
+  "ParticleSystem": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ParticleSystem",
+    "class_type": 520,
+    "something_class_type": 8
+  },
+  "FaceCameraNode": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "FaceCameraNode",
+    "class_type": 521,
+    "something_class_type": 8
+  },
+  "ViewAlignNode": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ViewAlignNode",
+    "class_type": 522,
+    "something_class_type": 8
+  },
+  "DyeController": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DyeController",
+    "class_type": 523,
+    "something_class_type": 8
+  },
+  "FadeController": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "FadeController",
+    "class_type": 524,
+    "something_class_type": 8
+  },
+  "MaterialOverrideController": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "MaterialOverrideController",
+    "class_type": 525,
+    "something_class_type": 8
+  },
+  "RemoveController": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "RemoveController",
+    "class_type": 526,
+    "something_class_type": 8
+  },
+  "VisibilityController": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "VisibilityController",
+    "class_type": 527,
+    "something_class_type": 8
+  },
+  "DFC3DMaterial": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFC3DMaterial",
+    "class_type": 528,
+    "something_class_type": 8
+  },
+  "DFC3DMaterialCache": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFC3DMaterialCache",
+    "class_type": 529,
+    "something_class_type": 8
+  },
+  "DFC3DMaterialTexture": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFC3DMaterialTexture",
+    "class_type": 530,
+    "something_class_type": 8
+  },
+  "BitmapLoader": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "BitmapLoader",
+    "class_type": 531,
+    "something_class_type": 8
+  },
+  "DIFLoader": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DIFLoader",
+    "class_type": 532,
+    "something_class_type": 8
+  },
+  "DIFQuickLoader": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DIFQuickLoader",
+    "class_type": 533,
+    "something_class_type": 8
+  },
+  "TGALoader": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "TGALoader",
+    "class_type": 534,
+    "something_class_type": 8
+  },
+  "DIFWriter": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DIFWriter",
+    "class_type": 535,
+    "something_class_type": 8
+  },
+  "DFCInputManager": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCInputManager",
+    "class_type": 536,
+    "something_class_type": 8
+  },
+  "InputMap": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "InputMap",
+    "class_type": 537,
+    "something_class_type": 8
+  },
+  "DFCKeyboard": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCKeyboard",
+    "class_type": 538,
+    "something_class_type": 0
+  },
+  "DFCMouse": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCMouse",
+    "class_type": 540,
+    "something_class_type": 0
+  },
+  "DFCClipboard": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCClipboard",
+    "class_type": 542,
+    "something_class_type": 8
+  },
+  "DFCControl": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCControl",
+    "class_type": 1,
+    "something_class_type": 10
+  },
+  "DFCLayoutManager": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCLayoutManager",
+    "class_type": 543,
+    "something_class_type": 8
+  },
+  "DFCRootControl": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCRootControl",
+    "class_type": 544,
+    "something_class_type": 268435466
+  },
+  "DFCThemeVisual": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCThemeVisual",
+    "class_type": 545,
+    "something_class_type": 8
+  },
+  "DFCVisual": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCVisual",
+    "class_type": 546,
+    "something_class_type": 8
+  },
+  "DFCWindow": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCWindow",
+    "class_type": 28,
+    "something_class_type": 268435466
+  },
+  "FocusManager": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "FocusManager",
+    "class_type": 547,
+    "something_class_type": 8
+  },
+  "DockLayout": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DockLayout",
+    "class_type": 548,
+    "something_class_type": 8
+  },
+  "FlowLayout": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "FlowLayout",
+    "class_type": 549,
+    "something_class_type": 8
+  },
+  "IconLayout": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "IconLayout",
+    "class_type": 550,
+    "something_class_type": 8
+  },
+  "ListLayout": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ListLayout",
+    "class_type": 551,
+    "something_class_type": 8
+  },
+  "AdVisual": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "AdVisual",
+    "class_type": 552,
+    "something_class_type": 8
+  },
+  "AdvSolidVisual": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "AdvSolidVisual",
+    "class_type": 554,
+    "something_class_type": 8
+  },
+  "AdvTextureVisual": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "AdvTextureVisual",
+    "class_type": 555,
+    "something_class_type": 8
+  },
+  "AnimationVisual": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "AnimationVisual",
+    "class_type": 556,
+    "something_class_type": 8
+  },
+  "ColumnVisual": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ColumnVisual",
+    "class_type": 557,
+    "something_class_type": 8
+  },
+  "CustomTextureVisual": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "CustomTextureVisual",
+    "class_type": 558,
+    "something_class_type": 8
+  },
+  "RowVisual": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "RowVisual",
+    "class_type": 560,
+    "something_class_type": 8
+  },
+  "SolidVisual": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SolidVisual",
+    "class_type": 561,
+    "something_class_type": 8
+  },
+  "StateSelectVisual": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "StateSelectVisual",
+    "class_type": 562,
+    "something_class_type": 8
+  },
+  "TextureVisual": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "TextureVisual",
+    "class_type": 559,
+    "something_class_type": 8
+  },
+  "ToggleVisual": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "ToggleVisual",
+    "class_type": 563,
+    "something_class_type": 8
+  },
+  "VisualBase": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "VisualBase",
+    "class_type": 553,
+    "something_class_type": 8
+  },
+  "DFCAdvColorPicker": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCAdvColorPicker",
+    "class_type": 564,
+    "something_class_type": 10
+  },
+  "DFCButton": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCButton",
+    "class_type": 565,
+    "something_class_type": 10
+  },
+  "DFCColorPicker": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCColorPicker",
+    "class_type": 567,
+    "something_class_type": 10
+  },
+  "DFCColumnSet": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCColumnSet",
+    "class_type": 568,
+    "something_class_type": 10
+  },
+  "DFCComboBox": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCComboBox",
+    "class_type": 569,
+    "something_class_type": 10
+  },
+  "DFCDivider": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCDivider",
+    "class_type": 570,
+    "something_class_type": 10
+  },
+  "DFCEdit": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCEdit",
+    "class_type": 571,
+    "something_class_type": 10
+  },
+  "DFCLabel": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCLabel",
+    "class_type": 566,
+    "something_class_type": 10
+  },
+  "DFCListBox": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCListBox",
+    "class_type": 573,
+    "something_class_type": 10
+  },
+  "DFCProgressBar": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCProgressBar",
+    "class_type": 575,
+    "something_class_type": 10
+  },
+  "DFCRadioButton": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCRadioButton",
+    "class_type": 576,
+    "something_class_type": 10
+  },
+  "DFCRadioButtonSet": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCRadioButtonSet",
+    "class_type": 577,
+    "something_class_type": 10
+  },
+  "DFCScrollBar": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCScrollBar",
+    "class_type": 578,
+    "something_class_type": 10
+  },
+  "DFCScrollButton": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCScrollButton",
+    "class_type": 579,
+    "something_class_type": 10
+  },
+  "DFCScrollViewport": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCScrollViewport",
+    "class_type": 574,
+    "something_class_type": 10
+  },
+  "DFCTreeNode": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCTreeNode",
+    "class_type": 580,
+    "something_class_type": 8
+  },
+  "DFCTreeView": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "DFCTreeView",
+    "class_type": 581,
+    "something_class_type": 10
+  },
+  "HTMLLabel": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "HTMLLabel",
+    "class_type": 572,
+    "something_class_type": 10
+  },
+  "dxClipboard": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "dxClipboard",
+    "class_type": 582,
+    "something_class_type": 8
+  },
+  "dxCursor": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "dxCursor",
+    "class_type": 583,
+    "something_class_type": 8
+  },
+  "dxCursorManager": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "dxCursorManager",
+    "class_type": 584,
+    "something_class_type": 8
+  },
+  "dx3DGraphics": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "dx3DGraphics",
+    "class_type": 585,
+    "something_class_type": 8
+  },
+  "dx3DIndexArray": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "dx3DIndexArray",
+    "class_type": 586,
+    "something_class_type": 8
+  },
+  "dx3DVertexArray": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "dx3DVertexArray",
+    "class_type": 587,
+    "something_class_type": 8
+  },
+  "dxSkinMesh": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "dxSkinMesh",
+    "class_type": 588,
+    "something_class_type": 8
+  },
+  "dxInputManager": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "dxInputManager",
+    "class_type": 589,
+    "something_class_type": 8
+  },
+  "dxKeyboard": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "dxKeyboard",
+    "class_type": 590,
+    "something_class_type": 0
+  },
+  "dxMouse": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "dxMouse",
+    "class_type": 591,
+    "something_class_type": 0
+  },
+  "SoftwareSkinMesh": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SoftwareSkinMesh",
+    "class_type": 592,
+    "something_class_type": 8
+  },
+  "SoftwareStaticMesh": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "SoftwareStaticMesh",
+    "class_type": 593,
+    "something_class_type": 8
+  },
+  "Win32Window": {
+    "mask0": 0,
+    "mask1": 0,
+    "name": "Win32Window",
+    "class_type": 594,
+    "something_class_type": 0
+  }
+}
