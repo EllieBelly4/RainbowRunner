@@ -33,6 +33,13 @@ func luaMethodsExtend(child map[string]lua.LGFunction, parents ...func() map[str
 func registerLuaVector3(s *lua.LState) {
 	mt := s.NewTypeMetatable("Vector3")
 	s.SetGlobal("Vector3", mt)
+	s.SetField(mt, "__index", s.SetFuncs(s.NewTable(),
+		map[string]lua.LGFunction{
+			"x": luaGenericGetSetNumber[datatypes.Vector3Float32](func(v datatypes.Vector3Float32) *float32 { return &v.X }),
+			"y": luaGenericGetSetNumber[datatypes.Vector3Float32](func(v datatypes.Vector3Float32) *float32 { return &v.Y }),
+			"z": luaGenericGetSetNumber[datatypes.Vector3Float32](func(v datatypes.Vector3Float32) *float32 { return &v.Z }),
+		},
+	))
 	s.SetField(mt, "new", s.NewFunction(newLuaVector3))
 }
 
@@ -56,6 +63,12 @@ func newLuaVector3(state *lua.LState) int {
 func registerLuaVector2(s *lua.LState) {
 	mt := s.NewTypeMetatable("Vector2")
 	s.SetGlobal("Vector2", mt)
+	s.SetField(mt, "__index", s.SetFuncs(s.NewTable(),
+		map[string]lua.LGFunction{
+			"x": luaGenericGetSetNumber[datatypes.Vector2Float32](func(v datatypes.Vector2Float32) *float32 { return &v.X }),
+			"y": luaGenericGetSetNumber[datatypes.Vector2Float32](func(v datatypes.Vector2Float32) *float32 { return &v.Y }),
+		},
+	))
 	s.SetField(mt, "new", s.NewFunction(newLuaVector2))
 }
 

@@ -176,7 +176,7 @@ func (p *Avatar) GetUnitBehaviour() *UnitBehavior {
 func (p *Avatar) Teleport(coords datatypes.Vector3Float32) {
 	p.SendStopFollowClient()
 	p.Warp(coords.X, coords.Y, coords.Z)
-	p.SendStopFollowClient()
+	p.SendFollowClient()
 }
 
 //func (p *Avatar) SendPositions(positions []UnitPathPosition) {

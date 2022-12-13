@@ -287,6 +287,7 @@ func (u *UnitBehavior) ReadUpdate(reader *byter.Byter) error {
 		u.handleClientMove(u.EntityProperties.Conn, reader)
 	// Potentially requesting current position because starting a new path
 	case 0x03:
+		// This seems to also be used when the player tries to interact with an object when it is too far away
 		fmt.Printf("player send move request\n")
 		// This is required to be handled so the player can move after getting stuck due to attacking
 		// TODO investigate this behaviour

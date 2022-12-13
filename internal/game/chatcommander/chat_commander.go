@@ -18,6 +18,9 @@ var commands = map[string]commands2.ChatCommandHandler{
 	"warp": commands2.AliasCustom(commands2.ExecuteLua, func(player *objects.RRPlayer, args []string) []string {
 		return append([]string{"general.warp"}, args...)
 	}),
+	"warpr": commands2.AliasCustom(commands2.ExecuteLua, func(player *objects.RRPlayer, args []string) []string {
+		return append([]string{"general.warpRelative"}, args...)
+	}),
 }
 
 var commandSplitRegex = regexp.MustCompile(`(?:^@|)(?:(".*"|\S+)(?: |$))+?`)
@@ -26,6 +29,12 @@ type ChatCommander struct {
 }
 
 func (c ChatCommander) Execute(player *objects.RRPlayer, msg string) error {
+	defer func() {
+		if r := recover(); r != nil {
+			SendErrorMessageResponse(player, fmt.Sprintf("command failed: %s", r))
+		}
+	}()
+
 	if !strings.HasPrefix(msg, "@") {
 		SendErrorMessageResponse(player, fmt.Sprintf("chat command does not start with a @ and is not valid: %s", msg))
 		return errors.New(fmt.Sprintf("chat command does not start with a @ and is not valid: %s", msg))
