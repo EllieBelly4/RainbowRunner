@@ -228,7 +228,7 @@ for i, v in ipairs(npcs) do
         npc:removeChildrenByGCNativeType("UnitBehavior")
         behaviour = MonsterBehavior2.new(v["behaviour"])
         npc:addChild(behaviour)
-    elseif npc:getChildByGCNativeType("UnitBehavior") ~= null then
+    elseif npc:getChildByGCNativeType("UnitBehavior") == null then
         behaviour = MonsterBehavior2.new("npc.Base.Behavior")
         npc:addChild(behaviour)
     end
