@@ -1,0 +1,35 @@
+send_movement_messages: true
+reinitialise_zones_on_enter: false
+default_zone: town
+welcome:
+  send_welcome_message: true
+  message: |
+    Welcome to RainbowRunner!
+    This server is currently in development and everything is broken.
+    If you want to contribute to the codebase just head to https://github.com/EllieBelly4/RainbowRunner.
+network:
+  login_server_port: 2110
+  game_server_port: 2603
+  game_server_ip: 127.0.0.1
+logging:
+  log_change_zone: false
+  log_moves: false
+  log_received_moves: false
+  log_generic_sent: false
+  log_small_as: false
+  log_hashes: false
+  log_gc_object_serialise: false
+  log_random_equipment: true
+  log_filter_messages: true
+  log_file_name: inventory_logs
+  log_truncate: true
+  log_e_messages: false
+  log_ids: false
+  log_sent_message_types:
+    OpTypeBehaviourAction: false
+    OpTypeAvatarMovement: false
+    OpTypeCreateNPC: false
+    OpTypeEquippedItemClickResponse: false
+    OpTypeOther: false
+    OpTypeInventoryItemClickResponse: false
+    OpTypeInventoryItemDropResponse: false
