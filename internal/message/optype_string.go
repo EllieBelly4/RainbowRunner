@@ -10,6 +10,7 @@ func _() {
 	var x [1]struct{}
 	_ = x[OpTypeAvatarMovement-0]
 	_ = x[OpTypeCreateNPC-1]
+	_ = x[OpTypeCreateMOB-7]
 	_ = x[OpTypeEquippedItemClickResponse-2]
 	_ = x[OpTypeInventoryItemClickResponse-3]
 	_ = x[OpTypeInventoryItemDropResponse-4]

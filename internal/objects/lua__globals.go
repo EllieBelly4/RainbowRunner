@@ -18,6 +18,7 @@ func RegisterLuaGlobals(state *lua.LState) {
 	registerLuaWorldEntity(state)
 	registerLuaUnit(state)
 	registerLuaNPC(state)
+	registerLuaMOB(state)
 	registerLuaZone(state)
 	registerLuaPlayer(state)
 	registerLuaZonePortal(state)

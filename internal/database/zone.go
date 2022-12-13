@@ -24,6 +24,7 @@ type CheckpointEntityConfig struct {
 type ZoneConfig struct {
 	Name        string
 	NPCs        map[string]*NPCConfig
+	MOBs        map[string]*MOBConfig //Added by Tim for loading in mobs
 	Checkpoints map[string]*CheckpointConfig
 }
 
@@ -56,6 +57,10 @@ func GetZoneConfig(name string) (*ZoneConfig, error) {
 		if npcConfig, ok := configEntities["npc"]; ok {
 			handleNPCs(zoneConfig, npcConfig, append(gcRoot, "npc"))
 		}
+		//Added by Tim for loading in mobs
+		if mobConfig, ok := configEntities["mob"]; ok {
+			handleMOBs(zoneConfig, mobConfig, append(gcRoot, "mob"))
+		}
 
 		if checkConfig, ok := checkpointConfigs[zoneConfig.Name]; ok {
 			zoneConfig.Checkpoints = checkConfig
@@ -77,6 +82,20 @@ func handleNPCs(zoneConfig *ZoneConfig, rawNPCConfig *configtypes.DRClassChildGr
 		npc.FullGCType = strings.Join(npcGCroot, ".")
 
 		zoneConfig.NPCs[npcKey] = npc
+	}
+}
+
+// Added by Tim for loading in mobs
+func handleMOBs(zoneConfig *ZoneConfig, rawMOBConfig *configtypes.DRClassChildGroup, gcRoot []string) {
+	zoneConfig.MOBs = make(map[string]*MOBConfig)
+
+	for mobKey, mobConfig := range rawMOBConfig.Entities[0].Children {
+		mobGCroot := append(gcRoot, mobKey)
+		mob := NewMOBConfig(mobConfig, mobGCroot)
+
+		mob.FullGCType = strings.Join(mobGCroot, ".")
+
+		zoneConfig.MOBs[mobKey] = mob
 	}
 }
 

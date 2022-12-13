@@ -42,6 +42,27 @@ func (f ZoneLuaFunctions) LoadNPCFromConfig(s *lua.LState) int {
 	return 1
 }
 
+// Added by Tim for loading in mobs
+func (f ZoneLuaFunctions) LoadMOBFromConfig(s *lua.LState) int {
+	z := lua2.CheckReferenceValue[Zone](s, 1)
+	mobID := s.CheckString(2)
+
+	mobConfig, ok := z.BaseConfig.MOBs[strings.ToLower(mobID)]
+
+	if !ok {
+		s.RaiseError("could not find mob config with ID: " + mobID)
+	}
+
+	mob := NewMOBFromConfig(mobConfig)
+
+	ud := s.NewUserData()
+	ud.Value = mob
+
+	s.SetMetatable(ud, s.GetTypeMetatable(luaMOBTypeName))
+	s.Push(ud)
+	return 1
+}
+
 func (f ZoneLuaFunctions) Spawn(state *lua.LState) int {
 	ud := state.CheckUserData(2)
 
@@ -96,4 +117,5 @@ var zoneMethods = map[string]lua.LGFunction{
 	"name":              zoneLuaFunctions.GetName,
 	"spawn":             zoneLuaFunctions.Spawn,
 	"loadNPCFromConfig": zoneLuaFunctions.LoadNPCFromConfig,
+	"loadMOBFromConfig": zoneLuaFunctions.LoadMOBFromConfig, //Added by Tim for loading in mobs
 }

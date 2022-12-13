@@ -160,9 +160,7 @@ func handleZoneJoin(conn *connections.RRConn) {
 		//avatar.SendPosition()
 	} else if lcZoneName == "dungeon16_level00" {
 		avatar.Warp(0, 0, 15000/256)
-	} else if lcZoneName == "dungeon00_level01" {
-		avatar.Warp(-200, 0, 10)
-	} else if lcZoneName == "dungeon02_level00" {
+	}  else if lcZoneName == "dungeon02_level00" {
 		avatar.Warp(-150, 500, 2700/256)
 	} else if lcZoneName == "dungeon04_level00" {
 		avatar.Warp(100, 500, 2700/256)
@@ -189,15 +187,84 @@ func handleZoneJoin(conn *connections.RRConn) {
 	} else if lcZoneName == "pvp_start" {
 		avatar.Warp(-200, -200, 5000/256)
 	} else if lcZoneName == "dungeon02_level08_boss" {
-		avatar.Warp(-200, -200, 5000/256)
+		//avatar.Warp(-83, -30, 5000/256)
+		avatar.Warp(-90, 0, 2559/256)
 	} else if lcZoneName == "d06_l01_q05" {
 		avatar.Warp(150, -200, 15000/256)
 	} else if lcZoneName == "d06_l07_q05" {
 		avatar.Warp(150, -200, 15000/256)
 	} else if lcZoneName == "epic01_central" {
-		avatar.Warp(-250, 250, 75000/256)
+		avatar.Warp(-5.5, -38, 2676/256)
+	} else if lcZoneName == "thehub" {
+		//avatar.Warp(-250, 0, 3500/256)
+		avatar.Warp(90, 169, 1300/256)
+	} else if lcZoneName == "dungeon01_level01" {
+		//avatar.Warp(-250, 0, 3500/256)
+		avatar.Warp(1005, 549, 2558/256)
+	} else if lcZoneName == "dungeon00_level01" {
+		//avatar.Warp(1005, 549, 2558/256)641, -557, 35), 180
+		avatar.Warp(626, -463, 2558/256) //X: 160112 Y: -118440 Z: 2559 Rot: 25.13
+	} else if lcZoneName == "dungeon00_level02" {
+		avatar.Warp(633, -486, 2559/256)
+		//avatar.Warp(564, -496, 2559/256)
+	} else if lcZoneName == "dungeon00_level03" {
+		//avatar.Warp(-250, 461, 2559/256)
+		avatar.Warp(564, -496, 2559/256)
+	} else if lcZoneName == "dungeon00_level03_boss" {
+		//avatar.Warp(-250, 461, 2559/256)
+		avatar.Warp(0, 0, 13000/256)
+	} else if lcZoneName == "dungeon01_level01_off1a" {
+		//avatar.Warp(-250, 461, 2559/256)
+		avatar.Warp(871, 190, 2559/256)
+	} else if lcZoneName == "dungeon01_level02" {
+		//avatar.Warp(-250, 461, 2559/256)
+		avatar.Warp(113, 889, 2559/256)
+	} else if lcZoneName == "dungeon01_level03" {
+		//avatar.Warp(-250, 461, 2559/256)
+		avatar.Warp(113, 889, 2559/256)
+	} else if lcZoneName == "dungeon01_level03_off1a" {
+		//avatar.Warp(-250, 461, 2559/256)
+		avatar.Warp(697, 88, 2559/256)
+	} else if lcZoneName == "dungeon01_level04" {
+		//avatar.Warp(-250, 461, 2559/256)
+		avatar.Warp(102, 883, 2559/256)
+	} else if lcZoneName == "dungeon01_level04_off1a" {
+		//avatar.Warp(-250, 461, 2559/256)
+		avatar.Warp(854, 194, 2559/256)
+	} else if lcZoneName == "dungeon01_level05" {
+		//avatar.Warp(-250, 461, 2559/256)
+		avatar.Warp(-342, 232, 10000/256)
+	} else if lcZoneName == "dungeon01_level05_off1a" {
+		//avatar.Warp(-250, 461, 2559/256)
+		avatar.Warp(-342, 232, 7500/256)
+	} else if lcZoneName == "dungeon01_level06" {
+		//avatar.Warp(-250, 461, 2559/256)
+		avatar.Warp(218, 795, 8500/256)
+	} else if lcZoneName == "dungeon01_level07" {
+		//avatar.Warp(-250, 461, 2559/256)
+		avatar.Warp(218, 795, 8500/256)
+	} else if lcZoneName == "dungeon01_level07_off1a" {
+		//avatar.Warp(-250, 461, 2559/256)
+		avatar.Warp(-157, 285, 2559/256)
+	} else if lcZoneName == "dungeon01_level07_off2a" {
+		//avatar.Warp(495, 260, 2559/256)
+		avatar.Warp(-430, 103, 2559/256)
+	} else if lcZoneName == "dungeon01_level08_boss" {
+		avatar.Warp(-730, 100, 12000/256)
+		//avatar.Warp(180, 224, 7500/256)
+	} else if lcZoneName == "dungeon02_level01" {
+		avatar.Warp(1162, 804, 2559/256)
+		//avatar.Warp(180, 224, 7500/256)
+	} else if lcZoneName == "dungeon02_level01_off1a" {
+		avatar.Warp(-845, 460, 2559/256)
+		//avatar.Warp(180, 224, 7500/256)
+	} else if lcZoneName == "dungeon02_level02" {
+		avatar.Warp(-896, 1414, 4000/256)
+		//avatar.Warp(180, 224, 7500/256)
+	} else if lcZoneName == "elite01_stage06_level02" {
+		avatar.Warp(-896, 1414, 4000/256)
+		//avatar.Warp(180, 224, 7500/256)
 	}
-
 	avatar.SendFollowClient()
 	avatar.IsSpawned = true
 

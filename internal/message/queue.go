@@ -22,6 +22,7 @@ const (
 	OpTypeInventoryItemDropResponse
 	OpTypeOther
 	OpTypeBehaviourAction
+	OpTypeCreateMOB
 )
 
 type QueueItem struct {
