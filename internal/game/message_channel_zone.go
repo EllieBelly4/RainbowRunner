@@ -97,15 +97,16 @@ func handleZoneJoin(conn *connections.RRConn) {
 		SendWelcomeMessage(player)
 	}
 
-	//if player.Zone.Name == "town" {
-	//	for i, entityStrings := range entitiesToSpawn {
-	//		objects.CreateNPC(player, player.Zone, datatypes.Transform{
-	//			Position: datatypes.Vector3Float32{float32(106342+2048*int32(i)) / 256, -140, 49},
-	//			Rotation: 180 * math.DRDegToRot,
-	//		}, entityStrings[0], entityStrings[1])
-	//	}
-	//
-	//} else if player.Zone.Name == "dungeon16_level00" {
+	if player.Zone.Name == "town" {
+		//for i, entityStrings := range entitiesToSpawn {
+		//	objects.CreateNPC(player, player.Zone, datatypes.Transform{
+		//		Position: datatypes.Vector3Float32{float32(106342+2048*int32(i)) / 256, -140, 49},
+		//		Rotation: 180,
+		//	}, entityStrings[0], entityStrings[1])
+		//}
+
+	}
+	//else if player.Zone.Name == "dungeon16_level00" {
 	//	objects.CreateNPC(player, player.Zone, datatypes.Transform{
 	//		Position: datatypes.Vector3Float32{0, 0, 15000},
 	//		Rotation: 180 * math.DRDegToRot,

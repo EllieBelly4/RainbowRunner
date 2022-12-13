@@ -228,7 +228,7 @@ for i, v in ipairs(npcs) do
         npc:removeChildrenByGCNativeType("UnitBehavior")
         behaviour = MonsterBehavior2.new(v["behaviour"])
         npc:addChild(behaviour)
-    elseif npc:getChildByGCNativeType("UnitBehavior") ~= null then
+    elseif npc:getChildByGCNativeType("UnitBehavior") == null then
         behaviour = MonsterBehavior2.new("npc.Base.Behavior")
         npc:addChild(behaviour)
     end
@@ -260,19 +260,19 @@ function spawnVendorWeapon2()
     vendor:addChild(merchant)
 
     vendor:level(100)
-    vendor:flags(0xFF)
+    vendor:unitFlags(0xFF)
     vendor:hp(1000)
     vendor:mp(2000)
 
-    vendor:unitUnk10Case(0xFF)
+    vendor:unk10Case(0xFF)
 
-    vendor:unitUnk20CaseEntityID(0xFFFF)
-    vendor:unitUnk40Case0(0xFFFF)
-    vendor:unitUnk40Case1(0xFFFF)
-    vendor:unitUnk40Case2(0xFFFF)
+    vendor:unk20CaseEntityID(0xFFFF)
+    vendor:unk40Case0(0xFFFF)
+    vendor:unk40Case1(0xFFFF)
+    vendor:unk40Case2(0xFFFF)
 
-    vendor:unitUnk40Case3(0xFF)
-    vendor:unitUnk80Case(0xFF)
+    vendor:unk40Case3(0xFF)
+    vendor:unk80Case(0xFF)
 
     vendor:worldEntityFlags(0x7)
 

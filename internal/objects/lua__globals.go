@@ -5,7 +5,9 @@ import (
 	lua "github.com/yuin/gopher-lua"
 )
 
+//go:generate go run ../../scripts/generateluaregistrations
 func RegisterLuaGlobals(state *lua.LState) {
+
 	registerLuaBit32(state)
 	registerLuaVector2(state)
 	registerLuaVector3(state)
@@ -22,16 +24,25 @@ func RegisterLuaGlobals(state *lua.LState) {
 	registerLuaZone(state)
 	registerLuaPlayer(state)
 	registerLuaZonePortal(state)
+
+	registerAllLuaFunctions(state)
+
 }
 
-func luaMethodsExtend(child map[string]lua.LGFunction, parent func() map[string]lua.LGFunction) map[string]lua.LGFunction {
+type ILuaConvertible interface {
+	ToLua(state *lua.LState) lua.LValue
+}
+
+func luaMethodsExtend(child map[string]lua.LGFunction, parents ...func() map[string]lua.LGFunction) map[string]lua.LGFunction {
 	newMethods := make(map[string]lua.LGFunction)
 
-	for key, value := range child {
-		newMethods[key] = value
+	for _, parent := range parents {
+		for key, value := range parent() {
+			newMethods[key] = value
+		}
 	}
 
-	for key, value := range parent() {
+	for key, value := range child {
 		newMethods[key] = value
 	}
 
@@ -41,6 +52,13 @@ func luaMethodsExtend(child map[string]lua.LGFunction, parent func() map[string]
 func registerLuaVector3(s *lua.LState) {
 	mt := s.NewTypeMetatable("Vector3")
 	s.SetGlobal("Vector3", mt)
+	s.SetField(mt, "__index", s.SetFuncs(s.NewTable(),
+		map[string]lua.LGFunction{
+			"x": luaGenericGetSetNumber[datatypes.Vector3Float32](func(v datatypes.Vector3Float32) *float32 { return &v.X }),
+			"y": luaGenericGetSetNumber[datatypes.Vector3Float32](func(v datatypes.Vector3Float32) *float32 { return &v.Y }),
+			"z": luaGenericGetSetNumber[datatypes.Vector3Float32](func(v datatypes.Vector3Float32) *float32 { return &v.Z }),
+		},
+	))
 	s.SetField(mt, "new", s.NewFunction(newLuaVector3))
 }
 
@@ -64,6 +82,12 @@ func newLuaVector3(state *lua.LState) int {
 func registerLuaVector2(s *lua.LState) {
 	mt := s.NewTypeMetatable("Vector2")
 	s.SetGlobal("Vector2", mt)
+	s.SetField(mt, "__index", s.SetFuncs(s.NewTable(),
+		map[string]lua.LGFunction{
+			"x": luaGenericGetSetNumber[datatypes.Vector2Float32](func(v datatypes.Vector2Float32) *float32 { return &v.X }),
+			"y": luaGenericGetSetNumber[datatypes.Vector2Float32](func(v datatypes.Vector2Float32) *float32 { return &v.Y }),
+		},
+	))
 	s.SetField(mt, "new", s.NewFunction(newLuaVector2))
 }
 

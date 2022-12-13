@@ -6,13 +6,13 @@ import (
 	"RainbowRunner/internal/game/components/behavior"
 	"RainbowRunner/internal/types"
 	"RainbowRunner/pkg/byter"
-	"encoding/hex"
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"math/rand"
 	"time"
 )
 
+//go:generate go run ../../scripts/generatelua -type=Player -extends=GCObject
 type Player struct {
 	*GCObject
 	Name      string
@@ -513,7 +513,7 @@ func (p *Player) SendCreateNewPlayerEntity(rrplayer *RRPlayer) {
 	body.WriteByte(70) // Now connected
 	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 
-	log.Info(fmt.Sprintf("Sent: \n%s", hex.Dump(body.Data())))
+	//log.Info(fmt.Sprintf("Sent: \n%s", hex.Dump(body.Data())))
 }
 
 var r = rand.New(rand.NewSource(time.Now().Unix()))
@@ -543,6 +543,19 @@ func addCreateComponent(body *byter.Byter, parentID uint16, componentID uint16, 
 	body.WriteByte(0xFF)          // Unk
 	body.WriteCString(typeString) // Component Type
 	body.WriteByte(0x01)          // Unk
+}
+
+func (p *Player) ChangeZone(zoneName string) {
+	rrPlayer := Players.GetPlayer(uint16(p.ID()))
+
+	tZone := Zones.GetOrCreateZone(zoneName)
+
+	if tZone == nil {
+		log.Errorf("could not find zone %s", zoneName)
+		return
+	}
+
+	rrPlayer.JoinZone(tZone)
 }
 
 func NewPlayer(name string) (p *Player) {

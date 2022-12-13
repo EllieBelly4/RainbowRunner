@@ -36,12 +36,7 @@ func (m *ZoneManager) CreateZone(name string) *Zone {
 	nameHashBytes := md5.Sum([]byte(name))
 	nameHash := binary.LittleEndian.Uint32(nameHashBytes[:])
 
-	z := &Zone{
-		Name:     name,
-		ID:       nameHash,
-		entities: make(map[uint16]DRObject),
-		players:  make(map[uint16]*RRPlayer),
-	}
+	z := NewZone(name, nameHash)
 
 	m.Zones[name] = z
 

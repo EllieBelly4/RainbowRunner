@@ -33693,58 +33693,6 @@
   "gcType": "1hmacemythicpal.1hmacemythic7"
  },
  {
-  "name": "normal001",
-  "entities": [
-   {
-    "name": "*",
-    "extends": "items.pal.1hmacepal.normal001",
-    "properties": {
-     "ID": "10",
-     "Level": "1"
-    },
-    "children": {
-     "description": {
-      "entities": [
-       {
-        "properties": {
-         "Damage": ".79",
-         "DamageType": "CRUSHING",
-         "DamageVolatility": "0.33",
-         "DropVolume": ".7",
-         "Equipable": "true",
-         "GoldValue": "1.0",
-         "GroundObject": "Weapon_Splintered_Club",
-         "InventoryHeight": "3",
-         "InventoryIcon": "\"Weapon_Icon_Splintered_Club\"",
-         "InventorySound": "\"woodshield\"",
-         "InventoryVolume": "0.7",
-         "InventoryWidth": "2",
-         "Label": "\"Small Club\"",
-         "Range": "8",
-         "SlotType": "10",
-         "Sounds": "BaseWeaponSounds.1HMeleeSounds",
-         "Visual": "D3D:Weapon_Splintered_Club",
-         "WeaponCategory": "1HMACE",
-         "WeaponClass": "1HMELEE",
-         "WeaponSpeed": "105"
-        }
-       }
-      ]
-     },
-     "mod1": {
-      "entities": [
-       {
-        "name": "*",
-        "extends": "items.modpal.levelprefixmodpal.weapon01.mod1"
-       }
-      ]
-     }
-    }
-   }
-  ],
-  "gcType": "avatar.classes.fighterstartingequipment.normal001"
- },
- {
   "name": "mythicprebuilt002",
   "entities": [
    {

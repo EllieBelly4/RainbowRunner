@@ -12,10 +12,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type IUnitBehavior interface {
-	GetUnitBehavior() *UnitBehavior
-}
-
+//go:generate go run ../../scripts/generateLua/ -type=UnitBehavior -extends=Component
 type UnitBehavior struct {
 	*Component
 	LastPosition   datatypes.Vector3Float32
@@ -24,10 +21,6 @@ type UnitBehavior struct {
 	UnitMoverFlags byte
 	Action1        behavior.Action
 	Action2        behavior.Action
-}
-
-func (u *UnitBehavior) GetUnitBehavior() *UnitBehavior {
-	return u
 }
 
 type UnitBehaviorHandler struct {
@@ -294,6 +287,7 @@ func (u *UnitBehavior) ReadUpdate(reader *byter.Byter) error {
 		u.handleClientMove(u.EntityProperties.Conn, reader)
 	// Potentially requesting current position because starting a new path
 	case 0x03:
+		// This seems to also be used when the player tries to interact with an object when it is too far away
 		fmt.Printf("player send move request\n")
 		// This is required to be handled so the player can move after getting stuck due to attacking
 		// TODO investigate this behaviour

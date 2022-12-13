@@ -5,6 +5,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+//go:generate go run ../../scripts/generatelua -type=ZonePortal -extends=WorldEntity
 type ZonePortal struct {
 	*WorldEntity
 	Unk0   string
@@ -44,6 +45,7 @@ func NewZonePortal(unk0, unk1 string) *ZonePortal {
 	//worldEntity := NewWorldEntity("misc.ZonePortal")
 	worldEntity := NewWorldEntity("misc.ZonePortal")
 	worldEntity.GCNativeType = "zoneportal"
+	worldEntity.WorldEntityFlags = 0x04
 
 	return &ZonePortal{
 		WorldEntity: worldEntity,

@@ -9,6 +9,7 @@ import (
 	"RainbowRunner/pkg/datatypes"
 )
 
+//go:generate go run ../../scripts/generateLua/ -type=NPC -extends=Unit
 type NPC struct {
 	*StockUnit
 
@@ -35,7 +36,7 @@ func NewNPC(
 
 	unit.UnitFlags = 0
 	// Adding 0x01 makes it super speedy and disables mouse movement, client selected entity?
-	unit.WorldEntityFlags = 0x04
+	unit.WorldEntityFlags = 0x07
 	unit.WorldEntityInitFlags = 0
 
 	unit.WorldPosition = position
@@ -104,7 +105,7 @@ func CreateNPC(player *RRPlayer, zone *Zone, transform datatypes.Transform, npcT
 	modifiers := NewModifiers("modifiers")
 	npc.AddChild(modifiers)
 
-	zone.Spawn(npc)
+	zone.Spawn(npc, npc.WorldPosition, npc.Rotation)
 
 	//clientEntityWriter := NewClientEntityWriterWithByter()
 	//clientEntityWriter.BeginStream()

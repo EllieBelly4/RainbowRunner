@@ -4,6 +4,7 @@ import (
 	"RainbowRunner/pkg/byter"
 )
 
+//go:generate go run ../../scripts/generatelua -type=Skills -extends=Component
 type Skills struct {
 	*Component
 }

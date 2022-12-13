@@ -1,0 +1,380 @@
+{
+  "unk0": [
+    "SkillIconControl"
+  ],
+  "unk1": [
+    "UseSkillInputHandler"
+  ],
+  "unk2": [
+    "SkillList"
+  ],
+  "unk3": [
+    "SkillPanel"
+  ],
+  "unk4": [
+    "SkillsControl"
+  ],
+  "unk5": [
+    "FriendPanel"
+  ],
+  "unk6": [
+    "GroupsPanel"
+  ],
+  "unk7": [
+    "IgnorePanel"
+  ],
+  "unk8": [
+    "SocialControl"
+  ],
+  "unk9": [
+    "WhoPanel"
+  ],
+  "unk10": [
+    "PosseControl"
+  ],
+  "unk11": [
+    "PosseInfoEditPanel"
+  ],
+  "unk12": [
+    "PosseInfoPanel"
+  ],
+  "unk13": [
+    "PosseRegistryDialog"
+  ],
+  "unk14": [
+    "PosseRosterPanel"
+  ],
+  "unk15": [
+    "Animation"
+  ],
+  "unk16": [
+    "AnimationList"
+  ],
+  "unk17": [
+    "EntityObject",
+    "ZonePortalObject"
+  ],
+  "Object?": [
+    "EntityObject",
+    "StaticObject",
+    "WorldLight",
+    "WorldObject",
+    "GrassObject",
+    "LavaObject",
+    "StaticObjectPlaceholder",
+    "AmbientRandomSound",
+    "AmbientSound",
+    "Effect",
+    "RadialSound",
+    "WaterObject",
+    "ZonePortalObject"
+  ],
+  "unk19": [
+    "EntityObjectDesc"
+  ],
+  "Desc?": [
+    "EntityObjectDesc",
+    "StaticObjectDesc",
+    "WorldObjectDesc",
+    "LavaObjectDesc",
+    "EffectDesc"
+  ],
+  "StateObject?": [
+    "StaticObject",
+    "StaticObjectPlaceholder"
+  ],
+  "StaticObjectDesc?": [
+    "StaticObjectDesc"
+  ],
+  "Visual?": [
+    "Visual",
+    "MountedVisual",
+    "DyeVisual",
+    "TypeSwitchVisual",
+    "RemoveNodeVisual",
+    "AnimateNodeVisual"
+  ],
+  "MountedVisual?": [
+    "MountedVisual"
+  ],
+  "DyeVisual?": [
+    "DyeVisual"
+  ],
+  "TypeSwitchVisual?": [
+    "TypeSwitchVisual"
+  ],
+  "RemoveNodeVisual?": [
+    "RemoveNodeVisual"
+  ],
+  "AnimateNodeVisual?": [
+    "AnimateNodeVisual"
+  ],
+  "World?": [
+    "World"
+  ],
+  "unk30": [
+    "WorldEntity",
+    "Avatar",
+    "Hero",
+    "StockUnit",
+    "SummonedUnit",
+    "Unit",
+    "Vehicle",
+    "AmbushEncounter",
+    "EncounterObject",
+    "EncounterPlaceholderEntity",
+    "PlaceholderEntity",
+    "RoomPlaceholderEntity",
+    "ItemObject",
+    "AreaTrigger",
+    "Door",
+    "NonCombatInteractive",
+    "TownPortal",
+    "Waypoint",
+    "ZonePortal",
+    "ZoneTrigger",
+    "CheckpointEntity"
+  ],
+  "Entity": [
+    "WorldEntity",
+    "Avatar",
+    "Hero",
+    "StockUnit",
+    "SummonedUnit",
+    "Unit",
+    "Vehicle",
+    "AmbushEncounter",
+    "EncounterObject",
+    "EncounterPlaceholderEntity",
+    "PlaceholderEntity",
+    "RoomPlaceholderEntity",
+    "ItemObject",
+    "AreaTrigger",
+    "Door",
+    "NonCombatInteractive",
+    "TownPortal",
+    "Waypoint",
+    "ZonePortal",
+    "ZoneTrigger",
+    "Player",
+    "CheckpointEntity",
+    "Entity",
+    "PVPMatchController"
+  ],
+  "unk32": [
+    "WorldEntityDesc",
+    "AvatarDesc",
+    "HeroDesc",
+    "StockUnitDesc",
+    "SummonedUnitDesc",
+    "UnitDesc",
+    "VehicleDesc",
+    "AmbushEncounterDesc",
+    "DoorDesc",
+    "NonCombatInteractiveDesc",
+    "CheckpointEntityDesc"
+  ],
+  "unk33": [
+    "WorldEntityDesc",
+    "AvatarDesc",
+    "HeroDesc",
+    "StockUnitDesc",
+    "SummonedUnitDesc",
+    "UnitDesc",
+    "VehicleDesc",
+    "AmbushEncounterDesc",
+    "DoorDesc",
+    "NonCombatInteractiveDesc",
+    "CheckpointEntityDesc",
+    "EntityDesc"
+  ],
+  "unk34": [],
+  "unk35": [
+    "WorldMap"
+  ],
+  "unk36": [
+    "WorldMapRenderer"
+  ],
+  "unk37": [
+    "WorldEntityDesc",
+    "AvatarDesc",
+    "HeroDesc",
+    "ManipulatorDesc",
+    "ModifierDesc",
+    "StockUnitDesc",
+    "SummonedUnitDesc",
+    "UnitDesc",
+    "VehicleDesc",
+    "BehaviorDesc",
+    "BlingGnomeBehaviorDesc",
+    "HenchmenBehaviorDesc",
+    "MonsterBehavior2Desc",
+    "MonsterBehaviorDesc",
+    "UnitBehaviorDesc",
+    "ActivePassiveSkillDesc",
+    "ActiveSkillDesc",
+    "InnateSkillDesc",
+    "PassiveSkillDesc",
+    "SkillDesc",
+    "SkillProfessionDesc",
+    "SkillsDesc",
+    "SkillTrainerDesc",
+    "SpellChainProjectileDesc",
+    "SpellProjectileDesc",
+    "SpellRadialProjectileDesc",
+    "AuraModDesc",
+    "EffectModDesc",
+    "AmbushEncounterDesc",
+    "AttributeModifierDesc",
+    "CowardiceModifierDesc",
+    "HealthModifierDesc",
+    "ImmobilizeModifierDesc",
+    "LeachModifierDesc",
+    "ManaShieldModifierDesc",
+    "OverrideAnimationModifierDesc",
+    "ProcModifierDesc",
+    "TriggerModifierDesc",
+    "ActiveItemDesc",
+    "ActivePassiveItemDesc",
+    "InventoryDesc",
+    "ItemAttributeModifierDesc",
+    "ItemDesc",
+    "ItemModifierDesc",
+    "ArmorDesc",
+    "EquipmentDesc",
+    "MeleeWeaponDesc",
+    "RangedWeaponDesc",
+    "WeaponDesc",
+    "DoorDesc",
+    "NonCombatInteractiveDesc",
+    "DialogDesc",
+    "CheckpointDesc",
+    "CheckpointEntityDesc",
+    "QuestDesc",
+    "EntityComponentDesc",
+    "EntityDesc",
+    "GCObjectDesc"
+  ],
+  "unk38": [
+    "WorldObjectGroup"
+  ],
+  "unk39": [
+    "WorldSceneManager"
+  ],
+  "unk40": [
+    "WorldTimer"
+  ],
+  "unk41": [],
+  "unk42": [],
+  "unk43": [],
+  "unk44": [
+    "CollisionObject",
+    "HybridCollisionObject",
+    "PolyCollisionObject",
+    "SimpleCollisionObject"
+  ],
+  "unk45": [
+    "HybridCollisionObject"
+  ],
+  "unk46": [
+    "PolyCollisionObject"
+  ],
+  "unk47": [
+    "SimpleCollisionObject"
+  ],
+  "unk48": [
+    "WorldCollisionManager"
+  ],
+  "unk49": [
+    "WorldCollisionObject"
+  ],
+  "unk50": [
+    "Attribute"
+  ],
+  "unk51": [
+    "Attribute",
+    "CurveTable"
+  ],
+  "unk52": [],
+  "unk53": [],
+  "unk54": [
+    "AvatarDesc"
+  ],
+  "unk55": [
+    "AvatarDesc",
+    "HeroDesc"
+  ],
+  "unk56": [
+    "AvatarMetrics"
+  ],
+  "unk57": [
+    "Damage"
+  ],
+  "unk58": [],
+  "unk59": [
+    "AvatarDesc",
+    "HeroDesc",
+    "StockUnitDesc",
+    "SummonedUnitDesc",
+    "UnitDesc",
+    "VehicleDesc",
+    "NonCombatInteractiveDesc"
+  ],
+  "unk60": [
+    "Manipulator",
+    "ActivePassiveSkill",
+    "ActiveSkill",
+    "InnateSkill",
+    "PassiveSkill",
+    "Skill",
+    "ActiveItem",
+    "ActivePassiveItem",
+    "Currency",
+    "Item",
+    "Armor",
+    "MeleeWeapon",
+    "RangedWeapon",
+    "Weapon"
+  ],
+  "unk61": [
+    "ManipulatorDesc",
+    "ActivePassiveSkillDesc",
+    "ActiveSkillDesc",
+    "InnateSkillDesc",
+    "PassiveSkillDesc",
+    "SkillDesc",
+    "ActiveItemDesc",
+    "ActivePassiveItemDesc",
+    "InventoryDesc",
+    "ItemDesc",
+    "ArmorDesc",
+    "MeleeWeaponDesc",
+    "RangedWeaponDesc",
+    "WeaponDesc"
+  ],
+  "unk62": [
+    "Manipulators"
+  ],
+  "UnitComponent?": [
+    "Manipulators",
+    "Modifiers",
+    "Behavior",
+    "BlingGnomeBehavior",
+    "HenchmenBehavior",
+    "MonsterBehavior2",
+    "UnitBehavior",
+    "SimpleSkills",
+    "Skills",
+    "SkillTrainer",
+    "Container",
+    "UnitContainer",
+    "Equipment",
+    "Banker",
+    "Merchant",
+    "DialogManager",
+    "QuestManager",
+    "PosseRegistry",
+    "EntityComponent",
+    "PVPAccessPoint"
+  ]
+}

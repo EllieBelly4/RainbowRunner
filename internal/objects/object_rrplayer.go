@@ -11,6 +11,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+//go:generate go run ../../scripts/generatelua -type=RRPlayer
 type RRPlayer struct {
 	Conn               *connections.RRConn
 	CurrentCharacter   *Player

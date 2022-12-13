@@ -21,6 +21,7 @@ type EntityMessageHandler interface {
 	ReadUpdate(reader *byter.Byter) error
 }
 
+//go:generate go run ../../scripts/generatelua -type=GCObject
 type GCObject struct {
 	EntityProperties RREntityProperties
 	Version          uint8
@@ -30,6 +31,10 @@ type GCObject struct {
 	GCType           string
 	Properties       []GCObjectProperty
 	EntityHandler    EntityMessageHandler
+}
+
+func (g *GCObject) GCObject() *GCObject {
+	return g
 }
 
 func (g *GCObject) Activate(player *RRPlayer, u *UnitBehavior, responseID byte) {
@@ -93,10 +98,6 @@ func (g *GCObject) WriteSynch(b *byter.Byter) {
 
 func (g *GCObject) Tick() {
 
-}
-
-func (g *GCObject) GetGCObject() *GCObject {
-	return g
 }
 
 func (g *GCObject) WriteInit(b *byter.Byter) {
@@ -350,4 +351,20 @@ func ReadData(b *byter.Byter) DRObject {
 	gcObject.ReadData(b)
 
 	return gcObject
+}
+
+func (g *GCObject) RemoveChildrenByGCNativeType(gcNativeType string) int {
+	toRemove := make([]int, 0, 0)
+
+	for i, child := range g.Children() {
+		if child.GetGCObject().GCNativeType == gcNativeType {
+			toRemove = append(toRemove, i)
+		}
+	}
+
+	for _, i := range toRemove {
+		g.RemoveChildAt(i)
+	}
+
+	return len(toRemove)
 }

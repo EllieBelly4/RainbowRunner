@@ -6,6 +6,7 @@ import (
 	"fmt"
 )
 
+//go:generate go run ../../scripts/generatelua -type=Manipulators -extends=Component
 type Manipulators struct {
 	*Component
 }

@@ -242,7 +242,7 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	//avatarEquipment.GCType = "avatar.base.Equipment"
 	//avatarEquipment.GCLabel = "EllieEquipment"
 
-	avatarEquipment := objects.NewInventoryEquipment("avatar.base.Equipment", avatar)
+	avatarEquipment := objects.NewEquipmentInventory("avatar.base.Equipment", avatar)
 	avatarEquipment.GCLabel = "EllieEquipment"
 
 	//.text:0058E550     ; struct DFCClass *__thiscall Armor::getClass(Armor *__hidden this)

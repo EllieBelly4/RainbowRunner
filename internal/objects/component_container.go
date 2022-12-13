@@ -2,6 +2,7 @@ package objects
 
 import "RainbowRunner/pkg/byter"
 
+//go:generate go run ../../scripts/generatelua -type=Container -extends=Component
 type Container struct {
 	*Component
 }

@@ -4,6 +4,7 @@ import (
 	"RainbowRunner/pkg/byter"
 )
 
+//go:generate go run ../../scripts/generatelua -type=Modifiers -extends=Component
 type Modifiers struct {
 	*Component
 }
