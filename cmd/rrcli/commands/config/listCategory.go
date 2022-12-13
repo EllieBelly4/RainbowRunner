@@ -13,8 +13,8 @@ var categoryPrefix string
 var listCategoryDepth int
 
 var listCategoryCommand = &cobra.Command{
-	Use:  "list category",
-	Args: cobra.ExactArgs(1),
+	Use:  "list-category",
+	Args: cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		categoryConfig, err := configurator.LoadFromCategoryConfigFile(categoryInputFile)
 
