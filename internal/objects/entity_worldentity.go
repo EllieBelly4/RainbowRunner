@@ -136,7 +136,16 @@ func (n *WorldEntity) WriteInit(b *byter.Byter) {
 	// With 1 | 2 | 4 | 8 it was causing the character to have no animations and
 	// eventually collapse into itself
 	//n.WorldEntityInitFlags := 0x04 | 0x08
-	b.WriteByte(byte(n.WorldEntityInitFlags))
+
+	initFlags := n.WorldEntityInitFlags
+
+	if n.UseCustomAnimationSpeed {
+		initFlags |= byte(WorldEntityInitFlagCustomAnimationSpeed)
+	} else {
+		initFlags &= ^byte(WorldEntityInitFlagCustomAnimationSpeed)
+	}
+
+	b.WriteByte(initFlags)
 
 	if n.WorldEntityInitFlags&0x01 > 0 {
 		// 0x01

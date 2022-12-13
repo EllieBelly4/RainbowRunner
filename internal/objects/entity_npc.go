@@ -36,7 +36,7 @@ func NewNPC(
 
 	unit.UnitFlags = 0
 	// Adding 0x01 makes it super speedy and disables mouse movement, client selected entity?
-	unit.WorldEntityFlags = 0x04
+	unit.WorldEntityFlags = 0x07
 	unit.WorldEntityInitFlags = 0
 
 	unit.WorldPosition = position
