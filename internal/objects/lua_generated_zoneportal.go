@@ -58,10 +58,11 @@ func luaMethodsZonePortal() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IZonePortal](l, 1)
 			obj := objInterface.GetZonePortal()
 			res0 := obj.GetZonePortal()
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("ZonePortal"))
-			l.Push(ud)
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
 
 			return 1
 		},

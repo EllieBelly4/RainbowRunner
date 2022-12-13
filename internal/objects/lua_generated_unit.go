@@ -63,10 +63,11 @@ func luaMethodsUnit() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IUnit](l, 1)
 			obj := objInterface.GetUnit()
 			res0 := obj.GetUnit()
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("Unit"))
-			l.Push(ud)
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
 
 			return 1
 		},

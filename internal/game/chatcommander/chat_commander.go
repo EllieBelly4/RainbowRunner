@@ -15,6 +15,9 @@ var commands = map[string]commands2.ChatCommandHandler{
 	"z": commands2.AliasCustom(commands2.ExecuteLua, func(player *objects.RRPlayer, args []string) []string {
 		return []string{"general.changeZone", args[0]}
 	}),
+	"warp": commands2.AliasCustom(commands2.ExecuteLua, func(player *objects.RRPlayer, args []string) []string {
+		return append([]string{"general.warp"}, args...)
+	}),
 }
 
 var commandSplitRegex = regexp.MustCompile(`(?:^@|)(?:(".*"|\S+)(?: |$))+?`)

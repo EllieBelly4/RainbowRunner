@@ -29,6 +29,7 @@ func registerLuaItemObject(state *lua2.LState) {
 
 func luaMethodsItemObject() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
+		"item": luaGenericGetSetValue[IItemObject, DRObject](func(v IItemObject) *DRObject { return &v.GetItemObject().Item }),
 		"type": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IItemObject](l, 1)
 			obj := objInterface.GetItemObject()
@@ -53,10 +54,11 @@ func luaMethodsItemObject() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IItemObject](l, 1)
 			obj := objInterface.GetItemObject()
 			res0 := obj.GetItemObject()
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("ItemObject"))
-			l.Push(ud)
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
 
 			return 1
 		},

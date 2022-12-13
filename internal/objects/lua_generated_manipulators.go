@@ -70,10 +70,11 @@ func luaMethodsManipulators() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IManipulators](l, 1)
 			obj := objInterface.GetManipulators()
 			res0 := obj.GetManipulators()
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("Manipulators"))
-			l.Push(ud)
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
 
 			return 1
 		},

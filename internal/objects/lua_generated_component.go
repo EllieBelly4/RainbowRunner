@@ -32,10 +32,11 @@ func luaMethodsComponent() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IComponent](l, 1)
 			obj := objInterface.GetComponent()
 			res0 := obj.GetComponent()
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("Component"))
-			l.Push(ud)
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
 
 			return 1
 		},

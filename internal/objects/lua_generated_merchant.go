@@ -42,10 +42,11 @@ func luaMethodsMerchant() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IMerchant](l, 1)
 			obj := objInterface.GetMerchant()
 			res0 := obj.GetInventoryByID(byte(l.CheckNumber(2)))
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("Inventory"))
-			l.Push(ud)
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
 
 			return 1
 		},
@@ -53,10 +54,11 @@ func luaMethodsMerchant() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IMerchant](l, 1)
 			obj := objInterface.GetMerchant()
 			res0 := obj.GetMerchant()
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("Merchant"))
-			l.Push(ud)
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
 
 			return 1
 		},

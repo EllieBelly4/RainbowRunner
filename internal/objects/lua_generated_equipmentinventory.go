@@ -59,10 +59,11 @@ func luaMethodsEquipmentInventory() map[string]lua2.LGFunction {
 			res0 := obj.RemoveEquipmentBySlot(
 				lua.CheckValue[types.EquipmentSlot](l, 2),
 			)
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("Equipment"))
-			l.Push(ud)
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
 
 			return 1
 		},
@@ -81,10 +82,11 @@ func luaMethodsEquipmentInventory() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IEquipmentInventory](l, 1)
 			obj := objInterface.GetEquipmentInventory()
 			res0 := obj.GetEquipmentInventory()
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("EquipmentInventory"))
-			l.Push(ud)
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
 
 			return 1
 		},

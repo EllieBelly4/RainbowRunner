@@ -29,7 +29,9 @@ func registerLuaUnitContainer(state *lua2.LState) {
 
 func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
-		"avatar": luaGenericGetSetValue[IUnitContainer, *Avatar](func(v IUnitContainer) **Avatar { return &v.GetUnitContainer().Avatar }),
+		"manipulator": luaGenericGetSetValue[IUnitContainer, DRObject](func(v IUnitContainer) *DRObject { return &v.GetUnitContainer().Manipulator }),
+		"activeItem":  luaGenericGetSetValue[IUnitContainer, DRObject](func(v IUnitContainer) *DRObject { return &v.GetUnitContainer().ActiveItem }),
+		"avatar":      luaGenericGetSetValue[IUnitContainer, *Avatar](func(v IUnitContainer) **Avatar { return &v.GetUnitContainer().Avatar }),
 		"readUpdate": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
 			obj := objInterface.GetUnitContainer()
@@ -103,10 +105,11 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
 			obj := objInterface.GetUnitContainer()
 			res0 := obj.GetInventoryByID(byte(l.CheckNumber(2)))
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("Inventory"))
-			l.Push(ud)
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
 
 			return 1
 		},
@@ -114,10 +117,11 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
 			obj := objInterface.GetUnitContainer()
 			res0 := obj.GetUnitContainer()
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("UnitContainer"))
-			l.Push(ud)
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
 
 			return 1
 		},

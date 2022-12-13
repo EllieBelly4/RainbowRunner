@@ -42,10 +42,11 @@ func luaMethodsModifiers() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IModifiers](l, 1)
 			obj := objInterface.GetModifiers()
 			res0 := obj.GetModifiers()
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("Modifiers"))
-			l.Push(ud)
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
 
 			return 1
 		},

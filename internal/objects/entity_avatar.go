@@ -6,6 +6,7 @@ import (
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/message"
 	"RainbowRunner/pkg/byter"
+	"RainbowRunner/pkg/datatypes"
 	"fmt"
 )
 
@@ -109,6 +110,24 @@ func (p *Avatar) SendFollowClient() {
 	//p.Send(CEWriter.Body)
 }
 
+func (p *Avatar) SendStopFollowClient() {
+	CEWriter := NewClientEntityWriterWithByter()
+	//writer.BeginStream()
+	CEWriter.BeginComponentUpdate(p.GetChildByGCNativeType("UnitBehavior"))
+
+	CEWriter.Body.WriteByte(0x64) // Update type - something to do with client control
+	CEWriter.Body.WriteByte(0x00) // Client control on or off
+
+	CEWriter.WriteSynch(p)
+
+	player := Players.GetPlayer(uint16(p.OwnerID()))
+
+	player.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeOther)
+
+	//writer.EndStream()
+	//p.Send(CEWriter.Body)
+}
+
 func (p *Avatar) Warp(x, y, z float32) {
 	unitBehavior := p.GetChildByGCNativeType("UnitBehavior").(*UnitBehavior)
 	unitBehavior.Warp(x, y, z)
@@ -152,6 +171,12 @@ func (p *Avatar) GetManipulators() *Manipulators {
 func (p *Avatar) GetUnitBehaviour() *UnitBehavior {
 	unitBehaviour := p.GetChildByGCNativeType("UnitBehavior")
 	return unitBehaviour.(*UnitBehavior)
+}
+
+func (p *Avatar) Teleport(coords datatypes.Vector3Float32) {
+	p.SendStopFollowClient()
+	p.Warp(coords.X, coords.Y, coords.Z)
+	p.SendStopFollowClient()
 }
 
 //func (p *Avatar) SendPositions(positions []UnitPathPosition) {

@@ -42,10 +42,11 @@ func luaMethodsMonsterBehavior2() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IMonsterBehavior2](l, 1)
 			obj := objInterface.GetMonsterBehavior2()
 			res0 := obj.GetMonsterBehavior2()
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("MonsterBehavior2"))
-			l.Push(ud)
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
 
 			return 1
 		},

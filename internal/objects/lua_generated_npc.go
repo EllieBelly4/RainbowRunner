@@ -45,10 +45,11 @@ func luaMethodsNPC() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[INPC](l, 1)
 			obj := objInterface.GetNPC()
 			res0 := obj.GetNPC()
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("NPC"))
-			l.Push(ud)
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
 
 			return 1
 		},

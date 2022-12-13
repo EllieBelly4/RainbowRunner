@@ -41,6 +41,12 @@ const (
 			l.Push(lua2.LNumber({{ $resVarName }}))
 			{{- else if isStringType $result }}
 			l.Push(lua2.LString({{ $resVarName }}))
+			{{- else if isResultLuaConvertible $result }}
+			if {{ $resVarName }} != nil {
+				l.Push({{ $resVarName }}.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
 			{{- else }}
 			ud := l.NewUserData()
 			ud.Value = {{ $resVarName }}
@@ -63,10 +69,12 @@ func GenerateCallMemberFunction(s *StructDef, def *FuncDef) string {
 	t := template.New("callMemberFunctionTemplate")
 
 	t.Funcs(template.FuncMap{
-		"generateCallString": GenerateCallString,
-		"isNumberType":       IsNumberType,
-		"isStringType":       IsStringType,
-		"add":                Add,
+		"generateCallString":     GenerateCallString,
+		"isNumberType":           IsNumberType,
+		"isStringType":           IsStringType,
+		"add":                    Add,
+		"isFieldLuaConvertible":  IsFieldLuaConvertible,
+		"isResultLuaConvertible": IsResultLuaConvertible,
 	})
 
 	t, err := t.Parse(callMemberFunctionTemplate)

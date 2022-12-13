@@ -99,7 +99,7 @@ func (f *StructDef) GetRequiredImports(importDefs map[string]*ImportDef) []*Impo
 		// These types must be mirrored in the template or the imports will be wrong
 		if !IsStringType(field) &&
 			!IsNumberType(field) &&
-			!IsLuaConvertible(field) {
+			!IsFieldLuaConvertible(field) {
 			continue
 		}
 

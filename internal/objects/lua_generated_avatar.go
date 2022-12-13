@@ -4,6 +4,7 @@ package objects
 import (
 	lua "RainbowRunner/internal/lua"
 	"RainbowRunner/pkg/byter"
+	"RainbowRunner/pkg/datatypes"
 	lua2 "github.com/yuin/gopher-lua"
 )
 
@@ -101,6 +102,13 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 
 			return 0
 		},
+		"sendStopFollowClient": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
+			obj := objInterface.GetAvatar()
+			obj.SendStopFollowClient()
+
+			return 0
+		},
 		"warp": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
 			obj := objInterface.GetAvatar()
@@ -119,10 +127,11 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
 			obj := objInterface.GetAvatar()
 			res0 := obj.GetUnitContainer()
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("UnitContainer"))
-			l.Push(ud)
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
 
 			return 1
 		},
@@ -130,10 +139,11 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
 			obj := objInterface.GetAvatar()
 			res0 := obj.GetManipulators()
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("Manipulators"))
-			l.Push(ud)
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
 
 			return 1
 		},
@@ -141,21 +151,32 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
 			obj := objInterface.GetAvatar()
 			res0 := obj.GetUnitBehaviour()
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("UnitBehavior"))
-			l.Push(ud)
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
 
 			return 1
+		},
+		"teleport": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
+			obj := objInterface.GetAvatar()
+			obj.Teleport(
+				lua.CheckValue[datatypes.Vector3Float32](l, 2),
+			)
+
+			return 0
 		},
 		"getAvatar": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
 			obj := objInterface.GetAvatar()
 			res0 := obj.GetAvatar()
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("Avatar"))
-			l.Push(ud)
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
 
 			return 1
 		},

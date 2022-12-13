@@ -1,7 +1,6 @@
 package main
 
 import (
-	"RainbowRunner/internal/gosucks"
 	"fmt"
 	"go/types"
 	"golang.org/x/tools/go/packages"
@@ -109,7 +108,15 @@ func (t *TemplateData) ExtendsString() string {
 	return s.String()
 }
 
-func IsLuaConvertible(t *FieldDef) bool {
+func IsFieldLuaConvertible(t *FieldDef) bool {
+	return isLuaConvertible(t.ValueType)
+}
+
+func IsResultLuaConvertible(t *FuncResultDef) bool {
+	return isLuaConvertible(t.ValueType)
+}
+
+func isLuaConvertible(t ValueType) bool {
 	pkg := getPackage(t.Package)
 
 	fullTypeName := pkg.PkgPath + "." + t.ParamType
@@ -117,6 +124,17 @@ func IsLuaConvertible(t *FieldDef) bool {
 	for _, f := range pkg.TypesInfo.Types {
 		if f.Type.String() == fullTypeName {
 			if named, ok := f.Type.(*types.Named); ok {
+				if iface, ok := named.Underlying().(*types.Interface); ok {
+					for i := 0; i < iface.NumMethods(); i++ {
+						m := iface.Method(i)
+
+						if m.Name() == "ToLua" {
+							return true
+						}
+					}
+					continue
+				}
+
 				for i := 0; i < named.NumMethods(); i++ {
 					m := named.Method(i)
 
@@ -127,7 +145,6 @@ func IsLuaConvertible(t *FieldDef) bool {
 			}
 		}
 	}
-	gosucks.VAR(pkg)
 
 	return false
 }
