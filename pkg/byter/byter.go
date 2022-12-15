@@ -384,7 +384,7 @@ func (b *Byter) Dump() {
 }
 
 func (b *Byter) DumpRemaining() {
-	fmt.Printf("%s\n", hex.Dump(b.RemainingBytes()))
+	fmt.Printf("%s\n", hex.Dump(b.Buffer[b.I:]))
 }
 
 func (b *Byter) WriteInt24(num int32) {

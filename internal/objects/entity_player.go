@@ -247,58 +247,7 @@ func (p *Player) SendCreateNewPlayerEntity(rrplayer *RRPlayer) {
 		addCreateComponent(body, uint16(avatar.RREntityProperties().ID), uint16(unitBehaviour.RREntityProperties().ID), "avatar.base.UnitBehavior")
 
 		behav := behavior.NewBehavior()
-		behav.Init(body, nil, nil)
-
-		// UnitMover::readInit()
-		// Flags
-		// 0x04
-		// 0x01
-		unitMover := byte(0x00)
-		body.WriteByte(unitMover)
-
-		if unitMover&0x04 > 0 {
-			body.WriteByte(0xFF)
-		}
-
-		if unitMover&0x01 > 0 {
-			// 0x01 case
-			body.WriteUInt32(0x01)
-			body.WriteUInt32(0x01)
-		}
-
-		body.WriteUInt32(0x00)
-		body.WriteUInt32(0x00)
-
-		if unitMover&0x80 > 0 {
-			body.WriteUInt32(0x00)
-		}
-
-		// Set to 2 for waypoints
-		unitMover2 := byte(0) // Could potentially be waypoints?
-
-		body.WriteByte(unitMover2)
-
-		if unitMover2 == 2 {
-			waypointCount := uint16(0x0002)
-			body.WriteUInt16(waypointCount)
-
-			for i := 0; i < int(waypointCount); i++ {
-				// Vector2
-				body.WriteUInt32(uint32(1000 * i))   // X?
-				body.WriteUInt32(uint32(100000 * i)) // Y?
-			}
-		}
-
-		// UnitBehavior::readInit()
-		body.WriteByte(0xFF)
-		body.WriteByte(0xFF)
-		body.WriteByte(0xFF)
-	} else {
-		// This is a monster behavior
-		addCreateComponent(body, uint16(avatar.RREntityProperties().ID), NewID(), "base.MeleeUnit.Behavior")
-
-		behav := behavior.NewBehavior()
-		behav.Init(body, nil, nil)
+		behav.Init(body, nil, nil, 0xFF)
 
 		// UnitMover::readInit()
 		// Flags

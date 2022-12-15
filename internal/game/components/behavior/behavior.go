@@ -1,23 +1,26 @@
 package behavior
 
 import (
+	"RainbowRunner/internal/objects/actions"
 	byter "RainbowRunner/pkg/byter"
 )
 
 type Behavior struct {
 }
 
-func (b Behavior) Init(body *byter.Byter, action1, action2 Action) {
+func (b Behavior) Init(body *byter.Byter, action1, action2 actions.Action, sessionID byte) {
 	body.WriteByte(0xFF)
 
 	if action1 != nil {
-		action1.Init(body)
+		body.WriteByte(byte(action1.OpCode()))
+		action1.Init(body, sessionID)
 	} else {
 		body.WriteByte(0x00)
 	}
 
 	if action2 != nil {
-		action2.Init(body)
+		body.WriteByte(byte(action2.OpCode()))
+		action2.Init(body, sessionID)
 	} else {
 		body.WriteByte(0x00)
 	}

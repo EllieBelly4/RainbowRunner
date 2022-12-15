@@ -46,16 +46,6 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 
 			return 1
 		},
-		"activate": func(l *lua2.LState) int {
-			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
-			obj := objInterface.GetGCObject()
-			obj.Activate(
-				lua.CheckReferenceValue[RRPlayer](l, 2),
-				lua.CheckReferenceValue[UnitBehavior](l, 3), byte(l.CheckNumber(4)),
-			)
-
-			return 0
-		},
 		"string": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
 			obj := objInterface.GetGCObject()

@@ -40,7 +40,7 @@ func luaMethodsZonePortal() map[string]lua2.LGFunction {
 			obj := objInterface.GetZonePortal()
 			obj.Activate(
 				lua.CheckReferenceValue[RRPlayer](l, 2),
-				lua.CheckReferenceValue[UnitBehavior](l, 3), byte(l.CheckNumber(4)),
+				lua.CheckReferenceValue[UnitBehavior](l, 3), byte(l.CheckNumber(4)), byte(l.CheckNumber(5)),
 			)
 
 			return 0

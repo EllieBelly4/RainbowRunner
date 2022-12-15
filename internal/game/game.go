@@ -10,6 +10,7 @@ import (
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"net"
+	"time"
 )
 
 var chatCommander = chatcommander.NewChatCommander()
@@ -98,7 +99,7 @@ func readPacket(conn *connections.RRConn, reader *byter.Byter) {
 		reader.UInt8()
 
 		if config.Config.Logging.LogSmallAs {
-			fmt.Printf("Received compressed A:\n%s\n", hex.Dump(reader.Data()))
+			fmt.Printf("Received compressed A %s:\n%s\n", time.Now().String(), hex.Dump(reader.Data()))
 		}
 
 		reader = ReadCompressedA(reader, packetLength)

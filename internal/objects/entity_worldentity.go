@@ -1,6 +1,8 @@
 package objects
 
 import (
+	"RainbowRunner/internal/message"
+	"RainbowRunner/internal/objects/actions"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 )
@@ -79,6 +81,26 @@ type WorldEntity struct {
 
 	UseCustomAnimationSpeed bool
 	AnimationSpeed          float32
+}
+
+func (g *WorldEntity) Activate(player *RRPlayer, u *UnitBehavior, id byte, sessionID byte) {
+	CEWriter := NewClientEntityWriterWithByter()
+
+	CEWriter.BeginComponentUpdate(u)
+	CEWriter.CreateActionResponse(actions.BehaviourActionActivate, id)
+
+	activateAction := actions.Activate{
+		TargetEntityID: uint16(g.EntityProperties.ID),
+	}
+
+	activateAction.InitWithoutOpCode(CEWriter.Body, sessionID)
+	CEWriter.WriteSynch(u)
+
+	player.MessageQueue.Enqueue(
+		message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeBehaviourAction,
+	)
+
+	player.CurrentCharacter.GetChildByGCNativeType("Avatar").(*Avatar).SendFollowClient()
 }
 
 func (n *WorldEntity) SetPosition(position datatypes.Vector3Float32) {

@@ -40,6 +40,16 @@ func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 		"unk4Case":                luaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *uint32 { return &v.GetWorldEntity().Unk4Case }),
 		"useCustomAnimationSpeed": luaGenericGetSetBool[IWorldEntity](func(v IWorldEntity) *bool { return &v.GetWorldEntity().UseCustomAnimationSpeed }),
 		"animationSpeed":          luaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *float32 { return &v.GetWorldEntity().AnimationSpeed }),
+		"activate": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IWorldEntity](l, 1)
+			obj := objInterface.GetWorldEntity()
+			obj.Activate(
+				lua.CheckReferenceValue[RRPlayer](l, 2),
+				lua.CheckReferenceValue[UnitBehavior](l, 3), byte(l.CheckNumber(4)), byte(l.CheckNumber(5)),
+			)
+
+			return 0
+		},
 		"setPosition": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IWorldEntity](l, 1)
 			obj := objInterface.GetWorldEntity()

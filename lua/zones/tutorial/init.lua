@@ -114,7 +114,7 @@ for i, v in ipairs(npcs) do
         npc:removeChildrenByGCNativeType("UnitBehavior")
         behaviour = MonsterBehavior2.new(v["behaviour"])
         npc:addChild(behaviour)
-    elseif npc:getChildByGCNativeType("UnitBehavior") ~= null then
+    elseif npc:getChildByGCNativeType("UnitBehavior") == null then
         behaviour = MonsterBehavior2.new("npc.Base.Behavior")
         npc:addChild(behaviour)
     end
@@ -124,7 +124,7 @@ for i, v in ipairs(npcs) do
     currentZone:spawn(npc, v["position"], v["rotation"])
 end
 
-obelisk = WorldEntity.new("world.checkpoints.TutorialCheckpointEntity")
+obelisk = CheckpointEntity.new("world.checkpoints.TutorialCheckpointEntity")
 currentZone:spawn(obelisk, Vector3.new(757, 289, 40), 346)
 --ZonePortal_oneway = WorldEntity.new("misc.ZonePortal_oneway")
 --currentZone:spawn(ZonePortal_oneway, Vector3.new(757, 289, 40), 346)

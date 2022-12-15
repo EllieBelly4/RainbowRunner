@@ -238,7 +238,7 @@ for i, v in ipairs(npcs) do
     currentZone:spawn(npc, v["position"], v["rotation"])
 end
 
-obelisk = WorldEntity.new("world.checkpoints.TownCheckpointEntity")
+obelisk = CheckpointEntity.new("world.checkpoints.TownCheckpointEntity")
 currentZone:spawn(obelisk, Vector3.new(441, -168, 49), 92)
 
 function spawnVendorWeapon2()

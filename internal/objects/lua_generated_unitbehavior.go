@@ -3,6 +3,7 @@ package objects
 
 import (
 	lua "RainbowRunner/internal/lua"
+	"RainbowRunner/internal/objects/actions"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 	lua2 "github.com/yuin/gopher-lua"
@@ -34,6 +35,7 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 		"position":       luaGenericGetSetValue[IUnitBehavior, datatypes.Vector3Float32](func(v IUnitBehavior) *datatypes.Vector3Float32 { return &v.GetUnitBehavior().Position }),
 		"rotation":       luaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *float32 { return &v.GetUnitBehavior().Rotation }),
 		"unitMoverFlags": luaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitMoverFlags }),
+		"sessionID":      luaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().SessionID }),
 		"writeMoveUpdate": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
 			obj := objInterface.GetUnitBehavior()
@@ -77,6 +79,24 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 			obj := objInterface.GetUnitBehavior()
 			obj.WriteWarp(
 				lua.CheckReferenceValue[ClientEntityWriter](l, 2),
+			)
+
+			return 0
+		},
+		"moveTo": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
+			obj := objInterface.GetUnitBehavior()
+			obj.MoveTo(
+				lua.CheckValue[DRObject](l, 2),
+			)
+
+			return 0
+		},
+		"executeAction": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
+			obj := objInterface.GetUnitBehavior()
+			obj.ExecuteAction(
+				lua.CheckValue[actions.Action](l, 2),
 			)
 
 			return 0

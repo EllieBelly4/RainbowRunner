@@ -1,8 +1,8 @@
 package objects
 
 import (
-	"RainbowRunner/internal/game/components/behavior"
 	"RainbowRunner/internal/game/messages"
+	"RainbowRunner/internal/objects/actions"
 	byter "RainbowRunner/pkg/byter"
 )
 
@@ -19,8 +19,9 @@ const (
 )
 
 type ClientEntityWriter struct {
-	Body  *byter.Byter
-	dirty bool
+	Body      *byter.Byter
+	dirty     bool
+	sessionID byte
 }
 
 func (w *ClientEntityWriter) BeginStream() {
@@ -81,6 +82,12 @@ func (w *ClientEntityWriter) Update(object DRObject) {
 }
 
 func (w *ClientEntityWriter) BeginComponentUpdate(object DRObject) {
+	if object, ok := object.(IUnitBehavior); ok {
+		w.sessionID = object.GetUnitBehavior().SessionID
+	} else {
+		w.sessionID = 0xFF
+	}
+
 	w.dirty = true
 
 	w.Body.WriteByte(0x35)                                     // ComponentUpdate
@@ -121,15 +128,20 @@ func (w *ClientEntityWriter) IsDirty() bool {
 	return w.dirty
 }
 
-func (w *ClientEntityWriter) CreateAction(action behavior.BehaviourAction) {
+func (w *ClientEntityWriter) CreateAction(action actions.BehaviourAction) {
 	w.Body.WriteByte(0x04)
 	w.Body.WriteByte(byte(action))
 }
 
-func (w *ClientEntityWriter) CreateActionResponse(action behavior.BehaviourAction, responseID byte) {
+func (w *ClientEntityWriter) CreateActionResponse(action actions.BehaviourAction, responseID byte) {
 	w.Body.WriteByte(0x01)
 	w.Body.WriteByte(responseID)
 	w.Body.WriteByte(byte(action))
+}
+
+func (w *ClientEntityWriter) CreateActionComplete(action actions.Action) {
+	w.CreateAction(action.OpCode())
+	action.Init(w.Body, w.sessionID)
 }
 
 func NewClientEntityWriter(b *byter.Byter) *ClientEntityWriter {

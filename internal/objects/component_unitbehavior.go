@@ -4,6 +4,9 @@ import (
 	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/components/behavior"
+	"RainbowRunner/internal/gosucks"
+	"RainbowRunner/internal/message"
+	"RainbowRunner/internal/objects/actions"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 	"encoding/hex"
@@ -19,8 +22,13 @@ type UnitBehavior struct {
 	Position       datatypes.Vector3Float32
 	Rotation       float32
 	UnitMoverFlags byte
-	Action1        behavior.Action
-	Action2        behavior.Action
+	Action1        actions.Action
+	Action2        actions.Action
+
+	// I don't know for certain if this is really called "SessionID" but I think it is
+	// This increments every time a unit behavior action is executed and must be used for subsequent movement
+	// updates and actions
+	SessionID byte
 }
 
 type UnitBehaviorHandler struct {
@@ -55,7 +63,7 @@ func (u *UnitBehavior) WriteMoveUpdate(b *byter.Byter) {
 
 	// UnitBehavior::processUpdate
 	// Potentially move type? only 0xFF works with players?
-	b.WriteByte(0xFF) // Unk
+	b.WriteByte(u.SessionID) // Unk
 
 	updateCount := byte(len(positions))
 	b.WriteByte(updateCount) // Update count
@@ -115,7 +123,7 @@ func (u *UnitBehaviorHandler) ReadUpdate(reader *byter.Byter) error {
 
 func (u *UnitBehavior) WriteInit(b *byter.Byter) {
 	behav := behavior.NewBehavior()
-	behav.Init(b, u.Action1, u.Action2)
+	behav.Init(b, u.Action1, u.Action2, u.SessionID)
 
 	// UnitMover::readInit()
 	// Flags
@@ -171,14 +179,17 @@ type UnitPathPosition struct {
 }
 
 func (u *UnitBehavior) handleClientMove(conn connections.Connection, reader *byter.Byter) {
-	// This increments each time the server sends a MoveTo message
-	// The client will then increment by 1 for every individual movement performed (clicking)
-	responseIDMaybe := reader.Byte()
+	// This is the session ID that increments every time the client attempts to sync
+	sessionID := reader.Byte()
+
+	// TODO remove this, we should probably be correctly calculating the session ID
+	u.SessionID = sessionID
+
 	count := int(reader.Byte())
 	pos := datatypes.Vector2Float32{}
 
 	if config.Config.Logging.LogMoves {
-		fmt.Printf("Received %d player moves unk val: %x\n", count, responseIDMaybe)
+		fmt.Printf("Received %d player moves unk val: %x\n", count, sessionID)
 	}
 
 	responseMoves := make([]UnitPathPosition, 0)
@@ -198,7 +209,6 @@ func (u *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 		pos.X = float32(reader.Int32()) / 256
 		pos.Y = float32(reader.Int32()) / 256
 
-		avatar.ClientUpdateNumber = responseIDMaybe
 		if config.Config.Logging.LogReceivedMoves {
 			//xf := float32(pos.X>>8) + (float32(pos.X&0xFF) / 256)
 			//yf := float32(pos.Y>>8) + (float32(pos.Y&0xFF) / 256)
@@ -243,7 +253,7 @@ func (u *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 		}
 
 		responseMoves = append(responseMoves, UnitPathPosition{
-			ResponseID: responseIDMaybe,
+			ResponseID: sessionID,
 			Rotation:   rotation,
 			Position: datatypes.Vector2Float32{
 				X: pos.X,
@@ -372,23 +382,28 @@ func (u *UnitBehavior) handleClientBlockMovement(reader *byter.Byter) {
 }
 
 func (u *UnitBehavior) handleExecuteAction(reader *byter.Byter) error {
-	msgResponseIdMaybe := reader.Byte()
-	action := behavior.BehaviourAction(reader.Byte())
+	responseId := reader.Byte()
+	action := actions.BehaviourAction(reader.Byte())
+	someID := reader.Byte()
 
-	logrus.Infof("execute action %s, unk0 %d", action.String(), msgResponseIdMaybe)
+	logrus.Infof("execute action %s, unk0 %d sessionID %d\n", action.String(), responseId, someID)
+	reader.DumpRemaining()
+
+	var err error
 
 	switch action {
-	case behavior.BehaviourActionActivate:
-		return u.handleExecuteActivate(reader, msgResponseIdMaybe)
+	case actions.BehaviourActionUsePosition:
+		err = u.handleActionUsePosition(reader, responseId, someID)
+	case actions.BehaviourActionActivate:
+		err = u.handleExecuteActivate(reader, responseId, someID)
 	}
 
-	return nil
+	u.SessionID++
+	return err
 }
 
-func (u *UnitBehavior) handleExecuteActivate(reader *byter.Byter, responseID byte) error {
-	msgIdMaybe := reader.Byte()
-
-	logrus.Infof("execute Activate responseID %x", msgIdMaybe)
+func (u *UnitBehavior) handleExecuteActivate(reader *byter.Byter, responseID byte, sessionID byte) error {
+	logrus.Infof("execute Activate responseID %x", sessionID)
 
 	targetID := reader.UInt16()
 
@@ -405,8 +420,68 @@ func (u *UnitBehavior) handleExecuteActivate(reader *byter.Byter, responseID byt
 		return nil
 	}
 
-	activateable.Activate(Players.GetPlayer(u.OwnerID()), u, responseID)
+	activateable.Activate(Players.GetPlayer(u.OwnerID()), u, responseID, sessionID)
 	return nil
+}
+
+func (u *UnitBehavior) handleActionUsePosition(reader *byter.Byter, id byte, sessionID byte) error {
+	reader.Byte() // Some incrementing index
+	reader.Byte()
+
+	posX := reader.Int32() / 256
+	posY := reader.Int32() / 256
+	posZ := reader.Int32() / 256
+
+	gosucks.VAR(posX, posY, posZ)
+
+	return nil
+}
+
+func (u *UnitBehavior) MoveTo(g DRObject) {
+	targetPosition := datatypes.Vector2Float32{}
+	nativeType := g.GetChildByGCNativeType("UnitBehavior")
+
+	set := false
+
+	if nativeType != nil {
+		if targetUnitBehav, ok := nativeType.(*UnitBehavior); ok {
+			targetPosition.X = targetUnitBehav.Position.X
+			targetPosition.Y = targetUnitBehav.Position.Y
+			set = true
+		}
+	}
+
+	if !set {
+		if worldEntity, ok := g.(IWorldEntity); ok {
+			we := worldEntity.GetWorldEntity()
+			targetPosition.X = we.WorldPosition.X
+			targetPosition.Y = we.WorldPosition.Y
+			set = true
+		}
+	}
+
+	if !set {
+		logrus.Warningf("cannot move to target as it does not have a position")
+		return
+	}
+
+	action := &actions.MoveTo{
+		PosX: targetPosition.X,
+		PosY: targetPosition.Y,
+	}
+
+	u.ExecuteAction(action)
+}
+
+func (u *UnitBehavior) ExecuteAction(action actions.Action) {
+	CEWriter := NewClientEntityWriterWithByter()
+	CEWriter.BeginComponentUpdate(u)
+	CEWriter.CreateActionComplete(action)
+	CEWriter.WriteSynch(u)
+
+	Players.GetPlayer(u.OwnerID()).MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeBehaviourAction)
+
+	u.SessionID++
 }
 
 func NewUnitBehavior(gcType string) *UnitBehavior {
@@ -415,5 +490,6 @@ func NewUnitBehavior(gcType string) *UnitBehavior {
 
 	return &UnitBehavior{
 		Component: component,
+		SessionID: 0xFF,
 	}
 }

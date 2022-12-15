@@ -1,5 +1,5 @@
 package objects
 
 type IActivatable interface {
-	Activate(player *RRPlayer, u *UnitBehavior, id byte)
+	Activate(player *RRPlayer, u *UnitBehavior, id byte, seqID byte)
 }

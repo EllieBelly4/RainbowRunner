@@ -17,8 +17,8 @@ type ZonePortal struct {
 	Target string
 }
 
-func (z ZonePortal) Activate(player *RRPlayer, u *UnitBehavior, id byte) {
-	z.WorldEntity.Activate(player, u, id)
+func (z ZonePortal) Activate(player *RRPlayer, u *UnitBehavior, id byte, seqID byte) {
+	z.WorldEntity.Activate(player, u, id, seqID)
 
 	tZone := Zones.GetOrCreateZone(z.Target)
 

@@ -3,8 +3,6 @@ package objects
 import (
 	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
-	"RainbowRunner/internal/game/components/behavior"
-	"RainbowRunner/internal/message"
 	"RainbowRunner/pkg/byter"
 	"fmt"
 	"regexp"
@@ -35,24 +33,6 @@ type GCObject struct {
 
 func (g *GCObject) GCObject() *GCObject {
 	return g
-}
-
-func (g *GCObject) Activate(player *RRPlayer, u *UnitBehavior, responseID byte) {
-	CEWriter := NewClientEntityWriterWithByter()
-
-	CEWriter.BeginComponentUpdate(u)
-	CEWriter.CreateActionResponse(behavior.BehaviourActionActivate, responseID)
-
-	activateAction := behavior.Activate{
-		TargetEntityID: uint16(g.EntityProperties.ID),
-	}
-
-	activateAction.InitWithoutOpCode(CEWriter.Body)
-	CEWriter.WriteSynch(u)
-
-	player.MessageQueue.Enqueue(
-		message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeBehaviourAction,
-	)
 }
 
 func (g *GCObject) String() string {
