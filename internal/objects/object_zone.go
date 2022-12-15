@@ -222,6 +222,21 @@ func (z *Zone) Tick() {
 	}
 }
 
+func (z *Zone) FindEntityByGCTypeName(name string) DRObject {
+	for _, entity := range z.Entities() {
+		if entity == nil {
+			continue
+		}
+
+		gcType := entity.GetGCObject().GCType
+		if strings.ToLower(gcType) == strings.ToLower(name) {
+			return entity
+		}
+	}
+
+	return nil
+}
+
 func (z *Zone) FindEntityByID(id uint16) DRObject {
 	z.RLock()
 	defer z.RUnlock()

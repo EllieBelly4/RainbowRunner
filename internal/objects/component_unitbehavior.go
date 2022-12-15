@@ -437,9 +437,18 @@ func (u *UnitBehavior) handleActionUsePosition(reader *byter.Byter, id byte, ses
 	return nil
 }
 
-func (u *UnitBehavior) MoveTo(g DRObject) {
+func (u *UnitBehavior) MoveTo(pos datatypes.Vector2Float32) {
+	action := &actions.MoveTo{
+		PosX: pos.X,
+		PosY: pos.Y,
+	}
+
+	u.ExecuteAction(action)
+}
+
+func (u *UnitBehavior) MoveToEntity(g IWorldEntity) {
 	targetPosition := datatypes.Vector2Float32{}
-	nativeType := g.GetChildByGCNativeType("UnitBehavior")
+	nativeType := g.GetWorldEntity().GetChildByGCNativeType("UnitBehavior")
 
 	set := false
 
@@ -452,12 +461,9 @@ func (u *UnitBehavior) MoveTo(g DRObject) {
 	}
 
 	if !set {
-		if worldEntity, ok := g.(IWorldEntity); ok {
-			we := worldEntity.GetWorldEntity()
-			targetPosition.X = we.WorldPosition.X
-			targetPosition.Y = we.WorldPosition.Y
-			set = true
-		}
+		we := g.GetWorldEntity()
+		targetPosition.X = we.WorldPosition.X
+		targetPosition.Y = we.WorldPosition.Y
 	}
 
 	if !set {
@@ -465,12 +471,7 @@ func (u *UnitBehavior) MoveTo(g DRObject) {
 		return
 	}
 
-	action := &actions.MoveTo{
-		PosX: targetPosition.X,
-		PosY: targetPosition.Y,
-	}
-
-	u.ExecuteAction(action)
+	u.MoveTo(targetPosition)
 }
 
 func (u *UnitBehavior) ExecuteAction(action actions.Action) {
@@ -479,7 +480,9 @@ func (u *UnitBehavior) ExecuteAction(action actions.Action) {
 	CEWriter.CreateActionComplete(action)
 	CEWriter.WriteSynch(u)
 
-	Players.GetPlayer(u.OwnerID()).MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeBehaviourAction)
+	if u.OwnerID() != 0 {
+		Players.GetPlayer(u.OwnerID()).MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeBehaviourAction)
+	}
 
 	u.SessionID++
 }

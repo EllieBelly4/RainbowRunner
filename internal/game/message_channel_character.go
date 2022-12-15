@@ -353,84 +353,76 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 
 func AddEquipment(equipment objects.DRObject, manipulators *objects.Manipulators, armour string, boots string, helm string, gloves string, shield string) {
 	randomArmour := objects.AddRandomEquipment(database.Armours, objects.ItemArmour)
-	randomArmour.GCLabel = "EllieArmour"
+
+	if randomArmour != nil {
+		randomArmour.GCLabel = "EllieArmour"
+		equipment.AddChild(randomArmour)
+		manipulators.AddChild(randomArmour)
+	}
 
 	randomBoots := objects.AddRandomEquipment(database.Boots, objects.ItemArmour)
-	randomBoots.GCLabel = "EllieArmour"
+
+	if randomBoots != nil {
+		randomBoots.GCLabel = "EllieArmour"
+		equipment.AddChild(randomBoots)
+		manipulators.AddChild(randomBoots)
+	}
 
 	randomHelm := objects.AddRandomEquipment(database.Helmets, objects.ItemArmour)
-	randomHelm.GCLabel = "EllieArmour"
+
+	if randomBoots != nil {
+		randomHelm.GCLabel = "EllieArmour"
+		equipment.AddChild(randomHelm)
+		manipulators.AddChild(randomHelm)
+	}
 
 	randomGloves := objects.AddRandomEquipment(database.Gloves, objects.ItemArmour)
-	randomGloves.GCLabel = "EllieArmour"
+
+	if randomGloves != nil {
+		randomGloves.GCLabel = "EllieArmour"
+		equipment.AddChild(randomGloves)
+		manipulators.AddChild(randomGloves)
+	}
 
 	randomWeapon := objects.AddRandomEquipment(database.MeleeWeapons, objects.ItemMeleeWeapon)
-	randomWeapon.GCLabel = "EllieWeapon"
-
-	//if len(shield) > 0 {
-	//	randomShield := objects.NewEquipment(gloves, "ScaleModPAL.Rare.Mod1", "Armor", types.EquipmentSlotOffhand)
-	//	randomShield.GCType = shield
-	//	randomShield.GCLabel = "EllieArmour"
-	//
-	//	equipment.AddChild(randomShield)
-	//	manipulators.AddChild(randomShield)
-	//}
-
-	//randomArmour = objects.NewEquipment(
-	//	//"items.deprecated.DeprecatedChildArmorPAL.Body014",
-	//	"items.pal.magebodypal.partialbuiltuniqueseasonal001",
-	//	"ScaleModPAL.Rare.Mod1",
-	//	objects.ItemArmour,
-	//	types.EquipmentSlotTorso,
-	//)
-	//
-	//randomHelm = objects.NewEquipment(
-	//	"items.pal.rangerhelmpal.partialbuiltmythicseasonal002",
-	//	"ScaleModPAL.Rare.Mod1",
-	//	objects.ItemArmour,
-	//	types.EquipmentSlotHead,
-	//)
-	//
-	//randomGloves = objects.NewEquipment(
-	//	"items.pal.mageglovespal.partialbuiltmythicseasonal001",
-	//	"ScaleModPAL.Rare.Mod1",
-	//	objects.ItemArmour,
-	//	types.EquipmentSlotHand,
-	//)
-	//
-	//randomBoots = objects.NewEquipment(
-	//	"items.pal.magebootspal.partialbuiltmythicseasonal001",
-	//	"ScaleModPAL.Rare.Mod1",
-	//	objects.ItemArmour,
-	//	types.EquipmentSlotFoot,
-	//)
-	//
-	//randomWeapon = objects.NewEquipment(
-	//	"items.pal.1hswordpal.mythicprebuiltboss001",
-	//	"ScaleModPAL.Rare.Mod1",
-	//	objects.ItemMeleeWeapon,
-	//	types.EquipmentSlotWeapon,
-	//)
-
-	equipment.AddChild(randomGloves)
-	equipment.AddChild(randomBoots)
-	equipment.AddChild(randomHelm)
-	equipment.AddChild(randomArmour)
-	equipment.AddChild(randomWeapon)
-
-	manipulators.AddChild(randomGloves)
-	manipulators.AddChild(randomBoots)
-	manipulators.AddChild(randomHelm)
-	manipulators.AddChild(randomArmour)
-	manipulators.AddChild(randomWeapon)
+	if randomWeapon != nil {
+		randomWeapon.GCLabel = "EllieWeapon"
+		equipment.AddChild(randomWeapon)
+		manipulators.AddChild(randomWeapon)
+	}
 
 	if config.Config.Logging.LogRandomEquipment {
+		randomArmourName := "None"
+		if randomArmour != nil {
+			randomArmourName = randomArmour.GCType
+		}
+
+		randomBootsName := "None"
+		if randomBoots != nil {
+			randomBootsName = randomBoots.GCType
+		}
+
+		randomHelmName := "None"
+		if randomHelm != nil {
+			randomHelmName = randomHelm.GCType
+		}
+
+		randomGlovesName := "None"
+		if randomGloves != nil {
+			randomGlovesName = randomGloves.GCType
+		}
+
+		randomWeaponName := "None"
+		if randomWeapon != nil {
+			randomWeaponName = randomWeapon.GCType
+		}
+
 		fmt.Printf(`Random equipment for today is:
 Helm: %s
 Armour: %s
 Gloves: %s
 Boots: %s
 Weapon: %s
-`, randomHelm.GCType, randomArmour.GCType, randomGloves.GCType, randomBoots.GCType, randomWeapon.GCType)
+`, randomHelmName, randomArmourName, randomGlovesName, randomBootsName, randomWeaponName)
 	}
 }

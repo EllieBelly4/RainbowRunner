@@ -87,7 +87,16 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
 			obj := objInterface.GetUnitBehavior()
 			obj.MoveTo(
-				lua.CheckValue[DRObject](l, 2),
+				lua.CheckValue[datatypes.Vector2Float32](l, 2),
+			)
+
+			return 0
+		},
+		"moveToEntity": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
+			obj := objInterface.GetUnitBehavior()
+			obj.MoveToEntity(
+				lua.CheckValue[IWorldEntity](l, 2),
 			)
 
 			return 0
