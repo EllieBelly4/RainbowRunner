@@ -31,6 +31,8 @@ func luaMethodsPlayer() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
 		"name":      luaGenericGetSetString[IPlayer](func(v IPlayer) *string { return &v.GetPlayer().Name }),
 		"currentHP": luaGenericGetSetNumber[IPlayer](func(v IPlayer) *uint32 { return &v.GetPlayer().CurrentHP }),
+		"spawned":   luaGenericGetSetBool[IPlayer](func(v IPlayer) *bool { return &v.GetPlayer().Spawned }),
+		"zone":      luaGenericGetSetValue[IPlayer, *Zone](func(v IPlayer) **Zone { return &v.GetPlayer().Zone }),
 		"type": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IPlayer](l, 1)
 			obj := objInterface.GetPlayer()
@@ -91,6 +93,37 @@ func luaMethodsPlayer() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IPlayer](l, 1)
 			obj := objInterface.GetPlayer()
 			obj.ChangeZone(string(l.CheckString(2)))
+
+			return 0
+		},
+		"joinZone": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IPlayer](l, 1)
+			obj := objInterface.GetPlayer()
+			obj.JoinZone(
+				lua.CheckReferenceValue[Zone](l, 2),
+				lua.CheckReferenceValue[RRPlayer](l, 3),
+			)
+
+			return 0
+		},
+		"onZoneJoin": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IPlayer](l, 1)
+			obj := objInterface.GetPlayer()
+			obj.OnZoneJoin()
+
+			return 0
+		},
+		"onZoneLeave": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IPlayer](l, 1)
+			obj := objInterface.GetPlayer()
+			obj.OnZoneLeave()
+
+			return 0
+		},
+		"leaveZone": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IPlayer](l, 1)
+			obj := objInterface.GetPlayer()
+			obj.LeaveZone()
 
 			return 0
 		},

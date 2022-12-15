@@ -47,7 +47,7 @@ func handleZoneJoin(conn *connections.RRConn) {
 	body.WriteByte(byte(messages.ZoneMessageReady))
 	//body.WriteByte(0x02) // Other acceptable values
 	//body.WriteByte(0x05) // Other acceptable values
-	body.WriteUInt32(player.Zone.ID) // World ID
+	body.WriteUInt32(player.Zone().ID) // World ID
 
 	// MiniMapExplored::ReadExploredBits
 	// dungeon00_level01 - 0x12
@@ -91,13 +91,13 @@ func handleZoneJoin(conn *connections.RRConn) {
 	SendInterval(conn)
 
 	player.CurrentCharacter.SendCreateNewPlayerEntity(player)
-	player.OnZoneJoin()
+	player.CurrentCharacter.OnZoneJoin()
 
 	if config.Config.Welcome.SendWelcomeMessage {
 		SendWelcomeMessage(player)
 	}
 
-	if player.Zone.Name == "town" {
+	if player.Zone().Name == "town" {
 		//for i, entityStrings := range entitiesToSpawn {
 		//	objects.CreateNPC(player, player.Zone, datatypes.Transform{
 		//		Position: datatypes.Vector3Float32{float32(106342+2048*int32(i)) / 256, -140, 49},
@@ -152,7 +152,7 @@ func handleZoneJoin(conn *connections.RRConn) {
 	//06 #end`))
 
 	avatar := player.CurrentCharacter.GetChildByGCNativeType("Avatar").(*objects.Avatar)
-	lcZoneName := strings.ToLower(player.Zone.Name)
+	lcZoneName := strings.ToLower(player.Zone().Name)
 	if lcZoneName == "town" {
 		avatar.Warp(106342/256, -46263/256, 12778/256)
 		//avatar.SendPosition()

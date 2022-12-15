@@ -53,8 +53,8 @@ func (m *PlayerManager) OnDisconnect(id int) {
 
 	fmt.Printf("Player %d Disconnected\n", id)
 	if player, ok := Players.Players[id]; ok {
-		if player.Zone != nil {
-			player.Zone.RemovePlayer(id)
+		if player.Zone() != nil {
+			player.Zone().RemovePlayer(id)
 		}
 	}
 
@@ -87,7 +87,11 @@ func (m *PlayerManager) AfterTick() {
 	clientEntityWriter := NewClientEntityWriter(body)
 
 	for _, player := range m.Players {
-		if !player.Spawned {
+		if player.CurrentCharacter == nil {
+			continue
+		}
+
+		if !player.CurrentCharacter.Spawned {
 			player.MessageQueue.Clear(message.QueueTypeClientEntity)
 			continue
 		}

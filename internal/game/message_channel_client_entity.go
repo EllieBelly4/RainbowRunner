@@ -17,7 +17,7 @@ func handleClientEntityChannelMessages(conn *connections.RRConn, msgType byte, r
 	case messages.ClientEntityComponentUpdate:
 		componentID := reader.UInt16()
 
-		zone := objects.Players.GetPlayer(uint16(conn.GetID())).Zone
+		zone := objects.Players.GetPlayer(uint16(conn.GetID())).Zone()
 		entity := zone.FindEntityByID(componentID)
 
 		if entity != nil {

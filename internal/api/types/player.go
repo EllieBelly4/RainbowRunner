@@ -18,14 +18,6 @@ type Player struct {
 	obj *objects.RRPlayer
 }
 
-func (e *Player) Zone() *Zone {
-	if e.obj.Zone == nil {
-		return nil
-	}
-
-	return NewZone(e.obj.Zone)
-}
-
 func (e *Player) Name() *string {
 	if e.obj.CurrentCharacter == nil {
 		return nil

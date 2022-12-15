@@ -1,11 +1,15 @@
 package objects
 
 import (
+	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/game/components/behavior"
+	"RainbowRunner/internal/game/messages"
+	"RainbowRunner/internal/message"
 	"RainbowRunner/internal/types"
 	"RainbowRunner/pkg/byter"
+	"encoding/hex"
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"math/rand"
@@ -17,6 +21,8 @@ type Player struct {
 	*GCObject
 	Name      string
 	CurrentHP uint32 // This is probably a DRFloat
+	Spawned   bool
+	Zone      *Zone
 }
 
 func (p *Player) Type() DRObjectType {
@@ -32,9 +38,9 @@ func (p *Player) WriteInit(b *byter.Byter) {
 	b.WriteUInt32(0x01)
 	b.WriteByte(0x01)
 
-	b.WriteUInt32(rrPlayer.Zone.ID) // World ID
-	b.WriteUInt32(1001)             // PvP wins
-	b.WriteUInt32(1000)             // PvP rating?, 0 = ???
+	b.WriteUInt32(rrPlayer.Zone().ID) // World ID
+	b.WriteUInt32(1001)               // PvP wins
+	b.WriteUInt32(1000)               // PvP rating?, 0 = ???
 
 	// Here goes PvP Team
 	// Null string
@@ -78,7 +84,7 @@ func (p *Player) WriteSynch(b *byter.Byter) {
 }
 
 func (p *Player) SendCreateNewPlayerEntity(rrplayer *RRPlayer) {
-	zone := rrplayer.Zone
+	zone := rrplayer.Zone()
 	//clientEntityWriter := rrplayer.ClientEntityWriter
 	//equippedItems := getRandomEquipment()
 	avatar := p.GetChildByGCNativeType("Avatar")
@@ -504,7 +510,91 @@ func (p *Player) ChangeZone(zoneName string) {
 		return
 	}
 
-	rrPlayer.JoinZone(tZone)
+	if p.Zone != nil {
+		p.LeaveZone()
+	}
+
+	p.JoinZone(tZone, rrPlayer)
+}
+
+func (p *Player) JoinZone(tZone *Zone, rrPlayer *RRPlayer) {
+	p.Zone = tZone
+	tZone.AddPlayer(rrPlayer)
+
+	body := byter.NewLEByter(make([]byte, 0, 1024))
+	body.WriteByte(byte(messages.ZoneChannel))
+	body.WriteByte(byte(messages.ZoneMessageConnected))
+	//body.WriteCString("TheHub")
+	//body.WriteCString("Tutorial")
+	body.WriteCString(tZone.Name)
+	body.WriteUInt32(0xBEEFBEEF)
+	body.WriteByte(0x01)
+	body.WriteByte(0xFF)
+	body.WriteCString("world.town.quest.Q01_a1")
+	body.WriteUInt32(0x01)
+	connections.WriteCompressedA(rrPlayer.Conn, 0x01, 0x0f, body)
+
+	if config.Config.Logging.LogChangeZone {
+		log.Info(fmt.Sprintf("Sent Change Zone: \n%s", hex.Dump(body.Data())))
+	}
+}
+
+func (p *Player) OnZoneJoin() {
+	rrplayer := Players.GetPlayer(uint16(p.ID()))
+
+	p.Spawned = true
+	entities := p.Zone.Entities()
+
+	for _, entity := range entities {
+		if int(entity.OwnerID()) == rrplayer.Conn.GetID() {
+			continue
+		}
+
+		CEWriter := NewClientEntityWriterWithByter()
+		CEWriter.Create(entity)
+
+		entity.WalkChildren(func(object DRObject) {
+			switch object.Type() {
+			case DRObjectComponent:
+				//if mb2, ok := object.(*MonsterBehavior2); ok {
+				//	CEWriter.CreateComponentAndInit(object, entity)
+				//}
+				CEWriter.CreateComponentAndInit(object, entity)
+			}
+		})
+
+		CEWriter.Init(entity)
+
+		if unitBehavior, ok := entity.GetChildByGCNativeType("UnitBehavior").(IUnitBehavior); unitBehavior != nil && ok {
+			unitBehavior.GetUnitBehavior().WriteWarp(CEWriter)
+		}
+
+		rrplayer.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeCreateNPC)
+	}
+}
+
+func (p *Player) OnZoneLeave() {
+
+}
+
+func (p *Player) LeaveZone() {
+	p.Spawned = false
+	p.Zone.RemovePlayer(int(p.ID()))
+
+	rrplayer := Players.GetPlayer(uint16(p.ID()))
+	rrplayer.MessageQueue.Clear(message.QueueTypeClientEntity)
+
+	body := byter.NewLEByter(make([]byte, 0, 1024))
+	body.WriteByte(byte(messages.ZoneChannel))
+	body.WriteByte(byte(messages.ZoneMessageDisconnected))
+	body.WriteCString("zoneleaveuhh")
+	connections.WriteCompressedA(rrplayer.Conn, 0x01, 0x0f, body)
+
+	if config.Config.Logging.LogChangeZone {
+		log.Info(fmt.Sprintf("Sent Leave Zone: \n%s", hex.Dump(body.Data())))
+	}
+
+	p.OnZoneLeave()
 }
 
 func NewPlayer(name string) (p *Player) {

@@ -88,7 +88,6 @@ type PlayerCollection {
 type Player {
 	id: Int
 	name: String
-	zone: Zone
 	currentCharacter: Entity
 }
 

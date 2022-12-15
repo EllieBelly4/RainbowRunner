@@ -194,7 +194,7 @@ func (u *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 
 	responseMoves := make([]UnitPathPosition, 0)
 
-	currentZone := Players.Players[conn.GetID()].Zone
+	currentZone := Players.Players[conn.GetID()].Zone()
 
 	//TODO remove avatar object usage from here
 	avatar := Players.Players[conn.GetID()].CurrentCharacter.GetChildByGCNativeType("Avatar").(*Avatar)
