@@ -126,6 +126,15 @@ end
 
 obelisk = CheckpointEntity.new("world.checkpoints.TutorialCheckpointEntity")
 currentZone:spawn(obelisk, Vector3.new(757, 289, 40), 346)
+--portal = ZonePortal.new("unk1", "unk2")
+portal = ZonePortal.new("unk1", "unk2")
+portal:target("dungeon00_level01")
+portal:width(75)
+portal:height(75)
+portal:unk4(0xFFFFFFFF)
+
+currentZone:spawn(portal, Vector3.new(959, 721, 55), 180)--X: 245522 Y: 184488 Z: 10239 Rot: 357.65
+
 --ZonePortal_oneway = WorldEntity.new("misc.ZonePortal_oneway")
 --currentZone:spawn(ZonePortal_oneway, Vector3.new(757, 289, 40), 346)
 

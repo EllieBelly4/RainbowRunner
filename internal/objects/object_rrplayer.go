@@ -49,8 +49,9 @@ func (p *RRPlayer) OnZoneJoin() {
 		if unitBehavior, ok := entity.GetChildByGCNativeType("UnitBehavior").(IUnitBehavior); unitBehavior != nil && ok {
 			unitBehavior.GetUnitBehavior().WriteWarp(CEWriter)
 		}
-
-		p.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeCreateNPC)
+		//Not sure what this does below but I cant enable both get a zone error 5
+		//p.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeCreateNPC)
+		p.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeCreateMOB)
 	}
 }
 

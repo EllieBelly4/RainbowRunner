@@ -7,7 +7,26 @@ import (
 
 //go:generate go run ../../scripts/generateluaregistrations
 func RegisterLuaGlobals(state *lua.LState) {
+
+	registerLuaBit32(state)
+	registerLuaVector2(state)
+	registerLuaVector3(state)
+	registerLuaGCObject(state)
+	registerLuaDrobject(state)
+	registerLuaComponent(state)
+	registerLuaInventory(state)
+	registerLuaMerchant(state)
+	registerLuaMonsterBehavior2(state)
+	registerLuaWorldEntity(state)
+	registerLuaUnit(state)
+	registerLuaNPC(state)
+	registerLuaMOB(state)
+	registerLuaZone(state)
+	registerLuaPlayer(state)
+	registerLuaZonePortal(state)
+
 	registerAllLuaFunctions(state)
+
 }
 
 type ILuaConvertible interface {
