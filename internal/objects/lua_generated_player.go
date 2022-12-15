@@ -101,7 +101,6 @@ func luaMethodsPlayer() map[string]lua2.LGFunction {
 			obj := objInterface.GetPlayer()
 			obj.JoinZone(
 				lua.CheckReferenceValue[Zone](l, 2),
-				lua.CheckReferenceValue[RRPlayer](l, 3),
 			)
 
 			return 0

@@ -52,29 +52,6 @@ func luaMethodsRRPlayer() map[string]lua2.LGFunction {
 
 			return 1
 		},
-		"onZoneJoin": func(l *lua2.LState) int {
-			objInterface := lua.CheckInterfaceValue[IRRPlayer](l, 1)
-			obj := objInterface.GetRRPlayer()
-			obj.OnZoneJoin()
-
-			return 0
-		},
-		"leaveZone": func(l *lua2.LState) int {
-			objInterface := lua.CheckInterfaceValue[IRRPlayer](l, 1)
-			obj := objInterface.GetRRPlayer()
-			obj.LeaveZone()
-
-			return 0
-		},
-		"joinZone": func(l *lua2.LState) int {
-			objInterface := lua.CheckInterfaceValue[IRRPlayer](l, 1)
-			obj := objInterface.GetRRPlayer()
-			obj.JoinZone(
-				lua.CheckReferenceValue[Zone](l, 2),
-			)
-
-			return 0
-		},
 	})
 }
 

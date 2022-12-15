@@ -480,9 +480,16 @@ func AddRandomEquipment(equipment database.EquipmentMap, t ItemType) *Equipment 
 
 	for key, class := range equipment {
 		if i == target {
+			slot, err := class.Slot()
+
+			if err != nil {
+				log.Error(err)
+				break
+			}
+
 			return NewEquipment(
 				key, "ScaleModPAL.Rare.Mod1",
-				t, class.Slot(),
+				t, slot,
 			)
 		}
 		i++
@@ -501,8 +508,6 @@ func addCreateComponent(body *byter.Byter, parentID uint16, componentID uint16, 
 }
 
 func (p *Player) ChangeZone(zoneName string) {
-	rrPlayer := Players.GetPlayer(uint16(p.ID()))
-
 	tZone := Zones.GetOrCreateZone(zoneName)
 
 	if tZone == nil {
@@ -514,10 +519,12 @@ func (p *Player) ChangeZone(zoneName string) {
 		p.LeaveZone()
 	}
 
-	p.JoinZone(tZone, rrPlayer)
+	p.JoinZone(tZone)
 }
 
-func (p *Player) JoinZone(tZone *Zone, rrPlayer *RRPlayer) {
+func (p *Player) JoinZone(tZone *Zone) {
+	rrPlayer := Players.GetPlayer(uint16(p.ID()))
+
 	p.Zone = tZone
 	tZone.AddPlayer(rrPlayer)
 

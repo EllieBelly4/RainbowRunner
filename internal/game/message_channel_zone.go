@@ -247,7 +247,7 @@ func sendGoToZone(conn *connections.RRConn, zoneName string) {
 		return
 	}
 
-	rrPlayer.JoinZone(tZone)
+	rrPlayer.CurrentCharacter.JoinZone(tZone)
 }
 
 func SendWelcomeMessage(player *objects.RRPlayer) {

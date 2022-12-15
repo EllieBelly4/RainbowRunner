@@ -14,18 +14,7 @@ type RRPlayer struct {
 	MessageQueue       *message.Queue
 }
 
+// Deprecated: Use p.CurrentCharacter.Zone instead
 func (p *RRPlayer) Zone() *Zone {
 	return p.CurrentCharacter.Zone
-}
-
-func (p *RRPlayer) OnZoneJoin() {
-	p.CurrentCharacter.OnZoneJoin()
-}
-
-func (p *RRPlayer) LeaveZone() {
-	p.CurrentCharacter.LeaveZone()
-}
-
-func (p *RRPlayer) JoinZone(zone *Zone) {
-	p.CurrentCharacter.ChangeZone(zone.Name)
 }

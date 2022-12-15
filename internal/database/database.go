@@ -151,7 +151,14 @@ func AddArmours() {
 			continue
 		}
 
-		if m, ok := armourTypeMap[subType.Slot()]; ok {
+		slot, err := subType.Slot()
+
+		if err != nil {
+			log.Error(err)
+			continue
+		}
+
+		if m, ok := armourTypeMap[slot]; ok {
 			if *m == nil {
 				*m = make(EquipmentMap)
 			}

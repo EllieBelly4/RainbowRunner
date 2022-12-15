@@ -2,6 +2,7 @@ package configtypes
 
 import (
 	"RainbowRunner/internal/types"
+	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -47,7 +48,7 @@ func (c *DRClass) ModCount() int {
 	return modCount
 }
 
-func (c *DRClass) Slot() types.EquipmentSlot {
+func (c *DRClass) Slot() (types.EquipmentSlot, error) {
 	desc, ok := c.Children["description"]
 
 	// Mods do not have descriptions
@@ -58,8 +59,8 @@ func (c *DRClass) Slot() types.EquipmentSlot {
 	slotInt, err := strconv.Atoi(desc.Entities[0].Properties["SlotType"])
 
 	if err != nil {
-		panic(fmt.Sprintf("%s does not have a valid slot: ", c.Name) + err.Error())
+		return 0, errors.New(fmt.Sprintf("could not parse slot type for %s", c.Name))
 	}
 
-	return types.EquipmentSlot(slotInt)
+	return types.EquipmentSlot(slotInt), nil
 }

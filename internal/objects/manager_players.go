@@ -53,8 +53,8 @@ func (m *PlayerManager) OnDisconnect(id int) {
 
 	fmt.Printf("Player %d Disconnected\n", id)
 	if player, ok := Players.Players[id]; ok {
-		if player.Zone() != nil {
-			player.Zone().RemovePlayer(id)
+		if player.CurrentCharacter.Zone != nil {
+			player.CurrentCharacter.Zone.RemovePlayer(id)
 		}
 	}
 
