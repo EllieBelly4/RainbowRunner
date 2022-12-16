@@ -98,7 +98,7 @@ func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 
 			return 1
 		},
-	}, luaMethodsGCObject)
+	}, luaMethodsEntity)
 }
 func newLuaWorldEntity(l *lua2.LState) int {
 	obj := NewWorldEntity(string(l.CheckString(1)))

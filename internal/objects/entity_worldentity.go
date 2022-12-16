@@ -65,9 +65,9 @@ const (
 	WorldEntityInitFlagUnk7
 )
 
-//go:generate go run ../../scripts/generatelua -type=WorldEntity -extends=GCObject
+//go:generate go run ../../scripts/generatelua -type=WorldEntity -extends=Entity
 type WorldEntity struct {
-	*GCObject
+	*Entity
 	WorldPosition        datatypes.Vector3Float32
 	Rotation             float32
 	WorldEntityFlags     uint32
@@ -191,11 +191,11 @@ func (n *WorldEntity) WriteInit(b *byter.Byter) {
 }
 
 func NewWorldEntity(gcType string) *WorldEntity {
-	gcObject := NewGCObject(gcType)
-	gcObject.GCType = gcType
+	entity := NewEntity(gcType)
+	entity.GCType = gcType
 
 	return &WorldEntity{
-		GCObject:             gcObject,
+		Entity:               entity,
 		WorldEntityFlags:     0x04,
 		WorldEntityInitFlags: 0xFF,
 	}
