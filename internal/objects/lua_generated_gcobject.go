@@ -30,10 +30,43 @@ func registerLuaGCObject(state *lua2.LState) {
 
 func luaMethodsGCObject() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
+		// -------------------------------------------------------------------------------------------------------------
+		// Unsupported field type EntityProperties, must be pointer or interface to implement ILuaConvertible
+		// -------------------------------------------------------------------------------------------------------------
 		"version":      luaGenericGetSetNumber[IGCObject](func(v IGCObject) *uint8 { return &v.GetGCObject().Version }),
 		"gcnativeType": luaGenericGetSetString[IGCObject](func(v IGCObject) *string { return &v.GetGCObject().GCNativeType }),
 		"gclabel":      luaGenericGetSetString[IGCObject](func(v IGCObject) *string { return &v.GetGCObject().GCLabel }),
-		"gctype":       luaGenericGetSetString[IGCObject](func(v IGCObject) *string { return &v.GetGCObject().GCType }),
+		// -------------------------------------------------------------------------------------------------------------
+		// Unsupported field type GCChildren
+		// -------------------------------------------------------------------------------------------------------------
+		"gctype": luaGenericGetSetString[IGCObject](func(v IGCObject) *string { return &v.GetGCObject().GCType }),
+		// -------------------------------------------------------------------------------------------------------------
+		// Unsupported field type Properties
+		// -------------------------------------------------------------------------------------------------------------
+		// -------------------------------------------------------------------------------------------------------------
+		// Unsupported field type EntityHandler
+		// -------------------------------------------------------------------------------------------------------------
+		"gcparent": luaGenericGetSetValue[IGCObject, DRObject](func(v IGCObject) *DRObject { return &v.GetGCObject().GCParent }),
+		"getParentEntity": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
+			obj := objInterface.GetGCObject()
+			res0 := obj.GetParentEntity()
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("IEntity"))
+			l.Push(ud)
+
+			return 1
+		},
+		"setParent": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
+			obj := objInterface.GetGCObject()
+			obj.SetParent(
+				lua.CheckValue[DRObject](l, 2),
+			)
+
+			return 0
+		},
 		"gcobject": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
 			obj := objInterface.GetGCObject()
@@ -159,10 +192,11 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
 			obj := objInterface.GetGCObject()
 			res0 := obj.RREntityProperties()
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("RREntityProperties"))
-			l.Push(ud)
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
 
 			return 1
 		},

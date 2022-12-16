@@ -27,7 +27,19 @@ func registerLuaRRPlayer(state *lua2.LState) {
 
 func luaMethodsRRPlayer() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
+		// -------------------------------------------------------------------------------------------------------------
+		// Unsupported field type Conn
+		// -------------------------------------------------------------------------------------------------------------
 		"currentCharacter": luaGenericGetSetValue[IRRPlayer, *Player](func(v IRRPlayer) **Player { return &v.GetRRPlayer().CurrentCharacter }),
+		// -------------------------------------------------------------------------------------------------------------
+		// Unsupported field type Characters
+		// -------------------------------------------------------------------------------------------------------------
+		// -------------------------------------------------------------------------------------------------------------
+		// Unsupported field type ClientEntityWriter
+		// -------------------------------------------------------------------------------------------------------------
+		// -------------------------------------------------------------------------------------------------------------
+		// Unsupported field type MessageQueue
+		// -------------------------------------------------------------------------------------------------------------
 		"getRRPlayer": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IRRPlayer](l, 1)
 			obj := objInterface.GetRRPlayer()

@@ -27,7 +27,20 @@ func registerLuaEntity(state *lua2.LState) {
 }
 
 func luaMethodsEntity() map[string]lua2.LGFunction {
-	return luaMethodsExtend(map[string]lua2.LGFunction{}, luaMethodsGCObject)
+	return luaMethodsExtend(map[string]lua2.LGFunction{
+		"getEntity": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IEntity](l, 1)
+			obj := objInterface.GetEntity()
+			res0 := obj.GetEntity()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
+	}, luaMethodsGCObject)
 }
 func newLuaEntity(l *lua2.LState) int {
 	obj := NewEntity(string(l.CheckString(1)))

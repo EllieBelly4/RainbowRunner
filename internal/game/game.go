@@ -5,6 +5,7 @@ import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/chatcommander"
 	"RainbowRunner/internal/objects"
+	"RainbowRunner/internal/synchronisation"
 	"RainbowRunner/pkg/byter"
 	"encoding/hex"
 	"fmt"
@@ -17,6 +18,8 @@ var chatCommander = chatcommander.NewChatCommander()
 var Connections = make(map[int]*connections.RRConn)
 
 func StartGameServer() {
+	synchronisation.Init()
+
 	objects.Entities = objects.NewEntityManager()
 
 	listen, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", config.Config.Network.GameServerPort))

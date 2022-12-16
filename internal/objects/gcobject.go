@@ -29,6 +29,29 @@ type GCObject struct {
 	GCType           string
 	Properties       []GCObjectProperty
 	EntityHandler    EntityMessageHandler
+	GCParent         DRObject
+}
+
+func (g *GCObject) GetParentEntity() IEntity {
+	if g.GCParent == nil {
+		return nil
+	}
+
+	entity, ok := g.GCParent.(IEntity)
+
+	if !ok {
+		if entity == nil {
+			return nil
+		}
+	} else {
+		return entity
+	}
+
+	return g.GCParent.GetParentEntity()
+}
+
+func (g *GCObject) SetParent(parent DRObject) {
+	g.GCParent = parent
 }
 
 func (g *GCObject) GCObject() *GCObject {
@@ -55,8 +78,8 @@ func (g *GCObject) Type() DRObjectType {
 	return DRObjectUnknown
 }
 
-func (g *GCObject) ID() uint32 {
-	return g.EntityProperties.ID
+func (g *GCObject) ID() int {
+	return int(g.EntityProperties.ID)
 }
 
 func (g *GCObject) ReadUpdate(reader *byter.Byter) error {
@@ -188,6 +211,8 @@ func (g *GCObject) AddChild(child DRObject) {
 	if g.GCChildren == nil {
 		g.GCChildren = make([]DRObject, 0, 128)
 	}
+
+	child.SetParent(g)
 
 	g.GCChildren = append(g.GCChildren, child)
 }

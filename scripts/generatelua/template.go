@@ -12,6 +12,7 @@ var typeCheckFunctions = template.FuncMap{
 	"isStringType":           IsStringType,
 	"isNumberType":           IsNumberType,
 	"isBoolType":             IsBoolType,
+	"isInterfaceType":        isInterface,
 	"isFieldLuaConvertible":  IsFieldLuaConvertible,
 	"isResultLuaConvertible": IsResultLuaConvertible,
 }
@@ -67,7 +68,21 @@ func luaMethods{{ .Struct.Name }}() map[string]lua2.LGFunction {
 		{{- else if isBoolType $field }}
 		"{{ $field.NameCamelcase }}": luaGenericGetSetBool[I{{ $struct.Name }}](func(v I{{ $struct.Name }}) *bool { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
 		{{- else if isFieldLuaConvertible $field }}
-		"{{ $field.NameCamelcase }}": luaGenericGetSetValue[I{{ $struct.Name }}, {{ $field.FullTypeStringWithPtr }}](func(v I{{ $struct.Name }}) *{{ $field.FullTypeStringWithPtr }} { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
+
+			{{- if $field.IsPointer }}
+				"{{ $field.NameCamelcase }}": luaGenericGetSetValue[I{{ $struct.Name }}, {{ $field.FullTypeStringWithPtr }}](func(v I{{ $struct.Name }}) *{{ $field.FullTypeStringWithPtr }} { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
+			{{- else if isInterfaceType $field.ValueType }}
+				"{{ $field.NameCamelcase }}": luaGenericGetSetValue[I{{ $struct.Name }}, {{ $field.FullTypeStringWithPtr }}](func(v I{{ $struct.Name }}) *{{ $field.FullTypeStringWithPtr }} { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
+			{{- else }}
+				// -------------------------------------------------------------------------------------------------------------
+				// Unsupported field type {{ $field.Name }}, must be pointer or interface to implement ILuaConvertible
+				// -------------------------------------------------------------------------------------------------------------
+			{{- end }}
+			
+		{{- else }}
+			// -------------------------------------------------------------------------------------------------------------
+			// Unsupported field type {{ $field.Name }}
+			// -------------------------------------------------------------------------------------------------------------
 		{{- end }}
 	{{- end }}
 {{- end }}

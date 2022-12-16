@@ -5,6 +5,7 @@ import (
 	"RainbowRunner/pkg/byter"
 )
 
+//go:generate go run ../../scripts/generatelua -type=RREntityProperties
 type RREntityProperties struct {
 	OwnerID uint16
 	ID      uint32
@@ -37,4 +38,8 @@ func (R *RREntity) WriteUpdate(b *byter.Byter) {
 
 func (R *RREntity) AddChild(avatar *RREntity) {
 
+}
+
+func NewRREntityProperties() *RREntityProperties {
+	return &RREntityProperties{}
 }

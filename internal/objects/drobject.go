@@ -32,6 +32,7 @@ type DRObject interface {
 	Children() []DRObject
 	GetChildByGCType(s string) DRObject
 	GetChildByGCNativeType(s string) DRObject
+	GetParentEntity() IEntity
 
 	Type() DRObjectType
 
@@ -45,6 +46,7 @@ type DRObject interface {
 	SetOwner(conn *connections.RRConn)
 	String() string
 	ToLua(state *lua2.LState) lua2.LValue
+	SetParent(g DRObject)
 }
 
 type DRItem interface {

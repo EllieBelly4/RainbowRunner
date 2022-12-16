@@ -5,10 +5,10 @@ import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/components/behavior"
 	"RainbowRunner/internal/gosucks"
-	"RainbowRunner/internal/message"
 	"RainbowRunner/internal/objects/actions"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
+	"RainbowRunner/pkg/events"
 	"encoding/hex"
 	"errors"
 	"fmt"
@@ -340,10 +340,6 @@ func (u *UnitBehavior) sendWarpTo(posX, posY, posZ float32) {
 	}
 }
 
-//func (n *UnitBehavior) SendPositions(positions []UnitPathPosition) {
-//
-//}
-
 func (u *UnitBehavior) handleClientAttack(reader *byter.Byter) {
 	reader.DumpRemaining()
 
@@ -475,14 +471,10 @@ func (u *UnitBehavior) MoveToEntity(g IWorldEntity) {
 }
 
 func (u *UnitBehavior) ExecuteAction(action actions.Action) {
-	CEWriter := NewClientEntityWriterWithByter()
-	CEWriter.BeginComponentUpdate(u)
-	CEWriter.CreateActionComplete(action)
-	CEWriter.WriteSynch(u)
-
-	if u.OwnerID() != 0 {
-		Players.GetPlayer(u.OwnerID()).MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeBehaviourAction)
-	}
+	events.Emit(ExecuteActionEvent{
+		Action:       action,
+		UnitBehavior: u,
+	})
 
 	u.SessionID++
 }

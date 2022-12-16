@@ -75,11 +75,10 @@ func (z *Zone) RemovePlayer(id int) {
 }
 
 func (z *Zone) AddEntity(owner *uint16, entity DRObject) {
-	z.setZone(entity)
-
 	z.Lock()
 	defer z.Unlock()
 
+	z.setZone(entity)
 	z.GiveID(entity)
 
 	if owner != nil {
@@ -88,6 +87,7 @@ func (z *Zone) AddEntity(owner *uint16, entity DRObject) {
 
 	entity.WalkChildren(func(object DRObject) {
 		z.GiveID(object)
+		z.setZone(object)
 
 		if owner != nil {
 			object.RREntityProperties().SetOwner(*owner)
@@ -274,10 +274,12 @@ func (z *Zone) GiveID(entity DRObject) {
 }
 
 func NewZone(name string, id uint32) *Zone {
-	return &Zone{
+	zone := &Zone{
 		Name:     name,
 		ID:       id,
 		entities: make(map[uint16]DRObject),
 		players:  make(map[uint16]*RRPlayer),
 	}
+
+	return zone
 }

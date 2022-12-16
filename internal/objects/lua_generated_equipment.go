@@ -30,6 +30,9 @@ func registerLuaEquipment(state *lua2.LState) {
 
 func luaMethodsEquipment() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
+		// -------------------------------------------------------------------------------------------------------------
+		// Unsupported field type Slot
+		// -------------------------------------------------------------------------------------------------------------
 		"writeInit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IEquipment](l, 1)
 			obj := objInterface.GetEquipment()

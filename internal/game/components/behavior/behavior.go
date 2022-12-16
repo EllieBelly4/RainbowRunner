@@ -5,6 +5,7 @@ import (
 	byter "RainbowRunner/pkg/byter"
 )
 
+// Deprecated: All components are now in objects/component_*
 type Behavior struct {
 }
 

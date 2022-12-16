@@ -149,6 +149,24 @@ func isLuaConvertible(t ValueType) bool {
 	return false
 }
 
+func isInterface(t ValueType) bool {
+	pkg := getPackage(t.Package)
+
+	fullTypeName := pkg.PkgPath + "." + t.ParamType
+
+	for _, f := range pkg.TypesInfo.Types {
+		if f.Type.String() == fullTypeName {
+			if named, ok := f.Type.(*types.Named); ok {
+				if _, ok := named.Underlying().(*types.Interface); ok {
+					return true
+				}
+			}
+		}
+	}
+
+	return false
+}
+
 func getPackage(p string) *packages.Package {
 	if p == "" {
 		return currentPkg
