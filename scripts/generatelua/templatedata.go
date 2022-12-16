@@ -108,15 +108,30 @@ func (t *TemplateData) ExtendsString() string {
 	return s.String()
 }
 
+type LuaConvertibleResult struct {
+	HasFunction    bool
+	HasPtrReceiver bool
+}
+
 func IsFieldLuaConvertible(t *FieldDef) bool {
-	return isLuaConvertible(t.ValueType)
+	return isLuaConvertiblePtr(t.ValueType) || isLuaConvertibleValue(t.ValueType)
 }
 
 func IsResultLuaConvertible(t *FuncResultDef) bool {
-	return isLuaConvertible(t.ValueType)
+	return isLuaConvertiblePtr(t.ValueType) || isLuaConvertibleValue(t.ValueType)
 }
 
-func isLuaConvertible(t ValueType) bool {
+func isLuaConvertiblePtr(t ValueType) bool {
+	result := isLuaConvertible(t)
+	return result.HasFunction && result.HasPtrReceiver
+}
+
+func isLuaConvertibleValue(t ValueType) bool {
+	result := isLuaConvertible(t)
+	return result.HasFunction && !result.HasPtrReceiver
+}
+
+func isLuaConvertible(t ValueType) (isLuaConvertible LuaConvertibleResult) {
 	pkg := getPackage(t.Package)
 
 	fullTypeName := pkg.PkgPath + "." + t.ParamType
@@ -129,7 +144,10 @@ func isLuaConvertible(t ValueType) bool {
 						m := iface.Method(i)
 
 						if m.Name() == "ToLua" {
-							return true
+							return LuaConvertibleResult{
+								HasFunction:    true,
+								HasPtrReceiver: true,
+							}
 						}
 					}
 					continue
@@ -139,14 +157,21 @@ func isLuaConvertible(t ValueType) bool {
 					m := named.Method(i)
 
 					if m.Name() == "ToLua" {
-						return true
+						_, ok := m.Type().(*types.Signature).Recv().Type().(*types.Pointer)
+
+						isPtr := ok
+
+						return LuaConvertibleResult{
+							HasFunction:    true,
+							HasPtrReceiver: isPtr,
+						}
 					}
 				}
 			}
 		}
 	}
 
-	return false
+	return LuaConvertibleResult{}
 }
 
 func isInterface(t ValueType) bool {

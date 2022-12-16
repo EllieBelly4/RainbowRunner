@@ -15,6 +15,9 @@ var typeCheckFunctions = template.FuncMap{
 	"isInterfaceType":        isInterface,
 	"isFieldLuaConvertible":  IsFieldLuaConvertible,
 	"isResultLuaConvertible": IsResultLuaConvertible,
+	"isLuaConvertible":       isLuaConvertible,
+	"isLuaConvertiblePtr":    isLuaConvertiblePtr,
+	"isLuaConvertibleValue":  isLuaConvertibleValue,
 }
 
 const (
@@ -67,18 +70,19 @@ func luaMethods{{ .Struct.Name }}() map[string]lua2.LGFunction {
 		"{{ $field.NameCamelcase }}": luaGenericGetSetNumber[I{{ $struct.Name }}](func(v I{{ $struct.Name }}) *{{ $field.FullTypeString }} { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
 		{{- else if isBoolType $field }}
 		"{{ $field.NameCamelcase }}": luaGenericGetSetBool[I{{ $struct.Name }}](func(v I{{ $struct.Name }}) *bool { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
-		{{- else if isFieldLuaConvertible $field }}
-
+		{{- else if isLuaConvertiblePtr $field.ValueType }}
 			{{- if $field.IsPointer }}
 				"{{ $field.NameCamelcase }}": luaGenericGetSetValue[I{{ $struct.Name }}, {{ $field.FullTypeStringWithPtr }}](func(v I{{ $struct.Name }}) *{{ $field.FullTypeStringWithPtr }} { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
 			{{- else if isInterfaceType $field.ValueType }}
 				"{{ $field.NameCamelcase }}": luaGenericGetSetValue[I{{ $struct.Name }}, {{ $field.FullTypeStringWithPtr }}](func(v I{{ $struct.Name }}) *{{ $field.FullTypeStringWithPtr }} { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
 			{{- else }}
 				// -------------------------------------------------------------------------------------------------------------
-				// Unsupported field type {{ $field.Name }}, must be pointer or interface to implement ILuaConvertible
+				// Unsupported field type {{ $field.Name }}, must be pointer or interface as ToLua has pointer receiver
 				// -------------------------------------------------------------------------------------------------------------
 			{{- end }}
 			
+		{{- else if isLuaConvertibleValue $field.ValueType }}
+			"{{ $field.NameCamelcase }}": luaGenericGetSetValue[I{{ $struct.Name }}, {{ $field.FullTypeStringWithPtr }}](func(v I{{ $struct.Name }}) *{{ $field.FullTypeStringWithPtr }} { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
 		{{- else }}
 			// -------------------------------------------------------------------------------------------------------------
 			// Unsupported field type {{ $field.Name }}
