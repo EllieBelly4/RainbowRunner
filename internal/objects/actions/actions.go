@@ -5,6 +5,7 @@ import (
 )
 
 //go:generate stringer -type=BehaviourAction
+//go:generate go run ../../../scripts/generate_actions
 type BehaviourAction byte
 
 const (

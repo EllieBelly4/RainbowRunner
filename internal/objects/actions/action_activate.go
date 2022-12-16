@@ -7,7 +7,7 @@ type Activate struct {
 }
 
 func (a *Activate) OpCode() BehaviourAction {
-	return 6
+	return BehaviourActionActivate
 }
 
 func (a *Activate) Init(body *byter.Byter) {

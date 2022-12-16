@@ -10,7 +10,7 @@ type WarpTo struct {
 }
 
 func (a *WarpTo) OpCode() BehaviourAction {
-	return 17
+	return BehaviourActionWarpTo
 }
 
 func (a *WarpTo) Init(body *byter.Byter) {

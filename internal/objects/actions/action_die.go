@@ -6,10 +6,10 @@ type Die struct {
 }
 
 func (d Die) OpCode() BehaviourAction {
-	return 0xFF
+	return BehaviourActionDie
 }
 
-func (d Die) Init(body *byter.Byter, sessionID byte) {
+func (d Die) Init(body *byter.Byter) {
 	// FaceTarget::readInit
 	body.WriteByte(0x00) // Unk
 

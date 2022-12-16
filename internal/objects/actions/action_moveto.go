@@ -11,7 +11,7 @@ type MoveTo struct {
 }
 
 func (a *MoveTo) OpCode() BehaviourAction {
-	return 1
+	return BehaviourActionMoveTo
 }
 
 func (a *MoveTo) Init(body *byter.Byter) {
