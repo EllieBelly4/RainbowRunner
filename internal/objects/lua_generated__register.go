@@ -3,7 +3,7 @@ package objects
 
 import lua2 "github.com/yuin/gopher-lua"
 
-func registerAllLuaFunctions(state *lua2.LState) {
+func RegisterAllLuaFunctions(state *lua2.LState) {
 	registerLuaVector3(state)
 	registerLuaVector2(state)
 	registerLuaBit32(state)

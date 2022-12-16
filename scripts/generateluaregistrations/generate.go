@@ -1,15 +1,19 @@
 package main
 
 import (
-	"RainbowRunner/internal/gosucks"
 	"RainbowRunner/scripts/common"
 	"flag"
+	"fmt"
 	"go/ast"
 	"golang.org/x/tools/go/packages"
 	"os"
 	"path/filepath"
 	"strings"
 	template2 "text/template"
+)
+
+var (
+	includes = flag.String("includes", ".", "comma-separated list of directories to generate register functions for")
 )
 
 func main() {
@@ -20,6 +24,13 @@ func main() {
 		panic(err)
 	}
 
+	for _, include := range strings.Split(*includes, ",") {
+		generate(filepath.Join(cwd, include))
+	}
+}
+
+func generate(cwd string) {
+	fmt.Println(cwd)
 	//err := getAllStructDefinitions(structs)
 	pkg, err := packages.Load(&packages.Config{
 		Mode: packages.NeedName | packages.NeedTypes | packages.NeedTypesSizes | packages.NeedTypesInfo | packages.NeedSyntax,
@@ -28,8 +39,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
-	gosucks.VAR(pkg)
 
 	registerFuncs, err := getAllRegisterFuncs(pkg[0])
 
@@ -43,7 +52,13 @@ func main() {
 
 	var s strings.Builder
 
-	err = template.Execute(&s, registerFuncs)
+	err = template.Execute(&s, struct {
+		RegisterFuncs []string
+		PackageName   string
+	}{
+		RegisterFuncs: registerFuncs,
+		PackageName:   pkg[0].Name,
+	})
 
 	if err != nil {
 		panic(err)
