@@ -28,7 +28,7 @@ func registerLuaAvatarMetrics(state *lua2.LState) {
 }
 
 func luaMethodsAvatarMetrics() map[string]lua2.LGFunction {
-	return luaMethodsExtend(map[string]lua2.LGFunction{
+	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
 		"writeFullGCObject": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAvatarMetrics](l, 1)
 			obj := objInterface.GetAvatarMetrics()

@@ -56,7 +56,7 @@ func registerLua{{ .Struct.Name }}(state *lua2.LState) {
 }
 
 func luaMethods{{ .Struct.Name }}() map[string]lua2.LGFunction {
-	return luaMethodsExtend(map[string]lua2.LGFunction{
+	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
 {{- if .Struct.Fields }}
 	{{- $struct := .Struct }}
 	{{- range $i, $field := .Struct.Fields }}
@@ -65,16 +65,16 @@ func luaMethods{{ .Struct.Name }}() map[string]lua2.LGFunction {
 		{{- end }}
 
 		{{- if isStringType $field }}
-		"{{ $field.NameCamelcase }}": luaGenericGetSetString[I{{ $struct.Name }}](func(v I{{ $struct.Name }}) *string { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
+		"{{ $field.NameCamelcase }}": lua.LuaGenericGetSetString[I{{ $struct.Name }}](func(v I{{ $struct.Name }}) *string { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
 		{{- else if isNumberType $field }}
-		"{{ $field.NameCamelcase }}": luaGenericGetSetNumber[I{{ $struct.Name }}](func(v I{{ $struct.Name }}) *{{ $field.FullTypeString }} { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
+		"{{ $field.NameCamelcase }}": lua.LuaGenericGetSetNumber[I{{ $struct.Name }}](func(v I{{ $struct.Name }}) *{{ $field.FullTypeString }} { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
 		{{- else if isBoolType $field }}
-		"{{ $field.NameCamelcase }}": luaGenericGetSetBool[I{{ $struct.Name }}](func(v I{{ $struct.Name }}) *bool { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
+		"{{ $field.NameCamelcase }}": lua.LuaGenericGetSetBool[I{{ $struct.Name }}](func(v I{{ $struct.Name }}) *bool { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
 		{{- else if isLuaConvertiblePtr $field.ValueType }}
 			{{- if $field.IsPointer }}
-				"{{ $field.NameCamelcase }}": luaGenericGetSetValue[I{{ $struct.Name }}, {{ $field.FullTypeStringWithPtr }}](func(v I{{ $struct.Name }}) *{{ $field.FullTypeStringWithPtr }} { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
+				"{{ $field.NameCamelcase }}": lua.LuaGenericGetSetValue[I{{ $struct.Name }}, {{ $field.FullTypeStringWithPtr }}](func(v I{{ $struct.Name }}) *{{ $field.FullTypeStringWithPtr }} { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
 			{{- else if isInterfaceType $field.ValueType }}
-				"{{ $field.NameCamelcase }}": luaGenericGetSetValue[I{{ $struct.Name }}, {{ $field.FullTypeStringWithPtr }}](func(v I{{ $struct.Name }}) *{{ $field.FullTypeStringWithPtr }} { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
+				"{{ $field.NameCamelcase }}": lua.LuaGenericGetSetValue[I{{ $struct.Name }}, {{ $field.FullTypeStringWithPtr }}](func(v I{{ $struct.Name }}) *{{ $field.FullTypeStringWithPtr }} { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
 			{{- else }}
 				// -------------------------------------------------------------------------------------------------------------
 				// Unsupported field type {{ $field.Name }}, must be pointer or interface as ToLua has pointer receiver
@@ -82,7 +82,7 @@ func luaMethods{{ .Struct.Name }}() map[string]lua2.LGFunction {
 			{{- end }}
 			
 		{{- else if isLuaConvertibleValue $field.ValueType }}
-			"{{ $field.NameCamelcase }}": luaGenericGetSetValue[I{{ $struct.Name }}, {{ $field.FullTypeStringWithPtr }}](func(v I{{ $struct.Name }}) *{{ $field.FullTypeStringWithPtr }} { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
+			"{{ $field.NameCamelcase }}": lua.LuaGenericGetSetValue[I{{ $struct.Name }}, {{ $field.FullTypeStringWithPtr }}](func(v I{{ $struct.Name }}) *{{ $field.FullTypeStringWithPtr }} { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),
 		{{- else }}
 			// -------------------------------------------------------------------------------------------------------------
 			// Unsupported field type {{ $field.Name }}

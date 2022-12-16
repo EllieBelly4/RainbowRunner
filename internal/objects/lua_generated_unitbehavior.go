@@ -30,18 +30,18 @@ func registerLuaUnitBehavior(state *lua2.LState) {
 }
 
 func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
-	return luaMethodsExtend(map[string]lua2.LGFunction{
-		"lastPosition":   luaGenericGetSetValue[IUnitBehavior, datatypes.Vector3Float32](func(v IUnitBehavior) *datatypes.Vector3Float32 { return &v.GetUnitBehavior().LastPosition }),
-		"position":       luaGenericGetSetValue[IUnitBehavior, datatypes.Vector3Float32](func(v IUnitBehavior) *datatypes.Vector3Float32 { return &v.GetUnitBehavior().Position }),
-		"rotation":       luaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *float32 { return &v.GetUnitBehavior().Rotation }),
-		"unitMoverFlags": luaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitMoverFlags }),
+	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+		"lastPosition":   lua.LuaGenericGetSetValue[IUnitBehavior, datatypes.Vector3Float32](func(v IUnitBehavior) *datatypes.Vector3Float32 { return &v.GetUnitBehavior().LastPosition }),
+		"position":       lua.LuaGenericGetSetValue[IUnitBehavior, datatypes.Vector3Float32](func(v IUnitBehavior) *datatypes.Vector3Float32 { return &v.GetUnitBehavior().Position }),
+		"rotation":       lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *float32 { return &v.GetUnitBehavior().Rotation }),
+		"unitMoverFlags": lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitMoverFlags }),
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type Action1
 		// -------------------------------------------------------------------------------------------------------------
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type Action2
 		// -------------------------------------------------------------------------------------------------------------
-		"sessionID": luaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().SessionID }),
+		"sessionID": lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().SessionID }),
 		"writeMoveUpdate": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
 			obj := objInterface.GetUnitBehavior()

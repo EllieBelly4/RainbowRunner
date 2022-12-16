@@ -29,8 +29,8 @@ func registerLuaZone(state *lua2.LState) {
 }
 
 func luaMethodsZone() map[string]lua2.LGFunction {
-	return luaMethodsExtend(map[string]lua2.LGFunction{
-		"name": luaGenericGetSetString[IZone](func(v IZone) *string { return &v.GetZone().Name }),
+	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+		"name": lua.LuaGenericGetSetString[IZone](func(v IZone) *string { return &v.GetZone().Name }),
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type Scripts
 		// -------------------------------------------------------------------------------------------------------------
@@ -40,7 +40,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type PathMap
 		// -------------------------------------------------------------------------------------------------------------
-		"id": luaGenericGetSetNumber[IZone](func(v IZone) *uint32 { return &v.GetZone().ID }),
+		"id": lua.LuaGenericGetSetNumber[IZone](func(v IZone) *uint32 { return &v.GetZone().ID }),
 		"getZone": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()

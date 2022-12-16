@@ -29,7 +29,7 @@ func registerLuaEquipment(state *lua2.LState) {
 }
 
 func luaMethodsEquipment() map[string]lua2.LGFunction {
-	return luaMethodsExtend(map[string]lua2.LGFunction{
+	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type Slot
 		// -------------------------------------------------------------------------------------------------------------

@@ -29,24 +29,24 @@ func registerLuaGCObject(state *lua2.LState) {
 }
 
 func luaMethodsGCObject() map[string]lua2.LGFunction {
-	return luaMethodsExtend(map[string]lua2.LGFunction{
+	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type EntityProperties, must be pointer or interface as ToLua has pointer receiver
 		// -------------------------------------------------------------------------------------------------------------
-		"version":      luaGenericGetSetNumber[IGCObject](func(v IGCObject) *uint8 { return &v.GetGCObject().Version }),
-		"gcnativeType": luaGenericGetSetString[IGCObject](func(v IGCObject) *string { return &v.GetGCObject().GCNativeType }),
-		"gclabel":      luaGenericGetSetString[IGCObject](func(v IGCObject) *string { return &v.GetGCObject().GCLabel }),
+		"version":      lua.LuaGenericGetSetNumber[IGCObject](func(v IGCObject) *uint8 { return &v.GetGCObject().Version }),
+		"gcnativeType": lua.LuaGenericGetSetString[IGCObject](func(v IGCObject) *string { return &v.GetGCObject().GCNativeType }),
+		"gclabel":      lua.LuaGenericGetSetString[IGCObject](func(v IGCObject) *string { return &v.GetGCObject().GCLabel }),
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type GCChildren
 		// -------------------------------------------------------------------------------------------------------------
-		"gctype": luaGenericGetSetString[IGCObject](func(v IGCObject) *string { return &v.GetGCObject().GCType }),
+		"gctype": lua.LuaGenericGetSetString[IGCObject](func(v IGCObject) *string { return &v.GetGCObject().GCType }),
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type Properties
 		// -------------------------------------------------------------------------------------------------------------
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type EntityHandler
 		// -------------------------------------------------------------------------------------------------------------
-		"gcparent": luaGenericGetSetValue[IGCObject, DRObject](func(v IGCObject) *DRObject { return &v.GetGCObject().GCParent }),
+		"gcparent": lua.LuaGenericGetSetValue[IGCObject, DRObject](func(v IGCObject) *DRObject { return &v.GetGCObject().GCParent }),
 		"getParentEntity": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
 			obj := objInterface.GetGCObject()

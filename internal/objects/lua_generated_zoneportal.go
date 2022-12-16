@@ -28,13 +28,13 @@ func registerLuaZonePortal(state *lua2.LState) {
 }
 
 func luaMethodsZonePortal() map[string]lua2.LGFunction {
-	return luaMethodsExtend(map[string]lua2.LGFunction{
-		"unk0":   luaGenericGetSetString[IZonePortal](func(v IZonePortal) *string { return &v.GetZonePortal().Unk0 }),
-		"unk1":   luaGenericGetSetString[IZonePortal](func(v IZonePortal) *string { return &v.GetZonePortal().Unk1 }),
-		"width":  luaGenericGetSetNumber[IZonePortal](func(v IZonePortal) *uint16 { return &v.GetZonePortal().Width }),
-		"height": luaGenericGetSetNumber[IZonePortal](func(v IZonePortal) *uint16 { return &v.GetZonePortal().Height }),
-		"unk4":   luaGenericGetSetNumber[IZonePortal](func(v IZonePortal) *uint32 { return &v.GetZonePortal().Unk4 }),
-		"target": luaGenericGetSetString[IZonePortal](func(v IZonePortal) *string { return &v.GetZonePortal().Target }),
+	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+		"unk0":   lua.LuaGenericGetSetString[IZonePortal](func(v IZonePortal) *string { return &v.GetZonePortal().Unk0 }),
+		"unk1":   lua.LuaGenericGetSetString[IZonePortal](func(v IZonePortal) *string { return &v.GetZonePortal().Unk1 }),
+		"width":  lua.LuaGenericGetSetNumber[IZonePortal](func(v IZonePortal) *uint16 { return &v.GetZonePortal().Width }),
+		"height": lua.LuaGenericGetSetNumber[IZonePortal](func(v IZonePortal) *uint16 { return &v.GetZonePortal().Height }),
+		"unk4":   lua.LuaGenericGetSetNumber[IZonePortal](func(v IZonePortal) *uint32 { return &v.GetZonePortal().Unk4 }),
+		"target": lua.LuaGenericGetSetString[IZonePortal](func(v IZonePortal) *string { return &v.GetZonePortal().Target }),
 		"activate": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZonePortal](l, 1)
 			obj := objInterface.GetZonePortal()

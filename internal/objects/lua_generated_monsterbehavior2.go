@@ -28,7 +28,7 @@ func registerLuaMonsterBehavior2(state *lua2.LState) {
 }
 
 func luaMethodsMonsterBehavior2() map[string]lua2.LGFunction {
-	return luaMethodsExtend(map[string]lua2.LGFunction{
+	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
 		"writeInit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IMonsterBehavior2](l, 1)
 			obj := objInterface.GetMonsterBehavior2()

@@ -28,10 +28,10 @@ func registerLuaUnitContainer(state *lua2.LState) {
 }
 
 func luaMethodsUnitContainer() map[string]lua2.LGFunction {
-	return luaMethodsExtend(map[string]lua2.LGFunction{
-		"manipulator": luaGenericGetSetValue[IUnitContainer, DRObject](func(v IUnitContainer) *DRObject { return &v.GetUnitContainer().Manipulator }),
-		"activeItem":  luaGenericGetSetValue[IUnitContainer, DRObject](func(v IUnitContainer) *DRObject { return &v.GetUnitContainer().ActiveItem }),
-		"avatar":      luaGenericGetSetValue[IUnitContainer, *Avatar](func(v IUnitContainer) **Avatar { return &v.GetUnitContainer().Avatar }),
+	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+		"manipulator": lua.LuaGenericGetSetValue[IUnitContainer, DRObject](func(v IUnitContainer) *DRObject { return &v.GetUnitContainer().Manipulator }),
+		"activeItem":  lua.LuaGenericGetSetValue[IUnitContainer, DRObject](func(v IUnitContainer) *DRObject { return &v.GetUnitContainer().ActiveItem }),
+		"avatar":      lua.LuaGenericGetSetValue[IUnitContainer, *Avatar](func(v IUnitContainer) **Avatar { return &v.GetUnitContainer().Avatar }),
 		"readUpdate": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
 			obj := objInterface.GetUnitContainer()

@@ -28,11 +28,11 @@ func registerLuaPlayer(state *lua2.LState) {
 }
 
 func luaMethodsPlayer() map[string]lua2.LGFunction {
-	return luaMethodsExtend(map[string]lua2.LGFunction{
-		"name":      luaGenericGetSetString[IPlayer](func(v IPlayer) *string { return &v.GetPlayer().Name }),
-		"currentHP": luaGenericGetSetNumber[IPlayer](func(v IPlayer) *uint32 { return &v.GetPlayer().CurrentHP }),
-		"spawned":   luaGenericGetSetBool[IPlayer](func(v IPlayer) *bool { return &v.GetPlayer().Spawned }),
-		"zone":      luaGenericGetSetValue[IPlayer, *Zone](func(v IPlayer) **Zone { return &v.GetPlayer().Zone }),
+	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+		"name":      lua.LuaGenericGetSetString[IPlayer](func(v IPlayer) *string { return &v.GetPlayer().Name }),
+		"currentHP": lua.LuaGenericGetSetNumber[IPlayer](func(v IPlayer) *uint32 { return &v.GetPlayer().CurrentHP }),
+		"spawned":   lua.LuaGenericGetSetBool[IPlayer](func(v IPlayer) *bool { return &v.GetPlayer().Spawned }),
+		"zone":      lua.LuaGenericGetSetValue[IPlayer, *Zone](func(v IPlayer) **Zone { return &v.GetPlayer().Zone }),
 		"type": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IPlayer](l, 1)
 			obj := objInterface.GetPlayer()

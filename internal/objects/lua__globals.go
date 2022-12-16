@@ -1,6 +1,7 @@
 package objects
 
 import (
+	lua2 "RainbowRunner/internal/lua"
 	"RainbowRunner/pkg/datatypes"
 	lua "github.com/yuin/gopher-lua"
 )
@@ -10,34 +11,14 @@ func RegisterLuaGlobals(state *lua.LState) {
 	registerAllLuaFunctions(state)
 }
 
-type ILuaConvertible interface {
-	ToLua(state *lua.LState) lua.LValue
-}
-
-func luaMethodsExtend(child map[string]lua.LGFunction, parents ...func() map[string]lua.LGFunction) map[string]lua.LGFunction {
-	newMethods := make(map[string]lua.LGFunction)
-
-	for _, parent := range parents {
-		for key, value := range parent() {
-			newMethods[key] = value
-		}
-	}
-
-	for key, value := range child {
-		newMethods[key] = value
-	}
-
-	return newMethods
-}
-
 func registerLuaVector3(s *lua.LState) {
 	mt := s.NewTypeMetatable("Vector3")
 	s.SetGlobal("Vector3", mt)
 	s.SetField(mt, "__index", s.SetFuncs(s.NewTable(),
 		map[string]lua.LGFunction{
-			"x": luaGenericGetSetNumber[datatypes.Vector3Float32](func(v datatypes.Vector3Float32) *float32 { return &v.X }),
-			"y": luaGenericGetSetNumber[datatypes.Vector3Float32](func(v datatypes.Vector3Float32) *float32 { return &v.Y }),
-			"z": luaGenericGetSetNumber[datatypes.Vector3Float32](func(v datatypes.Vector3Float32) *float32 { return &v.Z }),
+			"x": lua2.LuaGenericGetSetNumber[datatypes.Vector3Float32](func(v datatypes.Vector3Float32) *float32 { return &v.X }),
+			"y": lua2.LuaGenericGetSetNumber[datatypes.Vector3Float32](func(v datatypes.Vector3Float32) *float32 { return &v.Y }),
+			"z": lua2.LuaGenericGetSetNumber[datatypes.Vector3Float32](func(v datatypes.Vector3Float32) *float32 { return &v.Z }),
 		},
 	))
 	s.SetField(mt, "new", s.NewFunction(newLuaVector3))
@@ -65,8 +46,8 @@ func registerLuaVector2(s *lua.LState) {
 	s.SetGlobal("Vector2", mt)
 	s.SetField(mt, "__index", s.SetFuncs(s.NewTable(),
 		map[string]lua.LGFunction{
-			"x": luaGenericGetSetNumber[datatypes.Vector2Float32](func(v datatypes.Vector2Float32) *float32 { return &v.X }),
-			"y": luaGenericGetSetNumber[datatypes.Vector2Float32](func(v datatypes.Vector2Float32) *float32 { return &v.Y }),
+			"x": lua2.LuaGenericGetSetNumber[datatypes.Vector2Float32](func(v datatypes.Vector2Float32) *float32 { return &v.X }),
+			"y": lua2.LuaGenericGetSetNumber[datatypes.Vector2Float32](func(v datatypes.Vector2Float32) *float32 { return &v.Y }),
 		},
 	))
 	s.SetField(mt, "new", s.NewFunction(newLuaVector2))

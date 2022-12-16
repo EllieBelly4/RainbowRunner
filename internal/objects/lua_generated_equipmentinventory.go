@@ -29,8 +29,8 @@ func registerLuaEquipmentInventory(state *lua2.LState) {
 }
 
 func luaMethodsEquipmentInventory() map[string]lua2.LGFunction {
-	return luaMethodsExtend(map[string]lua2.LGFunction{
-		"avatar": luaGenericGetSetValue[IEquipmentInventory, *Avatar](func(v IEquipmentInventory) **Avatar { return &v.GetEquipmentInventory().Avatar }),
+	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+		"avatar": lua.LuaGenericGetSetValue[IEquipmentInventory, *Avatar](func(v IEquipmentInventory) **Avatar { return &v.GetEquipmentInventory().Avatar }),
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type Slots
 		// -------------------------------------------------------------------------------------------------------------

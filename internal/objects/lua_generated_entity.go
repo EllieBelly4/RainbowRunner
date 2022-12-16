@@ -27,7 +27,7 @@ func registerLuaEntity(state *lua2.LState) {
 }
 
 func luaMethodsEntity() map[string]lua2.LGFunction {
-	return luaMethodsExtend(map[string]lua2.LGFunction{
+	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
 		"getEntity": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IEntity](l, 1)
 			obj := objInterface.GetEntity()

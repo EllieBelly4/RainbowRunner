@@ -29,17 +29,17 @@ func registerLuaWorldEntity(state *lua2.LState) {
 }
 
 func luaMethodsWorldEntity() map[string]lua2.LGFunction {
-	return luaMethodsExtend(map[string]lua2.LGFunction{
-		"worldPosition":           luaGenericGetSetValue[IWorldEntity, datatypes.Vector3Float32](func(v IWorldEntity) *datatypes.Vector3Float32 { return &v.GetWorldEntity().WorldPosition }),
-		"rotation":                luaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *float32 { return &v.GetWorldEntity().Rotation }),
-		"worldEntityFlags":        luaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *uint32 { return &v.GetWorldEntity().WorldEntityFlags }),
-		"worldEntityInitFlags":    luaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *byte { return &v.GetWorldEntity().WorldEntityInitFlags }),
-		"label":                   luaGenericGetSetString[IWorldEntity](func(v IWorldEntity) *string { return &v.GetWorldEntity().Label }),
-		"unk1Case":                luaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *uint16 { return &v.GetWorldEntity().Unk1Case }),
-		"unk2Case":                luaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *byte { return &v.GetWorldEntity().Unk2Case }),
-		"unk4Case":                luaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *uint32 { return &v.GetWorldEntity().Unk4Case }),
-		"useCustomAnimationSpeed": luaGenericGetSetBool[IWorldEntity](func(v IWorldEntity) *bool { return &v.GetWorldEntity().UseCustomAnimationSpeed }),
-		"animationSpeed":          luaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *float32 { return &v.GetWorldEntity().AnimationSpeed }),
+	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+		"worldPosition":           lua.LuaGenericGetSetValue[IWorldEntity, datatypes.Vector3Float32](func(v IWorldEntity) *datatypes.Vector3Float32 { return &v.GetWorldEntity().WorldPosition }),
+		"rotation":                lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *float32 { return &v.GetWorldEntity().Rotation }),
+		"worldEntityFlags":        lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *uint32 { return &v.GetWorldEntity().WorldEntityFlags }),
+		"worldEntityInitFlags":    lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *byte { return &v.GetWorldEntity().WorldEntityInitFlags }),
+		"label":                   lua.LuaGenericGetSetString[IWorldEntity](func(v IWorldEntity) *string { return &v.GetWorldEntity().Label }),
+		"unk1Case":                lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *uint16 { return &v.GetWorldEntity().Unk1Case }),
+		"unk2Case":                lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *byte { return &v.GetWorldEntity().Unk2Case }),
+		"unk4Case":                lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *uint32 { return &v.GetWorldEntity().Unk4Case }),
+		"useCustomAnimationSpeed": lua.LuaGenericGetSetBool[IWorldEntity](func(v IWorldEntity) *bool { return &v.GetWorldEntity().UseCustomAnimationSpeed }),
+		"animationSpeed":          lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *float32 { return &v.GetWorldEntity().AnimationSpeed }),
 		"activate": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IWorldEntity](l, 1)
 			obj := objInterface.GetWorldEntity()

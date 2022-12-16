@@ -27,13 +27,13 @@ func registerLuaRREntityProperties(state *lua2.LState) {
 }
 
 func luaMethodsRREntityProperties() map[string]lua2.LGFunction {
-	return luaMethodsExtend(map[string]lua2.LGFunction{
-		"ownerID": luaGenericGetSetNumber[IRREntityProperties](func(v IRREntityProperties) *uint16 { return &v.GetRREntityProperties().OwnerID }),
-		"id":      luaGenericGetSetNumber[IRREntityProperties](func(v IRREntityProperties) *uint32 { return &v.GetRREntityProperties().ID }),
+	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+		"ownerID": lua.LuaGenericGetSetNumber[IRREntityProperties](func(v IRREntityProperties) *uint16 { return &v.GetRREntityProperties().OwnerID }),
+		"id":      lua.LuaGenericGetSetNumber[IRREntityProperties](func(v IRREntityProperties) *uint32 { return &v.GetRREntityProperties().ID }),
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type Conn
 		// -------------------------------------------------------------------------------------------------------------
-		"zone": luaGenericGetSetValue[IRREntityProperties, *Zone](func(v IRREntityProperties) **Zone { return &v.GetRREntityProperties().Zone }),
+		"zone": lua.LuaGenericGetSetValue[IRREntityProperties, *Zone](func(v IRREntityProperties) **Zone { return &v.GetRREntityProperties().Zone }),
 		"getRREntityProperties": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IRREntityProperties](l, 1)
 			obj := objInterface.GetRREntityProperties()

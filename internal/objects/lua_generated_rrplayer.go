@@ -26,11 +26,11 @@ func registerLuaRRPlayer(state *lua2.LState) {
 }
 
 func luaMethodsRRPlayer() map[string]lua2.LGFunction {
-	return luaMethodsExtend(map[string]lua2.LGFunction{
+	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type Conn
 		// -------------------------------------------------------------------------------------------------------------
-		"currentCharacter": luaGenericGetSetValue[IRRPlayer, *Player](func(v IRRPlayer) **Player { return &v.GetRRPlayer().CurrentCharacter }),
+		"currentCharacter": lua.LuaGenericGetSetValue[IRRPlayer, *Player](func(v IRRPlayer) **Player { return &v.GetRRPlayer().CurrentCharacter }),
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type Characters
 		// -------------------------------------------------------------------------------------------------------------
