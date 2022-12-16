@@ -2,7 +2,7 @@
 package objects
 
 import (
-	"RainbowRunner/internal/actions"
+	actions2 "RainbowRunner/internal/actions"
 	lua "RainbowRunner/internal/lua"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
@@ -120,8 +120,15 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
 			obj := objInterface.GetUnitBehavior()
 			obj.ExecuteAction(
-				lua.CheckValue[actions.Action](l, 2),
+				lua.CheckValue[actions2.Action](l, 2),
 			)
+
+			return 0
+		},
+		"stopFollowClient": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
+			obj := objInterface.GetUnitBehavior()
+			obj.StopFollowClient()
 
 			return 0
 		},

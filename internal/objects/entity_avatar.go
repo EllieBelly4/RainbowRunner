@@ -111,19 +111,9 @@ func (p *Avatar) SendFollowClient() {
 }
 
 func (p *Avatar) SendStopFollowClient() {
-	CEWriter := NewClientEntityWriterWithByter()
-	//writer.BeginStream()
-	CEWriter.BeginComponentUpdate(p.GetChildByGCNativeType("UnitBehavior"))
+	unitBehavior := p.GetChildByGCNativeType("UnitBehavior").(IUnitBehavior).GetUnitBehavior()
 
-	CEWriter.Body.WriteByte(0x64) // Update type - something to do with client control
-	CEWriter.Body.WriteByte(0x00) // Client control on or off
-
-	CEWriter.WriteSynch(p)
-
-	player := Players.GetPlayer(uint16(p.OwnerID()))
-
-	player.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeOther)
-
+	unitBehavior.StopFollowClient()
 	//writer.EndStream()
 	//p.Send(CEWriter.Body)
 }

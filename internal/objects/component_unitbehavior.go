@@ -6,6 +6,7 @@ import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/components/behavior"
 	"RainbowRunner/internal/gosucks"
+	"RainbowRunner/internal/message"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 	"RainbowRunner/pkg/events"
@@ -487,6 +488,22 @@ func (u *UnitBehavior) ExecuteAction(action actions2.Action) {
 	})
 
 	u.SessionID++
+}
+
+func (u *UnitBehavior) StopFollowClient() {
+	CEWriter := NewClientEntityWriterWithByter()
+	//writer.BeginStream()
+	CEWriter.BeginComponentUpdate(u)
+
+	CEWriter.Body.WriteByte(0x64) // Update type - something to do with client control
+	CEWriter.Body.WriteByte(0x00) // Client control on or off
+
+	CEWriter.WriteSynch(u)
+
+	player := Players.GetPlayer(u.OwnerID())
+
+	player.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeOther)
+
 }
 
 func NewUnitBehavior(gcType string) *UnitBehavior {

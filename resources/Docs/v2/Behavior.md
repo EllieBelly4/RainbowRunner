@@ -6,6 +6,8 @@ Attaches to an `Entity` and allows basic commands to be executed.
 
 ### Commands (Actions, BehaviorActions)
 
+Actions are all started in `Behavior::startAction`
+
 |Code|Name|Description|Args|
 |---|---|---|---|
 |1|MoveTo|||
