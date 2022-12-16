@@ -31,12 +31,8 @@ func registerLuaUnitBehavior(state *lua2.LState) {
 
 func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
-		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type LastPosition, must be pointer or interface to implement ILuaConvertible
-		// -------------------------------------------------------------------------------------------------------------
-		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type Position, must be pointer or interface to implement ILuaConvertible
-		// -------------------------------------------------------------------------------------------------------------
+		"lastPosition":   luaGenericGetSetValue[IUnitBehavior, datatypes.Vector3Float32](func(v IUnitBehavior) *datatypes.Vector3Float32 { return &v.GetUnitBehavior().LastPosition }),
+		"position":       luaGenericGetSetValue[IUnitBehavior, datatypes.Vector3Float32](func(v IUnitBehavior) *datatypes.Vector3Float32 { return &v.GetUnitBehavior().Position }),
 		"rotation":       luaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *float32 { return &v.GetUnitBehavior().Rotation }),
 		"unitMoverFlags": luaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitMoverFlags }),
 		// -------------------------------------------------------------------------------------------------------------
@@ -76,6 +72,15 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 			l.Push(ud)
 
 			return 1
+		},
+		"warpTo": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
+			obj := objInterface.GetUnitBehavior()
+			obj.WarpTo(
+				lua.CheckValue[datatypes.Vector3Float32](l, 2),
+			)
+
+			return 0
 		},
 		"warp": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)

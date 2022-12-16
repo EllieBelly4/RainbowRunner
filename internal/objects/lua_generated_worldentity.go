@@ -30,9 +30,7 @@ func registerLuaWorldEntity(state *lua2.LState) {
 
 func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
-		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type WorldPosition, must be pointer or interface to implement ILuaConvertible
-		// -------------------------------------------------------------------------------------------------------------
+		"worldPosition":           luaGenericGetSetValue[IWorldEntity, datatypes.Vector3Float32](func(v IWorldEntity) *datatypes.Vector3Float32 { return &v.GetWorldEntity().WorldPosition }),
 		"rotation":                luaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *float32 { return &v.GetWorldEntity().Rotation }),
 		"worldEntityFlags":        luaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *uint32 { return &v.GetWorldEntity().WorldEntityFlags }),
 		"worldEntityInitFlags":    luaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *byte { return &v.GetWorldEntity().WorldEntityInitFlags }),

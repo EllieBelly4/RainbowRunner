@@ -310,6 +310,16 @@ func (u *UnitBehavior) ReadUpdate(reader *byter.Byter) error {
 	return nil
 }
 
+func (u *UnitBehavior) WarpTo(pos datatypes.Vector3Float32) {
+	u.Position = pos
+
+	warpTo := &actions.WarpTo{
+		Position: pos,
+	}
+
+	events.Emit(ExecuteActionEvent{Action: warpTo, UnitBehavior: u})
+}
+
 func (u *UnitBehavior) Warp(x, y, z float32) {
 	u.Position.X = x
 	u.Position.Y = y

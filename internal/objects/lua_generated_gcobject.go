@@ -31,7 +31,7 @@ func registerLuaGCObject(state *lua2.LState) {
 func luaMethodsGCObject() map[string]lua2.LGFunction {
 	return luaMethodsExtend(map[string]lua2.LGFunction{
 		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type EntityProperties, must be pointer or interface to implement ILuaConvertible
+		// Unsupported field type EntityProperties, must be pointer or interface as ToLua has pointer receiver
 		// -------------------------------------------------------------------------------------------------------------
 		"version":      luaGenericGetSetNumber[IGCObject](func(v IGCObject) *uint8 { return &v.GetGCObject().Version }),
 		"gcnativeType": luaGenericGetSetString[IGCObject](func(v IGCObject) *string { return &v.GetGCObject().GCNativeType }),
