@@ -87,13 +87,13 @@ func (g *WorldEntity) Activate(player *RRPlayer, u *UnitBehavior, id byte, sessi
 	CEWriter := NewClientEntityWriterWithByter()
 
 	CEWriter.BeginComponentUpdate(u)
-	CEWriter.CreateActionResponse(actions.BehaviourActionActivate, id)
+	CEWriter.CreateActionResponse(actions.BehaviourActionActivate, id, sessionID)
 
 	activateAction := actions.Activate{
 		TargetEntityID: uint16(g.EntityProperties.ID),
 	}
 
-	activateAction.InitWithoutOpCode(CEWriter.Body, sessionID)
+	activateAction.InitWithoutOpCode(CEWriter.Body)
 	CEWriter.WriteSynch(u)
 
 	player.MessageQueue.Enqueue(

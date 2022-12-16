@@ -10,9 +10,9 @@ func (a *Activate) OpCode() BehaviourAction {
 	return 6
 }
 
-func (a *Activate) Init(body *byter.Byter, sessionID byte) {
+func (a *Activate) Init(body *byter.Byter) {
 	// Activate::readData
-	body.WriteByte(sessionID)
+	//body.WriteByte(sessionID)
 	// Used to be 0x02
 	body.WriteUInt16(a.TargetEntityID)
 
@@ -31,9 +31,7 @@ func (a *Activate) Init(body *byter.Byter, sessionID byte) {
 	body.WriteUInt32(0x00)
 }
 
-func (a *Activate) InitWithoutOpCode(body *byter.Byter, sessionID byte) {
-	// Activate::readData
-	body.WriteByte(sessionID)
+func (a *Activate) InitWithoutOpCode(body *byter.Byter) {
 	// Used to be 0x02
 	body.WriteUInt16(a.TargetEntityID)
 }

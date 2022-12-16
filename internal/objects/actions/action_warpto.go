@@ -13,8 +13,7 @@ func (a *WarpTo) OpCode() BehaviourAction {
 	return 17
 }
 
-func (a *WarpTo) Init(body *byter.Byter, sessionID byte) {
-	body.WriteByte(sessionID)
+func (a *WarpTo) Init(body *byter.Byter) {
 	body.WriteInt32(int32(a.Position.X * 256))
 	body.WriteInt32(int32(a.Position.Y * 256))
 	body.WriteInt32(int32(a.Position.Z * 256))

@@ -51,5 +51,5 @@ const (
 // Action See [resources/Docs/v2/Behavior.md]
 type Action interface {
 	OpCode() BehaviourAction
-	Init(body *byter.Byter, sessionID byte)
+	Init(body *byter.Byter)
 }

@@ -14,9 +14,8 @@ func (a *MoveTo) OpCode() BehaviourAction {
 	return 1
 }
 
-func (a *MoveTo) Init(body *byter.Byter, sessionID byte) {
+func (a *MoveTo) Init(body *byter.Byter) {
 	// MoveTo::readData
-	body.WriteByte(sessionID)
 	body.WriteUInt32(datatypes.DRFloat(a.PosX).ToUInt())
 	body.WriteUInt32(datatypes.DRFloat(a.PosY).ToUInt())
 
