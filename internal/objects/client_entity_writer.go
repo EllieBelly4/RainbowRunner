@@ -131,14 +131,20 @@ func (w *ClientEntityWriter) IsDirty() bool {
 func (w *ClientEntityWriter) CreateAction(action actions.BehaviourAction, sessionID byte) {
 	w.Body.WriteByte(0x04)
 	w.Body.WriteByte(byte(action))
-	w.Body.WriteByte(sessionID)
+
+	if actions.UsesSessionID(action) {
+		w.Body.WriteByte(sessionID)
+	}
 }
 
 func (w *ClientEntityWriter) CreateActionResponse(action actions.BehaviourAction, responseID byte, sessionID byte) {
 	w.Body.WriteByte(0x01)
 	w.Body.WriteByte(responseID)
 	w.Body.WriteByte(byte(action))
-	w.Body.WriteByte(sessionID)
+
+	if actions.UsesSessionID(action) {
+		w.Body.WriteByte(sessionID)
+	}
 }
 
 func (w *ClientEntityWriter) CreateActionComplete(action actions.Action) {

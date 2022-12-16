@@ -8,6 +8,7 @@ type ActionPlayAnimation struct {
 	Unk1 uint32
 	Unk2 uint32
 	Unk3 uint32
+	Unk4 uint32
 }
 
 func (d ActionPlayAnimation) OpCode() BehaviourAction {
@@ -19,6 +20,7 @@ func (d ActionPlayAnimation) Init(body *byter.Byter) {
 	body.WriteUInt32(d.Unk1)
 	body.WriteUInt32(d.Unk2)
 	body.WriteUInt32(d.Unk3)
+	body.WriteUInt32(d.Unk4)
 }
 
 func NewActionPlayAnimation() *ActionPlayAnimation {
