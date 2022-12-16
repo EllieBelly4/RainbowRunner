@@ -2,8 +2,8 @@
 package objects
 
 import (
+	"RainbowRunner/internal/actions"
 	lua "RainbowRunner/internal/lua"
-	"RainbowRunner/internal/objects/actions"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 	lua2 "github.com/yuin/gopher-lua"

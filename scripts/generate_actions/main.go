@@ -1,7 +1,7 @@
 package main
 
 import (
-	"RainbowRunner/internal/objects/actions"
+	"RainbowRunner/internal/actions"
 	"os"
 	"path/filepath"
 	"strings"

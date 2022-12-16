@@ -1,7 +1,7 @@
 package behavior
 
 import (
-	"RainbowRunner/internal/objects/actions"
+	"RainbowRunner/internal/actions"
 	byter "RainbowRunner/pkg/byter"
 )
 

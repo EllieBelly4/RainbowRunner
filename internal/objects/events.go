@@ -1,6 +1,8 @@
 package objects
 
-import "RainbowRunner/internal/objects/actions"
+import (
+	"RainbowRunner/internal/actions"
+)
 
 type ExecuteActionEvent struct {
 	Action       actions.Action

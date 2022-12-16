@@ -1,8 +1,8 @@
 package objects
 
 import (
+	"RainbowRunner/internal/actions"
 	"RainbowRunner/internal/game/messages"
-	"RainbowRunner/internal/objects/actions"
 	byter "RainbowRunner/pkg/byter"
 )
 

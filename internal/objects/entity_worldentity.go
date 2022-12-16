@@ -1,8 +1,8 @@
 package objects
 
 import (
+	actions2 "RainbowRunner/internal/actions"
 	"RainbowRunner/internal/message"
-	"RainbowRunner/internal/objects/actions"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 )
@@ -87,9 +87,9 @@ func (g *WorldEntity) Activate(player *RRPlayer, u *UnitBehavior, id byte, sessi
 	CEWriter := NewClientEntityWriterWithByter()
 
 	CEWriter.BeginComponentUpdate(u)
-	CEWriter.CreateActionResponse(actions.BehaviourActionActivate, id, sessionID)
+	CEWriter.CreateActionResponse(actions2.BehaviourActionActivate, id, sessionID)
 
-	activateAction := actions.Activate{
+	activateAction := actions2.ActionActivate{
 		TargetEntityID: uint16(g.EntityProperties.ID),
 	}
 

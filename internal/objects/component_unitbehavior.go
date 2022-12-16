@@ -1,11 +1,11 @@
 package objects
 
 import (
+	actions2 "RainbowRunner/internal/actions"
 	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/components/behavior"
 	"RainbowRunner/internal/gosucks"
-	"RainbowRunner/internal/objects/actions"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 	"RainbowRunner/pkg/events"
@@ -22,8 +22,8 @@ type UnitBehavior struct {
 	Position       datatypes.Vector3Float32
 	Rotation       float32
 	UnitMoverFlags byte
-	Action1        actions.Action
-	Action2        actions.Action
+	Action1        actions2.Action
+	Action2        actions2.Action
 
 	// I don't know for certain if this is really called "SessionID" but I think it is
 	// This increments every time a unit behavior action is executed and must be used for subsequent movement
@@ -313,7 +313,7 @@ func (u *UnitBehavior) ReadUpdate(reader *byter.Byter) error {
 func (u *UnitBehavior) WarpTo(pos datatypes.Vector3Float32) {
 	u.Position = pos
 
-	warpTo := &actions.WarpTo{
+	warpTo := &actions2.ActionWarpTo{
 		Position: pos,
 	}
 
@@ -389,7 +389,7 @@ func (u *UnitBehavior) handleClientBlockMovement(reader *byter.Byter) {
 
 func (u *UnitBehavior) handleExecuteAction(reader *byter.Byter) error {
 	responseId := reader.Byte()
-	action := actions.BehaviourAction(reader.Byte())
+	action := actions2.BehaviourAction(reader.Byte())
 	someID := reader.Byte()
 
 	logrus.Infof("execute action %s, unk0 %d sessionID %d\n", action.String(), responseId, someID)
@@ -398,9 +398,9 @@ func (u *UnitBehavior) handleExecuteAction(reader *byter.Byter) error {
 	var err error
 
 	switch action {
-	case actions.BehaviourActionUsePosition:
+	case actions2.BehaviourActionUsePosition:
 		err = u.handleActionUsePosition(reader, responseId, someID)
-	case actions.BehaviourActionActivate:
+	case actions2.BehaviourActionActivate:
 		err = u.handleExecuteActivate(reader, responseId, someID)
 	}
 
@@ -444,7 +444,7 @@ func (u *UnitBehavior) handleActionUsePosition(reader *byter.Byter, id byte, ses
 }
 
 func (u *UnitBehavior) MoveTo(pos datatypes.Vector2Float32) {
-	action := &actions.MoveTo{
+	action := &actions2.ActionMoveTo{
 		PosX: pos.X,
 		PosY: pos.Y,
 	}
@@ -480,7 +480,7 @@ func (u *UnitBehavior) MoveToEntity(g IWorldEntity) {
 	u.MoveTo(targetPosition)
 }
 
-func (u *UnitBehavior) ExecuteAction(action actions.Action) {
+func (u *UnitBehavior) ExecuteAction(action actions2.Action) {
 	events.Emit(ExecuteActionEvent{
 		Action:       action,
 		UnitBehavior: u,

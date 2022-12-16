@@ -5,15 +5,20 @@ const (
 
 import "RainbowRunner/pkg/byter"
 
-type {{ .ActionName }} struct {
+//go:generate go run ../../../scripts/generatelua -type=Action{{ .ActionName }}
+type Action{{ .ActionName }} struct {
 }
 
-func (d {{ .ActionName }}) OpCode() BehaviourAction {
+func (a Action{{ .ActionName }}) OpCode() BehaviourAction {
 	return BehaviourAction{{ .ActionName }}
 }
 
-func (d {{ .ActionName }}) Init(body *byter.Byter) {
+func (a Action{{ .ActionName }}) Init(body *byter.Byter) {
 	panic("implement me")
+}
+
+func NewAction{{ .ActionName }}() *Action{{ .ActionName }} {
+	return &Action{{ .ActionName }}{}
 }
 `
 )
