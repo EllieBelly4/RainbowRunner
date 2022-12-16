@@ -5,6 +5,10 @@ function moveNPC(player)
     print(npc:name())
     unitBehav = npc:getChildByGCNativeType("UnitBehavior")
 
+    currentPos = unitBehav:position()
+
     --X: 356.222656 Y: -182.144531 Z: 49.914062 Rot: 302.00
-    unitBehav:moveTo(Vector2.new(356, -182))
+    print(currentPos:z())
+
+    unitBehav:warpTo(Vector3.new(356, -182, currentPos:z()))
 end

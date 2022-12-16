@@ -14,8 +14,12 @@ func (a *WarpTo) OpCode() BehaviourAction {
 }
 
 func (a *WarpTo) Init(body *byter.Byter, sessionID byte) {
+	body.WriteByte(sessionID)
+	body.WriteInt32(int32(a.Position.X * 256))
+	body.WriteInt32(int32(a.Position.Y * 256))
+	body.WriteInt32(int32(a.Position.Z * 256))
 
-	// TODO verify this is correct
+	// TODO verify this is still needed
 	// This was used for the "embedded" actions where the action was
 	// written along with the behavior
 	//// WarpTo::readData

@@ -53,9 +53,10 @@ func generateWrapper(extends []*FuncDef, imports map[string]*ImportDef, def *Str
 	requiredImports := def.GetRequiredImports(imports)
 
 	data := &TemplateData{
-		Struct:  def,
-		Imports: requiredImports,
-		Extends: extends,
+		Struct:      def,
+		Imports:     requiredImports,
+		Extends:     extends,
+		PackageName: currentPkg.Name,
 	}
 
 	buf := &bytes.Buffer{}

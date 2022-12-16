@@ -23,6 +23,7 @@ var (
 	currentPkg  *packages.Package
 )
 
+// TODO refactor to allow other packages to be generated
 func main() {
 	flag.Parse()
 

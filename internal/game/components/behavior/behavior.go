@@ -14,6 +14,8 @@ func (b Behavior) Init(body *byter.Byter, action1, action2 actions.Action, sessi
 
 	if action1 != nil {
 		body.WriteByte(byte(action1.OpCode()))
+		// If this doesn't work, it's probably because the init was refactored not taking this into account
+		// There may a new method required for this
 		action1.Init(body, sessionID)
 	} else {
 		body.WriteByte(0x00)

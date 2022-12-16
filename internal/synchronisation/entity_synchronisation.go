@@ -11,6 +11,10 @@ func Init() {
 		behavior := event.UnitBehavior.GetUnitBehavior()
 		zone := behavior.EntityProperties.Zone
 
+		if zone == nil {
+			return
+		}
+
 		players := zone.Players()
 
 		CEWriter := objects.NewClientEntityWriterWithByter()

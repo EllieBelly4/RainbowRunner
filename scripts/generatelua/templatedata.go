@@ -9,9 +9,10 @@ import (
 )
 
 type TemplateData struct {
-	Struct  *StructDef
-	Imports []*ImportDef
-	Extends []*FuncDef
+	Struct      *StructDef
+	Imports     []*ImportDef
+	Extends     []*FuncDef
+	PackageName string
 }
 
 var packageCache = make(map[string]*packages.Package)
