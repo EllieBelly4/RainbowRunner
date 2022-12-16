@@ -5,6 +5,7 @@ import (
 	"RainbowRunner/pkg/datatypes"
 )
 
+//go:generate go run ../../../scripts/generatelua -type=MoveTo
 type MoveTo struct {
 	PosX float32
 	PosY float32

@@ -5,6 +5,7 @@ import (
 	"RainbowRunner/pkg/datatypes"
 )
 
+//go:generate go run ../../../scripts/generatelua -type=WarpTo
 type WarpTo struct {
 	Position datatypes.Vector3Float32
 }
