@@ -49,6 +49,18 @@ func luaMethodsActionRemove() map[string]lua2.LGFunction {
 
 			return 0
 		},
+		"getActionRemove": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IActionRemove](l, 1)
+			obj := objInterface.GetActionRemove()
+			res0 := obj.GetActionRemove()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
 	})
 }
 func newLuaActionRemove(l *lua2.LState) int {

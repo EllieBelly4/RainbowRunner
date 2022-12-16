@@ -49,6 +49,18 @@ func luaMethodsActionFlee() map[string]lua2.LGFunction {
 
 			return 0
 		},
+		"getActionFlee": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IActionFlee](l, 1)
+			obj := objInterface.GetActionFlee()
+			res0 := obj.GetActionFlee()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
 	})
 }
 func newLuaActionFlee(l *lua2.LState) int {

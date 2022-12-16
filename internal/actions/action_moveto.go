@@ -5,7 +5,7 @@ import (
 	"RainbowRunner/pkg/datatypes"
 )
 
-//go:generate go run ../../../scripts/generatelua -type=ActionMoveTo
+//go:generate go run ../../scripts/generatelua -type=ActionMoveTo
 type ActionMoveTo struct {
 	PosX float32
 	PosY float32
@@ -24,4 +24,8 @@ func (a *ActionMoveTo) Init(body *byter.Byter) {
 	//// Not used when embedding in Behavior
 	//// ^ doesn't seem to always be true, MonsterBehavior2 seems to require it
 	//body.WriteByte(0x05)
+}
+
+func NewActionMoveTo() *ActionMoveTo {
+	return &ActionMoveTo{}
 }

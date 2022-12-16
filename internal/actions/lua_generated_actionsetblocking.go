@@ -49,6 +49,18 @@ func luaMethodsActionSetBlocking() map[string]lua2.LGFunction {
 
 			return 0
 		},
+		"getActionSetBlocking": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IActionSetBlocking](l, 1)
+			obj := objInterface.GetActionSetBlocking()
+			res0 := obj.GetActionSetBlocking()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
 	})
 }
 func newLuaActionSetBlocking(l *lua2.LState) int {

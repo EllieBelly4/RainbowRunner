@@ -2,7 +2,7 @@ package actions
 
 import "RainbowRunner/pkg/byter"
 
-//go:generate go run ../../../scripts/generatelua -type=ActionDie
+//go:generate go run ../../scripts/generatelua -type=ActionDie
 type ActionDie struct {
 }
 
@@ -17,4 +17,8 @@ func (d ActionDie) Init(body *byter.Byter) {
 	// UnSpawn::readInit
 	body.WriteByte(0x01) // Unk
 	body.WriteByte(0x01) // Unk
+}
+
+func NewActionDie() *ActionDie {
+	return &ActionDie{}
 }

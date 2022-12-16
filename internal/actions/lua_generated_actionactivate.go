@@ -21,6 +21,7 @@ func registerLuaActionActivate(state *lua2.LState) {
 
 	mt := state.NewTypeMetatable("ActionActivate")
 	state.SetGlobal("ActionActivate", mt)
+	state.SetField(mt, "new", state.NewFunction(newLuaActionActivate))
 	state.SetField(mt, "__index", state.SetFuncs(state.NewTable(),
 		luaMethodsActionActivate(),
 	))
@@ -58,7 +59,28 @@ func luaMethodsActionActivate() map[string]lua2.LGFunction {
 
 			return 0
 		},
+		"getActionActivate": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IActionActivate](l, 1)
+			obj := objInterface.GetActionActivate()
+			res0 := obj.GetActionActivate()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
 	})
+}
+func newLuaActionActivate(l *lua2.LState) int {
+	obj := NewActionActivate()
+	ud := l.NewUserData()
+	ud.Value = obj
+
+	l.SetMetatable(ud, l.GetTypeMetatable("ActionActivate"))
+	l.Push(ud)
+	return 1
 }
 
 func (a *ActionActivate) ToLua(l *lua2.LState) lua2.LValue {

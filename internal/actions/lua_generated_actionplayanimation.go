@@ -21,6 +21,7 @@ func registerLuaActionPlayAnimation(state *lua2.LState) {
 
 	mt := state.NewTypeMetatable("ActionPlayAnimation")
 	state.SetGlobal("ActionPlayAnimation", mt)
+	state.SetField(mt, "new", state.NewFunction(newLuaActionPlayAnimation))
 	state.SetField(mt, "__index", state.SetFuncs(state.NewTable(),
 		luaMethodsActionPlayAnimation(),
 	))
@@ -52,7 +53,28 @@ func luaMethodsActionPlayAnimation() map[string]lua2.LGFunction {
 
 			return 0
 		},
+		"getActionPlayAnimation": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IActionPlayAnimation](l, 1)
+			obj := objInterface.GetActionPlayAnimation()
+			res0 := obj.GetActionPlayAnimation()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
 	})
+}
+func newLuaActionPlayAnimation(l *lua2.LState) int {
+	obj := NewActionPlayAnimation()
+	ud := l.NewUserData()
+	ud.Value = obj
+
+	l.SetMetatable(ud, l.GetTypeMetatable("ActionPlayAnimation"))
+	l.Push(ud)
+	return 1
 }
 
 func (a *ActionPlayAnimation) ToLua(l *lua2.LState) lua2.LValue {

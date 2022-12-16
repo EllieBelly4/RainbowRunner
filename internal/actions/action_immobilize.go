@@ -2,7 +2,7 @@ package actions
 
 import "RainbowRunner/pkg/byter"
 
-//go:generate go run ../../../scripts/generatelua -type=ActionImmobilize
+//go:generate go run ../../scripts/generatelua -type=ActionImmobilize
 type ActionImmobilize struct {
 }
 

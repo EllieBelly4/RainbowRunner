@@ -49,6 +49,18 @@ func luaMethodsActionIdle() map[string]lua2.LGFunction {
 
 			return 0
 		},
+		"getActionIdle": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IActionIdle](l, 1)
+			obj := objInterface.GetActionIdle()
+			res0 := obj.GetActionIdle()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
 	})
 }
 func newLuaActionIdle(l *lua2.LState) int {

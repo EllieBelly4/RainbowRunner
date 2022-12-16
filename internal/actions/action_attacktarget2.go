@@ -2,7 +2,7 @@ package actions
 
 import "RainbowRunner/pkg/byter"
 
-//go:generate go run ../../../scripts/generatelua -type=ActionAttackTarget2
+//go:generate go run ../../scripts/generatelua -type=ActionAttackTarget2
 type ActionAttackTarget2 struct {
 }
 

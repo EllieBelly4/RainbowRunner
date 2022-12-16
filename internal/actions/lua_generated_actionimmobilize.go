@@ -49,6 +49,18 @@ func luaMethodsActionImmobilize() map[string]lua2.LGFunction {
 
 			return 0
 		},
+		"getActionImmobilize": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IActionImmobilize](l, 1)
+			obj := objInterface.GetActionImmobilize()
+			res0 := obj.GetActionImmobilize()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
 	})
 }
 func newLuaActionImmobilize(l *lua2.LState) int {

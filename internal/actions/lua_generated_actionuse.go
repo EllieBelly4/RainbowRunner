@@ -49,6 +49,18 @@ func luaMethodsActionUse() map[string]lua2.LGFunction {
 
 			return 0
 		},
+		"getActionUse": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IActionUse](l, 1)
+			obj := objInterface.GetActionUse()
+			res0 := obj.GetActionUse()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
 	})
 }
 func newLuaActionUse(l *lua2.LState) int {

@@ -49,6 +49,18 @@ func luaMethodsActionWander() map[string]lua2.LGFunction {
 
 			return 0
 		},
+		"getActionWander": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IActionWander](l, 1)
+			obj := objInterface.GetActionWander()
+			res0 := obj.GetActionWander()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
 	})
 }
 func newLuaActionWander(l *lua2.LState) int {

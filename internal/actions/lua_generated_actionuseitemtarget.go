@@ -49,6 +49,18 @@ func luaMethodsActionUseItemTarget() map[string]lua2.LGFunction {
 
 			return 0
 		},
+		"getActionUseItemTarget": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IActionUseItemTarget](l, 1)
+			obj := objInterface.GetActionUseItemTarget()
+			res0 := obj.GetActionUseItemTarget()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
 	})
 }
 func newLuaActionUseItemTarget(l *lua2.LState) int {

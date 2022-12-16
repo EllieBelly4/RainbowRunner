@@ -49,6 +49,18 @@ func luaMethodsActionSpawn() map[string]lua2.LGFunction {
 
 			return 0
 		},
+		"getActionSpawn": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IActionSpawn](l, 1)
+			obj := objInterface.GetActionSpawn()
+			res0 := obj.GetActionSpawn()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
 	})
 }
 func newLuaActionSpawn(l *lua2.LState) int {

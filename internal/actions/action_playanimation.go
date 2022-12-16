@@ -2,7 +2,7 @@ package actions
 
 import "RainbowRunner/pkg/byter"
 
-//go:generate go run ../../../scripts/generatelua -type=ActionPlayAnimation
+//go:generate go run ../../scripts/generatelua -type=ActionPlayAnimation
 type ActionPlayAnimation struct {
 	Unk0 byte
 	Unk1 uint32
@@ -19,4 +19,8 @@ func (d ActionPlayAnimation) Init(body *byter.Byter) {
 	body.WriteUInt32(d.Unk1)
 	body.WriteUInt32(d.Unk2)
 	body.WriteUInt32(d.Unk3)
+}
+
+func NewActionPlayAnimation() *ActionPlayAnimation {
+	return &ActionPlayAnimation{}
 }

@@ -16,7 +16,7 @@ function playAnimation(player)
     npc = zone:findEntityByGCTypeName("world.town.npc.TownGuard2")
     unitBehav = npc:getChildByGCNativeType("UnitBehavior")
 
-    playAnimation = PlayAnimation.new()
+    playAnimation = ActionPlayAnimation.new()
     playAnimation:unk0(0x01)
     playAnimation:unk1(0x02)
     playAnimation:unk2(0x03)

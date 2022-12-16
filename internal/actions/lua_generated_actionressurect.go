@@ -49,6 +49,18 @@ func luaMethodsActionRessurect() map[string]lua2.LGFunction {
 
 			return 0
 		},
+		"getActionRessurect": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IActionRessurect](l, 1)
+			obj := objInterface.GetActionRessurect()
+			res0 := obj.GetActionRessurect()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
 	})
 }
 func newLuaActionRessurect(l *lua2.LState) int {

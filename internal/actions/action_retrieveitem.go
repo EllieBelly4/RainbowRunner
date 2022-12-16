@@ -2,7 +2,7 @@ package actions
 
 import "RainbowRunner/pkg/byter"
 
-//go:generate go run ../../../scripts/generatelua -type=ActionRetrieveItem
+//go:generate go run ../../scripts/generatelua -type=ActionRetrieveItem
 type ActionRetrieveItem struct {
 }
 

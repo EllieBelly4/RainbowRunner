@@ -5,7 +5,7 @@ import (
 	"RainbowRunner/pkg/datatypes"
 )
 
-//go:generate go run ../../../scripts/generatelua -type=ActionWarpTo
+//go:generate go run ../../scripts/generatelua -type=ActionWarpTo
 type ActionWarpTo struct {
 	Position datatypes.Vector3Float32
 }
@@ -26,4 +26,8 @@ func (a *ActionWarpTo) Init(body *byter.Byter) {
 	//body.WriteByte(sessionID)
 	//body.WriteUInt32(a.PosX)
 	//body.WriteUInt32(a.PosY)
+}
+
+func NewActionWarpTo() *ActionWarpTo {
+	return &ActionWarpTo{}
 }

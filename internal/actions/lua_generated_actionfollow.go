@@ -49,6 +49,18 @@ func luaMethodsActionFollow() map[string]lua2.LGFunction {
 
 			return 0
 		},
+		"getActionFollow": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IActionFollow](l, 1)
+			obj := objInterface.GetActionFollow()
+			res0 := obj.GetActionFollow()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
 	})
 }
 func newLuaActionFollow(l *lua2.LState) int {

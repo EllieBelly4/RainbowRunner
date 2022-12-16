@@ -49,6 +49,18 @@ func luaMethodsActionTurnAction() map[string]lua2.LGFunction {
 
 			return 0
 		},
+		"getActionTurnAction": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IActionTurnAction](l, 1)
+			obj := objInterface.GetActionTurnAction()
+			res0 := obj.GetActionTurnAction()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
 	})
 }
 func newLuaActionTurnAction(l *lua2.LState) int {

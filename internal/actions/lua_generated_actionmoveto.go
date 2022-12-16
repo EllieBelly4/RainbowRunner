@@ -21,6 +21,7 @@ func registerLuaActionMoveTo(state *lua2.LState) {
 
 	mt := state.NewTypeMetatable("ActionMoveTo")
 	state.SetGlobal("ActionMoveTo", mt)
+	state.SetField(mt, "new", state.NewFunction(newLuaActionMoveTo))
 	state.SetField(mt, "__index", state.SetFuncs(state.NewTable(),
 		luaMethodsActionMoveTo(),
 	))
@@ -50,7 +51,28 @@ func luaMethodsActionMoveTo() map[string]lua2.LGFunction {
 
 			return 0
 		},
+		"getActionMoveTo": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IActionMoveTo](l, 1)
+			obj := objInterface.GetActionMoveTo()
+			res0 := obj.GetActionMoveTo()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
 	})
+}
+func newLuaActionMoveTo(l *lua2.LState) int {
+	obj := NewActionMoveTo()
+	ud := l.NewUserData()
+	ud.Value = obj
+
+	l.SetMetatable(ud, l.GetTypeMetatable("ActionMoveTo"))
+	l.Push(ud)
+	return 1
 }
 
 func (a *ActionMoveTo) ToLua(l *lua2.LState) lua2.LValue {

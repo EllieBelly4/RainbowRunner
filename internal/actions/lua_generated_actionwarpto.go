@@ -22,6 +22,7 @@ func registerLuaActionWarpTo(state *lua2.LState) {
 
 	mt := state.NewTypeMetatable("ActionWarpTo")
 	state.SetGlobal("ActionWarpTo", mt)
+	state.SetField(mt, "new", state.NewFunction(newLuaActionWarpTo))
 	state.SetField(mt, "__index", state.SetFuncs(state.NewTable(),
 		luaMethodsActionWarpTo(),
 	))
@@ -63,6 +64,15 @@ func luaMethodsActionWarpTo() map[string]lua2.LGFunction {
 			return 1
 		},
 	})
+}
+func newLuaActionWarpTo(l *lua2.LState) int {
+	obj := NewActionWarpTo()
+	ud := l.NewUserData()
+	ud.Value = obj
+
+	l.SetMetatable(ud, l.GetTypeMetatable("ActionWarpTo"))
+	l.Push(ud)
+	return 1
 }
 
 func (a *ActionWarpTo) ToLua(l *lua2.LState) lua2.LValue {

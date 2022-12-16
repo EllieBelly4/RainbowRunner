@@ -49,6 +49,18 @@ func luaMethodsActionAttackTarget2() map[string]lua2.LGFunction {
 
 			return 0
 		},
+		"getActionAttackTarget2": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IActionAttackTarget2](l, 1)
+			obj := objInterface.GetActionAttackTarget2()
+			res0 := obj.GetActionAttackTarget2()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
 	})
 }
 func newLuaActionAttackTarget2(l *lua2.LState) int {

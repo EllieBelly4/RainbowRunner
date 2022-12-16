@@ -49,6 +49,18 @@ func luaMethodsActionSearchForAttack() map[string]lua2.LGFunction {
 
 			return 0
 		},
+		"getActionSearchForAttack": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IActionSearchForAttack](l, 1)
+			obj := objInterface.GetActionSearchForAttack()
+			res0 := obj.GetActionSearchForAttack()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
 	})
 }
 func newLuaActionSearchForAttack(l *lua2.LState) int {

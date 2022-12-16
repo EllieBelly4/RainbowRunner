@@ -49,6 +49,18 @@ func luaMethodsActionWait() map[string]lua2.LGFunction {
 
 			return 0
 		},
+		"getActionWait": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IActionWait](l, 1)
+			obj := objInterface.GetActionWait()
+			res0 := obj.GetActionWait()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
 	})
 }
 func newLuaActionWait(l *lua2.LState) int {

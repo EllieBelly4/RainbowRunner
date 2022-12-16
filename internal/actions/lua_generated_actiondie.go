@@ -21,6 +21,7 @@ func registerLuaActionDie(state *lua2.LState) {
 
 	mt := state.NewTypeMetatable("ActionDie")
 	state.SetGlobal("ActionDie", mt)
+	state.SetField(mt, "new", state.NewFunction(newLuaActionDie))
 	state.SetField(mt, "__index", state.SetFuncs(state.NewTable(),
 		luaMethodsActionDie(),
 	))
@@ -48,7 +49,28 @@ func luaMethodsActionDie() map[string]lua2.LGFunction {
 
 			return 0
 		},
+		"getActionDie": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IActionDie](l, 1)
+			obj := objInterface.GetActionDie()
+			res0 := obj.GetActionDie()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
 	})
+}
+func newLuaActionDie(l *lua2.LState) int {
+	obj := NewActionDie()
+	ud := l.NewUserData()
+	ud.Value = obj
+
+	l.SetMetatable(ud, l.GetTypeMetatable("ActionDie"))
+	l.Push(ud)
+	return 1
 }
 
 func (a *ActionDie) ToLua(l *lua2.LState) lua2.LValue {

@@ -2,7 +2,7 @@ package actions
 
 import "RainbowRunner/pkg/byter"
 
-//go:generate go run ../../../scripts/generatelua -type=ActionActivate
+//go:generate go run ../../scripts/generatelua -type=ActionActivate
 type ActionActivate struct {
 	TargetEntityID uint16
 }
@@ -35,4 +35,8 @@ func (a *ActionActivate) Init(body *byter.Byter) {
 func (a *ActionActivate) InitWithoutOpCode(body *byter.Byter) {
 	// Used to be 0x02
 	body.WriteUInt16(a.TargetEntityID)
+}
+
+func NewActionActivate() *ActionActivate {
+	return &ActionActivate{}
 }
