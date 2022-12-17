@@ -2,15 +2,17 @@ package objects
 
 import (
 	"RainbowRunner/internal/actions"
+	"RainbowRunner/internal/database"
 	lua2 "RainbowRunner/internal/lua"
 	"RainbowRunner/pkg/datatypes"
 	lua "github.com/yuin/gopher-lua"
 )
 
-//go:generate go run ../../scripts/generateluaregistrations -includes=.,../actions
+//go:generate go run ../../scripts/generateluaregistrations -includes=.,../actions,../database
 func RegisterLuaGlobals(state *lua.LState) {
 	RegisterAllLuaFunctions(state)
 	actions.RegisterAllLuaFunctions(state)
+	database.RegisterAllLuaFunctions(state)
 }
 
 func registerLuaVector3(s *lua.LState) {

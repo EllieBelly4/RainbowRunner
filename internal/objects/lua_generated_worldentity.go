@@ -30,6 +30,7 @@ func registerLuaWorldEntity(state *lua2.LState) {
 
 func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+		"animationsList":          lua.LuaGenericGetSetValue[IWorldEntity, *AnimationsList](func(v IWorldEntity) **AnimationsList { return &v.GetWorldEntity().AnimationsList }),
 		"worldPosition":           lua.LuaGenericGetSetValue[IWorldEntity, datatypes.Vector3Float32](func(v IWorldEntity) *datatypes.Vector3Float32 { return &v.GetWorldEntity().WorldPosition }),
 		"rotation":                lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *float32 { return &v.GetWorldEntity().Rotation }),
 		"worldEntityFlags":        lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *uint32 { return &v.GetWorldEntity().WorldEntityFlags }),
@@ -40,6 +41,17 @@ func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 		"unk4Case":                lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *uint32 { return &v.GetWorldEntity().Unk4Case }),
 		"useCustomAnimationSpeed": lua.LuaGenericGetSetBool[IWorldEntity](func(v IWorldEntity) *bool { return &v.GetWorldEntity().UseCustomAnimationSpeed }),
 		"animationSpeed":          lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *float32 { return &v.GetWorldEntity().AnimationSpeed }),
+		"animations": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IWorldEntity](l, 1)
+			obj := objInterface.GetWorldEntity()
+			res0 := obj.Animations()
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("[]*Animation"))
+			l.Push(ud)
+
+			return 1
+		},
 		"activate": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IWorldEntity](l, 1)
 			obj := objInterface.GetWorldEntity()

@@ -7,6 +7,8 @@ func RegisterAllLuaFunctions(state *lua2.LState) {
 	registerLuaVector3(state)
 	registerLuaVector2(state)
 	registerLuaBit32(state)
+	registerLuaAnimation(state)
+	registerLuaAnimationsList(state)
 	registerLuaAvatar(state)
 	registerLuaAvatarMetrics(state)
 	registerLuaCheckpointEntity(state)

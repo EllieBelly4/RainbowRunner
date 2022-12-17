@@ -74,6 +74,14 @@ func NewNPCFromConfig(config *database.NPCConfig) *NPC {
 		npc.AddChild(NewMonsterBehavior2(behaviorType))
 	}
 
+	if config.Animations != nil {
+		animationsList := NewAnimationsList()
+
+		for _, animationConf := range config.Animations {
+			animationsList.Animations = append(animationsList.Animations, NewAnimationFromConfig(&animationConf))
+		}
+	}
+
 	skills := NewSkills("skills")
 	npc.AddChild(skills)
 

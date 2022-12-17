@@ -68,6 +68,8 @@ const (
 //go:generate go run ../../scripts/generatelua -type=WorldEntity -extends=Entity
 type WorldEntity struct {
 	*Entity
+	AnimationsList *AnimationsList
+
 	WorldPosition        datatypes.Vector3Float32
 	Rotation             float32
 	WorldEntityFlags     uint32
@@ -81,6 +83,10 @@ type WorldEntity struct {
 
 	UseCustomAnimationSpeed bool
 	AnimationSpeed          float32
+}
+
+func (g *WorldEntity) Animations() []*Animation {
+	return g.AnimationsList.Animations
 }
 
 func (g *WorldEntity) Activate(player *RRPlayer, u *UnitBehavior, id byte, sessionID byte) {
