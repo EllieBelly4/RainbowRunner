@@ -63,6 +63,13 @@ func luaMethods{{ .Struct.Name }}() map[string]lua2.LGFunction {
 		{{- if not $field.IsExported }}
 		{{- continue }}
 		{{- end }}
+		
+		{{- if $field.IsArray }}
+			// -------------------------------------------------------------------------------------------------------------
+			// Unsupported field type {{ $field.Name }} array properties are not supported
+			// -------------------------------------------------------------------------------------------------------------
+		{{- continue }}
+		{{- end }}
 
 		{{- if isStringType $field }}
 		"{{ $field.NameCamelcase }}": lua.LuaGenericGetSetString[I{{ $struct.Name }}](func(v I{{ $struct.Name }}) *string { return &v.Get{{ $struct.Name }}().{{ $field.Name }} }),

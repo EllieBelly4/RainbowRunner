@@ -29,9 +29,20 @@ func registerLuaAnimationsList(state *lua2.LState) {
 func luaMethodsAnimationsList() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
 		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type Animations
+		// Unsupported field type Animations array properties are not supported
 		// -------------------------------------------------------------------------------------------------------------
+		"getAnimationsList": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IAnimationsList](l, 1)
+			obj := objInterface.GetAnimationsList()
+			res0 := obj.GetAnimationsList()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
 
+			return 1
+		},
 	})
 }
 func newLuaAnimationsList(l *lua2.LState) int {

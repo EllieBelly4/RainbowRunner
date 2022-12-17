@@ -74,10 +74,15 @@ func luaMethodsEquipmentInventory() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IEquipmentInventory](l, 1)
 			obj := objInterface.GetEquipmentInventory()
 			res0 := obj.GetEquipment()
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("[]*Equipment"))
-			l.Push(ud)
+			res0Array := l.NewTable()
+
+			for _, res0 := range res0 {
+				if res0 != nil {
+					res0Array.Append(res0.ToLua(l))
+				} else {
+					res0Array.Append(lua2.LNil)
+				}
+			}
 
 			return 1
 		},

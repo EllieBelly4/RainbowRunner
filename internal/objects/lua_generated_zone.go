@@ -57,10 +57,15 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
 			res0 := obj.Entities()
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("[]DRObject"))
-			l.Push(ud)
+			res0Array := l.NewTable()
+
+			for _, res0 := range res0 {
+				if res0 != nil {
+					res0Array.Append(res0.ToLua(l))
+				} else {
+					res0Array.Append(lua2.LNil)
+				}
+			}
 
 			return 1
 		},
@@ -68,10 +73,15 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
 			res0 := obj.Players()
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("[]*RRPlayer"))
-			l.Push(ud)
+			res0Array := l.NewTable()
+
+			for _, res0 := range res0 {
+				if res0 != nil {
+					res0Array.Append(res0.ToLua(l))
+				} else {
+					res0Array.Append(lua2.LNil)
+				}
+			}
 
 			return 1
 		},

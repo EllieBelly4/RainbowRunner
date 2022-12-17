@@ -32,7 +32,7 @@ func luaMethodsRRPlayer() map[string]lua2.LGFunction {
 		// -------------------------------------------------------------------------------------------------------------
 		"currentCharacter": lua.LuaGenericGetSetValue[IRRPlayer, *Player](func(v IRRPlayer) **Player { return &v.GetRRPlayer().CurrentCharacter }),
 		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type Characters
+		// Unsupported field type Characters array properties are not supported
 		// -------------------------------------------------------------------------------------------------------------
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type ClientEntityWriter

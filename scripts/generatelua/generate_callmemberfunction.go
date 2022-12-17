@@ -9,8 +9,9 @@ func GenerateCallMemberFunction(s *StructDef, def *FuncDef) string {
 	t := template.New("callMemberFunctionTemplate")
 
 	t.Funcs(mergeFuncMaps(template.FuncMap{
-		"generateCallString": GenerateCallString,
-		"add":                Add,
+		"generateCallString":       GenerateCallString,
+		"add":                      Add,
+		"generateResultPushString": generateResultPushString,
 	}, typeCheckFunctions))
 
 	t, err := t.Parse(callMemberFunctionTemplate)

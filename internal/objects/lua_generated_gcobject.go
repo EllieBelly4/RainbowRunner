@@ -37,11 +37,11 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 		"gcnativeType": lua.LuaGenericGetSetString[IGCObject](func(v IGCObject) *string { return &v.GetGCObject().GCNativeType }),
 		"gclabel":      lua.LuaGenericGetSetString[IGCObject](func(v IGCObject) *string { return &v.GetGCObject().GCLabel }),
 		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type GCChildren
+		// Unsupported field type GCChildren array properties are not supported
 		// -------------------------------------------------------------------------------------------------------------
 		"gctype": lua.LuaGenericGetSetString[IGCObject](func(v IGCObject) *string { return &v.GetGCObject().GCType }),
 		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type Properties
+		// Unsupported field type Properties array properties are not supported
 		// -------------------------------------------------------------------------------------------------------------
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type EntityHandler
@@ -181,10 +181,15 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
 			obj := objInterface.GetGCObject()
 			res0 := obj.Children()
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("[]DRObject"))
-			l.Push(ud)
+			res0Array := l.NewTable()
+
+			for _, res0 := range res0 {
+				if res0 != nil {
+					res0Array.Append(res0.ToLua(l))
+				} else {
+					res0Array.Append(lua2.LNil)
+				}
+			}
 
 			return 1
 		},

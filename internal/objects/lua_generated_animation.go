@@ -27,7 +27,20 @@ func registerLuaAnimation(state *lua2.LState) {
 }
 
 func luaMethodsAnimation() map[string]lua2.LGFunction {
-	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{})
+	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+		"getAnimation": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IAnimation](l, 1)
+			obj := objInterface.GetAnimation()
+			res0 := obj.GetAnimation()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
+	})
 }
 func newLuaAnimation(l *lua2.LState) int {
 	obj := NewAnimation()

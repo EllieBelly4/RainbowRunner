@@ -45,10 +45,15 @@ func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IWorldEntity](l, 1)
 			obj := objInterface.GetWorldEntity()
 			res0 := obj.Animations()
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("[]*Animation"))
-			l.Push(ud)
+			res0Array := l.NewTable()
+
+			for _, res0 := range res0 {
+				if res0 != nil {
+					res0Array.Append(res0.ToLua(l))
+				} else {
+					res0Array.Append(lua2.LNil)
+				}
+			}
 
 			return 1
 		},

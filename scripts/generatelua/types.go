@@ -17,6 +17,7 @@ type ValueType struct {
 	ParamType string
 	Package   string
 	IsPointer bool
+	IsArray   bool
 }
 
 type FuncParamDef struct {

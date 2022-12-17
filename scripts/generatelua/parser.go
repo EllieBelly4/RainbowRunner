@@ -122,7 +122,7 @@ func parseFileStructDefinitions(p *packages.Package, structs map[string]*StructD
 										IsExported: strings.HasPrefix(fieldName, strings.ToUpper(fieldName[:1])),
 									}
 
-									addValueType(field, &fieldDef.ValueType)
+									addValueType(field.Type, &fieldDef.ValueType)
 
 									structs[structName].Fields = append(structs[structName].Fields, fieldDef)
 
@@ -174,7 +174,7 @@ func NewFuncDef(decl *ast.FuncDecl) *FuncDef {
 					ValueType: ValueType{},
 				}
 
-				addValueType(field, &funcParamDef.ValueType)
+				addValueType(field.Type, &funcParamDef.ValueType)
 
 				funcDef.Params = append(funcDef.Params, funcParamDef)
 				continue
@@ -187,7 +187,7 @@ func NewFuncDef(decl *ast.FuncDecl) *FuncDef {
 					},
 				}
 
-				addValueType(field, &funcParamDef.ValueType)
+				addValueType(field.Type, &funcParamDef.ValueType)
 
 				funcDef.Params = append(funcDef.Params, funcParamDef)
 			}
@@ -203,7 +203,7 @@ func NewFuncDef(decl *ast.FuncDecl) *FuncDef {
 					ValueType: ValueType{},
 				}
 
-				addValueType(field, &funcResultDef.ValueType)
+				addValueType(field.Type, &funcResultDef.ValueType)
 
 				funcDef.Results = append(funcDef.Results, funcResultDef)
 				continue
@@ -216,7 +216,7 @@ func NewFuncDef(decl *ast.FuncDecl) *FuncDef {
 					},
 				}
 
-				addValueType(field, &funcResultDef.ValueType)
+				addValueType(field.Type, &funcResultDef.ValueType)
 
 				funcDef.Results = append(funcDef.Results, funcResultDef)
 			}
@@ -226,10 +226,10 @@ func NewFuncDef(decl *ast.FuncDecl) *FuncDef {
 	return funcDef
 }
 
-func addValueType(field *ast.Field, funcParamDef *ValueType) {
-	if ident, ok := field.Type.(*ast.Ident); ok {
+func addValueType(field ast.Expr, funcParamDef *ValueType) {
+	if ident, ok := field.(*ast.Ident); ok {
 		funcParamDef.ParamType = ident.Name
-	} else if star, ok := field.Type.(*ast.StarExpr); ok {
+	} else if star, ok := field.(*ast.StarExpr); ok {
 		funcParamDef.IsPointer = true
 
 		if selectorExpr, ok := star.X.(*ast.SelectorExpr); ok {
@@ -239,15 +239,19 @@ func addValueType(field *ast.Field, funcParamDef *ValueType) {
 		} else if ident2, ok := star.X.(*ast.Ident); ok {
 			funcParamDef.ParamType = ident2.Name
 		}
-	} else if selector, ok := field.Type.(*ast.SelectorExpr); ok {
+	} else if selector, ok := field.(*ast.SelectorExpr); ok {
 		funcParamDef.Package = types.ExprString(selector.X)
 		funcParamDef.ParamType = types.ExprString(selector.Sel)
 
 		if _, ok := selector.X.(*ast.StarExpr); ok {
 			funcParamDef.IsPointer = true
 		}
+	} else if selector, ok := field.(*ast.ArrayType); ok {
+		funcParamDef.IsArray = true
+
+		addValueType(selector.Elt, funcParamDef)
 	} else {
-		funcParamDef.ParamType = types.ExprString(field.Type)
+		funcParamDef.ParamType = types.ExprString(field)
 	}
 }
 
