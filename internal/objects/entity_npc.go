@@ -4,6 +4,7 @@ import (
 	"RainbowRunner/internal/database"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
+	"strings"
 )
 
 //go:generate go run ../../scripts/generateLua/ -type=NPC -extends=Unit
@@ -64,11 +65,13 @@ func NewNPCFromConfig(config *database.NPCConfig) *NPC {
 	npc.Level = config.Level
 
 	if config.Behaviour != nil {
-		//if config.Behaviour.Type == "monsterbehavior2" {
-		npc.AddChild(NewMonsterBehavior2(config.Behaviour.Type))
-		//} else {
-		//	npc.AddChild(NewUnitBehavior(config.Behaviour.Type))
-		//}
+		behaviorType := "npc.Base.Behavior"
+
+		if strings.ToLower(config.Behaviour.Type) != "monsterbehavior2" {
+			behaviorType = config.Behaviour.Type
+		}
+
+		npc.AddChild(NewMonsterBehavior2(behaviorType))
 	}
 
 	skills := NewSkills("skills")
