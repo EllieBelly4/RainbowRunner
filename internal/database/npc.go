@@ -70,60 +70,61 @@ func loadAnimations(gcType string) map[int]AnimationConfig {
 	}
 
 	for _, animations := range config[0].Entities[0].Children {
-		animation := animations.Entities[0]
-		anim := AnimationConfig{}
+		for _, animation := range animations.Entities {
+			anim := AnimationConfig{}
 
-		if id, ok := animation.Properties["ID"]; ok {
-			intVal, err := strconv.ParseInt(id, 10, 32)
+			if id, ok := animation.Properties["ID"]; ok {
+				intVal, err := strconv.ParseInt(id, 10, 32)
 
-			if err != nil {
-				panic(err)
+				if err != nil {
+					panic(err)
+				}
+
+				anim.ID = int(intVal)
 			}
 
-			anim.ID = int(intVal)
-		}
+			if animID, ok := animation.Properties["AnimationID"]; ok {
+				intVal, err := strconv.ParseInt(animID, 10, 32)
 
-		if animID, ok := animation.Properties["AnimationID"]; ok {
-			intVal, err := strconv.ParseInt(animID, 10, 32)
+				if err != nil {
+					panic(err)
+				}
 
-			if err != nil {
-				panic(err)
+				anim.AnimationID = int(intVal)
 			}
 
-			anim.AnimationID = int(intVal)
-		}
+			if numFrames, ok := animation.Properties["NumFrames"]; ok {
+				intVal, err := strconv.ParseInt(numFrames, 10, 32)
 
-		if numFrames, ok := animation.Properties["NumFrames"]; ok {
-			intVal, err := strconv.ParseInt(numFrames, 10, 32)
+				if err != nil {
+					panic(err)
+				}
 
-			if err != nil {
-				panic(err)
+				anim.NumFrames = int(intVal)
 			}
 
-			anim.NumFrames = int(intVal)
-		}
+			if triggerTime, ok := animation.Properties["TriggerTime"]; ok {
+				intVal, err := strconv.ParseInt(triggerTime, 10, 32)
 
-		if triggerTime, ok := animation.Properties["TriggerTime"]; ok {
-			intVal, err := strconv.ParseInt(triggerTime, 10, 32)
+				if err != nil {
+					panic(err)
+				}
 
-			if err != nil {
-				panic(err)
+				anim.TriggerTime = int(intVal)
 			}
 
-			anim.TriggerTime = int(intVal)
-		}
+			if soundTriggerTime, ok := animation.Properties["SoundTriggerTime"]; ok {
+				intVal, err := strconv.ParseInt(soundTriggerTime, 10, 32)
 
-		if soundTriggerTime, ok := animation.Properties["SoundTriggerTime"]; ok {
-			intVal, err := strconv.ParseInt(soundTriggerTime, 10, 32)
+				if err != nil {
+					panic(err)
+				}
 
-			if err != nil {
-				panic(err)
+				anim.SoundTriggerTime = int(intVal)
 			}
 
-			anim.SoundTriggerTime = int(intVal)
+			animationResults[anim.ID] = anim
 		}
-
-		animationResults[anim.ID] = anim
 	}
 
 	return animationResults

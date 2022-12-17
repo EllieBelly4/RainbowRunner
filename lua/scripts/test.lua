@@ -11,37 +11,82 @@ function moveNPC(player)
     unitBehav:warpTo(Vector3.new(356, -182, currentPos:z()))
 end
 
-function playAnimation(player, unk0, animationIDSelection, animationID, animationFrames, unk4)
-    print(unk0 .. " " .. animationIDSelection .. " " .. animationID .. " " .. animationFrames .. " " .. unk4)
-
+function playAnimation(player, animationIDSelection, animationID, unk0, unk4)
     zone = player:zone()
     npc = zone:findEntityByGCTypeName("world.town.npc.oldman1")
     unitBehav = npc:getChildByGCNativeType("UnitBehavior")
+    animationIDNumber = tonumber(animationID)
 
-    for _, animation in pairs(npc:animations()) do
-        print(animation:id())
+    animations = npc:animations()
+
+    if animations == nil then
+        print("Entity has no animations")
+        return
     end
 
     playAnimation = ActionPlayAnimation.new()
-    playAnimation:unk0(tonumber(unk0))
 
-    --AnimationID is offset depending on weapon desc, default is +100
-    -- 0xFF = Animation ID 0
-    -- 0x00 = Animation ID 0
-    -- 0x02 = Animation ID v8 + 5
-    -- 0x03 = Animation ID v8 + 6
-    -- 0x07 = Animation ID v8 + 50
-    -- 0xXX = Animation ID from_client_2 + v8
-    playAnimation:animationIDSelectionType(tonumber(animationIDSelection))
+    if tonumber(animationIDSelection) > 7 then
+        animation = nil
 
-    -- Looks like only the first uint16 is used in play animation?
-    -- Animation ID maybe
-    playAnimation:animationID(tonumber(animationID))
-    playAnimation:animationFrames(tonumber(animationFrames))
+        for _, anim in pairs(animations) do
+            if anim:id() == animationIDNumber then
+                animation = anim
+                break
+            end
+        end
 
-    playAnimation:unk4(tonumber(unk4))
+        if animation == nil then
+            print("Entity does not have animation with ID " .. animationID)
+            return
+        end
+
+        print("Playing animation ID: " .. animationID)
+        playAnimation:animationID(animationIDNumber)
+    end
+
+    playAnimation:animationIDSelectionType(0x32)
+
+    if animationIDSelection ~= nil and animationIDSelection ~= "" then
+        playAnimation:animationIDSelectionType(tonumber(animationIDSelection))
+
+        if tonumber(animationIDSelection) == 2 then
+            playAnimation:animationFrames(20)
+        else
+            playAnimation:animationFrames(5)
+        end
+    else
+        playAnimation:animationFrames(animation:numFrames())
+    end
+
+    if unk4 ~= nil and unk4 ~= "" then
+        playAnimation:unk4(tonumber(unk4))
+    end
+
+    if unk0 ~= nil and unk0 ~= "" then
+        playAnimation:unk0(tonumber(unk0))
+    end
 
     unitBehav:executeAction(playAnimation)
+end
+
+function listAnimations (player)
+    zone = player:zone()
+    npc = zone:findEntityByGCTypeName("world.town.npc.oldman1")
+    animations = npc:animations()
+
+    if animations == nil then
+        print("Entity has no animations")
+        return
+    end
+
+    resultString = ""
+
+    for _, anim in pairs(animations) do
+        resultString = resultString .. anim:id() .. ", "
+    end
+
+    print(resultString)
 end
 
 function spawnAnimation (player, unk0, unk1, unk2)
