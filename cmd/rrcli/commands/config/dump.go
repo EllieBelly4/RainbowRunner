@@ -4,9 +4,10 @@ import (
 	"RainbowRunner/cmd/configparser/configparser"
 	"RainbowRunner/cmd/rrcli/configurator"
 	"RainbowRunner/internal/types/configtypes"
+	"compress/zlib"
 	"encoding/json"
 	"github.com/spf13/cobra"
-	"io/ioutil"
+	"os"
 )
 
 var outputFile string
@@ -43,7 +44,18 @@ var dumpCommand = &cobra.Command{
 			panic(err)
 		}
 
-		err = ioutil.WriteFile(outputFile, data, 0774)
+		fp, err := os.OpenFile(outputFile, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0774)
+
+		if err != nil {
+			panic(err)
+		}
+
+		defer fp.Close()
+
+		w := zlib.NewWriter(fp)
+		_, err = w.Write(data)
+
+		defer w.Close()
 
 		if err != nil {
 			panic(err)

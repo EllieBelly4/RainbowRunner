@@ -3,9 +3,11 @@ package configurator
 import (
 	"RainbowRunner/cmd/configparser/configparser"
 	"RainbowRunner/internal/types/configtypes"
+	"compress/zlib"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"io/fs"
 	"io/ioutil"
 	"os"
@@ -52,7 +54,23 @@ func LoadFromDumpedConfigFile(path string) (*configtypes.DRConfig, error) {
 		return nil, errors.New(fmt.Sprintf("Config file path %s is a directory", path))
 	}
 
-	data, err := ioutil.ReadFile(path)
+	fp, err := os.Open(path)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer fp.Close()
+
+	zlibReader, err := zlib.NewReader(fp)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer zlibReader.Close()
+
+	data, err := io.ReadAll(zlibReader)
 
 	if err != nil {
 		return nil, err
