@@ -15,31 +15,14 @@ type BehaviourDescConfig struct {
 	Type string
 }
 
-//go:generate go run ../../scripts/generatelua -type Animation
-type Animation struct {
-	ID int
-	// This is used for remapping IDs to another animation
-	// e.g. I think melee attacks by default have 3 animations but not all units have 3 attack animations,
-	// so they map all 3 to the first animationID
-	AnimationID int
-	NumFrames   int
-
-	// Unk
-	TriggerTime int
-
-	// Unk if we can actually use this
-	SoundTriggerTime int
-
-	// TODO extract this data from the config, animations do not have names but they usually have comments explaining what they are
-	//Comment string
-}
+//go:generate go run ../../scripts/generatelua -type AnimationConfig
 
 type NPCConfig struct {
 	Name       string
 	Level      int32
 	FullGCType string
 	Behaviour  *BehaviourConfig
-	Animations map[int]Animation
+	Animations map[int]AnimationConfig
 }
 
 //type NPCDescriptionConfig struct {}
@@ -77,8 +60,8 @@ func NewNPCConfig(config *configtypes.DRClassChildGroup, gcRoot []string) *NPCCo
 	return npcConfig
 }
 
-func loadAnimations(gcType string) map[int]Animation {
-	animationResults := make(map[int]Animation)
+func loadAnimations(gcType string) map[int]AnimationConfig {
+	animationResults := make(map[int]AnimationConfig)
 
 	config, err := config.Get(gcType)
 
@@ -88,7 +71,7 @@ func loadAnimations(gcType string) map[int]Animation {
 
 	for _, animations := range config[0].Entities[0].Children {
 		animation := animations.Entities[0]
-		anim := Animation{}
+		anim := AnimationConfig{}
 
 		if id, ok := animation.Properties["ID"]; ok {
 			intVal, err := strconv.ParseInt(id, 10, 32)

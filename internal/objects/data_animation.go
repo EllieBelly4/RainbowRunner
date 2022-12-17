@@ -4,10 +4,14 @@ import "RainbowRunner/internal/database"
 
 //go:generate go run ../../scripts/generatelua -type=Animation
 type Animation struct {
-	database.Animation
+	ID               int
+	NumFrames        int
+	TriggerTime      int
+	SoundTriggerTime int
+	AnimationID      int
 }
 
-func NewAnimationFromConfig(a *database.Animation) *Animation {
+func NewAnimationFromConfig(a *database.AnimationConfig) *Animation {
 	animation := NewAnimation()
 
 	animation.ID = a.ID

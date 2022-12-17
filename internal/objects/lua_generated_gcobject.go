@@ -191,6 +191,8 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 				}
 			}
 
+			l.Push(res0Array)
+
 			return 1
 		},
 		"rrentityProperties": func(l *lua2.LState) int {

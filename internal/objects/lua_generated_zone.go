@@ -67,6 +67,8 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 				}
 			}
 
+			l.Push(res0Array)
+
 			return 1
 		},
 		"players": func(l *lua2.LState) int {
@@ -82,6 +84,8 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 					res0Array.Append(lua2.LNil)
 				}
 			}
+
+			l.Push(res0Array)
 
 			return 1
 		},

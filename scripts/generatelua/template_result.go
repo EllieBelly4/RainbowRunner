@@ -29,6 +29,8 @@ const (
 
 			{{- if .Result.IsArray }}
 			}
+
+			l.Push({{ .VarName }}Array)
 			{{- end }}
 `
 )

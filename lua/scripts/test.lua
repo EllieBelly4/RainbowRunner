@@ -18,6 +18,10 @@ function playAnimation(player, unk0, animationIDSelection, animationID, animatio
     npc = zone:findEntityByGCTypeName("world.town.npc.oldman1")
     unitBehav = npc:getChildByGCNativeType("UnitBehavior")
 
+    for _, animation in pairs(npc:animations()) do
+        print(animation:id())
+    end
+
     playAnimation = ActionPlayAnimation.new()
     playAnimation:unk0(tonumber(unk0))
 

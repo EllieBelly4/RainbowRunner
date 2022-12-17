@@ -86,6 +86,10 @@ type WorldEntity struct {
 }
 
 func (g *WorldEntity) Animations() []*Animation {
+	if g.AnimationsList == nil {
+		return nil
+	}
+
 	return g.AnimationsList.Animations
 }
 

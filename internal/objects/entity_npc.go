@@ -80,6 +80,8 @@ func NewNPCFromConfig(config *database.NPCConfig) *NPC {
 		for _, animationConf := range config.Animations {
 			animationsList.Animations = append(animationsList.Animations, NewAnimationFromConfig(&animationConf))
 		}
+
+		npc.WorldEntity.AnimationsList = animationsList
 	}
 
 	skills := NewSkills("skills")
