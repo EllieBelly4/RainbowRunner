@@ -10,11 +10,14 @@ import (
 	"RainbowRunner/internal/login"
 	"RainbowRunner/internal/lua"
 	"RainbowRunner/internal/objects"
+	"github.com/pkg/profile"
 )
 
 var done = make(chan bool)
 
 func main() {
+	defer profile.Start(profile.ProfilePath("./tmp")).Stop()
+
 	config.Load()
 	logging.Init()
 	err := lua.LoadScripts("./lua")

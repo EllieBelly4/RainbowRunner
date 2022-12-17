@@ -85,6 +85,14 @@ func (t *DRConfigParser) EnterEveryRule(ctx antlr.ParserRuleContext) {
 			)
 	}
 
+	if ctx.GetRuleIndex() == parser.DRConfigParserRULE_parentClass {
+		parent := ctx.GetText()
+
+		if parent != "" {
+			t.classStack.Current().Extends = parent
+		}
+	}
+
 	if ctx.GetRuleIndex() == parser.DRConfigParserRULE_classLeave {
 		t.classStack.Pop()
 

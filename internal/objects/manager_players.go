@@ -82,9 +82,11 @@ func (m *PlayerManager) GetPlayer(id uint16) *RRPlayer {
 	return m.Players[int(id)]
 }
 
+var playerSendBuffer = byter.NewByter(make([]byte, 1024*1024+10))
+
 func (m *PlayerManager) AfterTick() {
-	body := byter.NewByter(make([]byte, 0, 1024*1024))
-	clientEntityWriter := NewClientEntityWriter(body)
+	playerSendBuffer.Clear()
+	clientEntityWriter := NewClientEntityWriter(playerSendBuffer)
 
 	for _, player := range m.Players {
 		if player.CurrentCharacter == nil {
@@ -102,7 +104,7 @@ func (m *PlayerManager) AfterTick() {
 
 		for !player.MessageQueue.IsEmpty(message.QueueTypeClientEntity) {
 			item := player.MessageQueue.Dequeue(message.QueueTypeClientEntity)
-			body.Write(item.Data)
+			playerSendBuffer.Write(item.Data)
 
 			if config.Config.Logging.LogFilterMessages {
 				if logIt, ok := config.Config.Logging.LogSentMessageTypes[strings.ToLower(item.OpType.String())]; ok && logIt {
@@ -116,7 +118,7 @@ func (m *PlayerManager) AfterTick() {
 		clientEntityWriter.EndStream()
 
 		if clientEntitySend {
-			connections.WriteCompressedASimple(player.Conn, body)
+			connections.WriteCompressedASimple(player.Conn, playerSendBuffer)
 		}
 
 		player.ClientEntityWriter.Clear()
