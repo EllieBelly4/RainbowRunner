@@ -4,14 +4,12 @@ import (
 	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/database"
-	"RainbowRunner/internal/lua"
 	"RainbowRunner/internal/pathfinding"
 	"RainbowRunner/internal/types"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 	"fmt"
 	log "github.com/sirupsen/logrus"
-	lua2 "github.com/yuin/gopher-lua"
 	"strings"
 	"sync"
 )
@@ -19,10 +17,12 @@ import (
 //go:generate go run ../../scripts/generatelua -type=Zone
 type Zone struct {
 	sync.RWMutex
-	Name       string
-	entities   map[uint16]DRObject
-	players    map[uint16]*RRPlayer
-	Scripts    *lua.LuaScriptGroup
+	Name     string
+	entities map[uint16]DRObject
+	players  map[uint16]*RRPlayer
+
+	Scripts *ZoneLuaScripts
+
 	BaseConfig *database.ZoneConfig
 	PathMap    *types.PathMap
 	ID         uint32
@@ -160,12 +160,6 @@ func (z *Zone) LoadNPCFromConfig(id string) *NPC {
 }
 
 func (z *Zone) Init() {
-	z.ReloadPathMap()
-
-	z.Scripts = lua.GetScriptGroup("zones." + strings.ToLower(z.Name))
-
-	log.Infof("initialising zone %s", z.Name)
-
 	config, err := database.GetZoneConfig(strings.ToLower(z.Name))
 
 	if err != nil {
@@ -174,30 +168,19 @@ func (z *Zone) Init() {
 
 	z.BaseConfig = config
 
-	script := z.Scripts.Get("init")
+	z.ReloadPathMap()
+	z.initLua()
 
-	if script == nil {
-		return
-	}
-
-	state := lua2.NewState()
-	defer state.Close()
-
-	RegisterLuaGlobals(state)
-	//func AddZoneToState(L *lua.LState, z *Zone) {
-	//	ud := L.NewUserData()
-	//	ud.Value = z
-	//	L.SetMetatable(ud, L.GetTypeMetatable(luaZoneTypeName))
-	//	L.SetGlobal("currentZone", ud)
-	//}
-
-	state.SetGlobal("currentZone", z.ToLua(state))
-
-	err = script.Execute(state)
+	log.Infof("initialising zone %s", z.Name)
+	err = z.Scripts.ExecuteInit()
 
 	if err != nil {
 		log.Errorf("failed to execute zone init script %s: %s", z.Name, err.Error())
 	}
+}
+
+func (z *Zone) initLua() {
+	z.Scripts = NewZoneLuaScripts(z)
 }
 
 func (z *Zone) ClearEntities() {
