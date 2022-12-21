@@ -501,6 +501,9 @@ func (u *UnitBehavior) MoveToEntity(g IWorldEntity) {
 	u.MoveTo(targetPosition)
 }
 
+// ExecuteAction should never be called directly as it is only used to emit actions
+// you should call the direct action methods on this behaviour instead
+// e.g. MoveTo, Attack, etc
 func (u *UnitBehavior) ExecuteAction(action actions2.Action) {
 	events.Emit(ExecuteActionEvent{
 		Action:       action,
