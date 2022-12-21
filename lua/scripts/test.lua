@@ -1,6 +1,6 @@
-function moveNPC(player)
+function moveNPC(player, x, y)
     zone = player:zone()
-    npc = zone:findEntityByGCTypeName("world.town.npc.TownGuard2")
+    npc = zone:findEntityByGCTypeName("world.town.npc.oldman1")
     unitBehav = npc:getChildByGCNativeType("UnitBehavior")
 
     currentPos = unitBehav:position()
@@ -8,7 +8,9 @@ function moveNPC(player)
     --X: 356.222656 Y: -182.144531 Z: 49.914062 Rot: 302.00
     print(currentPos:z())
 
-    unitBehav:warpTo(Vector3.new(356, -182, currentPos:z()))
+    targetPos = Vector3.new(356, -182, currentPos:z())
+
+    unitBehav:moveTo(Vector2.new(currentPos:x()+tonumber(x),currentPos:y()+tonumber(y)))
 end
 
 function playAnimation(player, animationIDSelection, animationID, unk0, unk4)

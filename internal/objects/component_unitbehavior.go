@@ -467,6 +467,9 @@ func (u *UnitBehavior) MoveTo(pos datatypes.Vector2Float32) {
 		PosY: pos.Y,
 	}
 
+	//TODO handle actual movement not just snapping
+	u.Position = datatypes.Vector3Float32{X: pos.X, Y: pos.Y, Z: u.Position.Z}
+
 	u.ExecuteAction(action)
 }
 
