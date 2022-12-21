@@ -6,7 +6,7 @@ function moveNPC(player, x, y)
     currentPos = unitBehav:position()
 
     --X: 356.222656 Y: -182.144531 Z: 49.914062 Rot: 302.00
-    print(currentPos:z())
+--     print(currentPos:z())
 
     targetPos = Vector3.new(356, -182, currentPos:z())
 
@@ -120,4 +120,9 @@ function move(player, unk0)
     move:unk0(tonumber(unk0))
 
     unitBehav:executeAction(move)
+end
+
+function req(player, name)
+    local script = require "zones.town.npc.oldman1"
+    script.test()
 end

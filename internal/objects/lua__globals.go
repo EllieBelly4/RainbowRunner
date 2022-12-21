@@ -13,6 +13,8 @@ func RegisterLuaGlobals(state *lua.LState) {
 	RegisterAllLuaFunctions(state)
 	actions.RegisterAllLuaFunctions(state)
 	database.RegisterAllLuaFunctions(state)
+
+	lua2.RegisterModules(state)
 }
 
 func registerLuaVector3(s *lua.LState) {

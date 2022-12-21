@@ -4,6 +4,7 @@ type LuaScriptGroup struct {
 	Name     string
 	scripts  map[string]*LuaScript
 	children map[string]*LuaScriptGroup
+	ID       string
 }
 
 func (g LuaScriptGroup) Get(s string) *LuaScript {

@@ -222,7 +222,7 @@ npcs = {
 }
 
 for i, v in ipairs(npcs) do
-    npc = currentZone:loadNPCFromConfig(v["name"])
+    local npc = currentZone:loadNPCFromConfig(v["name"])
 
     if v["behaviour"] then
         npc:removeChildrenByGCNativeType("UnitBehavior")

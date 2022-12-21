@@ -15,29 +15,13 @@ func StartGameLoop() {
 	for {
 		select {
 		case <-ticker.C:
-			objects.Players.RLock()
-			objects.Players.BeforeTick()
-
 			for !global.JobQueue.IsEmpty() {
 				job := global.JobQueue.Dequeue()
 				job()
 			}
 
-			objects.Zones.Tick()
-
-			//if global.Tick%150 == 0 {
-			//	for _, player := range objects.Players.Players {
-			//		if player.Zone != nil {
-			//
-			//			objects.CreateNPC(player, player.Zone, pkg.Transform{
-			//				Position: pkg.Vector3{106342 + 2048*int32(i), -36000, 12778},
-			//				Rotation: 180 * math.DRDegToRot,
-			//			}, "npc.Avatar.Female.base.NPC_Amazon1_Base", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior")
-			//		}
-			//	}
-			//
-			//	i++
-			//}
+			objects.Players.RLock()
+			objects.Players.BeforeTick()
 
 			for _, player := range objects.Players.Players {
 				player.Conn.Client.Tick()
@@ -45,6 +29,8 @@ func StartGameLoop() {
 
 			objects.Players.AfterTick()
 			objects.Players.RUnlock()
+
+			objects.Zones.Tick()
 
 			//if conn.Player.IsMoving {
 			//	conn.Player.SendPosition()

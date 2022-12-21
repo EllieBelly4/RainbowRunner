@@ -4,6 +4,7 @@ import (
 	"RainbowRunner/internal/config"
 	"crypto/md5"
 	"encoding/binary"
+	log "github.com/sirupsen/logrus"
 	"sync"
 )
 
@@ -65,7 +66,15 @@ func (m *ZoneManager) Tick() {
 	defer m.RUnlock()
 
 	for _, zone := range m.Zones {
-		zone.Tick()
+		if !zone.Initialised() {
+			continue
+		}
+
+		err := zone.Tick()
+
+		if err != nil {
+			log.Error(err)
+		}
 	}
 }
 

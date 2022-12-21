@@ -11,3 +11,7 @@ function spawnZoneNPC(player, name, x, y, z, rotation)
 
     currentZone:spawn(npc, Vector3.new(x, y, z), rotation)
 end
+
+function test()
+    print("test")
+end

@@ -11,7 +11,8 @@ import (
 )
 
 var commands = map[string]commands2.ChatCommandHandler{
-	"exec": commands2.ExecuteLua,
+	"reloadlua": commands2.ReloadLua,
+	"exec":      commands2.ExecuteLua,
 	"z": commands2.AliasCustom(commands2.ExecuteLua, func(player *objects.RRPlayer, args []string) []string {
 		return []string{"general.changeZone", args[0]}
 	}),

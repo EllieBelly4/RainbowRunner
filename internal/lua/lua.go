@@ -27,9 +27,12 @@ func reloadScripts() error {
 		fileName := splitPath[splitPathLength-1]
 		scriptName := strings.Split(fileName, ".")[0]
 
+		scriptID := strings.Join(append(splitPath[1:splitPathLength-1], scriptName), ".")
+		log.Infof("loading lua script %s", scriptID)
+
 		currentScriptGroup := getOrCreateScriptGroup(splitPath[1:splitPathLength-1], scripts)
 
-		currentScriptGroup.scripts[scriptName] = NewLuaScript(path)
+		currentScriptGroup.scripts[scriptName] = NewLuaScript(path, scriptID)
 
 		return nil
 	})

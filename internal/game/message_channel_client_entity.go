@@ -188,8 +188,10 @@ func SendInterval(conn *connections.RRConn) {
 
 	// ClientEntityManager::processInterval
 	// Current Server Tick
+	// Just a guess, I think this is probably meant to be separated by zone
 	body.WriteInt32(int32(global.Tick)) // Unk - Stored in ClientEntityManager::vftable + 0xa94
 
+	// Zones have their own tick intervals, I assume this is meant to be for the current zone
 	body.WriteInt32(global.TickInterval) // TickInterval - Stored in ClientEntityManager::vftable + 0xa80
 
 	// Seems to be a message queue limit? If this is too low it seems to break smooth movement

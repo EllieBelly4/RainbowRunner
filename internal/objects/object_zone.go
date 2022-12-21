@@ -23,9 +23,14 @@ type Zone struct {
 
 	Scripts *ZoneLuaScripts
 
-	BaseConfig *database.ZoneConfig
-	PathMap    *types.PathMap
-	ID         uint32
+	BaseConfig  *database.ZoneConfig
+	PathMap     *types.PathMap
+	ID          uint32
+	initialised bool
+}
+
+func (z *Zone) Initialised() bool {
+	return z.initialised
 }
 
 func (z *Zone) Entities() []DRObject {
@@ -177,6 +182,8 @@ func (z *Zone) Init() {
 	if err != nil {
 		log.Errorf("failed to execute zone init script %s: %s", z.Name, err.Error())
 	}
+
+	z.initialised = true
 }
 
 func (z *Zone) initLua() {
@@ -194,7 +201,7 @@ func (z *Zone) ReloadPathMap() {
 	z.PathMap = pathfinding.ReloadPathMap(z.Name)
 }
 
-func (z *Zone) Tick() {
+func (z *Zone) Tick() error {
 	es := z.Entities()
 
 	for _, entity := range es {
@@ -203,6 +210,10 @@ func (z *Zone) Tick() {
 		}
 		entity.Tick()
 	}
+
+	err := z.Scripts.ExecuteTick()
+
+	return err
 }
 
 func (z *Zone) FindEntityByGCTypeName(name string) DRObject {
