@@ -7,6 +7,21 @@ import (
 //go:generate go run ../../scripts/generatelua -type=MonsterBehavior2 -extends=UnitBehavior
 type MonsterBehavior2 struct {
 	*UnitBehavior
+
+	MonsterBehaviorStateMachineFlags byte
+	MonsterBehavior2Unk0             uint16
+	MonsterBehavior2Unk1             uint16
+	MonsterBehavior2Unk2             uint16
+	MonsterBehavior2Unk3             uint16
+
+	MonsterBehaviorFlags byte
+
+	MonsterBehavior2Unk4 uint32
+	MonsterBehavior2Unk5 uint32
+
+	MonsterBehavior2Unk6 uint16
+	MonsterBehavior2Unk7 uint16
+	MonsterBehavior2Unk8 uint16
 }
 
 func (n *MonsterBehavior2) WriteInit(b *byter.Byter) {
@@ -15,22 +30,22 @@ func (n *MonsterBehavior2) WriteInit(b *byter.Byter) {
 	//StateMachine::ReadMessage
 	// Flags
 	stateMachineFlags := byte(0x00)
-	b.WriteByte(stateMachineFlags)
+	b.WriteByte(n.MonsterBehaviorStateMachineFlags)
 
 	if stateMachineFlags&0x02 > 0 {
-		b.WriteUInt16(0x00)
+		b.WriteUInt16(n.MonsterBehavior2Unk0)
 	}
 
 	if stateMachineFlags&0x04 > 0 {
-		b.WriteUInt16(0x00)
+		b.WriteUInt16(n.MonsterBehavior2Unk1)
 	}
 
 	if stateMachineFlags&0x08 > 0 {
-		b.WriteUInt16(0x00)
+		b.WriteUInt16(n.MonsterBehavior2Unk2)
 	}
 
 	if stateMachineFlags&0x10 > 0 {
-		b.WriteUInt16(0x00)
+		b.WriteUInt16(n.MonsterBehavior2Unk3)
 	}
 
 	if stateMachineFlags&0x20 > 0 {
@@ -49,19 +64,19 @@ func (n *MonsterBehavior2) WriteInit(b *byter.Byter) {
 	monsterBehaviorFlags := byte(0x00)
 	b.WriteByte(monsterBehaviorFlags)
 
-	b.WriteUInt32(0x00000000)
-	b.WriteUInt32(0x00000000)
+	b.WriteUInt32(n.MonsterBehavior2Unk4)
+	b.WriteUInt32(n.MonsterBehavior2Unk5)
 
 	if monsterBehaviorFlags&0x04 > 0 {
-		b.WriteUInt16(0x00)
+		b.WriteUInt16(n.MonsterBehavior2Unk6)
 	}
 
 	if monsterBehaviorFlags&0x08 > 0 {
-		b.WriteUInt16(0x00)
+		b.WriteUInt16(n.MonsterBehavior2Unk7)
 	}
 
 	if monsterBehaviorFlags&0x10 > 0 {
-		b.WriteUInt16(0x00)
+		b.WriteUInt16(n.MonsterBehavior2Unk8)
 	}
 }
 

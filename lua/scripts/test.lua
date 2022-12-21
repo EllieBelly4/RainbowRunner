@@ -106,3 +106,16 @@ function spawnAnimation (player, unk0, unk1, unk2)
 
     unitBehav:executeAction(spawnAnimation)
 end
+
+function move(player, unk0)
+    zone = player:zone()
+    npc = zone:findEntityByGCTypeName("world.town.npc.oldman1")
+    unitBehav = npc:getChildByGCNativeType("UnitBehavior")
+
+    print("move")
+
+    move = ActionMoveInDirectionAction.new()
+    move:unk0(tonumber(unk0))
+
+    unitBehav:executeAction(move)
+end

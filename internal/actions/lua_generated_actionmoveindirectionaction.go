@@ -29,6 +29,7 @@ func registerLuaActionMoveInDirectionAction(state *lua2.LState) {
 
 func luaMethodsActionMoveInDirectionAction() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+		"unk0": lua.LuaGenericGetSetNumber[IActionMoveInDirectionAction](func(v IActionMoveInDirectionAction) *byte { return &v.GetActionMoveInDirectionAction().Unk0 }),
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionMoveInDirectionAction](l, 1)
 			obj := objInterface.GetActionMoveInDirectionAction()

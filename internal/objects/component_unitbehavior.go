@@ -30,6 +30,74 @@ type UnitBehavior struct {
 	// This increments every time a unit behavior action is executed and must be used for subsequent movement
 	// updates and actions
 	SessionID byte
+
+	// unitMoverFlags & 0x04
+	UnitMoverUnk0 byte
+
+	// unitMoverFlags & 0x01
+	UnitMoverUnk1 uint32
+	UnitMoverUnk2 uint32
+
+	UnitMoverUnk3 uint32
+	UnitMoverUnk4 uint32
+
+	// unitMoverFlags & 0x80
+	UnitMoverUnk7 uint32
+
+	UnitBehaviorUnk0 byte
+	UnitBehaviorUnk1 byte
+	UnitBehaviorUnk2 byte
+}
+
+func (u *UnitBehavior) WriteInit(b *byter.Byter) {
+	behav := behavior.NewBehavior()
+	behav.Init(b, u.Action1, u.Action2, u.SessionID)
+
+	// UnitMover::readInit()
+	// Flags
+	// 0x04
+	// 0x01
+	unitMover := u.UnitMoverFlags
+	b.WriteByte(unitMover)
+
+	if unitMover&0x04 > 0 {
+		b.WriteByte(u.UnitMoverUnk0)
+	}
+
+	if unitMover&0x01 > 0 {
+		// 0x01 case
+		b.WriteUInt32(u.UnitMoverUnk1)
+		b.WriteUInt32(u.UnitMoverUnk2)
+	}
+
+	b.WriteUInt32(u.UnitMoverUnk3)
+	b.WriteUInt32(u.UnitMoverUnk4)
+
+	if unitMover&0x80 > 0 {
+		b.WriteUInt32(u.UnitMoverUnk7)
+	}
+
+	// Set to 2 for waypoints
+	// TODO look into waypoints as movement targets, RTS movement would always be based on waypoints
+	unitMover2 := byte(0) // Could potentially be waypoints?
+
+	b.WriteByte(unitMover2)
+
+	if unitMover2 == 2 {
+		waypointCount := uint16(0x0002)
+		b.WriteUInt16(waypointCount)
+
+		for i := 0; i < int(waypointCount); i++ {
+			// Vector2
+			b.WriteUInt32(uint32(1000 * i))   // X?
+			b.WriteUInt32(uint32(100000 * i)) // Y?
+		}
+	}
+
+	// UnitBehavior::readInit()
+	b.WriteByte(u.UnitBehaviorUnk0)
+	b.WriteByte(u.UnitBehaviorUnk1)
+	b.WriteByte(u.UnitBehaviorUnk2)
 }
 
 type UnitBehaviorHandler struct {
@@ -120,57 +188,6 @@ func (u *UnitBehaviorHandler) WriteSynch(b *byter.Byter) {
 
 func (u *UnitBehaviorHandler) ReadUpdate(reader *byter.Byter) error {
 	return u.ReadUpdate(reader)
-}
-
-func (u *UnitBehavior) WriteInit(b *byter.Byter) {
-	behav := behavior.NewBehavior()
-	behav.Init(b, u.Action1, u.Action2, u.SessionID)
-
-	// UnitMover::readInit()
-	// Flags
-	// 0x04
-	// 0x01
-	unitMover := u.UnitMoverFlags
-	b.WriteByte(unitMover)
-
-	if unitMover&0x04 > 0 {
-		b.WriteByte(0xFF)
-	}
-
-	if unitMover&0x01 > 0 {
-		// 0x01 case
-		b.WriteUInt32(0x01)
-		b.WriteUInt32(0x01)
-	}
-
-	b.WriteUInt32(0x00)
-	b.WriteUInt32(0x00)
-
-	if unitMover&0x80 > 0 {
-		b.WriteUInt32(0x00)
-	}
-
-	// Set to 2 for waypoints
-	// TODO look into waypoints as movement targets, RTS movement would always be based on waypoints
-	unitMover2 := byte(0) // Could potentially be waypoints?
-
-	b.WriteByte(unitMover2)
-
-	if unitMover2 == 2 {
-		waypointCount := uint16(0x0002)
-		b.WriteUInt16(waypointCount)
-
-		for i := 0; i < int(waypointCount); i++ {
-			// Vector2
-			b.WriteUInt32(uint32(1000 * i))   // X?
-			b.WriteUInt32(uint32(100000 * i)) // Y?
-		}
-	}
-
-	// UnitBehavior::readInit()
-	b.WriteByte(0xFF)
-	b.WriteByte(0xFF)
-	b.WriteByte(0xFF)
 }
 
 type UnitPathPosition struct {

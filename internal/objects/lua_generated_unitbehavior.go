@@ -41,20 +41,29 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type Action2
 		// -------------------------------------------------------------------------------------------------------------
-		"sessionID": lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().SessionID }),
-		"writeMoveUpdate": func(l *lua2.LState) int {
+		"sessionID":        lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().SessionID }),
+		"unitMoverUnk0":    lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitMoverUnk0 }),
+		"unitMoverUnk1":    lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *uint32 { return &v.GetUnitBehavior().UnitMoverUnk1 }),
+		"unitMoverUnk2":    lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *uint32 { return &v.GetUnitBehavior().UnitMoverUnk2 }),
+		"unitMoverUnk3":    lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *uint32 { return &v.GetUnitBehavior().UnitMoverUnk3 }),
+		"unitMoverUnk4":    lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *uint32 { return &v.GetUnitBehavior().UnitMoverUnk4 }),
+		"unitMoverUnk7":    lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *uint32 { return &v.GetUnitBehavior().UnitMoverUnk7 }),
+		"unitBehaviorUnk0": lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitBehaviorUnk0 }),
+		"unitBehaviorUnk1": lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitBehaviorUnk1 }),
+		"unitBehaviorUnk2": lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitBehaviorUnk2 }),
+		"writeInit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
 			obj := objInterface.GetUnitBehavior()
-			obj.WriteMoveUpdate(
+			obj.WriteInit(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
 			return 0
 		},
-		"writeInit": func(l *lua2.LState) int {
+		"writeMoveUpdate": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
 			obj := objInterface.GetUnitBehavior()
-			obj.WriteInit(
+			obj.WriteMoveUpdate(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
 			)
 
