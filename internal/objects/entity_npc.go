@@ -63,6 +63,7 @@ func NewNPCFromConfig(config *database.NPCConfig) *NPC {
 
 	npc.Name = config.Name
 	npc.Level = config.Level
+	npc.CollisionRadius = config.CollisionRadius
 
 	behaviorType := "npc.Base.Behavior"
 
@@ -70,7 +71,12 @@ func NewNPCFromConfig(config *database.NPCConfig) *NPC {
 		behaviorType = config.Behaviour.Type
 	}
 
-	npc.AddChild(NewMonsterBehavior2(behaviorType))
+	behavior2 := NewMonsterBehavior2(behaviorType)
+
+	behavior2.Speed = config.Speed
+	behavior2.TurnRate = config.TurnRate
+
+	npc.AddChild(behavior2)
 
 	if config.Animations != nil {
 		animationsList := NewAnimationsList()

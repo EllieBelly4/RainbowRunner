@@ -18,11 +18,14 @@ type BehaviourDescConfig struct {
 //go:generate go run ../../scripts/generatelua -type AnimationConfig
 
 type NPCConfig struct {
-	Name       string
-	Level      int32
-	FullGCType string
-	Behaviour  *BehaviourConfig
-	Animations map[int]AnimationConfig
+	Name            string
+	Level           int32
+	FullGCType      string
+	Behaviour       *BehaviourConfig
+	Animations      map[int]AnimationConfig
+	Speed           int
+	CollisionRadius int
+	TurnRate        int
 }
 
 //type NPCDescriptionConfig struct {}
@@ -54,6 +57,36 @@ func NewNPCConfig(config *configtypes.DRClassChildGroup, gcRoot []string) *NPCCo
 		description := descriptions.Entities[0]
 		if animationsGCType, ok := description.Properties["Animations"]; ok {
 			npcConfig.Animations = loadAnimations(animationsGCType)
+		}
+
+		if speed, ok := description.Properties["Speed"]; ok {
+			intVal, err := strconv.ParseInt(speed, 10, 32)
+
+			if err != nil {
+				panic(err)
+			}
+
+			npcConfig.Speed = int(intVal)
+		}
+
+		if collisionRadius, ok := description.Properties["CollisionRadius"]; ok {
+			intVal, err := strconv.ParseInt(collisionRadius, 10, 32)
+
+			if err != nil {
+				panic(err)
+			}
+
+			npcConfig.CollisionRadius = int(intVal)
+		}
+
+		if turnRate, ok := description.Properties["TurnRate"]; ok {
+			intVal, err := strconv.ParseInt(turnRate, 10, 32)
+
+			if err != nil {
+				panic(err)
+			}
+
+			npcConfig.TurnRate = int(intVal)
 		}
 	}
 

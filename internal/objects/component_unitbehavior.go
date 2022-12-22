@@ -19,6 +19,11 @@ import (
 //go:generate go run ../../scripts/generateLua/ -type=UnitBehavior -extends=Component
 type UnitBehavior struct {
 	*Component
+
+	// Unknown if/where this is sent to the client
+	Speed    int
+	TurnRate int
+
 	LastPosition   datatypes.Vector3Float32
 	Position       datatypes.Vector3Float32
 	Rotation       float32
@@ -47,6 +52,10 @@ type UnitBehavior struct {
 	UnitBehaviorUnk0 byte
 	UnitBehaviorUnk1 byte
 	UnitBehaviorUnk2 byte
+}
+
+func (u *UnitBehavior) Tick() {
+
 }
 
 func (u *UnitBehavior) WriteInit(b *byter.Byter) {

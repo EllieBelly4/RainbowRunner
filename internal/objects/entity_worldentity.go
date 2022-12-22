@@ -69,6 +69,9 @@ const (
 //go:generate go run ../../scripts/generatelua -type=WorldEntity -extends=Entity
 type WorldEntity struct {
 	*Entity
+
+	CollisionRadius int
+
 	AnimationsList *AnimationsList
 
 	WorldPosition        datatypes.Vector3Float32
