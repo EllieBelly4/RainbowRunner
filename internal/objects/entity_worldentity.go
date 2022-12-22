@@ -88,8 +88,26 @@ type WorldEntity struct {
 	luaScript script.IEntityScript
 }
 
+func (g *WorldEntity) Tick() {
+	if g.luaScript != nil {
+		g.luaScript.Tick()
+	}
+}
+
+func (g *WorldEntity) Init() {
+	if g.luaScript != nil {
+		g.luaScript.Init()
+	}
+}
+
 func (g *WorldEntity) SetScript(script script.IEntityScript) {
 	g.luaScript = script
+
+	err := g.luaScript.Load()
+
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (g *WorldEntity) Animations() []*Animation {

@@ -134,7 +134,7 @@ func (p *Player) SendCreateNewPlayerEntity(rrplayer *RRPlayer) {
 		questManager = NewQuestManager()
 	}
 
-	zone.AddEntity(ownerID, questManager)
+	zone.SpawnEntity(ownerID, questManager)
 	clientEntityWriter.CreateComponentAndInit(questManager, p)
 
 	dialogManager := p.GetChildByGCType("DialogManager")
@@ -142,7 +142,7 @@ func (p *Player) SendCreateNewPlayerEntity(rrplayer *RRPlayer) {
 		dialogManager = NewDialogManager()
 	}
 
-	zone.AddEntity(ownerID, dialogManager)
+	zone.SpawnEntity(ownerID, dialogManager)
 	clientEntityWriter.CreateComponentAndInit(dialogManager, p)
 
 	//addCreateComponent(body, 0x01, 0x0C, "AvatarMetrics")

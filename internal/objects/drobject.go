@@ -47,6 +47,7 @@ type DRObject interface {
 	String() string
 	ToLua(state *lua2.LState) lua2.LValue
 	SetParent(g DRObject)
+	Init()
 }
 
 type DRItem interface {

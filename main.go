@@ -10,13 +10,20 @@ import (
 	"RainbowRunner/internal/login"
 	"RainbowRunner/internal/lua"
 	"RainbowRunner/internal/objects"
+	"flag"
 	"github.com/pkg/profile"
 )
 
 var done = make(chan bool)
 
+var (
+	profiledEnabled = flag.Bool("profile", false, "enable profiling")
+)
+
 func main() {
-	defer profile.Start(profile.ProfilePath("./tmp")).Stop()
+	if *profiledEnabled {
+		defer profile.Start(profile.ProfilePath("./tmp")).Stop()
+	}
 
 	config.Load()
 	logging.Init()

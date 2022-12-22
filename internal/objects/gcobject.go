@@ -103,6 +103,10 @@ func (g *GCObject) Tick() {
 
 }
 
+func (g *GCObject) Init() {
+
+}
+
 func (g *GCObject) WriteInit(b *byter.Byter) {
 	fmt.Printf("GCObject init for %s (%s: %s) not implemented but ignoring\n", g.GCLabel, g.GCType, g.GCNativeType)
 }

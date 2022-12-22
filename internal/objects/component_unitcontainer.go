@@ -41,7 +41,7 @@ func (u *UnitContainer) ReadUpdate(body *byter.Byter) error {
 		itemObject := NewItemObject("itemobject", item)
 		itemObject.RREntityProperties().SetOwner(u.OwnerID())
 		itemObject.WorldPosition = avatarUnitBehaviour.Position
-		zone.AddEntity(types.UInt16(u.OwnerID()), itemObject)
+		zone.SpawnEntity(types.UInt16(u.OwnerID()), itemObject)
 
 		fmt.Printf("Avatar Pos: %d, %d", avatarUnitBehaviour.Position.X, avatarUnitBehaviour.Position.Y)
 

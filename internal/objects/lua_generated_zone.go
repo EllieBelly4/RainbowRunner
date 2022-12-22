@@ -53,6 +53,14 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 
 			return 1
 		},
+		"initialised": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
+			obj := objInterface.GetZone()
+			res0 := obj.Initialised()
+			l.Push(lua2.LBool(res0))
+
+			return 1
+		},
 		"entities": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
@@ -96,10 +104,10 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 
 			return 0
 		},
-		"addEntity": func(l *lua2.LState) int {
+		"spawnEntity": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
-			obj.AddEntity(func(v uint16) *uint16 { return &v }(uint16(l.CheckNumber(2))),
+			obj.SpawnEntity(func(v uint16) *uint16 { return &v }(uint16(l.CheckNumber(2))),
 				lua.CheckValue[DRObject](l, 3),
 			)
 
@@ -119,6 +127,16 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 			obj := objInterface.GetZone()
 			obj.SendToAll(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
+			)
+
+			return 0
+		},
+		"spawnEntityWithPosition": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
+			obj := objInterface.GetZone()
+			obj.SpawnEntityWithPosition(
+				lua.CheckValue[DRObject](l, 2),
+				lua.CheckValue[datatypes.Vector3Float32](l, 3), float32(l.CheckNumber(4)), func(v uint16) *uint16 { return &v }(uint16(l.CheckNumber(5))),
 			)
 
 			return 0
@@ -169,9 +187,13 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 		"tick": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
-			obj.Tick()
+			res0 := obj.Tick()
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("error"))
+			l.Push(ud)
 
-			return 0
+			return 1
 		},
 		"findEntityByGCTypeName": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)

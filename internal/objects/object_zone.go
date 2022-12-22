@@ -81,7 +81,7 @@ func (z *Zone) RemovePlayer(id int) {
 	}
 }
 
-func (z *Zone) AddEntity(owner *uint16, entity DRObject) {
+func (z *Zone) SpawnEntity(owner *uint16, entity DRObject) {
 	z.Lock()
 	defer z.Unlock()
 
@@ -108,6 +108,8 @@ func (z *Zone) AddEntity(owner *uint16, entity DRObject) {
 	}
 
 	z.entities[id] = entity
+
+	entity.Init()
 }
 
 func (z *Zone) AddPlayer(player *RRPlayer) {
@@ -116,7 +118,7 @@ func (z *Zone) AddPlayer(player *RRPlayer) {
 	z.Unlock()
 
 	for _, child := range player.CurrentCharacter.Children() {
-		z.AddEntity(types.UInt16(uint16(player.Conn.GetID())), child)
+		z.SpawnEntity(types.UInt16(uint16(player.Conn.GetID())), child)
 	}
 }
 
@@ -136,7 +138,12 @@ func (z *Zone) SendToAll(body *byter.Byter) {
 	}
 }
 
-func (z *Zone) Spawn(entity DRObject, position datatypes.Vector3Float32, rotation float32) {
+func (z *Zone) SpawnEntityWithPosition(
+	entity DRObject,
+	position datatypes.Vector3Float32,
+	rotation float32,
+	ownerID *uint16,
+) {
 	if _, ok := entity.(IWorldEntity); ok {
 		worldEntity := entity.(IWorldEntity).GetWorldEntity()
 
@@ -151,7 +158,13 @@ func (z *Zone) Spawn(entity DRObject, position datatypes.Vector3Float32, rotatio
 		behavior.Rotation = rotation
 	}
 
-	z.AddEntity(nil, entity)
+	z.SpawnEntity(ownerID, entity)
+}
+
+// Spawn
+// Deprecated: use SpawnEntityWithPosition
+func (z *Zone) Spawn(entity DRObject, position datatypes.Vector3Float32, rotation float32) {
+	z.SpawnEntityWithPosition(entity, position, rotation, nil)
 }
 
 func (z *Zone) LoadNPCFromConfig(id string) *NPC {
@@ -167,7 +180,7 @@ func (z *Zone) LoadNPCFromConfig(id string) *NPC {
 	script := lua.GetScript("zones." + strings.ToLower(z.Name) + ".npc." + strings.ToLower(id))
 
 	if script != nil {
-		npc.SetScript(script2.NewEntityScript(script))
+		npc.SetScript(script2.NewEntityScript(script, z.Scripts.State))
 	}
 
 	return npc
@@ -186,7 +199,7 @@ func (z *Zone) Init() {
 	z.initLua()
 
 	log.Infof("initialising zone %s", z.Name)
-	err = z.Scripts.ExecuteInit()
+	err = z.Scripts.Init()
 
 	if err != nil {
 		log.Errorf("failed to execute zone init script %s: %s", z.Name, err.Error())
@@ -197,6 +210,11 @@ func (z *Zone) Init() {
 
 func (z *Zone) initLua() {
 	z.Scripts = NewZoneLuaScripts(z)
+	err := z.Scripts.Load()
+
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (z *Zone) ClearEntities() {
@@ -220,7 +238,7 @@ func (z *Zone) Tick() error {
 		entity.Tick()
 	}
 
-	err := z.Scripts.ExecuteTick()
+	err := z.Scripts.Tick()
 
 	return err
 }
