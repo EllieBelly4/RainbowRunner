@@ -23,7 +23,7 @@ type PathNode struct {
 // WorldPosToGridCoords Converts world position to a pathmap grid coord
 // WARNING THIS CURRENTLY CONTAINS FUNKY OFFSETS TO THE RESULT TO MAKE TOWNSTON WORK
 // IF YOU TRY TO USE THIS FOR SOMETHING ELSE BEFORE FIXING THINGS IT WILL PROBABLY BE WRONG
-func (p PathMap) WorldPosToGridCoords(pos datatypes.Vector3Float32) datatypes.Vector2 {
+func (p PathMap) WorldPosToGridCoords(pos datatypes.Vector2Float32) datatypes.Vector2 {
 	return datatypes.Vector2{
 		// TODO figure these offsets out
 		// The two following offsets to X and Y were found to be reasonably accurate in Townston
@@ -72,7 +72,7 @@ func (p PathMap) GetHeightRange() (highest float32, lowest float32) {
 	return highest, lowest
 }
 
-func (p PathMap) HeightAt(position datatypes.Vector3Float32) float32 {
+func (p PathMap) HeightAt(position datatypes.Vector2Float32) float32 {
 	//position.X -= 737
 	//position.Y -= 95
 	gridCoords := p.WorldPosToGridCoords(position)

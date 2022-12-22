@@ -5,6 +5,7 @@ import (
 	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/components/behavior"
+	"RainbowRunner/internal/global"
 	"RainbowRunner/internal/gosucks"
 	"RainbowRunner/internal/message"
 	"RainbowRunner/pkg/byter"
@@ -14,6 +15,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"math"
 )
 
 //go:generate go run ../../scripts/generateLua/ -type=UnitBehavior -extends=Component
@@ -52,10 +54,39 @@ type UnitBehavior struct {
 	UnitBehaviorUnk0 byte
 	UnitBehaviorUnk1 byte
 	UnitBehaviorUnk2 byte
+
+	//Movement
+	targetPosition datatypes.Vector2Float32
+	isMoving       bool
+	//TODO add movement path
 }
 
 func (u *UnitBehavior) Tick() {
+	if u.isMoving {
+		//TODO handle turning
+		//turning is currently not 100% possible as the client is not recognising the unit behavior rotation
+		//and is instead always defaulting to 0
 
+		distanceToTarget := u.Position.ToVector2Float32().Distance(u.targetPosition)
+		if distanceToTarget < 0.1 {
+			logrus.Info("reached target position")
+			u.isMoving = false
+			return
+		}
+
+		dirToTarget := u.targetPosition.Sub(u.Position.ToVector2Float32()).Normalize()
+		moveDistance := math.Min(distanceToTarget, float64(u.Speed)*global.DeltaTime)
+
+		toMove := dirToTarget.Mul(float32(moveDistance)).ToVector3Float32()
+
+		newPos := u.Position.Add(toMove)
+
+		if u.RREntityProperties().Zone.PathMap != nil {
+			newPos.Z = u.RREntityProperties().Zone.PathMap.HeightAt(newPos.ToVector2Float32())
+		}
+
+		u.Position = newPos
+	}
 }
 
 func (u *UnitBehavior) WriteInit(b *byter.Byter) {
@@ -252,7 +283,7 @@ func (u *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 		u.Position.Z = 0
 
 		if currentZone.PathMap != nil {
-			u.Position.Z = currentZone.PathMap.HeightAt(u.Position)
+			u.Position.Z = currentZone.PathMap.HeightAt(u.Position.ToVector2Float32())
 		}
 
 		u.Rotation = degrees
@@ -476,8 +507,9 @@ func (u *UnitBehavior) MoveTo(pos datatypes.Vector2Float32) {
 		PosY: pos.Y,
 	}
 
-	//TODO handle actual movement not just snapping
-	u.Position = datatypes.Vector3Float32{X: pos.X, Y: pos.Y, Z: u.Position.Z}
+	u.targetPosition = datatypes.Vector2Float32{X: pos.X, Y: pos.Y}
+	u.isMoving = true
+	//u.Position = datatypes.Vector3Float32{X: pos.X, Y: pos.Y, Z: u.Position.Z}
 
 	u.ExecuteAction(action)
 }
