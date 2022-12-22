@@ -63,7 +63,7 @@ func GetScript(path string) *LuaScript {
 	script, ok := group.scripts[splitPath[len(splitPath)-1]]
 
 	if len(group.scripts) == 0 || !ok {
-		log.Errorf("could not find script %s in group %s", script, modulePath)
+		log.Errorf("could not find script %s in group %s", splitPath[len(splitPath)-1], modulePath)
 		return nil
 	}
 

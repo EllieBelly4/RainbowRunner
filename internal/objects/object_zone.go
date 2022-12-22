@@ -4,7 +4,9 @@ import (
 	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/database"
+	"RainbowRunner/internal/lua"
 	"RainbowRunner/internal/pathfinding"
+	script2 "RainbowRunner/internal/script"
 	"RainbowRunner/internal/types"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
@@ -161,6 +163,13 @@ func (z *Zone) LoadNPCFromConfig(id string) *NPC {
 	}
 
 	npc := NewNPCFromConfig(npcConfig)
+
+	script := lua.GetScript("zones." + strings.ToLower(z.Name) + ".npc." + strings.ToLower(id))
+
+	if script != nil {
+		npc.SetScript(script2.NewEntityScript(script))
+	}
+
 	return npc
 }
 

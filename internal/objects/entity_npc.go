@@ -64,15 +64,13 @@ func NewNPCFromConfig(config *database.NPCConfig) *NPC {
 	npc.Name = config.Name
 	npc.Level = config.Level
 
-	if config.Behaviour != nil {
-		behaviorType := "npc.Base.Behavior"
+	behaviorType := "npc.Base.Behavior"
 
-		if strings.ToLower(config.Behaviour.Type) != "monsterbehavior2" {
-			behaviorType = config.Behaviour.Type
-		}
-
-		npc.AddChild(NewMonsterBehavior2(behaviorType))
+	if strings.ToLower(config.Behaviour.Type) != "monsterbehavior2" {
+		behaviorType = config.Behaviour.Type
 	}
+
+	npc.AddChild(NewMonsterBehavior2(behaviorType))
 
 	if config.Animations != nil {
 		animationsList := NewAnimationsList()

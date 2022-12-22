@@ -113,6 +113,10 @@ func (f *StructDef) GetRequiredImports(importDefs map[string]*ImportDef) []*Impo
 	res := make([]*ImportDef, 0)
 
 	for name, _ := range imports {
+		if name == "lua" || name == "lua2" {
+			continue
+		}
+
 		res = append(res, importDefs[name])
 	}
 

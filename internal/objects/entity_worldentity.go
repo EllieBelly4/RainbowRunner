@@ -3,6 +3,7 @@ package objects
 import (
 	actions2 "RainbowRunner/internal/actions"
 	"RainbowRunner/internal/message"
+	"RainbowRunner/internal/script"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 )
@@ -83,6 +84,12 @@ type WorldEntity struct {
 
 	UseCustomAnimationSpeed bool
 	AnimationSpeed          float32
+
+	luaScript script.IEntityScript
+}
+
+func (g *WorldEntity) SetScript(script script.IEntityScript) {
+	g.luaScript = script
 }
 
 func (g *WorldEntity) Animations() []*Animation {
