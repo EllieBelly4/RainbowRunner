@@ -1,17 +1,18 @@
 package objects
 
 import (
+	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 )
 
 //go:generate go run ../../scripts/generatelua -type=ItemObject -extends=WorldEntity
 type ItemObject struct {
 	*WorldEntity
-	Item DRObject
+	Item drobjectypes.DRObject
 }
 
-func (n *ItemObject) Type() DRObjectType {
-	return DRObjectEntity
+func (n *ItemObject) Type() drobjectypes.DRObjectType {
+	return drobjectypes.DRObjectEntity
 }
 
 func (n *ItemObject) WriteInit(b *byter.Byter) {
@@ -33,7 +34,7 @@ func (n *ItemObject) WriteInit(b *byter.Byter) {
 	n.Item.WriteInit(b)
 }
 
-func NewItemObject(gcType string, item DRObject) *ItemObject {
+func NewItemObject(gcType string, item drobjectypes.DRObject) *ItemObject {
 	worldEntity := NewWorldEntity(gcType)
 
 	return &ItemObject{

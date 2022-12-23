@@ -6,6 +6,7 @@ import (
 	"RainbowRunner/internal/objects"
 	"RainbowRunner/internal/types"
 	"RainbowRunner/internal/types/configtypes"
+	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	"encoding/json"
 	"fmt"
@@ -100,7 +101,7 @@ func Split(pathString string, destPath string) {
 	}
 }
 
-func splitObjects(node objects.DRObject, f func(writer *OBJBuilder, mtlBuilder *MTLBuilder, meshNode *objects.DFC3DStaticMeshNode)) {
+func splitObjects(node drobjectypes.DRObject, f func(writer *OBJBuilder, mtlBuilder *MTLBuilder, meshNode *objects.DFC3DStaticMeshNode)) {
 	for _, child := range node.Children() {
 		objBuilder := NewOBJBuilder()
 		mtlBuilder := NewMTLBuilder()
@@ -125,7 +126,7 @@ func splitObjects(node objects.DRObject, f func(writer *OBJBuilder, mtlBuilder *
 
 var depth = -1
 
-func extractFromChildren(node objects.DRObject, objBuilder *OBJBuilder, mtlBuilder *MTLBuilder, matrix types.Matrix324x4) {
+func extractFromChildren(node drobjectypes.DRObject, objBuilder *OBJBuilder, mtlBuilder *MTLBuilder, matrix types.Matrix324x4) {
 	depth++
 
 	if d3Node, ok := node.(*objects.DFC3DNode); ok {

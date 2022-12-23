@@ -8,6 +8,7 @@ import (
 	"RainbowRunner/internal/pathfinding"
 	script2 "RainbowRunner/internal/script"
 	"RainbowRunner/internal/types"
+	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 	"fmt"
@@ -20,7 +21,7 @@ import (
 type Zone struct {
 	sync.RWMutex
 	Name     string
-	entities map[uint16]DRObject
+	entities map[uint16]drobjectypes.DRObject
 	players  map[uint16]*RRPlayer
 
 	Scripts *ZoneLuaScripts
@@ -35,11 +36,11 @@ func (z *Zone) Initialised() bool {
 	return z.initialised
 }
 
-func (z *Zone) Entities() []DRObject {
+func (z *Zone) Entities() []drobjectypes.DRObject {
 	z.RLock()
 	defer z.RUnlock()
 
-	l := make([]DRObject, 0)
+	l := make([]drobjectypes.DRObject, 0)
 
 	for _, drObject := range z.entities {
 		l = append(l, drObject)
@@ -81,7 +82,7 @@ func (z *Zone) RemovePlayer(id int) {
 	}
 }
 
-func (z *Zone) SpawnEntity(owner *uint16, entity DRObject) {
+func (z *Zone) SpawnEntity(owner *uint16, entity drobjectypes.DRObject) {
 	z.Lock()
 	defer z.Unlock()
 
@@ -92,7 +93,7 @@ func (z *Zone) SpawnEntity(owner *uint16, entity DRObject) {
 		entity.(IRREntityProperties).GetRREntityProperties().SetOwner(*owner)
 	}
 
-	entity.WalkChildren(func(object DRObject) {
+	entity.WalkChildren(func(object drobjectypes.DRObject) {
 		z.GiveID(object)
 		z.setZone(object)
 
@@ -122,7 +123,7 @@ func (z *Zone) AddPlayer(player *RRPlayer) {
 	}
 }
 
-func (z *Zone) setZone(entities ...DRObject) {
+func (z *Zone) setZone(entities ...drobjectypes.DRObject) {
 	for _, entity := range entities {
 		entity.(IRREntityProperties).GetRREntityProperties().Zone = z
 		z.setZone(entity.Children()...)
@@ -139,7 +140,7 @@ func (z *Zone) SendToAll(body *byter.Byter) {
 }
 
 func (z *Zone) SpawnEntityWithPosition(
-	entity DRObject,
+	entity drobjectypes.DRObject,
 	position datatypes.Vector3Float32,
 	rotation float32,
 	ownerID *uint16,
@@ -163,7 +164,7 @@ func (z *Zone) SpawnEntityWithPosition(
 
 // Spawn
 // Deprecated: use SpawnEntityWithPosition
-func (z *Zone) Spawn(entity DRObject, position datatypes.Vector3Float32, rotation float32) {
+func (z *Zone) Spawn(entity drobjectypes.DRObject, position datatypes.Vector3Float32, rotation float32) {
 	z.SpawnEntityWithPosition(entity, position, rotation, nil)
 }
 
@@ -221,7 +222,7 @@ func (z *Zone) ClearEntities() {
 	z.Lock()
 	defer z.Unlock()
 
-	z.entities = make(map[uint16]DRObject)
+	z.entities = make(map[uint16]drobjectypes.DRObject)
 }
 
 func (z *Zone) ReloadPathMap() {
@@ -243,7 +244,7 @@ func (z *Zone) Tick() error {
 	return err
 }
 
-func (z *Zone) FindEntityByGCTypeName(name string) DRObject {
+func (z *Zone) FindEntityByGCTypeName(name string) drobjectypes.DRObject {
 	for _, entity := range z.Entities() {
 		if entity == nil {
 			continue
@@ -258,7 +259,7 @@ func (z *Zone) FindEntityByGCTypeName(name string) DRObject {
 	return nil
 }
 
-func (z *Zone) FindEntityByID(id uint16) DRObject {
+func (z *Zone) FindEntityByID(id uint16) drobjectypes.DRObject {
 	z.RLock()
 	defer z.RUnlock()
 	for _, entity := range z.entities {
@@ -266,9 +267,9 @@ func (z *Zone) FindEntityByID(id uint16) DRObject {
 			return entity
 		}
 
-		var foundEntity DRObject = nil
+		var foundEntity drobjectypes.DRObject = nil
 
-		entity.WalkChildren(func(object DRObject) {
+		entity.WalkChildren(func(object drobjectypes.DRObject) {
 			// TODO optimise this, no need to loop all children when found
 			if object.(IRREntityProperties).GetRREntityProperties().ID == uint32(id) {
 				foundEntity = object
@@ -282,7 +283,7 @@ func (z *Zone) FindEntityByID(id uint16) DRObject {
 	return nil
 }
 
-func (z *Zone) GiveID(entity DRObject) {
+func (z *Zone) GiveID(entity drobjectypes.DRObject) {
 	eProps := entity.(IRREntityProperties).GetRREntityProperties()
 
 	if eProps.ID == 0 {
@@ -298,7 +299,7 @@ func NewZone(name string, id uint32) *Zone {
 	zone := &Zone{
 		Name:     name,
 		ID:       id,
-		entities: make(map[uint16]DRObject),
+		entities: make(map[uint16]drobjectypes.DRObject),
 		players:  make(map[uint16]*RRPlayer),
 	}
 

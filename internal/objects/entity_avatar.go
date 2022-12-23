@@ -5,6 +5,7 @@ import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/message"
+	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 	"fmt"
@@ -20,8 +21,8 @@ type Avatar struct {
 	IsSpawned          bool
 }
 
-func (p *Avatar) Type() DRObjectType {
-	return DRObjectOther
+func (p *Avatar) Type() drobjectypes.DRObjectType {
+	return drobjectypes.DRObjectOther
 }
 
 func NewAvatar(gcType string) *Avatar {

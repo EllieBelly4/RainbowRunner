@@ -2,6 +2,7 @@ package objects
 
 import (
 	"RainbowRunner/internal/connections"
+	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 )
 
@@ -19,7 +20,7 @@ func (p *RREntityProperties) SetOwner(id uint16) {
 }
 
 type RREntity struct {
-	Object  DRObject
+	Object  drobjectypes.DRObject
 	OwnerID int
 	ID      uint32
 }

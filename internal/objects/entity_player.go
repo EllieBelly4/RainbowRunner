@@ -8,6 +8,7 @@ import (
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/message"
 	"RainbowRunner/internal/types"
+	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	"encoding/hex"
 	"fmt"
@@ -25,8 +26,8 @@ type Player struct {
 	Zone      *Zone
 }
 
-func (p *Player) Type() DRObjectType {
-	return DRObjectOther
+func (p *Player) Type() drobjectypes.DRObjectType {
+	return drobjectypes.DRObjectOther
 }
 
 func (p *Player) WriteInit(b *byter.Byter) {
@@ -560,9 +561,9 @@ func (p *Player) OnZoneJoin() {
 		CEWriter := NewClientEntityWriterWithByter()
 		CEWriter.Create(entity)
 
-		entity.WalkChildren(func(object DRObject) {
+		entity.WalkChildren(func(object drobjectypes.DRObject) {
 			switch object.Type() {
-			case DRObjectComponent:
+			case drobjectypes.DRObjectComponent:
 				//if mb2, ok := object.(*MonsterBehavior2); ok {
 				//	CEWriter.CreateComponentAndInit(object, entity)
 				//}

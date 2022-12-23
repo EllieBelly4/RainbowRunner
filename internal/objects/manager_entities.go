@@ -3,6 +3,7 @@ package objects
 import (
 	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
+	"RainbowRunner/internal/types/drobjecttypes"
 	"fmt"
 	"strings"
 	"sync"
@@ -17,10 +18,10 @@ var currentID = uint16(10)
 type EntityManager struct {
 	sync.RWMutex
 	// Readonly
-	Entities map[uint16]DRObject
+	Entities map[uint16]drobjectypes.DRObject
 }
 
-func (m *EntityManager) RegisterAll(owner connections.Connection, objects ...DRObject) {
+func (m *EntityManager) RegisterAll(owner connections.Connection, objects ...drobjectypes.DRObject) {
 	for _, object := range objects {
 		if strings.ToLower(object.(IGCObject).GetGCObject().GCType) == "player" {
 			panic("do not try to register player")
@@ -49,7 +50,7 @@ func (m *EntityManager) RegisterAll(owner connections.Connection, objects ...DRO
 	}
 }
 
-func (m *EntityManager) FindByID(id uint16) DRObject {
+func (m *EntityManager) FindByID(id uint16) drobjectypes.DRObject {
 	m.RLock()
 	defer m.RUnlock()
 	for _, entity := range m.Entities {
@@ -79,11 +80,11 @@ func (m *EntityManager) RemoveOwnedBy(id int) {
 	m.Unlock()
 }
 
-func (m *EntityManager) GetEntities() []DRObject {
+func (m *EntityManager) GetEntities() []drobjectypes.DRObject {
 	m.RLock()
 	defer m.RUnlock()
 
-	list := make([]DRObject, 0)
+	list := make([]drobjectypes.DRObject, 0)
 
 	for _, entity := range m.Entities {
 		list = append(list, entity)
@@ -100,6 +101,6 @@ func NewID() (ID uint16) {
 
 func NewEntityManager() *EntityManager {
 	return &EntityManager{
-		Entities: make(map[uint16]DRObject, 1024*10),
+		Entities: make(map[uint16]drobjectypes.DRObject, 1024*10),
 	}
 }

@@ -3,6 +3,7 @@ package objects
 import (
 	"RainbowRunner/internal/actions"
 	"RainbowRunner/internal/game/messages"
+	"RainbowRunner/internal/types/drobjecttypes"
 	byter "RainbowRunner/pkg/byter"
 )
 
@@ -28,7 +29,7 @@ func (w *ClientEntityWriter) BeginStream() {
 	w.Body.WriteByte(byte(messages.ClientEntityChannel))
 }
 
-func (w *ClientEntityWriter) Create(object DRObject) {
+func (w *ClientEntityWriter) Create(object drobjectypes.DRObject) {
 	w.dirty = true
 
 	w.Body.WriteByte(0x01) // Create
@@ -46,7 +47,7 @@ func (w *ClientEntityWriter) Create(object DRObject) {
 	//}
 }
 
-func (w *ClientEntityWriter) Init(object DRObject) {
+func (w *ClientEntityWriter) Init(object drobjectypes.DRObject) {
 	w.dirty = true
 
 	w.Body.WriteByte(0x02) // Init
@@ -55,7 +56,7 @@ func (w *ClientEntityWriter) Init(object DRObject) {
 	object.WriteInit(w.Body)
 }
 
-func (w *ClientEntityWriter) CreateComponentAndInit(component DRObject, targetEntity DRObject) {
+func (w *ClientEntityWriter) CreateComponentAndInit(component drobjectypes.DRObject, targetEntity drobjectypes.DRObject) {
 	w.dirty = true
 
 	w.Body.WriteByte(0x32)                                                                    // Create Component
@@ -68,7 +69,7 @@ func (w *ClientEntityWriter) CreateComponentAndInit(component DRObject, targetEn
 	component.WriteInit(w.Body)
 }
 
-func (w *ClientEntityWriter) Update(object DRObject) {
+func (w *ClientEntityWriter) Update(object drobjectypes.DRObject) {
 	w.dirty = true
 
 	w.Body.WriteByte(0x03)                                                              // MsgType Update
@@ -81,7 +82,7 @@ func (w *ClientEntityWriter) Update(object DRObject) {
 	w.Body.WriteByte(0x0)
 }
 
-func (w *ClientEntityWriter) BeginComponentUpdate(object DRObject) {
+func (w *ClientEntityWriter) BeginComponentUpdate(object drobjectypes.DRObject) {
 	if object, ok := object.(IUnitBehavior); ok {
 		w.sessionID = object.GetUnitBehavior().SessionID
 	} else {
@@ -94,7 +95,7 @@ func (w *ClientEntityWriter) BeginComponentUpdate(object DRObject) {
 	w.Body.WriteUInt16(uint16(object.(IRREntityProperties).GetRREntityProperties().ID)) // ComponentID
 }
 
-func (w *ClientEntityWriter) EndComponentUpdate(object DRObject) {
+func (w *ClientEntityWriter) EndComponentUpdate(object drobjectypes.DRObject) {
 	w.dirty = true
 
 	w.WriteSynch(object)
@@ -104,7 +105,7 @@ func (w *ClientEntityWriter) EndStream() {
 	w.Body.WriteByte(0x06)
 }
 
-func (w *ClientEntityWriter) WriteSynch(object DRObject) {
+func (w *ClientEntityWriter) WriteSynch(object drobjectypes.DRObject) {
 	w.dirty = true
 
 	object.WriteSynch(w.Body)

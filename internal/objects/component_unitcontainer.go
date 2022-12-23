@@ -3,6 +3,7 @@ package objects
 import (
 	"RainbowRunner/internal/message"
 	"RainbowRunner/internal/types"
+	"RainbowRunner/internal/types/drobjecttypes"
 	byter "RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 	"errors"
@@ -13,8 +14,8 @@ import (
 type UnitContainer struct {
 	*Component
 
-	Manipulator DRObject
-	ActiveItem  DRObject
+	Manipulator drobjectypes.DRObject
+	ActiveItem  drobjectypes.DRObject
 	Avatar      *Avatar
 }
 
@@ -138,7 +139,7 @@ func (u UnitContainer) WriteFullGCObject(byter *byter.Byter) {
 	u.Manipulator.WriteFullGCObject(byter)
 }
 
-func (u *UnitContainer) SetActiveItem(item DRObject) {
+func (u *UnitContainer) SetActiveItem(item drobjectypes.DRObject) {
 	u.ActiveItem = item
 }
 
@@ -178,7 +179,7 @@ func (u *UnitContainer) WriteRemoveItem(body *byter.Byter, index uint32) {
 	CEWriter.EndComponentUpdate(u)
 }
 
-func (u *UnitContainer) WriteAddItem(body *byter.Byter, item DRObject, inventory *Inventory, x, y byte) {
+func (u *UnitContainer) WriteAddItem(body *byter.Byter, item drobjectypes.DRObject, inventory *Inventory, x, y byte) {
 	CEWriter := NewClientEntityWriter(body)
 	CEWriter.BeginComponentUpdate(u)
 
@@ -213,7 +214,7 @@ func (u *UnitContainer) GetInventoryByID(index byte) *Inventory {
 	return nil
 }
 
-func NewUnitContainer(manipulator DRObject, name string, avatar *Avatar) *UnitContainer {
+func NewUnitContainer(manipulator drobjectypes.DRObject, name string, avatar *Avatar) *UnitContainer {
 	container := NewComponent("unitcontainer", "UnitContainer")
 	container.GCLabel = name
 

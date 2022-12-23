@@ -6,6 +6,7 @@ import (
 	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/objects"
+	"RainbowRunner/internal/types/drobjecttypes"
 	byter "RainbowRunner/pkg/byter"
 	"fmt"
 	log "github.com/sirupsen/logrus"
@@ -86,7 +87,7 @@ func handleCharacterPlay(conn *connections.RRConn, reader *byter.Byter) {
 	character := objects.Players.Players[conn.GetID()].Characters[slot]
 	objects.Players.Players[conn.GetID()].CurrentCharacter = character
 
-	character.WalkChildren(func(object objects.DRObject) {
+	character.WalkChildren(func(object drobjectypes.DRObject) {
 		props := object.(objects.IRREntityProperties).GetRREntityProperties()
 
 		props.Conn = conn
@@ -351,7 +352,7 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	return avatar
 }
 
-func AddEquipment(equipment objects.DRObject, manipulators *objects.Manipulators, armour string, boots string, helm string, gloves string, shield string) {
+func AddEquipment(equipment drobjectypes.DRObject, manipulators *objects.Manipulators, armour string, boots string, helm string, gloves string, shield string) {
 	randomArmour := objects.AddRandomEquipment(database.Armours, objects.ItemArmour)
 
 	if randomArmour != nil {

@@ -1,6 +1,7 @@
 package objects
 
 import (
+	"RainbowRunner/internal/types/drobjecttypes"
 	byter "RainbowRunner/pkg/byter"
 	"fmt"
 )
@@ -13,7 +14,7 @@ type Inventory struct {
 	InventoryID byte
 }
 
-func (i *Inventory) AddChild(child DRObject) {
+func (i *Inventory) AddChild(child drobjectypes.DRObject) {
 	switch child.(type) {
 	case *Equipment:
 		child.(*Equipment).Index = i.itemID
@@ -49,9 +50,9 @@ func (i *Inventory) WriteInitData(body *byter.Byter) {
 	}
 }
 
-func (i *Inventory) RemoveItemByIndex(index int) DRObject {
+func (i *Inventory) RemoveItemByIndex(index int) drobjectypes.DRObject {
 	toRemove := -1
-	var toReturn DRObject = nil
+	var toReturn drobjectypes.DRObject = nil
 
 	for li, child := range i.Children() {
 		foundIndex := 0

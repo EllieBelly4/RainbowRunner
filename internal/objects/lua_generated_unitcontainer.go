@@ -3,6 +3,7 @@ package objects
 
 import (
 	lua "RainbowRunner/internal/lua"
+	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	lua2 "github.com/yuin/gopher-lua"
 )
@@ -29,8 +30,8 @@ func registerLuaUnitContainer(state *lua2.LState) {
 
 func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-		"manipulator": lua.LuaGenericGetSetValue[IUnitContainer, DRObject](func(v IUnitContainer) *DRObject { return &v.GetUnitContainer().Manipulator }),
-		"activeItem":  lua.LuaGenericGetSetValue[IUnitContainer, DRObject](func(v IUnitContainer) *DRObject { return &v.GetUnitContainer().ActiveItem }),
+		"manipulator": lua.LuaGenericGetSetValue[IUnitContainer, drobjectypes.DRObject](func(v IUnitContainer) *drobjectypes.DRObject { return &v.GetUnitContainer().Manipulator }),
+		"activeItem":  lua.LuaGenericGetSetValue[IUnitContainer, drobjectypes.DRObject](func(v IUnitContainer) *drobjectypes.DRObject { return &v.GetUnitContainer().ActiveItem }),
 		"avatar":      lua.LuaGenericGetSetValue[IUnitContainer, *Avatar](func(v IUnitContainer) **Avatar { return &v.GetUnitContainer().Avatar }),
 		"readUpdate": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
@@ -58,7 +59,7 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
 			obj := objInterface.GetUnitContainer()
 			obj.SetActiveItem(
-				lua.CheckValue[DRObject](l, 2),
+				lua.CheckValue[drobjectypes.DRObject](l, 2),
 			)
 
 			return 0
@@ -95,7 +96,7 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 			obj := objInterface.GetUnitContainer()
 			obj.WriteAddItem(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
-				lua.CheckValue[DRObject](l, 3),
+				lua.CheckValue[drobjectypes.DRObject](l, 3),
 				lua.CheckReferenceValue[Inventory](l, 4), byte(l.CheckNumber(5)), byte(l.CheckNumber(6)),
 			)
 
@@ -129,7 +130,7 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 }
 func newLuaUnitContainer(l *lua2.LState) int {
 	obj := NewUnitContainer(
-		lua.CheckValue[DRObject](l, 1), string(l.CheckString(2)),
+		lua.CheckValue[drobjectypes.DRObject](l, 1), string(l.CheckString(2)),
 		lua.CheckReferenceValue[Avatar](l, 3),
 	)
 	ud := l.NewUserData()

@@ -4,6 +4,7 @@ import (
 	actions2 "RainbowRunner/internal/actions"
 	"RainbowRunner/internal/message"
 	"RainbowRunner/internal/script"
+	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 )
@@ -157,8 +158,8 @@ func (n *WorldEntity) SetRotation(degrees float32) {
 	n.Rotation = degrees
 }
 
-func (n *WorldEntity) Type() DRObjectType {
-	return DRObjectEntity
+func (n *WorldEntity) Type() drobjectypes.DRObjectType {
+	return drobjectypes.DRObjectEntity
 }
 
 func (n *WorldEntity) WriteInit(b *byter.Byter) {

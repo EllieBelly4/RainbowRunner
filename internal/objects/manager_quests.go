@@ -1,6 +1,7 @@
 package objects
 
 import (
+	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 )
 
@@ -8,8 +9,8 @@ type QuestManager struct {
 	*GCObject
 }
 
-func (q QuestManager) Type() DRObjectType {
-	return DRObjectManager
+func (q QuestManager) Type() drobjectypes.DRObjectType {
+	return drobjectypes.DRObjectManager
 }
 
 func NewQuestManager() *QuestManager {

@@ -3,6 +3,7 @@ package objects
 
 import (
 	lua "RainbowRunner/internal/lua"
+	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	lua2 "github.com/yuin/gopher-lua"
 )
@@ -29,7 +30,7 @@ func registerLuaItemObject(state *lua2.LState) {
 
 func luaMethodsItemObject() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-		"item": lua.LuaGenericGetSetValue[IItemObject, DRObject](func(v IItemObject) *DRObject { return &v.GetItemObject().Item }),
+		"item": lua.LuaGenericGetSetValue[IItemObject, drobjectypes.DRObject](func(v IItemObject) *drobjectypes.DRObject { return &v.GetItemObject().Item }),
 		"type": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IItemObject](l, 1)
 			obj := objInterface.GetItemObject()
@@ -66,7 +67,7 @@ func luaMethodsItemObject() map[string]lua2.LGFunction {
 }
 func newLuaItemObject(l *lua2.LState) int {
 	obj := NewItemObject(string(l.CheckString(1)),
-		lua.CheckValue[DRObject](l, 2),
+		lua.CheckValue[drobjectypes.DRObject](l, 2),
 	)
 	ud := l.NewUserData()
 	ud.Value = obj

@@ -2,6 +2,7 @@ package types
 
 import (
 	"RainbowRunner/internal/objects"
+	"RainbowRunner/internal/types/drobjecttypes"
 )
 
 type EntityCollection struct {
@@ -17,7 +18,7 @@ func NewEntityCollection(entities []*Entity) *EntityCollection {
 }
 
 type Entity struct {
-	obj objects.DRObject
+	obj drobjectypes.DRObject
 }
 
 func (e *Entity) Zone() *Zone {
@@ -58,7 +59,7 @@ func (e *Entity) Children() *[]*Entity {
 	return &list
 }
 
-func NewEntity(e objects.DRObject) *Entity {
+func NewEntity(e drobjectypes.DRObject) *Entity {
 	return &Entity{
 		obj: e,
 	}

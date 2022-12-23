@@ -1,6 +1,7 @@
 package objects
 
 import (
+	"RainbowRunner/internal/types/drobjecttypes"
 	"strings"
 )
 
@@ -9,8 +10,8 @@ type Component struct {
 	*GCObject
 }
 
-func (Component) Type() DRObjectType {
-	return DRObjectComponent
+func (Component) Type() drobjectypes.DRObjectType {
+	return drobjectypes.DRObjectComponent
 }
 
 func NewComponent(gcType string, nativeType string) *Component {

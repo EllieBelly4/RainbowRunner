@@ -4,6 +4,7 @@ package objects
 import (
 	"RainbowRunner/internal/connections"
 	lua "RainbowRunner/internal/lua"
+	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	lua2 "github.com/yuin/gopher-lua"
 )
@@ -46,7 +47,7 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type EntityHandler
 		// -------------------------------------------------------------------------------------------------------------
-		"gcparent": lua.LuaGenericGetSetValue[IGCObject, DRObject](func(v IGCObject) *DRObject { return &v.GetGCObject().GCParent }),
+		"gcparent": lua.LuaGenericGetSetValue[IGCObject, drobjectypes.DRObject](func(v IGCObject) *drobjectypes.DRObject { return &v.GetGCObject().GCParent }),
 		"getParentEntity": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
 			obj := objInterface.GetGCObject()
@@ -62,7 +63,7 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
 			obj := objInterface.GetGCObject()
 			obj.SetParent(
-				lua.CheckValue[DRObject](l, 2),
+				lua.CheckValue[drobjectypes.DRObject](l, 2),
 			)
 
 			return 0
@@ -220,7 +221,7 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
 			obj := objInterface.GetGCObject()
 			obj.AddChild(
-				lua.CheckValue[DRObject](l, 2),
+				lua.CheckValue[drobjectypes.DRObject](l, 2),
 			)
 
 			return 0
@@ -269,7 +270,7 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
 			obj := objInterface.GetGCObject()
 			obj.WalkChildren(
-				lua.CheckValue[func(object DRObject)](l, 2),
+				lua.CheckValue[func(object drobjectypes.DRObject)](l, 2),
 			)
 
 			return 0

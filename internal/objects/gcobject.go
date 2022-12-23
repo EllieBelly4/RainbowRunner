@@ -3,6 +3,7 @@ package objects
 import (
 	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
+	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	"fmt"
 	"regexp"
@@ -25,14 +26,14 @@ type GCObject struct {
 	Version          uint8
 	GCNativeType     string
 	GCLabel          string
-	GCChildren       []DRObject
+	GCChildren       []drobjectypes.DRObject
 	GCType           string
 	Properties       []GCObjectProperty
 	EntityHandler    EntityMessageHandler
-	GCParent         DRObject
+	GCParent         drobjectypes.DRObject
 }
 
-func (g *GCObject) GetParentEntity() IEntity {
+func (g *GCObject) GetParentEntity() drobjectypes.DRObject {
 	if g.GCParent == nil {
 		return nil
 	}
@@ -44,13 +45,13 @@ func (g *GCObject) GetParentEntity() IEntity {
 			return nil
 		}
 	} else {
-		return entity
+		return g.GCParent
 	}
 
 	return g.GCParent.GetParentEntity()
 }
 
-func (g *GCObject) SetParent(parent DRObject) {
+func (g *GCObject) SetParent(parent drobjectypes.DRObject) {
 	g.GCParent = parent
 }
 
@@ -74,8 +75,8 @@ func (g *GCObject) RemoveChildAt(i int) {
 	g.GCChildren = append(g.GCChildren[:i], g.GCChildren[i+1:]...)
 }
 
-func (g *GCObject) Type() DRObjectType {
-	return DRObjectUnknown
+func (g *GCObject) Type() drobjectypes.DRObjectType {
+	return drobjectypes.DRObjectUnknown
 }
 
 func (g *GCObject) ID() int {
@@ -119,7 +120,7 @@ func (g *GCObject) OwnerID() uint16 {
 	return g.EntityProperties.OwnerID
 }
 
-func (g *GCObject) Children() []DRObject {
+func (g *GCObject) Children() []drobjectypes.DRObject {
 	return g.GCChildren
 }
 
@@ -211,9 +212,9 @@ func logSerialise(format string, args ...interface{}) {
 	}
 }
 
-func (g *GCObject) AddChild(child DRObject) {
+func (g *GCObject) AddChild(child drobjectypes.DRObject) {
 	if g.GCChildren == nil {
-		g.GCChildren = make([]DRObject, 0, 128)
+		g.GCChildren = make([]drobjectypes.DRObject, 0, 128)
 	}
 
 	child.SetParent(g)
@@ -273,7 +274,7 @@ func GetTypeHash(name string) uint32 {
 	return result
 }
 
-func (g *GCObject) GetChildByGCNativeType(s string) DRObject {
+func (g *GCObject) GetChildByGCNativeType(s string) drobjectypes.DRObject {
 	for _, child := range g.GCChildren {
 		if strings.ToLower(child.(IGCObject).GetGCObject().GCNativeType) == strings.ToLower(s) {
 			return child
@@ -283,7 +284,7 @@ func (g *GCObject) GetChildByGCNativeType(s string) DRObject {
 	return nil
 }
 
-func (g *GCObject) GetChildByGCType(s string) DRObject {
+func (g *GCObject) GetChildByGCType(s string) drobjectypes.DRObject {
 	for _, child := range g.GCChildren {
 		if strings.ToLower(child.(IGCObject).GetGCObject().GCType) == strings.ToLower(s) {
 			return child
@@ -300,7 +301,7 @@ func (g *GCObject) SetVersion(version uint8) {
 func (g *GCObject) ReadData(b *byter.Byter) {
 }
 
-func (g *GCObject) WalkChildren(cb func(object DRObject)) {
+func (g *GCObject) WalkChildren(cb func(object drobjectypes.DRObject)) {
 	if len(g.Children()) == 0 {
 		return
 	}
@@ -312,7 +313,7 @@ func (g *GCObject) WalkChildren(cb func(object DRObject)) {
 	}
 }
 
-func ReadData(b *byter.Byter) DRObject {
+func ReadData(b *byter.Byter) drobjectypes.DRObject {
 	version := b.Byte() // Version
 	nativeType := b.CString()
 	id := b.UInt32()
@@ -326,7 +327,7 @@ func ReadData(b *byter.Byter) DRObject {
 		}
 	}()
 
-	var gcObject DRObject
+	var gcObject drobjectypes.DRObject
 
 	switch nativeType {
 	case "DFC3DNode":

@@ -3,6 +3,7 @@ package objects
 
 import (
 	lua "RainbowRunner/internal/lua"
+	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 	lua2 "github.com/yuin/gopher-lua"
@@ -108,7 +109,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
 			obj.SpawnEntity(func(v uint16) *uint16 { return &v }(uint16(l.CheckNumber(2))),
-				lua.CheckValue[DRObject](l, 3),
+				lua.CheckValue[drobjectypes.DRObject](l, 3),
 			)
 
 			return 0
@@ -135,7 +136,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
 			obj.SpawnEntityWithPosition(
-				lua.CheckValue[DRObject](l, 2),
+				lua.CheckValue[drobjectypes.DRObject](l, 2),
 				lua.CheckValue[datatypes.Vector3Float32](l, 3), float32(l.CheckNumber(4)), func(v uint16) *uint16 { return &v }(uint16(l.CheckNumber(5))),
 			)
 
@@ -145,7 +146,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
 			obj.Spawn(
-				lua.CheckValue[DRObject](l, 2),
+				lua.CheckValue[drobjectypes.DRObject](l, 2),
 				lua.CheckValue[datatypes.Vector3Float32](l, 3), float32(l.CheckNumber(4)),
 			)
 
@@ -223,7 +224,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
 			obj.GiveID(
-				lua.CheckValue[DRObject](l, 2),
+				lua.CheckValue[drobjectypes.DRObject](l, 2),
 			)
 
 			return 0
