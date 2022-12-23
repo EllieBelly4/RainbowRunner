@@ -4,6 +4,7 @@ import (
 	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/chatcommander"
+	"RainbowRunner/internal/global"
 	"RainbowRunner/internal/objects"
 	"RainbowRunner/internal/synchronisation"
 	"RainbowRunner/pkg/byter"
@@ -19,6 +20,7 @@ var Connections = make(map[int]*connections.RRConn)
 
 func StartGameServer() {
 	synchronisation.Init()
+	global.ServerStartTime = time.Now()
 
 	objects.Entities = objects.NewEntityManager()
 

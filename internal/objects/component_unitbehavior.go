@@ -57,12 +57,12 @@ type UnitBehavior struct {
 
 	//Movement
 	targetPosition datatypes.Vector2Float32
-	isMoving       bool
+	IsMoving       bool
 	//TODO add movement path
 }
 
 func (u *UnitBehavior) Tick() {
-	if u.isMoving {
+	if u.IsMoving {
 		//TODO handle turning
 		//turning is currently not 100% possible as the client is not recognising the unit behavior rotation
 		//and is instead always defaulting to 0
@@ -70,12 +70,12 @@ func (u *UnitBehavior) Tick() {
 		distanceToTarget := u.Position.ToVector2Float32().Distance(u.targetPosition)
 		if distanceToTarget < 0.1 {
 			logrus.Info("reached target position")
-			u.isMoving = false
+			u.IsMoving = false
 			return
 		}
 
 		dirToTarget := u.targetPosition.Sub(u.Position.ToVector2Float32()).Normalize()
-		moveDistance := math.Min(distanceToTarget, float64(u.Speed)*global.DeltaTime)
+		moveDistance := math.Min(distanceToTarget, float64(u.Speed)*global.GetDeltaTime())
 
 		toMove := dirToTarget.Mul(float32(moveDistance)).ToVector3Float32()
 
@@ -508,7 +508,7 @@ func (u *UnitBehavior) MoveTo(pos datatypes.Vector2Float32) {
 	}
 
 	u.targetPosition = datatypes.Vector2Float32{X: pos.X, Y: pos.Y}
-	u.isMoving = true
+	u.IsMoving = true
 	//u.Position = datatypes.Vector3Float32{X: pos.X, Y: pos.Y, Z: u.Position.Z}
 
 	u.ExecuteAction(action)

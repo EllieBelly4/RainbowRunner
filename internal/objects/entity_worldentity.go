@@ -7,6 +7,7 @@ import (
 	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
+	log "github.com/sirupsen/logrus"
 )
 
 type WorldEntityFlags uint32
@@ -94,7 +95,11 @@ type WorldEntity struct {
 
 func (g *WorldEntity) Tick() {
 	if g.luaScript != nil {
-		g.luaScript.Tick()
+		err := g.luaScript.Tick()
+
+		if err != nil {
+			log.Errorf("Error in entity script __tick: %s", err)
+		}
 	}
 
 	for _, object := range g.Children() {
@@ -104,7 +109,10 @@ func (g *WorldEntity) Tick() {
 
 func (g *WorldEntity) Init() {
 	if g.luaScript != nil {
-		g.luaScript.Init(g)
+		err := g.luaScript.Init(g)
+		if err != nil {
+			log.Errorf("Error in entity script __init: %s", err)
+		}
 	}
 
 	for _, object := range g.Children() {

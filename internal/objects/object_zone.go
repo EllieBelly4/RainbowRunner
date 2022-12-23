@@ -168,6 +168,16 @@ func (z *Zone) Spawn(entity drobjectypes.DRObject, position datatypes.Vector3Flo
 	z.SpawnEntityWithPosition(entity, position, rotation, nil)
 }
 
+func (z *Zone) GetEntityScript(id string) script2.IEntityScript {
+	script := lua.GetScript("zones." + strings.ToLower(z.Name) + "." + strings.ToLower(id))
+
+	if script == nil {
+		return nil
+	}
+
+	return script2.NewEntityScript(script, z.Scripts.State)
+}
+
 func (z *Zone) LoadNPCFromConfig(id string) *NPC {
 	npcConfig, ok := z.BaseConfig.NPCs[strings.ToLower(id)]
 
@@ -178,10 +188,10 @@ func (z *Zone) LoadNPCFromConfig(id string) *NPC {
 
 	npc := NewNPCFromConfig(npcConfig)
 
-	script := lua.GetScript("zones." + strings.ToLower(z.Name) + ".npc." + strings.ToLower(id))
+	script := z.GetEntityScript("npc." + strings.ToLower(id))
 
 	if script != nil {
-		npc.SetScript(script2.NewEntityScript(script, z.Scripts.State))
+		npc.SetScript(script)
 	}
 
 	return npc

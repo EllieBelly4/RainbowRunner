@@ -3,7 +3,7 @@ package objects
 
 import (
 	lua "RainbowRunner/internal/lua"
-	"RainbowRunner/internal/types/drobjecttypes"
+	drobjectypes "RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 	lua2 "github.com/yuin/gopher-lua"
@@ -151,6 +151,17 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 			)
 
 			return 0
+		},
+		"getEntityScript": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
+			obj := objInterface.GetZone()
+			res0 := obj.GetEntityScript(string(l.CheckString(2)))
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("script2.IEntityScript"))
+			l.Push(ud)
+
+			return 1
 		},
 		"loadNPCFromConfig": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)

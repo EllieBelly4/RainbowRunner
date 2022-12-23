@@ -75,7 +75,7 @@ func (e *EntityScript) Init(entity drobjectypes.DRObject) error {
 		entityLua := lua2.LNil
 
 		if entity != nil {
-			entity.ToLua(e.State)
+			entityLua = entity.ToLua(e.State)
 		}
 
 		err := e.State.CallByParam(lua2.P{

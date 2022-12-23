@@ -31,6 +31,8 @@ func registerLuaUnitBehavior(state *lua2.LState) {
 
 func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+		"speed":          lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *int { return &v.GetUnitBehavior().Speed }),
+		"turnRate":       lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *int { return &v.GetUnitBehavior().TurnRate }),
 		"lastPosition":   lua.LuaGenericGetSetValue[IUnitBehavior, datatypes.Vector3Float32](func(v IUnitBehavior) *datatypes.Vector3Float32 { return &v.GetUnitBehavior().LastPosition }),
 		"position":       lua.LuaGenericGetSetValue[IUnitBehavior, datatypes.Vector3Float32](func(v IUnitBehavior) *datatypes.Vector3Float32 { return &v.GetUnitBehavior().Position }),
 		"rotation":       lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *float32 { return &v.GetUnitBehavior().Rotation }),
@@ -51,6 +53,14 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 		"unitBehaviorUnk0": lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitBehaviorUnk0 }),
 		"unitBehaviorUnk1": lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitBehaviorUnk1 }),
 		"unitBehaviorUnk2": lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitBehaviorUnk2 }),
+		"isMoving":         lua.LuaGenericGetSetBool[IUnitBehavior](func(v IUnitBehavior) *bool { return &v.GetUnitBehavior().IsMoving }),
+		"tick": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
+			obj := objInterface.GetUnitBehavior()
+			obj.Tick()
+
+			return 0
+		},
 		"writeInit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
 			obj := objInterface.GetUnitBehavior()
