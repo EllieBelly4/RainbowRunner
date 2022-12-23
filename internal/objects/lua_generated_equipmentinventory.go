@@ -4,7 +4,7 @@ package objects
 import (
 	lua "RainbowRunner/internal/lua"
 	"RainbowRunner/internal/types"
-	"RainbowRunner/internal/types/drobjecttypes"
+	drobjectypes "RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	lua2 "github.com/yuin/gopher-lua"
 )

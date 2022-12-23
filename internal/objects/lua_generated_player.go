@@ -39,7 +39,7 @@ func luaMethodsPlayer() map[string]lua2.LGFunction {
 			res0 := obj.Type()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("DRObjectType"))
+			l.SetMetatable(ud, l.GetTypeMetatable("drobjectypes.DRObjectType"))
 			l.Push(ud)
 
 			return 1

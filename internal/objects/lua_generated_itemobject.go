@@ -3,7 +3,7 @@ package objects
 
 import (
 	lua "RainbowRunner/internal/lua"
-	"RainbowRunner/internal/types/drobjecttypes"
+	drobjectypes "RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	lua2 "github.com/yuin/gopher-lua"
 )
@@ -37,7 +37,7 @@ func luaMethodsItemObject() map[string]lua2.LGFunction {
 			res0 := obj.Type()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("DRObjectType"))
+			l.SetMetatable(ud, l.GetTypeMetatable("drobjectypes.DRObjectType"))
 			l.Push(ud)
 
 			return 1

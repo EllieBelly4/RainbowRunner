@@ -33,6 +33,18 @@ type GCObject struct {
 	GCParent         drobjectypes.DRObject
 }
 
+func (g *GCObject) GetChildrenByGCNativeType(s string) []drobjectypes.DRObject {
+	results := make([]drobjectypes.DRObject, 0)
+
+	for _, child := range g.GCChildren {
+		if child.(IGCObject).GetGCObject().GCNativeType == s {
+			results = append(results, child)
+		}
+	}
+
+	return results
+}
+
 func (g *GCObject) GetRREntityProperties() *RREntityProperties {
 	return g.RREntityProperties()
 }

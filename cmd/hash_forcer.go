@@ -1,6 +1,7 @@
 package main
 
 import (
+	"RainbowRunner/internal/objects"
 	"fmt"
 	"os"
 )
@@ -13,13 +14,18 @@ const chars = "abcdefghijklmnopqrstuvwxyz"
 
 var maxLen = 12
 var currentLength = 1
-var crackHash = uint32(0xdc888300)
+var crackHash = uint32(0x120ab043)
+var beCrackHash = uint32(0)
 var done = make(chan bool)
 var alive = 0
 
 //var crackHash = uint32(0xb88c9fb)
 
 func main() {
+	beCrackHash = ((crackHash & 0xFF000000) >> 24) | ((crackHash & 0x00FF0000) >> 8) | ((crackHash & 0x0000FF00) << 8) | ((crackHash & 0x000000FF) << 24)
+
+	fmt.Printf("LE %x\nBE %x\n", crackHash, beCrackHash)
+
 	str := make([]byte, maxLen)
 
 	for ; currentLength < maxLen-1; currentLength++ {
@@ -50,10 +56,9 @@ func brute(str []byte, i int) {
 		}
 
 		if i == currentLength {
-			hash := GetTypeHash(string(str))
-			if hash == crackHash {
+			hash := objects.GetTypeHash(string(str))
+			if hash == crackHash || hash == beCrackHash {
 				fmt.Printf("%x (%s)\n", hash, string(str))
-				return
 			}
 		}
 	}
@@ -64,27 +69,4 @@ func brute(str []byte, i int) {
 			done <- true
 		}
 	}
-}
-
-func GetTypeHash(name string) uint32 {
-	result := uint32(5381) // eax
-
-	a1 := len(name)
-
-	if a1 > 0 {
-		for _, v4 := range name {
-			if v4 < 0x41 || v4 > 0x5A {
-			} else {
-				v4 = v4 + 32
-			}
-
-			result += uint32(v4) + 32*result
-		}
-
-		if result == 0 {
-			result = 1
-		}
-	}
-
-	return result
 }

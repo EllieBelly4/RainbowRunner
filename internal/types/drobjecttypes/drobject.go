@@ -21,6 +21,7 @@ type DRObject interface {
 	Children() []DRObject
 	GetChildByGCType(s string) DRObject
 	GetChildByGCNativeType(s string) DRObject
+	GetChildrenByGCNativeType(s string) []DRObject
 	GetParentEntity() DRObject
 
 	Type() DRObjectType

@@ -31,6 +31,7 @@ func registerLuaWorldEntity(state *lua2.LState) {
 
 func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+		"collisionRadius":         lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *int { return &v.GetWorldEntity().CollisionRadius }),
 		"animationsList":          lua.LuaGenericGetSetValue[IWorldEntity, *AnimationsList](func(v IWorldEntity) **AnimationsList { return &v.GetWorldEntity().AnimationsList }),
 		"worldPosition":           lua.LuaGenericGetSetValue[IWorldEntity, datatypes.Vector3Float32](func(v IWorldEntity) *datatypes.Vector3Float32 { return &v.GetWorldEntity().WorldPosition }),
 		"rotation":                lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *float32 { return &v.GetWorldEntity().Rotation }),
@@ -42,6 +43,20 @@ func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 		"unk4Case":                lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *uint32 { return &v.GetWorldEntity().Unk4Case }),
 		"useCustomAnimationSpeed": lua.LuaGenericGetSetBool[IWorldEntity](func(v IWorldEntity) *bool { return &v.GetWorldEntity().UseCustomAnimationSpeed }),
 		"animationSpeed":          lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *float32 { return &v.GetWorldEntity().AnimationSpeed }),
+		"tick": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IWorldEntity](l, 1)
+			obj := objInterface.GetWorldEntity()
+			obj.Tick()
+
+			return 0
+		},
+		"init": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IWorldEntity](l, 1)
+			obj := objInterface.GetWorldEntity()
+			obj.Init()
+
+			return 0
+		},
 		"setScript": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IWorldEntity](l, 1)
 			obj := objInterface.GetWorldEntity()
@@ -101,7 +116,7 @@ func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 			res0 := obj.Type()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("DRObjectType"))
+			l.SetMetatable(ud, l.GetTypeMetatable("drobjectypes.DRObjectType"))
 			l.Push(ud)
 
 			return 1

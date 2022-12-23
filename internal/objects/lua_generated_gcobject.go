@@ -4,7 +4,7 @@ package objects
 import (
 	"RainbowRunner/internal/connections"
 	lua "RainbowRunner/internal/lua"
-	"RainbowRunner/internal/types/drobjecttypes"
+	drobjectypes "RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	lua2 "github.com/yuin/gopher-lua"
 )
@@ -48,14 +48,45 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 		// Unsupported field type EntityHandler
 		// -------------------------------------------------------------------------------------------------------------
 		"gcparent": lua.LuaGenericGetSetValue[IGCObject, drobjectypes.DRObject](func(v IGCObject) *drobjectypes.DRObject { return &v.GetGCObject().GCParent }),
+		"getChildrenByGCNativeType": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
+			obj := objInterface.GetGCObject()
+			res0 := obj.GetChildrenByGCNativeType(string(l.CheckString(2)))
+			res0Array := l.NewTable()
+
+			for _, res0 := range res0 {
+				if res0 != nil {
+					res0Array.Append(res0.ToLua(l))
+				} else {
+					res0Array.Append(lua2.LNil)
+				}
+			}
+
+			l.Push(res0Array)
+
+			return 1
+		},
+		"getRREntityProperties": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
+			obj := objInterface.GetGCObject()
+			res0 := obj.GetRREntityProperties()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
 		"getParentEntity": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
 			obj := objInterface.GetGCObject()
 			res0 := obj.GetParentEntity()
-			ud := l.NewUserData()
-			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("IEntity"))
-			l.Push(ud)
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
 
 			return 1
 		},
@@ -110,7 +141,7 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 			res0 := obj.Type()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("DRObjectType"))
+			l.SetMetatable(ud, l.GetTypeMetatable("drobjectypes.DRObjectType"))
 			l.Push(ud)
 
 			return 1
@@ -149,6 +180,13 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
 			obj := objInterface.GetGCObject()
 			obj.Tick()
+
+			return 0
+		},
+		"init": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
+			obj := objInterface.GetGCObject()
+			obj.Init()
 
 			return 0
 		},

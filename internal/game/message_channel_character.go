@@ -231,9 +231,44 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	//animationList := objects.NewGCObject("AnimationList")
 	//animationList.Name = "EllieAnimations"
 
-	avatarSkills := objects.NewGCObject("Skills")
-	avatarSkills.GCType = "avatar.base.skills"
+	avatarSkills := objects.NewSkills("avatar.base.skills")
 	avatarSkills.GCLabel = "EllieSkills"
+
+	skillsToAdd := []struct {
+		Name  string
+		Level byte
+		Unk0  uint32
+	}{
+		{"skills.generic.Stomp", 1, 1},
+		{"skills.generic.Sprint", 1, 2},
+		{"skills.generic.Butcher", 1, 3},
+		{"skills.generic.Blight", 1, 5},
+		{"skills.generic.Charge", 1, 6},
+		{"skills.generic.Cleave", 1, 7},
+		{"skills.generic.IceBolt", 1, 9},
+		{"skills.generic.IceShot", 1, 10},
+		{"skills.generic.ManaShield", 1, 11},
+		{"skills.generic.FearShot", 1, 10000},
+	}
+
+	for _, s := range skillsToAdd {
+		skill := objects.NewActiveSkill(s.Name)
+		skill.Level = s.Level
+		skill.Unk0 = s.Unk0
+		skill.GCLabel = s.Name
+
+		skill.Properties = []objects.GCObjectProperty{
+			//objects.Uint32Prop("Level", s.Level),
+		}
+
+		avatarSkills.AddChild(skill)
+	}
+
+	//skillSlot := objects.NewComponent("skillslot", "skillslot")
+	//skillSlot.Properties = []objects.GCObjectProperty{
+	//	objects.Uint32Prop("SlotID", 0x01),
+	//}
+	//avatarSkills.AddChild(skillSlot)
 
 	//avatarDesc := objects.NewGCObject("AvatarDesc")
 	//avatarDesc.GCType = "avatar.classes.fighterfemale.description"

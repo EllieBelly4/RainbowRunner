@@ -1,11 +1,4 @@
 npcs = {
-    -- This is not spawnable
-    --{
-    --    name = "base",
-    --    position = Vector3.new(400, -152, 49),
-    --    rotation = 249
-    --},
-
     {
         --X: 423.285156 Y: -77.488281 Z: 49.914062 Rot: 190.00
         name = "gnome2",

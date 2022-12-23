@@ -1,0 +1,115 @@
+.rdata:00868900 ; const char aCannotResolveO[]
+.rdata:00868900 aCannotResolveO db 'Cannot resolve ObjectList visual ',27h,'%s',27h,' without the obj'
+.rdata:00868900                                         ; DATA XREF: class_Visual___VisualRef__GetVisual_void_1+35↑o
+.rdata:00868900                                         ; class_Visual___VisualRef__GetVisual_void_1+4A↑o
+.rdata:00868900 db 'ect list!',0
+.rdata:0086893F align 10h
+.rdata:00868940 ; const char aFailedToResolv[]
+.rdata:00868940 aFailedToResolv db 'Failed to resolve Visual ',27h,'%s',27h,'.',0
+.rdata:00868940                                         ; DATA XREF: class_Visual___VisualRef__GetVisual_void_1+78↑o
+.rdata:00868940                                         ; class_Visual___VisualRef__GetVisual_void_1+90↑o
+.rdata:0086895F align 10h
+.rdata:00868960 ; const char aVisualrefGetvi[]
+.rdata:00868960 aVisualrefGetvi db 'VisualRef::GetVisual Failed to resolve VisualRef(%s)',0
+.rdata:00868960                                         ; DATA XREF: class_Visual___VisualRef__GetVisual_class_GCObject___1+C8↑o
+.rdata:00868995 align 4
+.rdata:00868998 aD3d db 'D3D',0                         ; DATA XREF: void_VisualRef__Assign_char_const___1:loc_4CDFB3↑o
+.rdata:0086899C aVisual_0 db 'VISUAL',0                 ; DATA XREF: void_VisualRef__Assign_char_const___1:loc_4CE00C↑o
+.rdata:008689A3 align 4
+.rdata:008689A4 aObjectVisual db 'OBJECT_VISUAL',0      ; DATA XREF: void_VisualRef__Assign_char_const___1:loc_4CE065↑o
+.rdata:008689B2 align 4
+.rdata:008689B4 ; const char aVisualWithName[]
+.rdata:008689B4 aVisualWithName db 'Visual with name ',27h,'%s',27h,' is wrong type ',27h,'%s',27h,'.'
+.rdata:008689B4                                         ; DATA XREF: bool_VisualRef__ResolveVisual_void_1+EC↑o
+.rdata:008689B4 db 0
+.rdata:008689DE align 10h
+.rdata:008689E0 ; const char aWorld_1[]
+.rdata:008689E0 aWorld_1 db 'World',0                   ; DATA XREF: _register_class_World___register_class_World_void_1+1E↑o
+.rdata:008689E0                                         ; _register_class_World___register_class_World_void_1+7D↑o ...
+.rdata:008689E6 align 4
+.rdata:008689E8 aGenerated db 'Generated',0             ; DATA XREF: char_const___PropertyEncounterObjectGenerated__getName_void_1↑o
+.rdata:008689F2 align 4
+.rdata:008689F4 aTileset db 'TileSet',0                 ; DATA XREF: char_const___PropertyDungeonNodeTileSet__getName_void_1↑o
+.rdata:008689FC aTilesize db 'TileSize',0               ; DATA XREF: char_const___PropertyWorldTileSize__getName_void_1↑o
+.rdata:00868A05 align 4
+.rdata:00868A08 aColorizelights db 'ColorizeLights',0   ; DATA XREF: char_const___PropertyWorldColorizeLights__getName_void_1↑o
+.rdata:00868A17 align 4
+.rdata:00868A18 aLightcolor1 db 'LightColor1',0         ; DATA XREF: char_const___PropertyWorldLightColor1__getName_void_1↑o
+.rdata:00868A24 aLightcolor2 db 'LightColor2',0         ; DATA XREF: char_const___PropertyWorldLightColor2__getName_void_1↑o
+.rdata:00868A30 aLightcolor3_0 db 'LightColor3',0       ; DATA XREF: char_const___PropertyWorldLightColor3__getName_void_1↑o
+.rdata:00868A3C aZoneguid db 'ZoneGUID',0               ; DATA XREF: char_const___PropertyWorldZoneGUID__getName_void_1↑o
+.rdata:00868A45 align 4
+.rdata:00868A48 aMazewidth db 'MazeWidth',0             ; DATA XREF: char_const___PropertyWorldMazeWidth__getName_void_1↑o
+.rdata:00868A52 align 4
+.rdata:00868A54 aMazeheight db 'MazeHeight',0           ; DATA XREF: char_const___PropertyWorldMazeHeight__getName_void_1↑o
+.rdata:00868A5F align 10h
+.rdata:00868A60 aMazesparseness db 'MazeSparseness',0   ; DATA XREF: char_const___PropertyWorldMazeSparseness__getName_void_1↑o
+.rdata:00868A6F align 10h
+.rdata:00868A70 aMazerandomness db 'MazeRandomness',0   ; DATA XREF: char_const___PropertyWorldMazeRandomness__getName_void_1↑o
+.rdata:00868A7F align 10h
+.rdata:00868A80 aMazedeadendrem db 'MazeDeadEndRemovalChance',0
+.rdata:00868A80                                         ; DATA XREF: char_const___PropertyWorldMazeDeadEndRemovalChance__getName_void_1↑o
+.rdata:00868A99 align 4
+.rdata:00868A9C ; const char aEncountertable[]
+.rdata:00868A9C aEncountertable db 'EncounterTable',0   ; DATA XREF: char_const___PropertyEncounterObjectEncounterTable__getName_void_1↑o
+.rdata:00868A9C                                         ; _register_class_EncounterTable___register_class_EncounterTable_void_1+1E↑o ...
+.rdata:00868AAB align 4
+.rdata:00868AAC aWorldentitytab_1 db 'WorldEntityTable',0
+.rdata:00868AAC                                         ; DATA XREF: char_const___PropertyRoomPlaceholderEntityWorldEntityTable__getName_void_1↑o
+.rdata:00868ABD align 10h
+.rdata:00868AC0 aWorldentitytab_0 db 'WorldEntityTable2',0
+.rdata:00868AC0                                         ; DATA XREF: char_const___PropertyWorldWorldEntityTable2__getName_void_1↑o
+.rdata:00868AD2 align 4
+.rdata:00868AD4 aWorldentitytab db 'WorldEntityTable3',0
+.rdata:00868AD4                                         ; DATA XREF: char_const___PropertyWorldWorldEntityTable3__getName_void_1↑o
+.rdata:00868AE6 align 4
+.rdata:00868AE8 ; const char aLights[]
+.rdata:00868AE8 aLights db 'lights',0                   ; DATA XREF: void_World__initialize_int_1+107↑o
+.rdata:00868AE8                                         ; void_World__colorizeLights_void_1+25↑o
+.rdata:00868AEF align 10h
+.rdata:00868AF0 ; const char aEntities[]
+.rdata:00868AF0 aEntities db 'Entities',0               ; DATA XREF: class_GCObject___World__getEntities_void_1+2D↑o
+.rdata:00868AF0                                         ; bool_GCObjectReader__ObjectInstanceAllowedInWorld_class_AutoRef_class_AutoRef_1:loc_5ECBFF↑o ...
+.rdata:00868AF9 align 4
+.rdata:00868AFC ; const char aMap_0[]
+.rdata:00868AFC aMap_0 db 'Map',0                       ; DATA XREF: class_GCObject___World__getMapNode_void_1+2D↑o
+.rdata:00868B00 ; const char aSoundenvironme[]
+.rdata:00868B00 aSoundenvironme db 'SoundEnvironment',0 ; DATA XREF: class_AutoRef_World__getSoundEnvironment_void_1+1F↑o
+.rdata:00868B00                                         ; _register_class_SoundEnvironment___register_class_SoundEnvironment_void_1+1E↑o ...
+.rdata:00868B11 align 4
+.rdata:00868B14 ; const char aWorldAttachobj[]
+.rdata:00868B14 aWorldAttachobj db 'World::attachObjects World(%s) Size (%f x %f)',0
+.rdata:00868B14                                         ; DATA XREF: void_World__attachObjects_void_1+8B↑o
+.rdata:00868B42 align 4
+.rdata:00868B44 aWorldAttachobj_0 db 'World::attachObjects',0
+.rdata:00868B44                                         ; DATA XREF: void_World__attachObjects_void_1+F1↑o
+.rdata:00868B59 align 4
+.rdata:00868B5C ; const char aSWorldSHasNoWa[]
+.rdata:00868B5C aSWorldSHasNoWa db '%s: World(%s) has no ',27h,'Waypoint',27h,'.  Not creating PathMa'
+.rdata:00868B5C                                         ; DATA XREF: void_World__attachObjects_void_1+F6↑o
+.rdata:00868B5C db 'p.',0
+.rdata:00868B94 ; const char aPlaceholdersta[]
+.rdata:00868B94 aPlaceholdersta db 'placeholderstatics',0
+.rdata:00868B94                                         ; DATA XREF: void_World__PopulateStaticObjectPlaceholders_int_1+32↑o
+.rdata:00868B94                                         ; void_World__PopulateStaticObjectPlaceholders_int_1+28A↑o
+.rdata:00868BA7 align 4
+.rdata:00868BA8 aLightcolor1_0 db 'LightColor_1',0      ; DATA XREF: void_World__colorizeLights_void_1:loc_4D11CD↑o
+.rdata:00868BB5 align 4
+.rdata:00868BB8 aLightcolor2_0 db 'LightColor_2',0      ; DATA XREF: void_World__colorizeLights_void_1:loc_4D11F4↑o
+.rdata:00868BC5 align 4
+.rdata:00868BC8 aLightcolor3 db 'LightColor_3',0        ; DATA XREF: void_World__colorizeLights_void_1:loc_4D121E↑o
+.rdata:00868BD5 align 4
+.rdata:00868BD8 aInvalidVectorT db 'invalid vector<T> subscript',0
+.rdata:00868BD8                                         ; DATA XREF: void_std__vector___Xran_void_11+1A↑o
+.rdata:00868BD8                                         ; void_std__vector___Xran_void_2+20↑o
+.rdata:00868BF4 align 8
+.rdata:00868BF8 ; const char aArchetyperefCl_21[]
+.rdata:00868BF8 aArchetyperefCl_21 db 'ArchetypeRef<class EncounterTable>::SetArchetype Tried to assign '
+.rdata:00868BF8                                         ; DATA XREF: void_ArchetypeRef__SetArchetype_class_EncounterTable___1+24↑o
+.rdata:00868BF8 db 'non-archetype from ',27h,'%s',27h,'.',0
+.rdata:00868C52 align 8
+.rdata:00868C58 ; const char aArchetyperefCl_23[]
+.rdata:00868C58 aArchetyperefCl_23 db 'ArchetypeRef<class GCObjectGenerator<class WorldEntity> >::SetArc'
+.rdata:00868C58                                         ; DATA XREF: void_ArchetypeRef__SetArchetype_class_GCObjectGenerator___11+24↑o
+.rdata:00868C58 db 'hetype Tried to assign non-archetype from ',27h,'%s',27h,'.',0
+.rdata:00868CC9 align 10h

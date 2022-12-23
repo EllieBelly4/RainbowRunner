@@ -212,38 +212,8 @@ func (p *Player) SendCreateNewPlayerEntity(rrplayer *RRPlayer) {
 	//}
 
 	// SKILLS //////////////////////////////////
-	addCreateComponent(body, uint16(avatar.(IRREntityPropertiesHaver).GetRREntityProperties().ID), NewID(), "avatar.base.skills")
-
-	// Skills::readInit()
-	body.WriteUInt32(0xFFFFFFFF)
-
-	// GCObject::readChildData<Skill>
-	body.WriteByte(0x04) // Count
-
-	body.WriteByte(0xFF)
-	body.WriteCString("skills.generic.Butcher")
-	body.WriteUInt32(0x02)
-	body.WriteByte(0x03) // Level
-
-	body.WriteByte(0xFF)
-	body.WriteCString("skills.generic.Stomp")
-	body.WriteUInt32(0x04)
-	body.WriteByte(0x05) // Level
-
-	body.WriteByte(0xFF)
-	body.WriteCString("skills.generic.FighterClassPassive")
-	body.WriteUInt32(0x06)
-	body.WriteByte(0x07) // Level
-
-	body.WriteByte(0xFF)
-	body.WriteCString("skills.generic.MeleeAttackSpeedModPassive")
-	body.WriteUInt32(0x08)
-	body.WriteByte(0x09) // Level
-
-	// GCObject::readChildData<SkillProfession>
-	body.WriteByte(0x01)
-	body.WriteByte(0xFF)
-	body.WriteCString("skills.professions.Warrior")
+	skills := avatar.GetChildByGCNativeType("Skills")
+	clientEntityWriter.CreateComponentAndInit(skills, avatar)
 
 	// UnitBehaviour//////////////////////////////////
 	behaviorName := "avatar.base.UnitBehavior"

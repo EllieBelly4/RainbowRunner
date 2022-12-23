@@ -91,6 +91,21 @@ type WorldEntity struct {
 	AnimationSpeed          float32
 
 	luaScript script.IEntityScript
+
+	/*
+		PropertyWorldEntityPosition
+		PropertyWorldEntityHeading
+		PropertyWorldEntityBlocking
+		PropertyWorldEntityCanBeActivated
+		PropertyWorldEntityDescActivationOffset
+		PropertyWorldEntityDescActivationRange
+		PropertyWorldEntityDescPolyPick
+		PropertyWorldEntityDescBlocking
+		PropertyWorldEntityDescDynamicBlocking
+		PropertyWorldEntityDescActivationRange
+		PropertyWorldEntityDescPolyPick
+		PropertyWorldEntityDescBlocking
+	*/
 }
 
 func (g *WorldEntity) Tick() {
