@@ -36,7 +36,6 @@ type DRObject interface {
 
 	Type() DRObjectType
 
-	GetGCObject() *GCObject
 	Tick()
 	OwnerID() uint16
 	SetVersion(version byte)

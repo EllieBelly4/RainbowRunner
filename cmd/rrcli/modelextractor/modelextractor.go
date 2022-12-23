@@ -105,7 +105,9 @@ func splitObjects(node objects.DRObject, f func(writer *OBJBuilder, mtlBuilder *
 		objBuilder := NewOBJBuilder()
 		mtlBuilder := NewMTLBuilder()
 
-		fmt.Printf("%d %s\n", child.GetGCObject().ID(), child.GetGCObject().GCLabel)
+		gcObject := child.(objects.IGCObject).GetGCObject()
+
+		fmt.Printf("%d %s\n", gcObject.ID(), gcObject.GCLabel)
 
 		if d3node, ok := child.(*objects.DFC3DNode); ok {
 			splitObjects(d3node, f)

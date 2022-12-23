@@ -249,7 +249,7 @@ func (z *Zone) FindEntityByGCTypeName(name string) DRObject {
 			continue
 		}
 
-		gcType := entity.GetGCObject().GCType
+		gcType := entity.(IGCObject).GetGCObject().GCType
 		if strings.ToLower(gcType) == strings.ToLower(name) {
 			return entity
 		}
@@ -290,7 +290,7 @@ func (z *Zone) GiveID(entity DRObject) {
 	}
 
 	if config.Config.Logging.LogIDs {
-		fmt.Printf("%d - %s(%s)\n", eProps.ID, entity.GetGCObject().GCType, entity.GetGCObject().GCLabel)
+		fmt.Printf("%d - %s(%s)\n", eProps.ID, entity.(IGCObject).GetGCObject().GCType, entity.(IGCObject).GetGCObject().GCLabel)
 	}
 }
 

@@ -17,7 +17,7 @@ type EquipmentInventory struct {
 
 func (n *EquipmentInventory) AddChild(child DRObject) {
 	if _, ok := child.(*Equipment); !ok {
-		panic(fmt.Sprintf("cannot add non-equipment item to EquipmentInventory: %s", child.GetGCObject().GCType))
+		panic(fmt.Sprintf("cannot add non-equipment item to EquipmentInventory: %s", child.(IGCObject).GetGCObject().GCType))
 	}
 
 	equip := child.(*Equipment)
@@ -166,7 +166,7 @@ func (n *EquipmentInventory) RemoveEquipmentBySlot(slot types.EquipmentSlot) *Eq
 		case *Equipment:
 			foundIndex = child.(*Equipment).Slot
 		default:
-			panic(fmt.Sprintf("cannot add non-item to Inventory: %s", child.GetGCObject().GCType))
+			panic(fmt.Sprintf("cannot add non-item to Inventory: %s", child.(IGCObject).GetGCObject().GCType))
 		}
 
 		if foundIndex == slot {

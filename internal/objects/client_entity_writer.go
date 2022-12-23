@@ -35,7 +35,7 @@ func (w *ClientEntityWriter) Create(object DRObject) {
 
 	w.Body.WriteUInt16(uint16(object.RREntityProperties().ID)) // Entity ID
 	w.Body.WriteByte(byte(GCObjectLookupTypeString))
-	w.Body.WriteCString(object.GetGCObject().GCType)
+	w.Body.WriteCString(object.(IGCObject).GetGCObject().GCType)
 
 	//TODO get this to work, it's a good idea I think but it causes errors
 	//for _, child := range object.Children() {
@@ -62,8 +62,8 @@ func (w *ClientEntityWriter) CreateComponentAndInit(component DRObject, targetEn
 	w.Body.WriteUInt16(uint16(targetEntity.RREntityProperties().ID)) // Parent Entity ID
 	w.Body.WriteUInt16(uint16(component.RREntityProperties().ID))    // Component ID
 	w.Body.WriteByte(byte(GCObjectLookupTypeString))
-	w.Body.WriteCString(component.GetGCObject().GCType) // Component Type
-	w.Body.WriteByte(0x01)                              // Unk
+	w.Body.WriteCString(component.(IGCObject).GetGCObject().GCType) // Component Type
+	w.Body.WriteByte(0x01)                                          // Unk
 
 	component.WriteInit(w.Body)
 }

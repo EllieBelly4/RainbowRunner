@@ -29,7 +29,7 @@ func (e *Entity) Zone() *Zone {
 }
 
 func (e *Entity) TypeName() *string {
-	return &e.obj.GetGCObject().GCType
+	return &e.obj.(objects.IGCObject).GetGCObject().GCType
 }
 
 func (e *Entity) Id() *int32 {

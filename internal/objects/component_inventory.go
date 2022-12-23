@@ -20,7 +20,7 @@ func (i *Inventory) AddChild(child DRObject) {
 	case *Item:
 		child.(*Item).Index = i.itemID
 	default:
-		panic(fmt.Sprintf("cannot add non-item to Inventory: %s", child.GetGCObject().GCType))
+		panic(fmt.Sprintf("cannot add non-item to Inventory: %s", child.(IGCObject).GetGCObject().GCType))
 	}
 
 	i.itemID++
@@ -62,7 +62,7 @@ func (i *Inventory) RemoveItemByIndex(index int) DRObject {
 		case *Item:
 			foundIndex = child.(*Item).Index
 		default:
-			panic(fmt.Sprintf("cannot remove non-item from Inventory: %s", child.GetGCObject().GCType))
+			panic(fmt.Sprintf("cannot remove non-item from Inventory: %s", child.(IGCObject).GetGCObject().GCType))
 		}
 
 		if foundIndex == index {

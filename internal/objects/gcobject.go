@@ -275,7 +275,7 @@ func GetTypeHash(name string) uint32 {
 
 func (g *GCObject) GetChildByGCNativeType(s string) DRObject {
 	for _, child := range g.GCChildren {
-		if strings.ToLower(child.GetGCObject().GCNativeType) == strings.ToLower(s) {
+		if strings.ToLower(child.(IGCObject).GetGCObject().GCNativeType) == strings.ToLower(s) {
 			return child
 		}
 	}
@@ -285,7 +285,7 @@ func (g *GCObject) GetChildByGCNativeType(s string) DRObject {
 
 func (g *GCObject) GetChildByGCType(s string) DRObject {
 	for _, child := range g.GCChildren {
-		if strings.ToLower(child.GetGCObject().GCType) == strings.ToLower(s) {
+		if strings.ToLower(child.(IGCObject).GetGCObject().GCType) == strings.ToLower(s) {
 			return child
 		}
 	}
@@ -343,7 +343,7 @@ func ReadData(b *byter.Byter) DRObject {
 	gcObject.RREntityProperties().ID = id
 
 	gcName := b.CString()
-	gcObject.GetGCObject().GCLabel = gcName
+	gcObject.(IGCObject).GetGCObject().GCLabel = gcName
 
 	childCount := b.UInt32()
 
@@ -366,7 +366,7 @@ func (g *GCObject) RemoveChildrenByGCNativeType(gcNativeType string) int {
 	toRemove := make([]int, 0, 0)
 
 	for i, child := range g.Children() {
-		if child.GetGCObject().GCNativeType == gcNativeType {
+		if child.(IGCObject).GetGCObject().GCNativeType == gcNativeType {
 			toRemove = append(toRemove, i)
 		}
 	}

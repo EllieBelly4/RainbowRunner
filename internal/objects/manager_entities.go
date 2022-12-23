@@ -22,7 +22,7 @@ type EntityManager struct {
 
 func (m *EntityManager) RegisterAll(owner connections.Connection, objects ...DRObject) {
 	for _, object := range objects {
-		if strings.ToLower(object.GetGCObject().GCType) == "player" {
+		if strings.ToLower(object.(IGCObject).GetGCObject().GCType) == "player" {
 			panic("do not try to register player")
 		}
 
@@ -39,7 +39,7 @@ func (m *EntityManager) RegisterAll(owner connections.Connection, objects ...DRO
 			props.ID = uint32(NewID())
 
 			if config.Config.Logging.LogIDs {
-				fmt.Printf("%d - %s(%s)\n", props.ID, object.GetGCObject().GCType, object.GetGCObject().GCLabel)
+				fmt.Printf("%d - %s(%s)\n", props.ID, object.(IGCObject).GetGCObject().GCType, object.(IGCObject).GetGCObject().GCLabel)
 			}
 
 			m.Lock()
