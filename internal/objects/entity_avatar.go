@@ -84,7 +84,7 @@ func (p *Avatar) Tick() {
 
 func (p *Avatar) GetUnitBehaviourID() uint16 {
 	unitContainer := p.GetChildByGCNativeType("UnitBehavior")
-	id := unitContainer.RREntityProperties().ID
+	id := unitContainer.(IRREntityProperties).GetRREntityProperties().ID
 	return uint16(id)
 }
 

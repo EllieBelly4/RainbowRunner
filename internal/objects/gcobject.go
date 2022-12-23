@@ -340,7 +340,7 @@ func ReadData(b *byter.Byter) DRObject {
 	}
 
 	gcObject.SetVersion(version)
-	gcObject.RREntityProperties().ID = id
+	gcObject.(IRREntityProperties).GetRREntityProperties().ID = id
 
 	gcName := b.CString()
 	gcObject.(IGCObject).GetGCObject().GCLabel = gcName

@@ -87,7 +87,7 @@ func handleCharacterPlay(conn *connections.RRConn, reader *byter.Byter) {
 	objects.Players.Players[conn.GetID()].CurrentCharacter = character
 
 	character.WalkChildren(func(object objects.DRObject) {
-		props := object.RREntityProperties()
+		props := object.(objects.IRREntityProperties).GetRREntityProperties()
 
 		props.Conn = conn
 		props.OwnerID = uint16(conn.GetID())

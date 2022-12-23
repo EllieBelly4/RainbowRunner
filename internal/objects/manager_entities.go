@@ -26,7 +26,7 @@ func (m *EntityManager) RegisterAll(owner connections.Connection, objects ...DRO
 			panic("do not try to register player")
 		}
 
-		props := object.RREntityProperties()
+		props := object.(IRREntityProperties).GetRREntityProperties()
 
 		m.RegisterAll(owner, object.Children()...)
 
@@ -53,7 +53,7 @@ func (m *EntityManager) FindByID(id uint16) DRObject {
 	m.RLock()
 	defer m.RUnlock()
 	for _, entity := range m.Entities {
-		if entity.RREntityProperties().ID == uint32(id) {
+		if entity.(IRREntityProperties).GetRREntityProperties().ID == uint32(id) {
 			return entity
 		}
 	}
@@ -65,7 +65,7 @@ func (m *EntityManager) RemoveOwnedBy(id int) {
 
 	m.RLock()
 	for index, entity := range m.Entities {
-		if entity == nil || entity.RREntityProperties().OwnerID == uint16(id) {
+		if entity == nil || entity.(IRREntityProperties).GetRREntityProperties().OwnerID == uint16(id) {
 			toDelete = append(toDelete, index)
 		}
 	}
@@ -73,7 +73,7 @@ func (m *EntityManager) RemoveOwnedBy(id int) {
 
 	m.Lock()
 	for _, index := range toDelete {
-		m.Entities[index].RREntityProperties().Zone = nil
+		m.Entities[index].(IRREntityProperties).GetRREntityProperties().Zone = nil
 		delete(m.Entities, index)
 	}
 	m.Unlock()

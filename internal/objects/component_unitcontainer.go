@@ -19,7 +19,7 @@ type UnitContainer struct {
 }
 
 func (u *UnitContainer) ReadUpdate(body *byter.Byter) error {
-	zone := u.RREntityProperties().Zone
+	zone := u.EntityProperties.Zone
 	op := body.Byte()
 
 	switch op {
@@ -39,7 +39,7 @@ func (u *UnitContainer) ReadUpdate(body *byter.Byter) error {
 		avatarUnitBehaviour := u.Avatar.GetUnitBehaviour()
 
 		itemObject := NewItemObject("itemobject", item)
-		itemObject.RREntityProperties().SetOwner(u.OwnerID())
+		itemObject.EntityProperties.SetOwner(u.OwnerID())
 		itemObject.WorldPosition = avatarUnitBehaviour.Position
 		zone.SpawnEntity(types.UInt16(u.OwnerID()), itemObject)
 

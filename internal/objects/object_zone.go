@@ -70,13 +70,13 @@ func (z *Zone) RemovePlayer(id int) {
 	toDelete := make([]uint16, 0, 1024)
 
 	for index, entity := range z.entities {
-		if entity == nil || entity.RREntityProperties().OwnerID == uint16(id) {
+		if entity == nil || entity.(IRREntityProperties).GetRREntityProperties().OwnerID == uint16(id) {
 			toDelete = append(toDelete, index)
 		}
 	}
 
 	for _, index := range toDelete {
-		z.entities[index].RREntityProperties().Zone = nil
+		z.entities[index].(IRREntityProperties).GetRREntityProperties().Zone = nil
 		delete(z.entities, index)
 	}
 }
@@ -89,7 +89,7 @@ func (z *Zone) SpawnEntity(owner *uint16, entity DRObject) {
 	z.GiveID(entity)
 
 	if owner != nil {
-		entity.RREntityProperties().SetOwner(*owner)
+		entity.(IRREntityProperties).GetRREntityProperties().SetOwner(*owner)
 	}
 
 	entity.WalkChildren(func(object DRObject) {
@@ -97,11 +97,11 @@ func (z *Zone) SpawnEntity(owner *uint16, entity DRObject) {
 		z.setZone(object)
 
 		if owner != nil {
-			object.RREntityProperties().SetOwner(*owner)
+			object.(IRREntityProperties).GetRREntityProperties().SetOwner(*owner)
 		}
 	})
 
-	id := uint16(entity.RREntityProperties().ID)
+	id := uint16(entity.(IRREntityProperties).GetRREntityProperties().ID)
 
 	if _, ok := z.entities[id]; ok {
 		return
@@ -124,7 +124,7 @@ func (z *Zone) AddPlayer(player *RRPlayer) {
 
 func (z *Zone) setZone(entities ...DRObject) {
 	for _, entity := range entities {
-		entity.RREntityProperties().Zone = z
+		entity.(IRREntityProperties).GetRREntityProperties().Zone = z
 		z.setZone(entity.Children()...)
 	}
 }
@@ -262,7 +262,7 @@ func (z *Zone) FindEntityByID(id uint16) DRObject {
 	z.RLock()
 	defer z.RUnlock()
 	for _, entity := range z.entities {
-		if entity.RREntityProperties().ID == uint32(id) {
+		if entity.(IRREntityProperties).GetRREntityProperties().ID == uint32(id) {
 			return entity
 		}
 
@@ -270,7 +270,7 @@ func (z *Zone) FindEntityByID(id uint16) DRObject {
 
 		entity.WalkChildren(func(object DRObject) {
 			// TODO optimise this, no need to loop all children when found
-			if object.RREntityProperties().ID == uint32(id) {
+			if object.(IRREntityProperties).GetRREntityProperties().ID == uint32(id) {
 				foundEntity = object
 			}
 		})
@@ -283,7 +283,7 @@ func (z *Zone) FindEntityByID(id uint16) DRObject {
 }
 
 func (z *Zone) GiveID(entity DRObject) {
-	eProps := entity.RREntityProperties()
+	eProps := entity.(IRREntityProperties).GetRREntityProperties()
 
 	if eProps.ID == 0 {
 		eProps.ID = uint32(NewID())

@@ -4,7 +4,7 @@ import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
-	lua2 "github.com/yuin/gopher-lua"
+	"github.com/yuin/gopher-lua"
 )
 
 //go:generate stringer -type=DRObjectType
@@ -18,9 +18,11 @@ const (
 	DRObjectUnknown
 )
 
-type DRObject interface {
-	RREntityProperties() *RREntityProperties
+type DRItem interface {
+	SetInventoryPosition(vector2 datatypes.Vector2)
+}
 
+type DRObject interface {
 	WriteFullGCObject(b *byter.Byter)
 	WriteInit(b *byter.Byter)
 	WriteUpdate(b *byter.Byter)
@@ -44,11 +46,7 @@ type DRObject interface {
 	RemoveChildAt(i int)
 	SetOwner(conn *connections.RRConn)
 	String() string
-	ToLua(state *lua2.LState) lua2.LValue
+	ToLua(state *lua.LState) lua.LValue
 	SetParent(g DRObject)
 	Init()
-}
-
-type DRItem interface {
-	SetInventoryPosition(vector2 datatypes.Vector2)
 }
