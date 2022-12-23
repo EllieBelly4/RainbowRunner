@@ -27,7 +27,7 @@ func (z ZonePortal) Activate(player *RRPlayer, u *UnitBehavior, id byte, seqID b
 		return
 	}
 
-	player.CurrentCharacter.JoinZone(tZone)
+	player.CurrentCharacter.ChangeZone(tZone.Name)
 }
 
 func (z ZonePortal) WriteInit(b *byter.Byter) {
