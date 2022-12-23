@@ -69,7 +69,7 @@ func (u *UnitBehavior) Tick() {
 
 		distanceToTarget := u.Position.ToVector2Float32().Distance(u.targetPosition)
 		if distanceToTarget < 0.1 {
-			logrus.Info("reached target position")
+			//logrus.Info("reached target position")
 			u.IsMoving = false
 			return
 		}
@@ -489,14 +489,40 @@ func (u *UnitBehavior) handleExecuteActivate(reader *byter.Byter, responseID byt
 }
 
 func (u *UnitBehavior) handleActionUsePosition(reader *byter.Byter, id byte, sessionID byte) error {
-	reader.Byte() // Some incrementing index
-	reader.Byte()
+	//reader.Byte() // Some incrementing index
+	actionID := reader.Byte()
 
-	posX := reader.Int32() / 256
-	posY := reader.Int32() / 256
-	posZ := reader.Int32() / 256
+	posX := float64(reader.Int32()) / 256
+	posY := float64(reader.Int32()) / 256
+	posZ := float64(reader.Int32()) / 256
+
+	logrus.Infof("use position actionID %d\n%f,%f,%f", actionID, posX, posY, posZ)
 
 	gosucks.VAR(posX, posY, posZ)
+
+	CEWriter := NewClientEntityWriterWithByter()
+
+	CEWriter.BeginComponentUpdate(u)
+	CEWriter.CreateActionResponse(actions2.BehaviourActionUsePosition, id, sessionID)
+
+	usePositionAction := actions2.ActionUsePosition{
+		Position: datatypes.Vector3Float32{
+			X: float32(posX),
+			Y: float32(posY),
+			Z: float32(posZ),
+		},
+		ActionID: actionID,
+	}
+
+	usePositionAction.Init(CEWriter.Body)
+
+	CEWriter.WriteSynch(u)
+
+	player := Players.GetPlayer(u.OwnerID())
+
+	player.MessageQueue.Enqueue(
+		message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeBehaviourAction,
+	)
 
 	return nil
 }

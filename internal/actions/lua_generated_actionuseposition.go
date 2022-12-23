@@ -4,6 +4,7 @@ package actions
 import (
 	lua "RainbowRunner/internal/lua"
 	byter "RainbowRunner/pkg/byter"
+	"RainbowRunner/pkg/datatypes"
 	lua2 "github.com/yuin/gopher-lua"
 )
 
@@ -29,6 +30,8 @@ func registerLuaActionUsePosition(state *lua2.LState) {
 
 func luaMethodsActionUsePosition() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+		"actionID": lua.LuaGenericGetSetNumber[IActionUsePosition](func(v IActionUsePosition) *byte { return &v.GetActionUsePosition().ActionID }),
+		"position": lua.LuaGenericGetSetValue[IActionUsePosition, datatypes.Vector3Float32](func(v IActionUsePosition) *datatypes.Vector3Float32 { return &v.GetActionUsePosition().Position }),
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionUsePosition](l, 1)
 			obj := objInterface.GetActionUsePosition()

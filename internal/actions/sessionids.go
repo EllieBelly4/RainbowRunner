@@ -29,7 +29,7 @@ var (
 		BehaviourActionSetBlocking:           false,
 		BehaviourActionFlee:                  false,
 		BehaviourActionUseTarget:             false,
-		BehaviourActionUsePosition:           false,
+		BehaviourActionUsePosition:           true,
 		BehaviourActionUse:                   false,
 		BehaviourActionUseItemTarget:         false,
 		BehaviourActionUseItemPosition:       false,

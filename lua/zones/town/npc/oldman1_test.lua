@@ -41,7 +41,7 @@ function module.__tick()
         return
     end
 
-    print("next node ".. pathIndex)
+--     print("next node ".. pathIndex)
 
     unitBehaviour:moveTo(path[pathIndex])
 

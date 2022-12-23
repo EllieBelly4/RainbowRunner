@@ -29,6 +29,8 @@ func registerLuaActionAttackTarget2(state *lua2.LState) {
 
 func luaMethodsActionAttackTarget2() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+		"unk0":     lua.LuaGenericGetSetNumber[IActionAttackTarget2](func(v IActionAttackTarget2) *byte { return &v.GetActionAttackTarget2().Unk0 }),
+		"targetID": lua.LuaGenericGetSetNumber[IActionAttackTarget2](func(v IActionAttackTarget2) *uint16 { return &v.GetActionAttackTarget2().TargetID }),
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionAttackTarget2](l, 1)
 			obj := objInterface.GetActionAttackTarget2()

@@ -122,7 +122,32 @@ function move(player, unk0)
     unitBehav:executeAction(move)
 end
 
-function req(player, name)
-    local script = require "zones.town.npc.oldman1"
-    script.test()
+function attack(player, unk0, id)
+    zone = player:zone()
+    npc = zone:findEntityByGCTypeName("world.town.npc.oldman1")
+    unitBehav = npc:getChildByGCNativeType("UnitBehavior")
+
+    print("attack")
+
+    attack = ActionAttackTarget2.new()
+    attack:unk0(tonumber(unk0))
+    attack:targetID(tonumber(id))
+
+    unitBehav:executeAction(attack)
+end
+
+function usePosition(player, actionID)
+    zone = player:zone()
+    avatar = zone:findEntityByGCTypeName("avatar.classes.fighterfemale")
+    unitBehav = avatar:getChildByGCNativeType("UnitBehavior")
+
+    print("use position")
+
+    usePosition = ActionUsePosition.new()
+    usePosition:actionID(tonumber(actionID))
+    usePosition:positionX()
+    usePosition:positionY()
+    usePosition:positionZ()
+
+--     unitBehav:executeAction(usePosition)
 end
