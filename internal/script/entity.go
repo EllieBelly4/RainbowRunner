@@ -2,12 +2,13 @@ package script
 
 import (
 	"RainbowRunner/internal/lua"
+	"RainbowRunner/internal/types/drobjecttypes"
 	lua2 "github.com/yuin/gopher-lua"
 	"strings"
 )
 
 type IEntityScript interface {
-	Init() error
+	Init(entity drobjectypes.DRObject) error
 	Tick() error
 	Load() error
 }
@@ -44,6 +45,10 @@ func (e *EntityScript) RegisterEventHandlers(mod *lua2.LTable) {
 }
 
 func (e *EntityScript) Load() error {
+	if e == nil || e.luaScript == nil {
+		return nil
+	}
+
 	preTop := e.State.GetTop()
 
 	err := e.luaScript.Execute(e.State)
@@ -61,13 +66,23 @@ func (e *EntityScript) Load() error {
 	return nil
 }
 
-func (e *EntityScript) Init() error {
+func (e *EntityScript) Init(entity drobjectypes.DRObject) error {
+	if e == nil || e.EventHandlers == nil {
+		return nil
+	}
+
 	if init, ok := e.EventHandlers["init"]; ok {
+		entityLua := lua2.LNil
+
+		if entity != nil {
+			entity.ToLua(e.State)
+		}
+
 		err := e.State.CallByParam(lua2.P{
 			Fn:      init,
 			NRet:    0,
 			Protect: true,
-		})
+		}, entityLua)
 
 		if err != nil {
 			return err
@@ -78,7 +93,7 @@ func (e *EntityScript) Init() error {
 }
 
 func (e *EntityScript) Tick() error {
-	if e.tick == nil {
+	if e == nil || e.tick == nil {
 		return nil
 	}
 

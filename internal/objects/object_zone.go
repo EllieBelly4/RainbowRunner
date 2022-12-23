@@ -71,13 +71,13 @@ func (z *Zone) RemovePlayer(id int) {
 	toDelete := make([]uint16, 0, 1024)
 
 	for index, entity := range z.entities {
-		if entity == nil || entity.(IRREntityProperties).GetRREntityProperties().OwnerID == uint16(id) {
+		if entity == nil || entity.(IRREntityPropertiesHaver).GetRREntityProperties().OwnerID == uint16(id) {
 			toDelete = append(toDelete, index)
 		}
 	}
 
 	for _, index := range toDelete {
-		z.entities[index].(IRREntityProperties).GetRREntityProperties().Zone = nil
+		z.entities[index].(IRREntityPropertiesHaver).GetRREntityProperties().Zone = nil
 		delete(z.entities, index)
 	}
 }
@@ -90,7 +90,7 @@ func (z *Zone) SpawnEntity(owner *uint16, entity drobjectypes.DRObject) {
 	z.GiveID(entity)
 
 	if owner != nil {
-		entity.(IRREntityProperties).GetRREntityProperties().SetOwner(*owner)
+		entity.(IRREntityPropertiesHaver).GetRREntityProperties().SetOwner(*owner)
 	}
 
 	entity.WalkChildren(func(object drobjectypes.DRObject) {
@@ -98,11 +98,11 @@ func (z *Zone) SpawnEntity(owner *uint16, entity drobjectypes.DRObject) {
 		z.setZone(object)
 
 		if owner != nil {
-			object.(IRREntityProperties).GetRREntityProperties().SetOwner(*owner)
+			object.(IRREntityPropertiesHaver).GetRREntityProperties().SetOwner(*owner)
 		}
 	})
 
-	id := uint16(entity.(IRREntityProperties).GetRREntityProperties().ID)
+	id := uint16(entity.(IRREntityPropertiesHaver).GetRREntityProperties().ID)
 
 	if _, ok := z.entities[id]; ok {
 		return
@@ -125,7 +125,7 @@ func (z *Zone) AddPlayer(player *RRPlayer) {
 
 func (z *Zone) setZone(entities ...drobjectypes.DRObject) {
 	for _, entity := range entities {
-		entity.(IRREntityProperties).GetRREntityProperties().Zone = z
+		entity.(IRREntityPropertiesHaver).GetRREntityProperties().Zone = z
 		z.setZone(entity.Children()...)
 	}
 }
@@ -199,22 +199,24 @@ func (z *Zone) Init() {
 	z.ReloadPathMap()
 	z.initLua()
 
-	log.Infof("initialising zone %s", z.Name)
-	err = z.Scripts.Init()
-
-	if err != nil {
-		log.Errorf("failed to execute zone init script %s: %s", z.Name, err.Error())
-	}
-
 	z.initialised = true
 }
 
 func (z *Zone) initLua() {
+	log.Infof("initialising zone %s", z.Name)
+
 	z.Scripts = NewZoneLuaScripts(z)
+
 	err := z.Scripts.Load()
 
 	if err != nil {
 		panic(err)
+	}
+
+	err = z.Scripts.Init(nil)
+
+	if err != nil {
+		log.Errorf("failed to execute zone init script %s: %s", z.Name, err.Error())
 	}
 }
 
@@ -263,7 +265,7 @@ func (z *Zone) FindEntityByID(id uint16) drobjectypes.DRObject {
 	z.RLock()
 	defer z.RUnlock()
 	for _, entity := range z.entities {
-		if entity.(IRREntityProperties).GetRREntityProperties().ID == uint32(id) {
+		if entity.(IRREntityPropertiesHaver).GetRREntityProperties().ID == uint32(id) {
 			return entity
 		}
 
@@ -271,7 +273,7 @@ func (z *Zone) FindEntityByID(id uint16) drobjectypes.DRObject {
 
 		entity.WalkChildren(func(object drobjectypes.DRObject) {
 			// TODO optimise this, no need to loop all children when found
-			if object.(IRREntityProperties).GetRREntityProperties().ID == uint32(id) {
+			if object.(IRREntityPropertiesHaver).GetRREntityProperties().ID == uint32(id) {
 				foundEntity = object
 			}
 		})
@@ -284,7 +286,7 @@ func (z *Zone) FindEntityByID(id uint16) drobjectypes.DRObject {
 }
 
 func (z *Zone) GiveID(entity drobjectypes.DRObject) {
-	eProps := entity.(IRREntityProperties).GetRREntityProperties()
+	eProps := entity.(IRREntityPropertiesHaver).GetRREntityProperties()
 
 	if eProps.ID == 0 {
 		eProps.ID = uint32(NewID())

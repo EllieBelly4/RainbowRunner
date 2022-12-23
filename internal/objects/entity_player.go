@@ -115,7 +115,7 @@ func (p *Player) SendCreateNewPlayerEntity(rrplayer *RRPlayer) {
 	clientEntityWriter.CreateComponentAndInit(manipulators, avatar)
 
 	equipment := avatar.GetChildByGCType("avatar.base.Equipment")
-	addCreateComponent(body, uint16(avatar.(IRREntityProperties).GetRREntityProperties().ID), uint16(equipment.(IRREntityProperties).GetRREntityProperties().ID), "avatar.base.Equipment")
+	addCreateComponent(body, uint16(avatar.(IRREntityPropertiesHaver).GetRREntityProperties().ID), uint16(equipment.(IRREntityPropertiesHaver).GetRREntityProperties().ID), "avatar.base.Equipment")
 
 	body.WriteByte(byte(len(equippedItems)))
 
@@ -192,7 +192,7 @@ func (p *Player) SendCreateNewPlayerEntity(rrplayer *RRPlayer) {
 
 	// MODIFIERS //////////////////////////////////
 	// Modifiers are for modifying damage and defences
-	addCreateComponent(body, uint16(avatar.(IRREntityProperties).GetRREntityProperties().ID), NewID(), "Modifiers")
+	addCreateComponent(body, uint16(avatar.(IRREntityPropertiesHaver).GetRREntityProperties().ID), NewID(), "Modifiers")
 
 	// Modifiers::readInit
 	body.WriteUInt32(0x00) //
@@ -212,7 +212,7 @@ func (p *Player) SendCreateNewPlayerEntity(rrplayer *RRPlayer) {
 	//}
 
 	// SKILLS //////////////////////////////////
-	addCreateComponent(body, uint16(avatar.(IRREntityProperties).GetRREntityProperties().ID), NewID(), "avatar.base.skills")
+	addCreateComponent(body, uint16(avatar.(IRREntityPropertiesHaver).GetRREntityProperties().ID), NewID(), "avatar.base.skills")
 
 	// Skills::readInit()
 	body.WriteUInt32(0xFFFFFFFF)
@@ -251,7 +251,7 @@ func (p *Player) SendCreateNewPlayerEntity(rrplayer *RRPlayer) {
 	unitBehaviour := avatar.GetChildByGCNativeType("UnitBehavior")
 
 	if behaviorName == "avatar.base.UnitBehavior" {
-		addCreateComponent(body, uint16(avatar.(IRREntityProperties).GetRREntityProperties().ID), uint16(unitBehaviour.(IRREntityProperties).GetRREntityProperties().ID), "avatar.base.UnitBehavior")
+		addCreateComponent(body, uint16(avatar.(IRREntityPropertiesHaver).GetRREntityProperties().ID), uint16(unitBehaviour.(IRREntityPropertiesHaver).GetRREntityProperties().ID), "avatar.base.UnitBehavior")
 
 		behav := behavior.NewBehavior()
 		behav.Init(body, nil, nil, 0xFF)
@@ -306,7 +306,7 @@ func (p *Player) SendCreateNewPlayerEntity(rrplayer *RRPlayer) {
 
 	// Init
 	body.WriteByte(0x02)
-	body.WriteUInt16(uint16(avatar.(IRREntityProperties).GetRREntityProperties().ID))
+	body.WriteUInt16(uint16(avatar.(IRREntityPropertiesHaver).GetRREntityProperties().ID))
 
 	//WorldEntity::readInit
 	// Flags

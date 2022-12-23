@@ -3,6 +3,7 @@ package objects
 import (
 	"RainbowRunner/internal/lua"
 	"RainbowRunner/internal/script"
+	drobjectypes "RainbowRunner/internal/types/drobjecttypes"
 	lua2 "github.com/yuin/gopher-lua"
 	"strings"
 )
@@ -13,7 +14,23 @@ type ZoneLuaScripts struct {
 	main        *lua.LuaScript
 }
 
-func (s *ZoneLuaScripts) Init() error {
+func (s *ZoneLuaScripts) Tick() error {
+	if s.EntityScript == nil {
+		return nil
+	}
+
+	return s.EntityScript.Tick()
+}
+
+func (s *ZoneLuaScripts) Load() error {
+	if s.EntityScript == nil {
+		return nil
+	}
+
+	return s.EntityScript.Load()
+}
+
+func (s *ZoneLuaScripts) Init(entity drobjectypes.DRObject) error {
 	script := s.scriptGroup.Get("init")
 
 	if script == nil {
@@ -26,7 +43,7 @@ func (s *ZoneLuaScripts) Init() error {
 		return err
 	}
 
-	err = s.EntityScript.Init()
+	err = s.EntityScript.Init(entity)
 
 	if err != nil {
 		return err
@@ -45,12 +62,13 @@ func NewZoneLuaScripts(z *Zone) *ZoneLuaScripts {
 	main := scriptGroup.Get("main")
 
 	zoneLuaScripts := &ZoneLuaScripts{
-		EntityScript: script.NewEntityScript(
-			main,
-			luaState,
-		),
 		scriptGroup: scriptGroup,
 	}
+
+	zoneLuaScripts.EntityScript = script.NewEntityScript(
+		main,
+		luaState,
+	)
 
 	return zoneLuaScripts
 }

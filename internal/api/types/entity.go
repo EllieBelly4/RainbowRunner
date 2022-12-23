@@ -22,11 +22,11 @@ type Entity struct {
 }
 
 func (e *Entity) Zone() *Zone {
-	if e.obj.(objects.IRREntityProperties).GetRREntityProperties().Zone == nil {
+	if e.obj.(objects.IRREntityPropertiesHaver).GetRREntityProperties().Zone == nil {
 		return nil
 	}
 
-	return NewZone(e.obj.(objects.IRREntityProperties).GetRREntityProperties().Zone)
+	return NewZone(e.obj.(objects.IRREntityPropertiesHaver).GetRREntityProperties().Zone)
 }
 
 func (e *Entity) TypeName() *string {
@@ -34,12 +34,12 @@ func (e *Entity) TypeName() *string {
 }
 
 func (e *Entity) Id() *int32 {
-	id := int32(e.obj.(objects.IRREntityProperties).GetRREntityProperties().ID)
+	id := int32(e.obj.(objects.IRREntityPropertiesHaver).GetRREntityProperties().ID)
 	return &id
 }
 
 func (e *Entity) OwnerId() *int32 {
-	id := int32(e.obj.(objects.IRREntityProperties).GetRREntityProperties().OwnerID)
+	id := int32(e.obj.(objects.IRREntityPropertiesHaver).GetRREntityProperties().OwnerID)
 	return &id
 }
 

@@ -33,6 +33,14 @@ type GCObject struct {
 	GCParent         drobjectypes.DRObject
 }
 
+func (g *GCObject) GetRREntityProperties() *RREntityProperties {
+	return g.RREntityProperties()
+}
+
+type IRREntityPropertiesHaver interface {
+	GetRREntityProperties() *RREntityProperties
+}
+
 func (g *GCObject) GetParentEntity() drobjectypes.DRObject {
 	if g.GCParent == nil {
 		return nil
@@ -341,7 +349,7 @@ func ReadData(b *byter.Byter) drobjectypes.DRObject {
 	}
 
 	gcObject.SetVersion(version)
-	gcObject.(IRREntityProperties).GetRREntityProperties().ID = id
+	gcObject.(IRREntityPropertiesHaver).GetRREntityProperties().ID = id
 
 	gcName := b.CString()
 	gcObject.(IGCObject).GetGCObject().GCLabel = gcName

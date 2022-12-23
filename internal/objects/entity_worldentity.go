@@ -104,7 +104,7 @@ func (g *WorldEntity) Tick() {
 
 func (g *WorldEntity) Init() {
 	if g.luaScript != nil {
-		g.luaScript.Init()
+		g.luaScript.Init(g)
 	}
 
 	for _, object := range g.Children() {

@@ -32,7 +32,7 @@ func (n *Manipulators) RemoveEquipmentByID(id uint32) {
 	toRemove := -1
 
 	for li, child := range n.Children() {
-		if child.(IRREntityProperties).GetRREntityProperties().ID == id {
+		if child.(IRREntityPropertiesHaver).GetRREntityProperties().ID == id {
 			toRemove = li
 		}
 	}

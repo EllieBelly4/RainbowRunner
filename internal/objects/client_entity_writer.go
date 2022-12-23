@@ -34,7 +34,7 @@ func (w *ClientEntityWriter) Create(object drobjectypes.DRObject) {
 
 	w.Body.WriteByte(0x01) // Create
 
-	w.Body.WriteUInt16(uint16(object.(IRREntityProperties).GetRREntityProperties().ID)) // Entity ID
+	w.Body.WriteUInt16(uint16(object.(IRREntityPropertiesHaver).GetRREntityProperties().ID)) // Entity ID
 	w.Body.WriteByte(byte(GCObjectLookupTypeString))
 	w.Body.WriteCString(object.(IGCObject).GetGCObject().GCType)
 
@@ -51,7 +51,7 @@ func (w *ClientEntityWriter) Init(object drobjectypes.DRObject) {
 	w.dirty = true
 
 	w.Body.WriteByte(0x02) // Init
-	w.Body.WriteUInt16(uint16(object.(IRREntityProperties).GetRREntityProperties().ID))
+	w.Body.WriteUInt16(uint16(object.(IRREntityPropertiesHaver).GetRREntityProperties().ID))
 
 	object.WriteInit(w.Body)
 }
@@ -59,9 +59,9 @@ func (w *ClientEntityWriter) Init(object drobjectypes.DRObject) {
 func (w *ClientEntityWriter) CreateComponentAndInit(component drobjectypes.DRObject, targetEntity drobjectypes.DRObject) {
 	w.dirty = true
 
-	w.Body.WriteByte(0x32)                                                                    // Create Component
-	w.Body.WriteUInt16(uint16(targetEntity.(IRREntityProperties).GetRREntityProperties().ID)) // Parent Entity ID
-	w.Body.WriteUInt16(uint16(component.(IRREntityProperties).GetRREntityProperties().ID))    // Component ID
+	w.Body.WriteByte(0x32)                                                                         // Create Component
+	w.Body.WriteUInt16(uint16(targetEntity.(IRREntityPropertiesHaver).GetRREntityProperties().ID)) // Parent Entity ID
+	w.Body.WriteUInt16(uint16(component.(IRREntityPropertiesHaver).GetRREntityProperties().ID))    // Component ID
 	w.Body.WriteByte(byte(GCObjectLookupTypeString))
 	w.Body.WriteCString(component.(IGCObject).GetGCObject().GCType) // Component Type
 	w.Body.WriteByte(0x01)                                          // Unk
@@ -72,8 +72,8 @@ func (w *ClientEntityWriter) CreateComponentAndInit(component drobjectypes.DRObj
 func (w *ClientEntityWriter) Update(object drobjectypes.DRObject) {
 	w.dirty = true
 
-	w.Body.WriteByte(0x03)                                                              // MsgType Update
-	w.Body.WriteUInt16(uint16(object.(IRREntityProperties).GetRREntityProperties().ID)) // Entity ID
+	w.Body.WriteByte(0x03)                                                                   // MsgType Update
+	w.Body.WriteUInt16(uint16(object.(IRREntityPropertiesHaver).GetRREntityProperties().ID)) // Entity ID
 
 	object.WriteUpdate(w.Body)
 
@@ -91,8 +91,8 @@ func (w *ClientEntityWriter) BeginComponentUpdate(object drobjectypes.DRObject) 
 
 	w.dirty = true
 
-	w.Body.WriteByte(0x35)                                                              // ComponentUpdate
-	w.Body.WriteUInt16(uint16(object.(IRREntityProperties).GetRREntityProperties().ID)) // ComponentID
+	w.Body.WriteByte(0x35)                                                                   // ComponentUpdate
+	w.Body.WriteUInt16(uint16(object.(IRREntityPropertiesHaver).GetRREntityProperties().ID)) // ComponentID
 }
 
 func (w *ClientEntityWriter) EndComponentUpdate(object drobjectypes.DRObject) {
