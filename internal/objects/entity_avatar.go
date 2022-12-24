@@ -21,6 +21,11 @@ type Avatar struct {
 	IsSpawned          bool
 }
 
+func (u *Avatar) AddChild(child drobjecttypes.DRObject) {
+	u.Hero.AddChild(child)
+	child.SetParent(u)
+}
+
 func (p *Avatar) Type() drobjecttypes.DRObjectType {
 	return drobjecttypes.DRObjectOther
 }

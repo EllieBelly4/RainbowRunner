@@ -108,6 +108,11 @@ type WorldEntity struct {
 	*/
 }
 
+func (g *WorldEntity) AddChild(child drobjecttypes.DRObject) {
+	g.Entity.AddChild(child)
+	child.SetParent(g)
+}
+
 func (g *WorldEntity) Tick() {
 	if g.luaScript != nil {
 		err := g.luaScript.Tick()
