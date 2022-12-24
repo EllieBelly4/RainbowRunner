@@ -201,10 +201,16 @@ func (n *Skills) EquipSkill(skill ISkill, slot uint32) error {
 		return errors.New(fmt.Sprintf("Slot %d is already occupied by skill %s", slot, skillInSlot.GetSkill().GCType))
 	}
 
-	prevSlot := skill.GetSkill().Slot
+	getSkill := skill.GetSkill()
+	prevSlot := getSkill.Slot
 	delete(n.slots, uint32(prevSlot))
 	n.slots[slot] = skill
 	prevSlot = int(slot)
+
+	unit := n.GetParentEntity().(IUnit)
+	manipulators := unit.GetUnit().GetChildByGCNativeType("Manipulators").(IManipulators).GetManipulators()
+
+	manipulators.AddChildAndUpdate(getSkill)
 
 	n.sendUpdateSkillSlot(skill)
 

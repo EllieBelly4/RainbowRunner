@@ -4,6 +4,7 @@ package objects
 import (
 	lua "RainbowRunner/internal/lua"
 	"RainbowRunner/internal/types"
+	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	lua2 "github.com/yuin/gopher-lua"
 )
@@ -39,10 +40,10 @@ func luaMethodsManipulators() map[string]lua2.LGFunction {
 
 			return 0
 		},
-		"removeEquipmentByID": func(l *lua2.LState) int {
+		"removeChildByID": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IManipulators](l, 1)
 			obj := objInterface.GetManipulators()
-			obj.RemoveEquipmentByID(uint32(l.CheckNumber(2)))
+			obj.RemoveChildByID(uint32(l.CheckNumber(2)))
 
 			return 0
 		},
@@ -61,7 +62,16 @@ func luaMethodsManipulators() map[string]lua2.LGFunction {
 			obj := objInterface.GetManipulators()
 			obj.WriteAddItem(
 				lua.CheckReferenceValue[byter.Byter](l, 2),
-				lua.CheckReferenceValue[Equipment](l, 3),
+				lua.CheckValue[drobjecttypes.DRObject](l, 3),
+			)
+
+			return 0
+		},
+		"addChildAndUpdate": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IManipulators](l, 1)
+			obj := objInterface.GetManipulators()
+			obj.AddChildAndUpdate(
+				lua.CheckValue[drobjecttypes.DRObject](l, 2),
 			)
 
 			return 0

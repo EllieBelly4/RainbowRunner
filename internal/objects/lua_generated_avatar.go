@@ -41,7 +41,7 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 			res0 := obj.Type()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("drobjectypes.DRObjectType"))
+			l.SetMetatable(ud, l.GetTypeMetatable("drobjecttypes.DRObjectType"))
 			l.Push(ud)
 
 			return 1
@@ -182,7 +182,7 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 
 			return 1
 		},
-	}, luaMethodsGCObject)
+	}, luaMethodsHero)
 }
 func newLuaAvatar(l *lua2.LState) int {
 	obj := NewAvatar(string(l.CheckString(1)))

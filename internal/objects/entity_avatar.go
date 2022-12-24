@@ -11,9 +11,9 @@ import (
 	"fmt"
 )
 
-//go:generate go run ../../scripts/generatelua -type=Avatar -extends=GCObject
+//go:generate go run ../../scripts/generatelua -type=Avatar -extends=Hero
 type Avatar struct {
-	*GCObject
+	*Hero
 	IsMoving           bool
 	Rotation           int32
 	ClientUpdateNumber byte
@@ -27,7 +27,7 @@ func (p *Avatar) Type() drobjecttypes.DRObjectType {
 
 func NewAvatar(gcType string) *Avatar {
 	a := &Avatar{
-		GCObject: NewGCObject("Avatar"),
+		Hero: NewHero("Avatar"),
 	}
 
 	a.GCType = gcType

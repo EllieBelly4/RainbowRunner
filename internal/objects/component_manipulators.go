@@ -1,7 +1,9 @@
 package objects
 
 import (
+	"RainbowRunner/internal/message"
 	"RainbowRunner/internal/types"
+	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	"fmt"
 )
@@ -28,7 +30,7 @@ func (n *Manipulators) WriteInit(b *byter.Byter) {
 	}
 }
 
-func (n *Manipulators) RemoveEquipmentByID(id uint32) {
+func (n *Manipulators) RemoveChildByID(id uint32) {
 	toRemove := -1
 
 	for li, child := range n.Children() {
@@ -53,15 +55,36 @@ func (n *Manipulators) WriteRemoveItem(body *byter.Byter, id types.EquipmentSlot
 	CEWriter.EndComponentUpdate(n)
 }
 
-func (n *Manipulators) WriteAddItem(body *byter.Byter, equipment *Equipment) {
+func (n *Manipulators) WriteAddItem(body *byter.Byter, item drobjecttypes.DRObject) {
 	CEWriter := NewClientEntityWriter(body)
 	CEWriter.BeginComponentUpdate(n)
 
 	// 0x00 Add Item
 	CEWriter.Body.WriteByte(0x00)
 
-	equipment.WriteInit(CEWriter.Body)
+	item.WriteInit(CEWriter.Body)
 	CEWriter.EndComponentUpdate(n)
+}
+
+func (m *Manipulators) AddChildAndUpdate(child drobjecttypes.DRObject) {
+	m.AddChild(child)
+
+	// TODO emit event
+	m.sendAddItem(child)
+}
+
+func (m *Manipulators) sendAddItem(child drobjecttypes.DRObject) {
+	CEWriter := NewClientEntityWriterWithByter()
+	CEWriter.BeginComponentUpdate(m)
+
+	// 0x00 Add Item
+	CEWriter.Body.WriteByte(0x00)
+
+	child.WriteInit(CEWriter.Body)
+	CEWriter.EndComponentUpdate(m)
+
+	player := m.GetPlayerOwner()
+	player.MessageQueue.EnqueueClientEntity(CEWriter.Body, message.OpTypeManipulators)
 }
 
 func NewManipulators(gcType string) *Manipulators {

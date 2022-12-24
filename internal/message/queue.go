@@ -23,6 +23,7 @@ const (
 	OpTypeOther
 	OpTypeBehaviourAction
 	OpTypeSkills
+	OpTypeManipulators
 )
 
 type QueueItem struct {
