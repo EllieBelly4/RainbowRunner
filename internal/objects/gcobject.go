@@ -6,6 +6,7 @@ import (
 	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"regexp"
 	"strings"
 )
@@ -31,6 +32,26 @@ type GCObject struct {
 	Properties       []GCObjectProperty
 	EntityHandler    EntityMessageHandler
 	GCParent         drobjecttypes.DRObject
+}
+
+func (g *GCObject) GetChildrenFiltered(f func(drobjecttypes.DRObject) bool) []drobjecttypes.DRObject {
+	results := make([]drobjecttypes.DRObject, 0)
+
+	for _, object := range g.Children() {
+		if f(object) {
+			results = append(results, object)
+		}
+	}
+
+	return results
+}
+
+func (g *GCObject) GetPlayerOwner() *RRPlayer {
+	if g.EntityProperties.OwnerID == 0 {
+		return nil
+	}
+
+	return Players.GetPlayerOrNil(g.EntityProperties.OwnerID)
 }
 
 func (g *GCObject) GetChildrenByGCNativeType(s string) []drobjecttypes.DRObject {
@@ -305,13 +326,7 @@ func (g *GCObject) GetChildByGCNativeType(s string) drobjecttypes.DRObject {
 }
 
 func (g *GCObject) GetChildByGCType(s string) drobjecttypes.DRObject {
-	for _, child := range g.GCChildren {
-		if strings.ToLower(child.(IGCObject).GetGCObject().GCType) == strings.ToLower(s) {
-			return child
-		}
-	}
-
-	return nil
+	return SelectByGCTypeName(s, g.Children())
 }
 
 func (g *GCObject) SetVersion(version uint8) {
@@ -397,4 +412,43 @@ func (g *GCObject) RemoveChildrenByGCNativeType(gcNativeType string) int {
 	}
 
 	return len(toRemove)
+}
+
+func (g *GCObject) GetChildFromGCTypeRequest(reader *byter.Byter) drobjecttypes.DRObject {
+	return SelectFromGCTypeRequest(reader, g.Children())
+}
+
+func SelectFromGCTypeRequest(reader *byter.Byter, objects []drobjecttypes.DRObject) drobjecttypes.DRObject {
+	version := reader.Byte()
+
+	switch version {
+	case 0xFF:
+		return SelectByGCTypeName(reader.CString(), objects)
+	case 0x04:
+		return SelectByGCTypeHash(reader.UInt32(), objects)
+	default:
+		log.Errorf("unknown GCType lookup version %x", version)
+	}
+
+	return nil
+}
+
+func SelectByGCTypeName(s string, objects []drobjecttypes.DRObject) drobjecttypes.DRObject {
+	for _, child := range objects {
+		if strings.ToLower(child.(IGCObject).GetGCObject().GCType) == strings.ToLower(s) {
+			return child
+		}
+	}
+
+	return nil
+}
+
+func SelectByGCTypeHash(hash uint32, objects []drobjecttypes.DRObject) drobjecttypes.DRObject {
+	for _, object := range objects {
+		if GetTypeHash(object.(IGCObject).GetGCObject().GCType) == hash {
+			return object
+		}
+	}
+
+	return nil
 }

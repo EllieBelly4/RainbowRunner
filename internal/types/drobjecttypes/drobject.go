@@ -19,6 +19,7 @@ type DRObject interface {
 
 	AddChild(object DRObject)
 	Children() []DRObject
+	GetChildrenFiltered(func(DRObject) bool) []DRObject
 	GetChildByGCType(s string) DRObject
 	GetChildByGCNativeType(s string) DRObject
 	GetChildrenByGCNativeType(s string) []DRObject

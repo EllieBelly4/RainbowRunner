@@ -22,6 +22,7 @@ const (
 	OpTypeInventoryItemDropResponse
 	OpTypeOther
 	OpTypeBehaviourAction
+	OpTypeSkills
 )
 
 type QueueItem struct {
@@ -34,6 +35,10 @@ type Queue struct {
 	sync.RWMutex
 
 	queues map[QueueType][]*QueueItem
+}
+
+func (q *Queue) EnqueueClientEntity(item *byter.Byter, opType OpType) {
+	q.Enqueue(QueueTypeClientEntity, item, opType)
 }
 
 func (q *Queue) Enqueue(queueType QueueType, item *byter.Byter, opType OpType) {

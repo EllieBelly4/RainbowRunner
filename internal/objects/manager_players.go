@@ -82,6 +82,19 @@ func (m *PlayerManager) GetPlayer(id uint16) *RRPlayer {
 	return m.Players[int(id)]
 }
 
+func (m *PlayerManager) GetPlayerOrNil(id uint16) *RRPlayer {
+	m.RLock()
+	defer m.RUnlock()
+
+	player, ok := m.Players[int(id)]
+
+	if !ok {
+		return nil
+	}
+
+	return player
+}
+
 var playerSendBuffer = byter.NewByter(make([]byte, 1024*1024+10))
 
 func (m *PlayerManager) AfterTick() {

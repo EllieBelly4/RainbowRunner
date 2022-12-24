@@ -152,7 +152,7 @@ function usePosition(player, actionID)
 --     unitBehav:executeAction(usePosition)
 end
 
-function skillSlot(player)
+function skillSlot(player, slot)
     zone = player:zone()
     avatar = zone:findEntityByGCTypeName("avatar.classes.fighterfemale")
     unitBehav = avatar:getChildByGCNativeType("UnitBehavior")
@@ -162,5 +162,9 @@ function skillSlot(player)
 
     print(firstSkill:gctype())
 
-    skillsComp:updateSlot(firstSkill, 1)
+    if firstSkill:slot() ~= 0 then
+        skillsComp:unequipSkill(firstSkill)
+    end
+
+    skillsComp:equipSkill(firstSkill, tonumber(slot))
 end

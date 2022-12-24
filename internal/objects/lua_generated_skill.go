@@ -30,6 +30,7 @@ func luaMethodsSkill() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
 		"unk0":  lua.LuaGenericGetSetNumber[ISkill](func(v ISkill) *uint32 { return &v.GetSkill().Unk0 }),
 		"level": lua.LuaGenericGetSetNumber[ISkill](func(v ISkill) *byte { return &v.GetSkill().Level }),
+		"slot":  lua.LuaGenericGetSetNumber[ISkill](func(v ISkill) *int { return &v.GetSkill().OriginalSlot }),
 		"getSkill": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[ISkill](l, 1)
 			obj := objInterface.GetSkill()

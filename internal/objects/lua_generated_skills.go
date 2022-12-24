@@ -29,6 +29,30 @@ func registerLuaSkills(state *lua2.LState) {
 
 func luaMethodsSkills() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+		"readUpdate": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
+			obj := objInterface.GetSkills()
+			res0 := obj.ReadUpdate(
+				lua.CheckReferenceValue[byter.Byter](l, 2),
+			)
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("error"))
+			l.Push(ud)
+
+			return 1
+		},
+		"getSkillInSlot": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
+			obj := objInterface.GetSkills()
+			res0 := obj.GetSkillInSlot(uint32(l.CheckNumber(2)))
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("ISkill"))
+			l.Push(ud)
+
+			return 1
+		},
 		"writeInit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
 			obj := objInterface.GetSkills()
@@ -45,11 +69,10 @@ func luaMethodsSkills() map[string]lua2.LGFunction {
 			res0Array := l.NewTable()
 
 			for _, res0 := range res0 {
-				if res0 != nil {
-					res0Array.Append(res0.ToLua(l))
-				} else {
-					res0Array.Append(lua2.LNil)
-				}
+				ud := l.NewUserData()
+				ud.Value = res0
+				l.SetMetatable(ud, l.GetTypeMetatable("ISkill"))
+				res0Array.Append(ud)
 			}
 
 			l.Push(res0Array)
@@ -107,6 +130,54 @@ func luaMethodsSkills() map[string]lua2.LGFunction {
 			}
 
 			l.Push(res0Array)
+
+			return 1
+		},
+		"unequipSkill": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
+			obj := objInterface.GetSkills()
+			res0 := obj.UnequipSkill(
+				lua.CheckValue[ISkill](l, 2),
+			)
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("error"))
+			l.Push(ud)
+
+			return 1
+		},
+		"equipSkill": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
+			obj := objInterface.GetSkills()
+			res0 := obj.EquipSkill(
+				lua.CheckValue[ISkill](l, 2), uint32(l.CheckNumber(3)),
+			)
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("error"))
+			l.Push(ud)
+
+			return 1
+		},
+		"addSkill": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
+			obj := objInterface.GetSkills()
+			obj.AddSkill(
+				lua.CheckReferenceValue[ActiveSkill](l, 2), int(l.CheckNumber(3)),
+			)
+
+			return 0
+		},
+		"getSkillByGCTypeRequest": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
+			obj := objInterface.GetSkills()
+			res0 := obj.GetSkillByGCTypeRequest(
+				lua.CheckReferenceValue[byter.Byter](l, 2),
+			)
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("ISkill"))
+			l.Push(ud)
 
 			return 1
 		},

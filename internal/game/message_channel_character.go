@@ -251,7 +251,7 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 		{"skills.generic.FearShot", 1, 10000},
 	}
 
-	for _, s := range skillsToAdd {
+	for i, s := range skillsToAdd {
 		skill := objects.NewActiveSkill(s.Name)
 		skill.Level = s.Level
 		skill.Unk0 = s.Unk0
@@ -261,7 +261,7 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 			//objects.Uint32Prop("Level", s.Level),
 		}
 
-		avatarSkills.AddChild(skill)
+		avatarSkills.AddSkill(skill, i+1)
 	}
 
 	//skillSlot := objects.NewComponent("skillslot", "skillslot")
