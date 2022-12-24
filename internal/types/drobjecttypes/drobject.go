@@ -12,6 +12,7 @@ type DRObjectType int
 type DRObject interface {
 	WriteFullGCObject(b *byter.Byter)
 	WriteInit(b *byter.Byter)
+	WriteData(b *byter.Byter)
 	WriteUpdate(b *byter.Byter)
 	WriteSynch(b *byter.Byter)
 

@@ -1,5 +1,7 @@
 package objects
 
+import "RainbowRunner/pkg/byter"
+
 //go:generate go run ../../scripts/generatelua -type=Skill -extends=Component
 type Skill struct {
 	*Component
@@ -29,6 +31,11 @@ type Skill struct {
 	PropertySkillDescManaCostMod
 	PropertySkillDescCoolDown
 	*/
+}
+
+func (s *Skill) WriteData(b *byter.Byter) {
+	b.WriteUInt32(uint32(s.Slot))
+	b.WriteByte(s.Level)
 }
 
 func NewSkill(gcType string) *Skill {

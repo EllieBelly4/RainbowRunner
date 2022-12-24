@@ -80,8 +80,11 @@ func (m *Manipulators) sendAddItem(child drobjecttypes.DRObject) {
 	// 0x00 Add Item
 	CEWriter.Body.WriteByte(0x00)
 
-	child.WriteInit(CEWriter.Body)
-	CEWriter.EndComponentUpdate(m)
+	CEWriter.Body.WriteByte(0xFF) // GetType
+	CEWriter.Body.WriteCString(child.(IGCObject).GetGCObject().GCType)
+
+	child.WriteData(CEWriter.Body)
+	CEWriter.WriteSynch(m)
 
 	player := m.GetPlayerOwner()
 	player.MessageQueue.EnqueueClientEntity(CEWriter.Body, message.OpTypeManipulators)

@@ -149,8 +149,12 @@ func (g *GCObject) Init() {
 
 }
 
+func (g *GCObject) WriteData(b *byter.Byter) {
+	fmt.Printf("GCObject writeData for %s (%s: %s) not implemented but ignoring\n", g.GCLabel, g.GCType, g.GCNativeType)
+}
+
 func (g *GCObject) WriteInit(b *byter.Byter) {
-	fmt.Printf("GCObject init for %s (%s: %s) not implemented but ignoring\n", g.GCLabel, g.GCType, g.GCNativeType)
+	fmt.Printf("GCObject writeInit for %s (%s: %s) not implemented but ignoring\n", g.GCLabel, g.GCType, g.GCNativeType)
 }
 
 func (g *GCObject) WriteUpdate(b *byter.Byter) {

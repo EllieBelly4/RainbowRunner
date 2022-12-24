@@ -20,6 +20,7 @@ func (n *Item) SetInventoryPosition(vector2 datatypes.Vector2) {
 }
 
 func (n *Item) WriteInit(b *byter.Byter) {
+	// TODO remove this, I don't think this is in the right place as this should be handled in Manipulators or Inventory etc.
 	b.WriteByte(0xFF) // GetType
 	b.WriteCString(n.GCType)
 

@@ -3,6 +3,7 @@ package objects
 
 import (
 	lua "RainbowRunner/internal/lua"
+	"RainbowRunner/pkg/byter"
 	lua2 "github.com/yuin/gopher-lua"
 )
 
@@ -28,9 +29,19 @@ func registerLuaSkill(state *lua2.LState) {
 
 func luaMethodsSkill() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-		"unk0":  lua.LuaGenericGetSetNumber[ISkill](func(v ISkill) *uint32 { return &v.GetSkill().Unk0 }),
-		"level": lua.LuaGenericGetSetNumber[ISkill](func(v ISkill) *byte { return &v.GetSkill().Level }),
-		"slot":  lua.LuaGenericGetSetNumber[ISkill](func(v ISkill) *int { return &v.GetSkill().OriginalSlot }),
+		"unk0":         lua.LuaGenericGetSetNumber[ISkill](func(v ISkill) *uint32 { return &v.GetSkill().Unk0 }),
+		"level":        lua.LuaGenericGetSetNumber[ISkill](func(v ISkill) *byte { return &v.GetSkill().Level }),
+		"originalSlot": lua.LuaGenericGetSetNumber[ISkill](func(v ISkill) *int { return &v.GetSkill().OriginalSlot }),
+		"slot":         lua.LuaGenericGetSetNumber[ISkill](func(v ISkill) *int { return &v.GetSkill().Slot }),
+		"writeData": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[ISkill](l, 1)
+			obj := objInterface.GetSkill()
+			obj.WriteData(
+				lua.CheckReferenceValue[byter.Byter](l, 2),
+			)
+
+			return 0
+		},
 		"getSkill": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[ISkill](l, 1)
 			obj := objInterface.GetSkill()
