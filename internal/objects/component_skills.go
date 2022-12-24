@@ -1,6 +1,7 @@
 package objects
 
 import (
+	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 )
 
@@ -8,18 +9,22 @@ import (
 type Skills struct {
 	*Component
 
+	slots map[uint32]drobjecttypes.DRObject
+
 	/*
 		PropertySkillsSkillPoints
 	*/
+}
+
+func (n *Skills) GetSkillInSlot(slot uint32) drobjecttypes.DRObject {
+	return n.slots[slot]
 }
 
 func (n *Skills) WriteInit(b *byter.Byter) {
 	// Skills::readInit()
 	b.WriteUInt32(0xFFFFFFFF)
 
-	skills := n.GetChildrenByGCNativeType("ActiveSkill")
-	skills = append(skills, n.GetChildrenByGCNativeType("PassiveSkill")...)
-	skills = append(skills, n.GetChildrenByGCNativeType("ActivePassiveSkill")...)
+	skills := n.GetAllSkills()
 
 	// GCObject::readChildData<Skill>
 	b.WriteByte(byte(len(skills))) // Count
@@ -59,10 +64,30 @@ func (n *Skills) WriteInit(b *byter.Byter) {
 	b.WriteCString("skills.professions.Warrior")
 }
 
+func (n *Skills) GetAllSkills() []drobjecttypes.DRObject {
+	skills := n.GetActiveSkills()
+	skills = append(skills, n.GetPassiveSkills()...)
+	skills = append(skills, n.GetActivePassiveSkills()...)
+	return skills
+}
+
+func (n *Skills) GetActivePassiveSkills() []drobjecttypes.DRObject {
+	return n.GetChildrenByGCNativeType("ActivePassiveSkill")
+}
+
+func (n *Skills) GetPassiveSkills() []drobjecttypes.DRObject {
+	return n.GetChildrenByGCNativeType("PassiveSkill")
+}
+
+func (n *Skills) GetActiveSkills() []drobjecttypes.DRObject {
+	return n.GetChildrenByGCNativeType("ActiveSkill")
+}
+
 func NewSkills(gcType string) *Skills {
 	component := NewComponent(gcType, "Skills")
 
 	return &Skills{
 		Component: component,
+		slots:     map[uint32]drobjecttypes.DRObject{},
 	}
 }

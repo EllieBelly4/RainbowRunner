@@ -87,7 +87,7 @@ func handleCharacterPlay(conn *connections.RRConn, reader *byter.Byter) {
 	character := objects.Players.Players[conn.GetID()].Characters[slot]
 	objects.Players.Players[conn.GetID()].CurrentCharacter = character
 
-	character.WalkChildren(func(object drobjectypes.DRObject) {
+	character.WalkChildren(func(object drobjecttypes.DRObject) {
 		props := object.(objects.IRREntityPropertiesHaver).GetRREntityProperties()
 
 		props.Conn = conn
@@ -387,7 +387,7 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	return avatar
 }
 
-func AddEquipment(equipment drobjectypes.DRObject, manipulators *objects.Manipulators, armour string, boots string, helm string, gloves string, shield string) {
+func AddEquipment(equipment drobjecttypes.DRObject, manipulators *objects.Manipulators, armour string, boots string, helm string, gloves string, shield string) {
 	randomArmour := objects.AddRandomEquipment(database.Armours, objects.ItemArmour)
 
 	if randomArmour != nil {

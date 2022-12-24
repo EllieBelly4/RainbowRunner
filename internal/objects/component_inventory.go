@@ -14,7 +14,7 @@ type Inventory struct {
 	InventoryID byte
 }
 
-func (i *Inventory) AddChild(child drobjectypes.DRObject) {
+func (i *Inventory) AddChild(child drobjecttypes.DRObject) {
 	switch child.(type) {
 	case *Equipment:
 		child.(*Equipment).Index = i.itemID
@@ -50,9 +50,9 @@ func (i *Inventory) WriteInitData(body *byter.Byter) {
 	}
 }
 
-func (i *Inventory) RemoveItemByIndex(index int) drobjectypes.DRObject {
+func (i *Inventory) RemoveItemByIndex(index int) drobjecttypes.DRObject {
 	toRemove := -1
-	var toReturn drobjectypes.DRObject = nil
+	var toReturn drobjecttypes.DRObject = nil
 
 	for li, child := range i.Children() {
 		foundIndex := 0

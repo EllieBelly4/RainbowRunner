@@ -18,7 +18,7 @@ func NewEntityCollection(entities []*Entity) *EntityCollection {
 }
 
 type Entity struct {
-	obj drobjectypes.DRObject
+	obj drobjecttypes.DRObject
 }
 
 func (e *Entity) Zone() *Zone {
@@ -59,7 +59,7 @@ func (e *Entity) Children() *[]*Entity {
 	return &list
 }
 
-func NewEntity(e drobjectypes.DRObject) *Entity {
+func NewEntity(e drobjecttypes.DRObject) *Entity {
 	return &Entity{
 		obj: e,
 	}

@@ -20,7 +20,7 @@ func (p *RREntityProperties) SetOwner(id uint16) {
 }
 
 type RREntity struct {
-	Object  drobjectypes.DRObject
+	Object  drobjecttypes.DRObject
 	OwnerID int
 	ID      uint32
 }

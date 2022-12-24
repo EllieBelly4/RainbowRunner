@@ -1,4 +1,4 @@
-package drobjectypes
+package drobjecttypes
 
 import (
 	"RainbowRunner/internal/connections"

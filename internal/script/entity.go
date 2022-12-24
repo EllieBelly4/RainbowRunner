@@ -8,7 +8,7 @@ import (
 )
 
 type IEntityScript interface {
-	Init(entity drobjectypes.DRObject) error
+	Init(entity drobjecttypes.DRObject) error
 	Tick() error
 	Load() error
 }
@@ -66,7 +66,7 @@ func (e *EntityScript) Load() error {
 	return nil
 }
 
-func (e *EntityScript) Init(entity drobjectypes.DRObject) error {
+func (e *EntityScript) Init(entity drobjecttypes.DRObject) error {
 	if e == nil || e.EventHandlers == nil {
 		return nil
 	}

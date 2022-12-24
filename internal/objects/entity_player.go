@@ -26,8 +26,8 @@ type Player struct {
 	Zone      *Zone
 }
 
-func (p *Player) Type() drobjectypes.DRObjectType {
-	return drobjectypes.DRObjectOther
+func (p *Player) Type() drobjecttypes.DRObjectType {
+	return drobjecttypes.DRObjectOther
 }
 
 func (p *Player) WriteInit(b *byter.Byter) {
@@ -531,9 +531,9 @@ func (p *Player) OnZoneJoin() {
 		CEWriter := NewClientEntityWriterWithByter()
 		CEWriter.Create(entity)
 
-		entity.WalkChildren(func(object drobjectypes.DRObject) {
+		entity.WalkChildren(func(object drobjecttypes.DRObject) {
 			switch object.Type() {
-			case drobjectypes.DRObjectComponent:
+			case drobjecttypes.DRObjectComponent:
 				//if mb2, ok := object.(*MonsterBehavior2); ok {
 				//	CEWriter.CreateComponentAndInit(object, entity)
 				//}

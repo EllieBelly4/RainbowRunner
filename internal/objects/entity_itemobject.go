@@ -8,11 +8,11 @@ import (
 //go:generate go run ../../scripts/generatelua -type=ItemObject -extends=WorldEntity
 type ItemObject struct {
 	*WorldEntity
-	Item drobjectypes.DRObject
+	Item drobjecttypes.DRObject
 }
 
-func (n *ItemObject) Type() drobjectypes.DRObjectType {
-	return drobjectypes.DRObjectEntity
+func (n *ItemObject) Type() drobjecttypes.DRObjectType {
+	return drobjecttypes.DRObjectEntity
 }
 
 func (n *ItemObject) WriteInit(b *byter.Byter) {
@@ -34,7 +34,7 @@ func (n *ItemObject) WriteInit(b *byter.Byter) {
 	n.Item.WriteInit(b)
 }
 
-func NewItemObject(gcType string, item drobjectypes.DRObject) *ItemObject {
+func NewItemObject(gcType string, item drobjecttypes.DRObject) *ItemObject {
 	worldEntity := NewWorldEntity(gcType)
 
 	return &ItemObject{

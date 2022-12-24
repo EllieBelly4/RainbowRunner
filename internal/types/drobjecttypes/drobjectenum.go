@@ -1,4 +1,4 @@
-package drobjectypes
+package drobjecttypes
 
 const (
 	DRObjectEntity DRObjectType = iota

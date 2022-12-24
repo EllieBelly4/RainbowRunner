@@ -16,7 +16,7 @@ type EquipmentInventory struct {
 	Slots  map[types.EquipmentSlot]*Equipment
 }
 
-func (n *EquipmentInventory) AddChild(child drobjectypes.DRObject) {
+func (n *EquipmentInventory) AddChild(child drobjecttypes.DRObject) {
 	if _, ok := child.(*Equipment); !ok {
 		panic(fmt.Sprintf("cannot add non-equipment item to EquipmentInventory: %s", child.(IGCObject).GetGCObject().GCType))
 	}

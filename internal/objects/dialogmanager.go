@@ -9,8 +9,8 @@ type DialogManager struct {
 	*GCObject
 }
 
-func (q DialogManager) Type() drobjectypes.DRObjectType {
-	return drobjectypes.DRObjectManager
+func (q DialogManager) Type() drobjecttypes.DRObjectType {
+	return drobjecttypes.DRObjectManager
 }
 
 func NewDialogManager() *DialogManager {

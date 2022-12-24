@@ -21,7 +21,7 @@ import (
 type Zone struct {
 	sync.RWMutex
 	Name     string
-	entities map[uint16]drobjectypes.DRObject
+	entities map[uint16]drobjecttypes.DRObject
 	players  map[uint16]*RRPlayer
 
 	Scripts *ZoneLuaScripts
@@ -36,11 +36,11 @@ func (z *Zone) Initialised() bool {
 	return z.initialised
 }
 
-func (z *Zone) Entities() []drobjectypes.DRObject {
+func (z *Zone) Entities() []drobjecttypes.DRObject {
 	z.RLock()
 	defer z.RUnlock()
 
-	l := make([]drobjectypes.DRObject, 0)
+	l := make([]drobjecttypes.DRObject, 0)
 
 	for _, drObject := range z.entities {
 		l = append(l, drObject)
@@ -82,7 +82,7 @@ func (z *Zone) RemovePlayer(id int) {
 	}
 }
 
-func (z *Zone) SpawnEntity(owner *uint16, entity drobjectypes.DRObject) {
+func (z *Zone) SpawnEntity(owner *uint16, entity drobjecttypes.DRObject) {
 	z.Lock()
 	defer z.Unlock()
 
@@ -93,7 +93,7 @@ func (z *Zone) SpawnEntity(owner *uint16, entity drobjectypes.DRObject) {
 		entity.(IRREntityPropertiesHaver).GetRREntityProperties().SetOwner(*owner)
 	}
 
-	entity.WalkChildren(func(object drobjectypes.DRObject) {
+	entity.WalkChildren(func(object drobjecttypes.DRObject) {
 		z.GiveID(object)
 		z.setZone(object)
 
@@ -123,7 +123,7 @@ func (z *Zone) AddPlayer(player *RRPlayer) {
 	}
 }
 
-func (z *Zone) setZone(entities ...drobjectypes.DRObject) {
+func (z *Zone) setZone(entities ...drobjecttypes.DRObject) {
 	for _, entity := range entities {
 		entity.(IRREntityPropertiesHaver).GetRREntityProperties().Zone = z
 		z.setZone(entity.Children()...)
@@ -140,7 +140,7 @@ func (z *Zone) SendToAll(body *byter.Byter) {
 }
 
 func (z *Zone) SpawnEntityWithPosition(
-	entity drobjectypes.DRObject,
+	entity drobjecttypes.DRObject,
 	position datatypes.Vector3Float32,
 	rotation float32,
 	ownerID *uint16,
@@ -164,7 +164,7 @@ func (z *Zone) SpawnEntityWithPosition(
 
 // Spawn
 // Deprecated: use SpawnEntityWithPosition
-func (z *Zone) Spawn(entity drobjectypes.DRObject, position datatypes.Vector3Float32, rotation float32) {
+func (z *Zone) Spawn(entity drobjecttypes.DRObject, position datatypes.Vector3Float32, rotation float32) {
 	z.SpawnEntityWithPosition(entity, position, rotation, nil)
 }
 
@@ -234,7 +234,7 @@ func (z *Zone) ClearEntities() {
 	z.Lock()
 	defer z.Unlock()
 
-	z.entities = make(map[uint16]drobjectypes.DRObject)
+	z.entities = make(map[uint16]drobjecttypes.DRObject)
 }
 
 func (z *Zone) ReloadPathMap() {
@@ -256,7 +256,7 @@ func (z *Zone) Tick() error {
 	return err
 }
 
-func (z *Zone) FindEntityByGCTypeName(name string) drobjectypes.DRObject {
+func (z *Zone) FindEntityByGCTypeName(name string) drobjecttypes.DRObject {
 	for _, entity := range z.Entities() {
 		if entity == nil {
 			continue
@@ -271,7 +271,7 @@ func (z *Zone) FindEntityByGCTypeName(name string) drobjectypes.DRObject {
 	return nil
 }
 
-func (z *Zone) FindEntityByID(id uint16) drobjectypes.DRObject {
+func (z *Zone) FindEntityByID(id uint16) drobjecttypes.DRObject {
 	z.RLock()
 	defer z.RUnlock()
 	for _, entity := range z.entities {
@@ -279,9 +279,9 @@ func (z *Zone) FindEntityByID(id uint16) drobjectypes.DRObject {
 			return entity
 		}
 
-		var foundEntity drobjectypes.DRObject = nil
+		var foundEntity drobjecttypes.DRObject = nil
 
-		entity.WalkChildren(func(object drobjectypes.DRObject) {
+		entity.WalkChildren(func(object drobjecttypes.DRObject) {
 			// TODO optimise this, no need to loop all children when found
 			if object.(IRREntityPropertiesHaver).GetRREntityProperties().ID == uint32(id) {
 				foundEntity = object
@@ -295,7 +295,7 @@ func (z *Zone) FindEntityByID(id uint16) drobjectypes.DRObject {
 	return nil
 }
 
-func (z *Zone) GiveID(entity drobjectypes.DRObject) {
+func (z *Zone) GiveID(entity drobjecttypes.DRObject) {
 	eProps := entity.(IRREntityPropertiesHaver).GetRREntityProperties()
 
 	if eProps.ID == 0 {
@@ -311,7 +311,7 @@ func NewZone(name string, id uint32) *Zone {
 	zone := &Zone{
 		Name:     name,
 		ID:       id,
-		entities: make(map[uint16]drobjectypes.DRObject),
+		entities: make(map[uint16]drobjecttypes.DRObject),
 		players:  make(map[uint16]*RRPlayer),
 	}
 

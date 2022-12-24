@@ -38,6 +38,78 @@ func luaMethodsSkills() map[string]lua2.LGFunction {
 
 			return 0
 		},
+		"getAllSkills": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
+			obj := objInterface.GetSkills()
+			res0 := obj.GetAllSkills()
+			res0Array := l.NewTable()
+
+			for _, res0 := range res0 {
+				if res0 != nil {
+					res0Array.Append(res0.ToLua(l))
+				} else {
+					res0Array.Append(lua2.LNil)
+				}
+			}
+
+			l.Push(res0Array)
+
+			return 1
+		},
+		"getActivePassiveSkills": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
+			obj := objInterface.GetSkills()
+			res0 := obj.GetActivePassiveSkills()
+			res0Array := l.NewTable()
+
+			for _, res0 := range res0 {
+				if res0 != nil {
+					res0Array.Append(res0.ToLua(l))
+				} else {
+					res0Array.Append(lua2.LNil)
+				}
+			}
+
+			l.Push(res0Array)
+
+			return 1
+		},
+		"getPassiveSkills": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
+			obj := objInterface.GetSkills()
+			res0 := obj.GetPassiveSkills()
+			res0Array := l.NewTable()
+
+			for _, res0 := range res0 {
+				if res0 != nil {
+					res0Array.Append(res0.ToLua(l))
+				} else {
+					res0Array.Append(lua2.LNil)
+				}
+			}
+
+			l.Push(res0Array)
+
+			return 1
+		},
+		"getActiveSkills": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
+			obj := objInterface.GetSkills()
+			res0 := obj.GetActiveSkills()
+			res0Array := l.NewTable()
+
+			for _, res0 := range res0 {
+				if res0 != nil {
+					res0Array.Append(res0.ToLua(l))
+				} else {
+					res0Array.Append(lua2.LNil)
+				}
+			}
+
+			l.Push(res0Array)
+
+			return 1
+		},
 		"getSkills": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
 			obj := objInterface.GetSkills()

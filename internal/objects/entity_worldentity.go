@@ -181,8 +181,8 @@ func (n *WorldEntity) SetRotation(degrees float32) {
 	n.Rotation = degrees
 }
 
-func (n *WorldEntity) Type() drobjectypes.DRObjectType {
-	return drobjectypes.DRObjectEntity
+func (n *WorldEntity) Type() drobjecttypes.DRObjectType {
+	return drobjecttypes.DRObjectEntity
 }
 
 func (n *WorldEntity) WriteInit(b *byter.Byter) {

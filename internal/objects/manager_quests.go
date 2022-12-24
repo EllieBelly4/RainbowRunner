@@ -9,8 +9,8 @@ type QuestManager struct {
 	*GCObject
 }
 
-func (q QuestManager) Type() drobjectypes.DRObjectType {
-	return drobjectypes.DRObjectManager
+func (q QuestManager) Type() drobjecttypes.DRObjectType {
+	return drobjecttypes.DRObjectManager
 }
 
 func NewQuestManager() *QuestManager {

@@ -26,15 +26,15 @@ type GCObject struct {
 	Version          uint8
 	GCNativeType     string
 	GCLabel          string
-	GCChildren       []drobjectypes.DRObject
+	GCChildren       []drobjecttypes.DRObject
 	GCType           string
 	Properties       []GCObjectProperty
 	EntityHandler    EntityMessageHandler
-	GCParent         drobjectypes.DRObject
+	GCParent         drobjecttypes.DRObject
 }
 
-func (g *GCObject) GetChildrenByGCNativeType(s string) []drobjectypes.DRObject {
-	results := make([]drobjectypes.DRObject, 0)
+func (g *GCObject) GetChildrenByGCNativeType(s string) []drobjecttypes.DRObject {
+	results := make([]drobjecttypes.DRObject, 0)
 
 	for _, child := range g.GCChildren {
 		if child.(IGCObject).GetGCObject().GCNativeType == s {
@@ -53,7 +53,7 @@ type IRREntityPropertiesHaver interface {
 	GetRREntityProperties() *RREntityProperties
 }
 
-func (g *GCObject) GetParentEntity() drobjectypes.DRObject {
+func (g *GCObject) GetParentEntity() drobjecttypes.DRObject {
 	if g.GCParent == nil {
 		return nil
 	}
@@ -71,7 +71,7 @@ func (g *GCObject) GetParentEntity() drobjectypes.DRObject {
 	return g.GCParent.GetParentEntity()
 }
 
-func (g *GCObject) SetParent(parent drobjectypes.DRObject) {
+func (g *GCObject) SetParent(parent drobjecttypes.DRObject) {
 	g.GCParent = parent
 }
 
@@ -95,8 +95,8 @@ func (g *GCObject) RemoveChildAt(i int) {
 	g.GCChildren = append(g.GCChildren[:i], g.GCChildren[i+1:]...)
 }
 
-func (g *GCObject) Type() drobjectypes.DRObjectType {
-	return drobjectypes.DRObjectUnknown
+func (g *GCObject) Type() drobjecttypes.DRObjectType {
+	return drobjecttypes.DRObjectUnknown
 }
 
 func (g *GCObject) ID() int {
@@ -140,7 +140,7 @@ func (g *GCObject) OwnerID() uint16 {
 	return g.EntityProperties.OwnerID
 }
 
-func (g *GCObject) Children() []drobjectypes.DRObject {
+func (g *GCObject) Children() []drobjecttypes.DRObject {
 	return g.GCChildren
 }
 
@@ -232,9 +232,9 @@ func logSerialise(format string, args ...interface{}) {
 	}
 }
 
-func (g *GCObject) AddChild(child drobjectypes.DRObject) {
+func (g *GCObject) AddChild(child drobjecttypes.DRObject) {
 	if g.GCChildren == nil {
-		g.GCChildren = make([]drobjectypes.DRObject, 0, 128)
+		g.GCChildren = make([]drobjecttypes.DRObject, 0, 128)
 	}
 
 	child.SetParent(g)
@@ -294,7 +294,7 @@ func GetTypeHash(name string) uint32 {
 	return result
 }
 
-func (g *GCObject) GetChildByGCNativeType(s string) drobjectypes.DRObject {
+func (g *GCObject) GetChildByGCNativeType(s string) drobjecttypes.DRObject {
 	for _, child := range g.GCChildren {
 		if strings.ToLower(child.(IGCObject).GetGCObject().GCNativeType) == strings.ToLower(s) {
 			return child
@@ -304,7 +304,7 @@ func (g *GCObject) GetChildByGCNativeType(s string) drobjectypes.DRObject {
 	return nil
 }
 
-func (g *GCObject) GetChildByGCType(s string) drobjectypes.DRObject {
+func (g *GCObject) GetChildByGCType(s string) drobjecttypes.DRObject {
 	for _, child := range g.GCChildren {
 		if strings.ToLower(child.(IGCObject).GetGCObject().GCType) == strings.ToLower(s) {
 			return child
@@ -321,7 +321,7 @@ func (g *GCObject) SetVersion(version uint8) {
 func (g *GCObject) ReadData(b *byter.Byter) {
 }
 
-func (g *GCObject) WalkChildren(cb func(object drobjectypes.DRObject)) {
+func (g *GCObject) WalkChildren(cb func(object drobjecttypes.DRObject)) {
 	if len(g.Children()) == 0 {
 		return
 	}
@@ -333,7 +333,7 @@ func (g *GCObject) WalkChildren(cb func(object drobjectypes.DRObject)) {
 	}
 }
 
-func ReadData(b *byter.Byter) drobjectypes.DRObject {
+func ReadData(b *byter.Byter) drobjecttypes.DRObject {
 	version := b.Byte() // Version
 	nativeType := b.CString()
 	id := b.UInt32()
@@ -347,7 +347,7 @@ func ReadData(b *byter.Byter) drobjectypes.DRObject {
 		}
 	}()
 
-	var gcObject drobjectypes.DRObject
+	var gcObject drobjecttypes.DRObject
 
 	switch nativeType {
 	case "DFC3DNode":

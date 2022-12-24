@@ -21,8 +21,8 @@ type Avatar struct {
 	IsSpawned          bool
 }
 
-func (p *Avatar) Type() drobjectypes.DRObjectType {
-	return drobjectypes.DRObjectOther
+func (p *Avatar) Type() drobjecttypes.DRObjectType {
+	return drobjecttypes.DRObjectOther
 }
 
 func NewAvatar(gcType string) *Avatar {

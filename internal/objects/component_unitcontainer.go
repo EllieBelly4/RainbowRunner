@@ -14,8 +14,8 @@ import (
 type UnitContainer struct {
 	*Component
 
-	Manipulator drobjectypes.DRObject
-	ActiveItem  drobjectypes.DRObject
+	Manipulator drobjecttypes.DRObject
+	ActiveItem  drobjecttypes.DRObject
 	Avatar      *Avatar
 }
 
@@ -139,7 +139,7 @@ func (u UnitContainer) WriteFullGCObject(byter *byter.Byter) {
 	u.Manipulator.WriteFullGCObject(byter)
 }
 
-func (u *UnitContainer) SetActiveItem(item drobjectypes.DRObject) {
+func (u *UnitContainer) SetActiveItem(item drobjecttypes.DRObject) {
 	u.ActiveItem = item
 }
 
@@ -179,7 +179,7 @@ func (u *UnitContainer) WriteRemoveItem(body *byter.Byter, index uint32) {
 	CEWriter.EndComponentUpdate(u)
 }
 
-func (u *UnitContainer) WriteAddItem(body *byter.Byter, item drobjectypes.DRObject, inventory *Inventory, x, y byte) {
+func (u *UnitContainer) WriteAddItem(body *byter.Byter, item drobjecttypes.DRObject, inventory *Inventory, x, y byte) {
 	CEWriter := NewClientEntityWriter(body)
 	CEWriter.BeginComponentUpdate(u)
 
@@ -214,7 +214,7 @@ func (u *UnitContainer) GetInventoryByID(index byte) *Inventory {
 	return nil
 }
 
-func NewUnitContainer(manipulator drobjectypes.DRObject, name string, avatar *Avatar) *UnitContainer {
+func NewUnitContainer(manipulator drobjecttypes.DRObject, name string, avatar *Avatar) *UnitContainer {
 	container := NewComponent("unitcontainer", "UnitContainer")
 	container.GCLabel = name
 

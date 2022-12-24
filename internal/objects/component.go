@@ -10,8 +10,8 @@ type Component struct {
 	*GCObject
 }
 
-func (Component) Type() drobjectypes.DRObjectType {
-	return drobjectypes.DRObjectComponent
+func (Component) Type() drobjecttypes.DRObjectType {
+	return drobjecttypes.DRObjectComponent
 }
 
 func NewComponent(gcType string, nativeType string) *Component {
