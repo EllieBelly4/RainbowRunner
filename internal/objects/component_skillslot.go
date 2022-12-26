@@ -3,6 +3,8 @@ package objects
 //go:generate go run ../../scripts/generatelua -type=SkillSlot -extends=Component
 type SkillSlot struct {
 	*Component
+	SlotID   int
+	SlotType uint32 // Unk
 
 	/*
 		PropertySkillSlotSlotID

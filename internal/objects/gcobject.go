@@ -34,6 +34,14 @@ type GCObject struct {
 	GCParent         drobjecttypes.DRObject
 }
 
+func (g *GCObject) GetGCType() string {
+	return g.GCType
+}
+
+func (g *GCObject) GetGCNativeType() string {
+	return g.GCNativeType
+}
+
 func (g *GCObject) GetChildrenFiltered(f func(drobjecttypes.DRObject) bool) []drobjecttypes.DRObject {
 	results := make([]drobjecttypes.DRObject, 0)
 

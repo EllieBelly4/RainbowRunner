@@ -255,6 +255,18 @@ func (s *Skills) GetSkillByGCTypeRequest(reader *byter.Byter) ISkill {
 	return foundSkill.(ISkill)
 }
 
+func (s *Skills) GetSkillSlots() []ISkillSlot {
+	childrenDRObjects := s.GetChildrenByGCNativeType("SkillSlot")
+
+	skillSlots := make([]ISkillSlot, 0)
+
+	for _, child := range childrenDRObjects {
+		skillSlots = append(skillSlots, child.(ISkillSlot))
+	}
+
+	return skillSlots
+}
+
 func NewSkills(gcType string) *Skills {
 	component := NewComponent(gcType, "Skills")
 

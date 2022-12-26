@@ -215,6 +215,12 @@ func (p *Player) SendCreateNewPlayerEntity(rrplayer *RRPlayer) {
 	skills := avatar.GetChildByGCNativeType("Skills")
 	clientEntityWriter.CreateComponentAndInit(skills, avatar)
 
+	//skillSlots := skills.(*Skills).GetSkillSlots()
+	//
+	//for _, slot := range skillSlots {
+	//	clientEntityWriter.Create(slot.GetSkillSlot())
+	//}
+
 	// UnitBehaviour//////////////////////////////////
 	behaviorName := "avatar.base.UnitBehavior"
 
@@ -444,7 +450,7 @@ func (p *Player) SendCreateNewPlayerEntity(rrplayer *RRPlayer) {
 
 var r = rand.New(rand.NewSource(time.Now().Unix()))
 
-func AddRandomEquipment(equipment database.EquipmentMap, t ItemType) *Equipment {
+func AddRandomEquipment(equipment database.EquipmentMap, t ItemType) drobjecttypes.DRObject {
 	i := 0
 
 	target := int(r.Int63()) % len(equipment)
@@ -456,6 +462,12 @@ func AddRandomEquipment(equipment database.EquipmentMap, t ItemType) *Equipment 
 			if err != nil {
 				log.Error(err)
 				break
+			}
+
+			if t == ItemMeleeWeapon {
+				return NewMeleeWeapon(
+					key, "ScaleModPAL.Rare.Mod1",
+				)
 			}
 
 			return NewEquipment(

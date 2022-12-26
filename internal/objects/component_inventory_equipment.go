@@ -17,17 +17,17 @@ type EquipmentInventory struct {
 }
 
 func (n *EquipmentInventory) AddChild(child drobjecttypes.DRObject) {
-	if _, ok := child.(*Equipment); !ok {
+	if _, ok := child.(IEquipment); !ok {
 		panic(fmt.Sprintf("cannot add non-equipment item to EquipmentInventory: %s", child.(IGCObject).GetGCObject().GCType))
 	}
 
-	equip := child.(*Equipment)
+	equip := child.(IEquipment).GetEquipment()
 
 	if existing, ok := n.Slots[equip.Slot]; ok {
 		panic(fmt.Sprintf("cannot add equipment '%s' to slot '%s' because '%s' is already equipped", equip.GCType, equip.Slot.String(), existing.GCType))
 	}
 
-	child.(*Equipment).Index = int(equip.Slot)
+	equip.Index = int(equip.Slot)
 
 	n.GCObject.AddChild(child)
 }

@@ -234,6 +234,14 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	avatarSkills := objects.NewSkills("avatar.base.skills")
 	avatarSkills.GCLabel = "EllieSkills"
 
+	skillSlot := objects.NewSkillSlot("skillslot")
+	skillSlot.GCLabel = "EllieSkillSlot"
+	skillSlot.SlotID = 0x64
+	skillSlot.Properties = []objects.GCObjectProperty{
+		objects.Uint32Prop("SlotID", 0x64),
+	}
+	avatarSkills.AddChild(skillSlot)
+
 	skillsToAdd := []struct {
 		Name  string
 		Level byte
@@ -391,7 +399,6 @@ func AddEquipment(equipment drobjecttypes.DRObject, manipulators *objects.Manipu
 	randomArmour := objects.AddRandomEquipment(database.Armours, objects.ItemArmour)
 
 	if randomArmour != nil {
-		randomArmour.GCLabel = "EllieArmour"
 		equipment.AddChild(randomArmour)
 		manipulators.AddChild(randomArmour)
 	}
@@ -399,7 +406,6 @@ func AddEquipment(equipment drobjecttypes.DRObject, manipulators *objects.Manipu
 	randomBoots := objects.AddRandomEquipment(database.Boots, objects.ItemArmour)
 
 	if randomBoots != nil {
-		randomBoots.GCLabel = "EllieArmour"
 		equipment.AddChild(randomBoots)
 		manipulators.AddChild(randomBoots)
 	}
@@ -407,7 +413,6 @@ func AddEquipment(equipment drobjecttypes.DRObject, manipulators *objects.Manipu
 	randomHelm := objects.AddRandomEquipment(database.Helmets, objects.ItemArmour)
 
 	if randomBoots != nil {
-		randomHelm.GCLabel = "EllieArmour"
 		equipment.AddChild(randomHelm)
 		manipulators.AddChild(randomHelm)
 	}
@@ -415,14 +420,12 @@ func AddEquipment(equipment drobjecttypes.DRObject, manipulators *objects.Manipu
 	randomGloves := objects.AddRandomEquipment(database.Gloves, objects.ItemArmour)
 
 	if randomGloves != nil {
-		randomGloves.GCLabel = "EllieArmour"
 		equipment.AddChild(randomGloves)
 		manipulators.AddChild(randomGloves)
 	}
 
 	randomWeapon := objects.AddRandomEquipment(database.MeleeWeapons, objects.ItemMeleeWeapon)
 	if randomWeapon != nil {
-		randomWeapon.GCLabel = "EllieWeapon"
 		equipment.AddChild(randomWeapon)
 		manipulators.AddChild(randomWeapon)
 	}
@@ -430,27 +433,27 @@ func AddEquipment(equipment drobjecttypes.DRObject, manipulators *objects.Manipu
 	if config.Config.Logging.LogRandomEquipment {
 		randomArmourName := "None"
 		if randomArmour != nil {
-			randomArmourName = randomArmour.GCType
+			randomArmourName = randomArmour.GetGCType()
 		}
 
 		randomBootsName := "None"
 		if randomBoots != nil {
-			randomBootsName = randomBoots.GCType
+			randomBootsName = randomBoots.GetGCType()
 		}
 
 		randomHelmName := "None"
 		if randomHelm != nil {
-			randomHelmName = randomHelm.GCType
+			randomHelmName = randomHelm.GetGCType()
 		}
 
 		randomGlovesName := "None"
 		if randomGloves != nil {
-			randomGlovesName = randomGloves.GCType
+			randomGlovesName = randomGloves.GetGCType()
 		}
 
 		randomWeaponName := "None"
 		if randomWeapon != nil {
-			randomWeaponName = randomWeapon.GCType
+			randomWeaponName = randomWeapon.GetGCType()
 		}
 
 		fmt.Printf(`Random equipment for today is:

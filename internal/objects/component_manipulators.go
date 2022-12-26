@@ -5,7 +5,6 @@ import (
 	"RainbowRunner/internal/types"
 	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
-	"fmt"
 )
 
 //go:generate go run ../../scripts/generatelua -type=Manipulators -extends=Component
@@ -17,16 +16,8 @@ func (n *Manipulators) WriteInit(b *byter.Byter) {
 	// Manipulators::readInit
 	b.WriteByte(byte(len(n.Children()))) // Number of visually equipped items
 
-	for _, equippedItem := range n.Children() {
-		ok := false
-		var equip *Equipment
-
-		if equip, ok = equippedItem.(*Equipment); !ok {
-			panic(fmt.Sprintf("cannot init manipulator as '%s' is not Equipment", equip.GCType))
-		}
-
-		equip.WriteInit(b)
-		equip.WriteManipulatorInit(b)
+	for _, item := range n.Children() {
+		item.WriteInit(b)
 	}
 }
 
