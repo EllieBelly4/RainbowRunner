@@ -17,7 +17,14 @@ func (n *Manipulators) WriteInit(b *byter.Byter) {
 	b.WriteByte(byte(len(n.Children()))) // Number of visually equipped items
 
 	for _, item := range n.Children() {
-		item.WriteInit(b)
+		if _, ok := item.(IEquipment); ok {
+			item.WriteInit(b)
+		} else {
+			b.WriteByte(0xFF) // GetType
+			b.WriteCString(item.GetGCType())
+			item.WriteData(b)
+			item.WriteInit(b)
+		}
 	}
 }
 

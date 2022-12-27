@@ -225,6 +225,9 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 		objects.Uint32Prop("IDGenerator", 0x01),
 	}
 
+	manipulators := objects.NewManipulators("Manipulators")
+	manipulators.GCLabel = "ManipulateMe"
+
 	dialogManager := objects.NewGCObject("DialogManager")
 	dialogManager.GCLabel = "EllieDialogManager"
 
@@ -268,7 +271,17 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 			//objects.Uint32Prop("Level", s.Level),
 		}
 
-		avatarSkills.AddSkill(skill, i+1)
+		hotbarSlot := i + 0x64
+
+		if hotbarSlot >= 0x6D {
+			hotbarSlot = i + 1
+		}
+
+		if hotbarSlot >= 0x64 {
+			manipulators.AddChild(skill)
+		}
+
+		avatarSkills.AddSkill(skill, i+1, hotbarSlot)
 	}
 
 	//skillSlot := objects.NewComponent("skillslot", "skillslot")
@@ -328,9 +341,6 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 
 	tradeInventory := objects.NewInventory("avatar.base.TradeInventory", 13)
 	tradeInventory.GCLabel = "EllieTradeInventory"
-
-	manipulators := objects.NewManipulators("Manipulators")
-	manipulators.GCLabel = "ManipulateMe"
 
 	// Items in inventories
 	//randomItem := objects.NewEquipment("PlateMythicPAL.PlateMythicBoots1", "PlateMythicPAL.PlateMythicBoots1.Mod1", objects.ItemArmour, types.EquipmentSlotFoot)
