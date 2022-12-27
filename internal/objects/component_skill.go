@@ -2,12 +2,11 @@ package objects
 
 import "RainbowRunner/pkg/byter"
 
-//go:generate go run ../../scripts/generatelua -type=Skill -extends=Component
+//go:generate go run ../../scripts/generatelua -type=Skill -extends=Manipulator
 type Skill struct {
-	*Component
+	*Manipulator
 	Level        byte
 	OriginalSlot int
-	Slot         int
 
 	/**
 	PropertySkillLevel
@@ -38,9 +37,9 @@ func (s *Skill) WriteData(b *byter.Byter) {
 }
 
 func NewSkill(gcType string) *Skill {
-	component := NewComponent(gcType, "Skill")
+	manipulator := NewManipulator(gcType, "Skill")
 
 	return &Skill{
-		Component: component,
+		Manipulator: manipulator,
 	}
 }

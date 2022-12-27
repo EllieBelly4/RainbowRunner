@@ -72,7 +72,7 @@ func luaMethodsItem() map[string]lua2.LGFunction {
 
 			return 1
 		},
-	}, luaMethodsGCObject)
+	}, luaMethodsManipulator)
 }
 func newLuaItem(l *lua2.LState) int {
 	obj := NewItem(string(l.CheckString(1)),

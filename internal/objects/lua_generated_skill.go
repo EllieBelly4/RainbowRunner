@@ -31,7 +31,6 @@ func luaMethodsSkill() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
 		"level":        lua.LuaGenericGetSetNumber[ISkill](func(v ISkill) *byte { return &v.GetSkill().Level }),
 		"originalSlot": lua.LuaGenericGetSetNumber[ISkill](func(v ISkill) *int { return &v.GetSkill().OriginalSlot }),
-		"slot":         lua.LuaGenericGetSetNumber[ISkill](func(v ISkill) *int { return &v.GetSkill().Slot }),
 
 		"writeData": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[ISkill](l, 1)
@@ -55,7 +54,7 @@ func luaMethodsSkill() map[string]lua2.LGFunction {
 
 			return 1
 		},
-	}, luaMethodsComponent)
+	}, luaMethodsManipulator)
 }
 func newLuaSkill(l *lua2.LState) int {
 	obj := NewSkill(string(l.CheckString(1)))

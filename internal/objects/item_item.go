@@ -5,9 +5,9 @@ import (
 	"RainbowRunner/pkg/datatypes"
 )
 
-//go:generate go run ../../scripts/generatelua -type=Item -extends=GCObject
+//go:generate go run ../../scripts/generatelua -type=Item -extends=Manipulator
 type Item struct {
-	*GCObject
+	*Manipulator
 	ModCount          int
 	Mod               string
 	ItemType          ItemType
@@ -97,10 +97,9 @@ func (n *Item) WriteInit(b *byter.Byter) {
 }
 
 func NewItem(itemGCType string, itemType ItemType) *Item {
-	gcObject := NewGCObject(string(itemType))
-	gcObject.GCType = itemGCType
+	manipulator := NewManipulator(itemGCType, string(itemType))
 
 	return &Item{
-		GCObject: gcObject,
+		Manipulator: manipulator,
 	}
 }
