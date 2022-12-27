@@ -74,7 +74,7 @@ func (n *Skills) WriteInit(b *byter.Byter) {
 
 		b.WriteByte(0xFF)
 		b.WriteCString(skill.GCType)
-		b.WriteUInt32(skill.Unk0)
+		b.WriteUInt32(uint32(skill.Slot))
 		b.WriteByte(skill.Level) // Level
 	}
 
@@ -203,9 +203,11 @@ func (n *Skills) EquipSkill(skill ISkill, slot uint32) error {
 
 	getSkill := skill.GetSkill()
 	prevSlot := getSkill.Slot
+
+	getSkill.Slot = int(slot)
+
 	delete(n.slots, uint32(prevSlot))
 	n.slots[slot] = skill
-	prevSlot = int(slot)
 
 	unit := n.GetParentEntity().(IUnit)
 	manipulators := unit.GetUnit().GetChildByGCNativeType("Manipulators").(IManipulators).GetManipulators()
