@@ -140,18 +140,6 @@ func (u *UnitBehavior) WriteInit(b *byter.Byter) {
 	b.WriteByte(u.UnitBehaviorUnk2)
 }
 
-type UnitBehaviorHandler struct {
-	*UnitBehavior
-}
-
-func (u *UnitBehaviorHandler) WriteInit(b *byter.Byter) {
-	u.WriteInit(b)
-}
-
-func (u *UnitBehaviorHandler) WriteUpdate(b *byter.Byter) {
-	u.WriteUpdate(b)
-}
-
 func (u *UnitBehavior) WriteMoveUpdate(b *byter.Byter) {
 	positions := []UnitPathPosition{
 		{
@@ -222,12 +210,8 @@ func (u *UnitBehavior) WriteMoveUpdate(b *byter.Byter) {
 	config.Config.Logging.LogGenericSent = oldLog
 }
 
-func (u *UnitBehaviorHandler) WriteSynch(b *byter.Byter) {
-	u.WriteSynch(b)
-}
-
-func (u *UnitBehaviorHandler) ReadUpdate(reader *byter.Byter) error {
-	return u.ReadUpdate(reader)
+func (u *UnitBehavior) WriteSynch(b *byter.Byter) {
+	u.GCObject.WriteSynch(b)
 }
 
 type UnitPathPosition struct {
@@ -448,18 +432,20 @@ func (u *UnitBehavior) handleClientBlockMovement(reader *byter.Byter) {
 func (u *UnitBehavior) handleExecuteAction(reader *byter.Byter) error {
 	responseId := reader.Byte()
 	action := actions2.BehaviourAction(reader.Byte())
-	someID := reader.Byte()
+	sessionID := reader.Byte()
 
-	logrus.Infof("execute action %s, unk0 %d sessionID %d\n", action.String(), responseId, someID)
+	logrus.Infof("execute action %s, unk0 %d sessionID %d\n", action.String(), responseId, sessionID)
 	reader.DumpRemaining()
 
 	var err error
 
 	switch action {
+	case actions2.BehaviourActionUse:
+		err = u.handleActionUse(reader, responseId, sessionID)
 	case actions2.BehaviourActionUsePosition:
-		err = u.handleActionUsePosition(reader, responseId, someID)
+		err = u.handleActionUsePosition(reader, responseId, sessionID)
 	case actions2.BehaviourActionActivate:
-		err = u.handleExecuteActivate(reader, responseId, someID)
+		err = u.handleExecuteActivate(reader, responseId, sessionID)
 	}
 
 	u.SessionID++
@@ -596,9 +582,32 @@ func (u *UnitBehavior) StopFollowClient() {
 
 }
 
+func (u *UnitBehavior) handleActionUse(reader *byter.Byter, responseID byte, sessionID byte) error {
+	logrus.Infof("use actionID %d", responseID)
+
+	CEWriter := NewClientEntityWriterWithByter()
+
+	CEWriter.BeginComponentUpdate(u)
+	CEWriter.CreateActionResponse(actions2.BehaviourActionUse, responseID, sessionID)
+	useAction := actions2.ActionUse{
+		SlotID: reader.Byte(),
+	}
+
+	useAction.Init(CEWriter.Body)
+
+	CEWriter.WriteSynch(u)
+
+	player := Players.GetPlayer(u.OwnerID())
+
+	player.MessageQueue.Enqueue(
+		message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeBehaviourAction,
+	)
+
+	return nil
+}
+
 func NewUnitBehavior(gcType string) *UnitBehavior {
 	component := NewComponent(gcType, "UnitBehavior")
-	component.EntityHandler = &UnitBehaviorHandler{}
 
 	return &UnitBehavior{
 		Component: component,

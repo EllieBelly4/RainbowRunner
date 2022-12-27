@@ -24,6 +24,7 @@ func RegisterAllLuaFunctions(state *lua2.LState) {
 	registerLuaInventory(state)
 	registerLuaItem(state)
 	registerLuaItemObject(state)
+	registerLuaManipulator(state)
 	registerLuaManipulators(state)
 	registerLuaMeleeWeapon(state)
 	registerLuaMerchant(state)

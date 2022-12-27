@@ -3,6 +3,7 @@ package objects
 
 import (
 	lua "RainbowRunner/internal/lua"
+	"RainbowRunner/pkg/byter"
 	lua2 "github.com/yuin/gopher-lua"
 )
 
@@ -28,6 +29,16 @@ func registerLuaActiveSkill(state *lua2.LState) {
 
 func luaMethodsActiveSkill() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
+		"writeInit": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IActiveSkill](l, 1)
+			obj := objInterface.GetActiveSkill()
+			obj.WriteInit(
+				lua.CheckReferenceValue[byter.Byter](l, 2),
+			)
+
+			return 0
+		},
 
 		"getActiveSkill": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActiveSkill](l, 1)

@@ -83,6 +83,16 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 			return 0
 		},
 
+		"writeSynch": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
+			obj := objInterface.GetUnitBehavior()
+			obj.WriteSynch(
+				lua.CheckReferenceValue[byter.Byter](l, 2),
+			)
+
+			return 0
+		},
+
 		"readUpdate": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
 			obj := objInterface.GetUnitBehavior()

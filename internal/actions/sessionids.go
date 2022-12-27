@@ -30,7 +30,7 @@ var (
 		BehaviourActionFlee:                  false,
 		BehaviourActionUseTarget:             false,
 		BehaviourActionUsePosition:           true,
-		BehaviourActionUse:                   false,
+		BehaviourActionUse:                   true,
 		BehaviourActionUseItemTarget:         false,
 		BehaviourActionUseItemPosition:       false,
 		BehaviourActionUseItem:               false,
