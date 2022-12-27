@@ -187,10 +187,10 @@ func (n *Skills) UnequipSkill(skill ISkill) error {
 	n.slots[uint32(originalSlot)] = skill
 	skill.GetSkill().Slot = originalSlot
 
-	//unit := n.GetParentEntity().(IUnit)
-	//manipulators := unit.GetUnit().GetChildByGCNativeType("Manipulators").(IManipulators).GetManipulators()
+	unit := n.GetParentEntity().(IUnit)
+	manipulators := unit.GetUnit().GetChildByGCNativeType("Manipulators").(IManipulators).GetManipulators()
 
-	//manipulators.RemoveChildAndUpdate(skill.GetSkill())
+	manipulators.RemoveChildAndUpdate(skill.GetSkill())
 	n.sendUpdateSkillSlot(skill)
 
 	return nil
