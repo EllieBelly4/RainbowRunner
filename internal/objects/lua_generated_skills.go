@@ -173,7 +173,7 @@ func luaMethodsSkills() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
 			obj := objInterface.GetSkills()
 			obj.AddSkill(
-				lua.CheckReferenceValue[ActiveSkill](l, 2), int(l.CheckNumber(3)),
+				lua.CheckReferenceValue[ActiveSkill](l, 2), int(l.CheckNumber(3)), int(l.CheckNumber(4)),
 			)
 
 			return 0

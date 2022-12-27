@@ -239,9 +239,10 @@ func (s *Skills) sendUpdateSkillSlot(skill ISkill) {
 	player.MessageQueue.EnqueueClientEntity(CEWriter.Body, message.OpTypeSkills)
 }
 
-func (s *Skills) AddSkill(skill *ActiveSkill, slot int) {
+func (s *Skills) AddSkill(skill *ActiveSkill, originalSlot int, slot int) {
+	skill.OriginalSlot = originalSlot
+
 	s.slots[uint32(slot)] = skill
-	skill.OriginalSlot = slot
 	skill.Slot = slot
 }
 
