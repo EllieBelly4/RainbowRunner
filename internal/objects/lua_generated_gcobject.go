@@ -4,7 +4,7 @@ package objects
 import (
 	"RainbowRunner/internal/connections"
 	lua "RainbowRunner/internal/lua"
-	drobjectypes "RainbowRunner/internal/types/drobjecttypes"
+	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	lua2 "github.com/yuin/gopher-lua"
 )
@@ -47,7 +47,55 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type EntityHandler
 		// -------------------------------------------------------------------------------------------------------------
-		"gcparent": lua.LuaGenericGetSetValue[IGCObject, drobjectypes.DRObject](func(v IGCObject) *drobjectypes.DRObject { return &v.GetGCObject().GCParent }),
+		"gcparent": lua.LuaGenericGetSetValue[IGCObject, drobjecttypes.DRObject](func(v IGCObject) *drobjecttypes.DRObject { return &v.GetGCObject().GCParent }),
+		"getGCType": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
+			obj := objInterface.GetGCObject()
+			res0 := obj.GetGCType()
+			l.Push(lua2.LString(res0))
+
+			return 1
+		},
+		"getGCNativeType": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
+			obj := objInterface.GetGCObject()
+			res0 := obj.GetGCNativeType()
+			l.Push(lua2.LString(res0))
+
+			return 1
+		},
+		"getChildrenFiltered": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
+			obj := objInterface.GetGCObject()
+			res0 := obj.GetChildrenFiltered(
+				lua.CheckValue[func(drobjecttypes.DRObject) bool](l, 2),
+			)
+			res0Array := l.NewTable()
+
+			for _, res0 := range res0 {
+				if res0 != nil {
+					res0Array.Append(res0.ToLua(l))
+				} else {
+					res0Array.Append(lua2.LNil)
+				}
+			}
+
+			l.Push(res0Array)
+
+			return 1
+		},
+		"getPlayerOwner": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
+			obj := objInterface.GetGCObject()
+			res0 := obj.GetPlayerOwner()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
 		"getChildrenByGCNativeType": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
 			obj := objInterface.GetGCObject()
@@ -94,7 +142,7 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
 			obj := objInterface.GetGCObject()
 			obj.SetParent(
-				lua.CheckValue[drobjectypes.DRObject](l, 2),
+				lua.CheckValue[drobjecttypes.DRObject](l, 2),
 			)
 
 			return 0
@@ -141,7 +189,7 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 			res0 := obj.Type()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("drobjectypes.DRObjectType"))
+			l.SetMetatable(ud, l.GetTypeMetatable("drobjecttypes.DRObjectType"))
 			l.Push(ud)
 
 			return 1
@@ -187,6 +235,15 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
 			obj := objInterface.GetGCObject()
 			obj.Init()
+
+			return 0
+		},
+		"writeData": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
+			obj := objInterface.GetGCObject()
+			obj.WriteData(
+				lua.CheckReferenceValue[byter.Byter](l, 2),
+			)
 
 			return 0
 		},
@@ -259,7 +316,7 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
 			obj := objInterface.GetGCObject()
 			obj.AddChild(
-				lua.CheckValue[drobjectypes.DRObject](l, 2),
+				lua.CheckValue[drobjecttypes.DRObject](l, 2),
 			)
 
 			return 0
@@ -308,7 +365,7 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
 			obj := objInterface.GetGCObject()
 			obj.WalkChildren(
-				lua.CheckValue[func(object drobjectypes.DRObject)](l, 2),
+				lua.CheckValue[func(object drobjecttypes.DRObject)](l, 2),
 			)
 
 			return 0
@@ -318,6 +375,20 @@ func luaMethodsGCObject() map[string]lua2.LGFunction {
 			obj := objInterface.GetGCObject()
 			res0 := obj.RemoveChildrenByGCNativeType(string(l.CheckString(2)))
 			l.Push(lua2.LNumber(res0))
+
+			return 1
+		},
+		"getChildFromGCTypeRequest": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
+			obj := objInterface.GetGCObject()
+			res0 := obj.GetChildFromGCTypeRequest(
+				lua.CheckReferenceValue[byter.Byter](l, 2),
+			)
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
 
 			return 1
 		},

@@ -4,6 +4,7 @@ package objects
 import (
 	lua "RainbowRunner/internal/lua"
 	"RainbowRunner/internal/script"
+	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 	lua2 "github.com/yuin/gopher-lua"
@@ -43,6 +44,15 @@ func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 		"unk4Case":                lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *uint32 { return &v.GetWorldEntity().Unk4Case }),
 		"useCustomAnimationSpeed": lua.LuaGenericGetSetBool[IWorldEntity](func(v IWorldEntity) *bool { return &v.GetWorldEntity().UseCustomAnimationSpeed }),
 		"animationSpeed":          lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *float32 { return &v.GetWorldEntity().AnimationSpeed }),
+		"addChild": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IWorldEntity](l, 1)
+			obj := objInterface.GetWorldEntity()
+			obj.AddChild(
+				lua.CheckValue[drobjecttypes.DRObject](l, 2),
+			)
+
+			return 0
+		},
 		"tick": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IWorldEntity](l, 1)
 			obj := objInterface.GetWorldEntity()
@@ -116,7 +126,7 @@ func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 			res0 := obj.Type()
 			ud := l.NewUserData()
 			ud.Value = res0
-			l.SetMetatable(ud, l.GetTypeMetatable("drobjectypes.DRObjectType"))
+			l.SetMetatable(ud, l.GetTypeMetatable("drobjecttypes.DRObjectType"))
 			l.Push(ud)
 
 			return 1

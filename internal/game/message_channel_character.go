@@ -262,7 +262,6 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	for i, s := range skillsToAdd {
 		skill := objects.NewActiveSkill(s.Name)
 		skill.Level = s.Level
-		skill.Unk0 = s.Unk0
 		skill.GCLabel = s.Name
 
 		skill.Properties = []objects.GCObjectProperty{

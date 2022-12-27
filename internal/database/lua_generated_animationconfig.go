@@ -32,6 +32,18 @@ func luaMethodsAnimationConfig() map[string]lua2.LGFunction {
 		"numFrames":        lua.LuaGenericGetSetNumber[IAnimationConfig](func(v IAnimationConfig) *int { return &v.GetAnimationConfig().NumFrames }),
 		"triggerTime":      lua.LuaGenericGetSetNumber[IAnimationConfig](func(v IAnimationConfig) *int { return &v.GetAnimationConfig().TriggerTime }),
 		"soundTriggerTime": lua.LuaGenericGetSetNumber[IAnimationConfig](func(v IAnimationConfig) *int { return &v.GetAnimationConfig().SoundTriggerTime }),
+		"getAnimationConfig": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IAnimationConfig](l, 1)
+			obj := objInterface.GetAnimationConfig()
+			res0 := obj.GetAnimationConfig()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
 	})
 }
 

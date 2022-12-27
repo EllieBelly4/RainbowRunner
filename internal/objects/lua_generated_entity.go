@@ -3,6 +3,7 @@ package objects
 
 import (
 	lua "RainbowRunner/internal/lua"
+	"RainbowRunner/internal/types/drobjecttypes"
 	lua2 "github.com/yuin/gopher-lua"
 )
 
@@ -28,6 +29,15 @@ func registerLuaEntity(state *lua2.LState) {
 
 func luaMethodsEntity() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+		"addChild": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IEntity](l, 1)
+			obj := objInterface.GetEntity()
+			obj.AddChild(
+				lua.CheckValue[drobjecttypes.DRObject](l, 2),
+			)
+
+			return 0
+		},
 		"getEntity": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IEntity](l, 1)
 			obj := objInterface.GetEntity()

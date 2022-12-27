@@ -48,7 +48,9 @@ func registerLua{{ .Struct.Name }}(state *lua2.LState) {
 	mt := state.NewTypeMetatable("{{ .Struct.Name }}")
 	state.SetGlobal("{{ .Struct.Name }}", mt)
 {{- if .Struct.Constructor }}
+	{{- if .Struct.Constructor.IsCallSupported }}
 	state.SetField(mt, "new", state.NewFunction(newLua{{ .Struct.Name }}))
+	{{- end }}
 {{- end }}
 	state.SetField(mt, "__index", state.SetFuncs(state.NewTable(),
 		luaMethods{{ .Struct.Name }}(),
@@ -103,6 +105,10 @@ func luaMethods{{ .Struct.Name }}() map[string]lua2.LGFunction {
 		{{- if not $method.IsExported }}
 		{{- continue }}
 		{{- end }}
+		{{- if not $method.IsCallSupported }}
+		{{- continue }}
+		{{- end }}
+
 		"{{ $method.NameCamelcase }}": {{ generateCallMemberFunction $struct $method }},
 {{- end }}
 
@@ -110,6 +116,11 @@ func luaMethods{{ .Struct.Name }}() map[string]lua2.LGFunction {
 }
 
 {{- if .Struct.Constructor }}
+{{- if not .Struct.Constructor.IsCallSupported }}
+// -------------------------------------------------------------------------------------------------------------
+// Unsupported constructor {{ .Struct.Constructor.Name }} is not supported
+// -------------------------------------------------------------------------------------------------------------
+{{- else }}
 func newLua{{ .Struct.Name }}(l *lua2.LState) int {
     obj := {{ generateCallString .Struct.Constructor 0 }}
 	ud := l.NewUserData()
@@ -119,6 +130,7 @@ func newLua{{ .Struct.Name }}(l *lua2.LState) int {
 	l.Push(ud)
 	return 1
 }
+{{- end }}
 {{- end }}
 
 func ({{ .Struct.MemberInitial }} *{{ .Struct.Name }}) ToLua(l *lua2.LState) lua2.LValue {

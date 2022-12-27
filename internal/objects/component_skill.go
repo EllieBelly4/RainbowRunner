@@ -5,7 +5,6 @@ import "RainbowRunner/pkg/byter"
 //go:generate go run ../../scripts/generatelua -type=Skill -extends=Component
 type Skill struct {
 	*Component
-	Unk0         uint32
 	Level        byte
 	OriginalSlot int
 	Slot         int

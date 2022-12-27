@@ -3,6 +3,7 @@ package objects
 
 import (
 	lua "RainbowRunner/internal/lua"
+	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 	lua2 "github.com/yuin/gopher-lua"
@@ -35,6 +36,15 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 		"clientUpdateNumber": lua.LuaGenericGetSetNumber[IAvatar](func(v IAvatar) *byte { return &v.GetAvatar().ClientUpdateNumber }),
 		"moveUpdate":         lua.LuaGenericGetSetNumber[IAvatar](func(v IAvatar) *int { return &v.GetAvatar().MoveUpdate }),
 		"isSpawned":          lua.LuaGenericGetSetBool[IAvatar](func(v IAvatar) *bool { return &v.GetAvatar().IsSpawned }),
+		"addChild": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
+			obj := objInterface.GetAvatar()
+			obj.AddChild(
+				lua.CheckValue[drobjecttypes.DRObject](l, 2),
+			)
+
+			return 0
+		},
 		"type": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
 			obj := objInterface.GetAvatar()

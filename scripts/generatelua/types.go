@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"go/ast"
 	"strings"
 )
@@ -32,6 +33,19 @@ type FieldDef struct {
 	ValueType
 	IsExported bool
 	field      *ast.Field
+}
+
+func (f *FuncDef) IsCallSupported() bool {
+	if f.Params != nil {
+		for _, param := range f.Params {
+			if param.IsArray {
+				log.Warn("Array parameters are not currently supported ", f.Name)
+				return false
+			}
+		}
+	}
+
+	return true
 }
 
 type FuncDef struct {
@@ -74,7 +88,7 @@ func (f *StructDef) GetRequiredImports(importDefs map[string]*ImportDef) []*Impo
 	imports := make(map[string]bool)
 
 	for _, method := range f.Methods {
-		if !method.IsExported {
+		if !method.IsExported || !method.IsCallSupported() {
 			continue
 		}
 
@@ -85,7 +99,7 @@ func (f *StructDef) GetRequiredImports(importDefs map[string]*ImportDef) []*Impo
 		}
 	}
 
-	if f.Constructor != nil {
+	if f.Constructor != nil && f.Constructor.IsCallSupported() {
 		for _, param := range f.Constructor.Params {
 			if param.Package != "" {
 				imports[param.Package] = true

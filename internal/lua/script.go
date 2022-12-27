@@ -6,7 +6,6 @@ import (
 	"os"
 )
 
-//go:generate go run ../../scripts/generatelua -type LuaScript
 type LuaScript struct {
 	path       string
 	scriptText string

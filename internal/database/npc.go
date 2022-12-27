@@ -15,8 +15,7 @@ type BehaviourDescConfig struct {
 	Type string
 }
 
-//go:generate go run ../../scripts/generatelua -type AnimationConfig
-
+//go:generate go run ../../scripts/generatelua -type NPCConfig
 type NPCConfig struct {
 	Name            string
 	Level           int32

@@ -3,7 +3,7 @@ package objects
 
 import (
 	lua "RainbowRunner/internal/lua"
-	drobjectypes "RainbowRunner/internal/types/drobjecttypes"
+	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	lua2 "github.com/yuin/gopher-lua"
 )
@@ -35,7 +35,7 @@ func luaMethodsInventory() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IInventory](l, 1)
 			obj := objInterface.GetInventory()
 			obj.AddChild(
-				lua.CheckValue[drobjectypes.DRObject](l, 2),
+				lua.CheckValue[drobjecttypes.DRObject](l, 2),
 			)
 
 			return 0

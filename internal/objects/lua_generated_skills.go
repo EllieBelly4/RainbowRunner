@@ -181,6 +181,23 @@ func luaMethodsSkills() map[string]lua2.LGFunction {
 
 			return 1
 		},
+		"getSkillSlots": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
+			obj := objInterface.GetSkills()
+			res0 := obj.GetSkillSlots()
+			res0Array := l.NewTable()
+
+			for _, res0 := range res0 {
+				ud := l.NewUserData()
+				ud.Value = res0
+				l.SetMetatable(ud, l.GetTypeMetatable("ISkillSlot"))
+				res0Array.Append(ud)
+			}
+
+			l.Push(res0Array)
+
+			return 1
+		},
 		"getSkills": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
 			obj := objInterface.GetSkills()

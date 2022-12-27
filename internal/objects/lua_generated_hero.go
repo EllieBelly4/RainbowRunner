@@ -3,6 +3,7 @@ package objects
 
 import (
 	lua "RainbowRunner/internal/lua"
+	"RainbowRunner/internal/types/drobjecttypes"
 	lua2 "github.com/yuin/gopher-lua"
 )
 
@@ -27,7 +28,29 @@ func registerLuaHero(state *lua2.LState) {
 }
 
 func luaMethodsHero() map[string]lua2.LGFunction {
-	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{}, luaMethodsUnit)
+	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+		"addChild": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IHero](l, 1)
+			obj := objInterface.GetHero()
+			obj.AddChild(
+				lua.CheckValue[drobjecttypes.DRObject](l, 2),
+			)
+
+			return 0
+		},
+		"getHero": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IHero](l, 1)
+			obj := objInterface.GetHero()
+			res0 := obj.GetHero()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
+	}, luaMethodsUnit)
 }
 func newLuaHero(l *lua2.LState) int {
 	obj := NewHero(string(l.CheckString(1)))
