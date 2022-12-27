@@ -34,6 +34,17 @@ type GCObject struct {
 	GCParent         drobjecttypes.DRObject
 }
 
+func (g *GCObject) RemoveChild(object drobjecttypes.DRObject) bool {
+	for index, drObject := range g.Children() {
+		if drObject == object {
+			g.RemoveChildAt(index)
+			return true
+		}
+	}
+
+	return false
+}
+
 func (g *GCObject) GetGCType() string {
 	return g.GCType
 }

@@ -30,6 +30,7 @@ func luaMethodsSkillSlot() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
 		"slotID":   lua.LuaGenericGetSetNumber[ISkillSlot](func(v ISkillSlot) *int { return &v.GetSkillSlot().SlotID }),
 		"slotType": lua.LuaGenericGetSetNumber[ISkillSlot](func(v ISkillSlot) *uint32 { return &v.GetSkillSlot().SlotType }),
+
 		"getSkillSlot": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[ISkillSlot](l, 1)
 			obj := objInterface.GetSkillSlot()

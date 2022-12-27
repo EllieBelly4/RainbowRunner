@@ -28,6 +28,7 @@ func registerLuaActiveSkill(state *lua2.LState) {
 
 func luaMethodsActiveSkill() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"getActiveSkill": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActiveSkill](l, 1)
 			obj := objInterface.GetActiveSkill()

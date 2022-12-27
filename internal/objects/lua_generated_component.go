@@ -28,6 +28,7 @@ func registerLuaComponent(state *lua2.LState) {
 
 func luaMethodsComponent() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"getComponent": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IComponent](l, 1)
 			obj := objInterface.GetComponent()

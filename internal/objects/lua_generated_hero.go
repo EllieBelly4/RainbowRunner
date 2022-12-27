@@ -29,6 +29,7 @@ func registerLuaHero(state *lua2.LState) {
 
 func luaMethodsHero() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"addChild": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IHero](l, 1)
 			obj := objInterface.GetHero()
@@ -38,6 +39,7 @@ func luaMethodsHero() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getHero": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IHero](l, 1)
 			obj := objInterface.GetHero()

@@ -31,6 +31,7 @@ func registerLuaInventory(state *lua2.LState) {
 func luaMethodsInventory() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
 		"inventoryID": lua.LuaGenericGetSetNumber[IInventory](func(v IInventory) *byte { return &v.GetInventory().InventoryID }),
+
 		"addChild": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IInventory](l, 1)
 			obj := objInterface.GetInventory()
@@ -40,6 +41,7 @@ func luaMethodsInventory() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"writeInit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IInventory](l, 1)
 			obj := objInterface.GetInventory()
@@ -49,6 +51,7 @@ func luaMethodsInventory() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"writeInitData": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IInventory](l, 1)
 			obj := objInterface.GetInventory()
@@ -58,6 +61,7 @@ func luaMethodsInventory() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"removeItemByIndex": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IInventory](l, 1)
 			obj := objInterface.GetInventory()
@@ -70,6 +74,7 @@ func luaMethodsInventory() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"getInventory": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IInventory](l, 1)
 			obj := objInterface.GetInventory()

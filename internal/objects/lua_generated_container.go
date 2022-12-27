@@ -29,6 +29,7 @@ func registerLuaContainer(state *lua2.LState) {
 
 func luaMethodsContainer() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"writeInit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IContainer](l, 1)
 			obj := objInterface.GetContainer()
@@ -38,6 +39,7 @@ func luaMethodsContainer() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getContainer": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IContainer](l, 1)
 			obj := objInterface.GetContainer()

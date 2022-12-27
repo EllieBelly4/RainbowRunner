@@ -32,6 +32,7 @@ func luaMethodsNPC() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
 		"name":  lua.LuaGenericGetSetString[INPC](func(v INPC) *string { return &v.GetNPC().Name }),
 		"level": lua.LuaGenericGetSetNumber[INPC](func(v INPC) *int32 { return &v.GetNPC().Level }),
+
 		"writeInit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[INPC](l, 1)
 			obj := objInterface.GetNPC()
@@ -41,6 +42,7 @@ func luaMethodsNPC() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getNPC": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[INPC](l, 1)
 			obj := objInterface.GetNPC()

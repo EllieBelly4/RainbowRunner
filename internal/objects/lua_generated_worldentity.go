@@ -44,6 +44,7 @@ func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 		"unk4Case":                lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *uint32 { return &v.GetWorldEntity().Unk4Case }),
 		"useCustomAnimationSpeed": lua.LuaGenericGetSetBool[IWorldEntity](func(v IWorldEntity) *bool { return &v.GetWorldEntity().UseCustomAnimationSpeed }),
 		"animationSpeed":          lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *float32 { return &v.GetWorldEntity().AnimationSpeed }),
+
 		"addChild": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IWorldEntity](l, 1)
 			obj := objInterface.GetWorldEntity()
@@ -53,6 +54,7 @@ func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"tick": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IWorldEntity](l, 1)
 			obj := objInterface.GetWorldEntity()
@@ -60,6 +62,7 @@ func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"init": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IWorldEntity](l, 1)
 			obj := objInterface.GetWorldEntity()
@@ -67,6 +70,7 @@ func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"setScript": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IWorldEntity](l, 1)
 			obj := objInterface.GetWorldEntity()
@@ -76,6 +80,7 @@ func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"animations": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IWorldEntity](l, 1)
 			obj := objInterface.GetWorldEntity()
@@ -94,6 +99,7 @@ func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"activate": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IWorldEntity](l, 1)
 			obj := objInterface.GetWorldEntity()
@@ -104,6 +110,7 @@ func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"setPosition": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IWorldEntity](l, 1)
 			obj := objInterface.GetWorldEntity()
@@ -113,6 +120,7 @@ func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"setRotation": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IWorldEntity](l, 1)
 			obj := objInterface.GetWorldEntity()
@@ -120,6 +128,7 @@ func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"type": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IWorldEntity](l, 1)
 			obj := objInterface.GetWorldEntity()
@@ -131,6 +140,7 @@ func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"writeInit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IWorldEntity](l, 1)
 			obj := objInterface.GetWorldEntity()
@@ -140,6 +150,7 @@ func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getWorldEntity": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IWorldEntity](l, 1)
 			obj := objInterface.GetWorldEntity()

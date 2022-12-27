@@ -36,6 +36,7 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 		"clientUpdateNumber": lua.LuaGenericGetSetNumber[IAvatar](func(v IAvatar) *byte { return &v.GetAvatar().ClientUpdateNumber }),
 		"moveUpdate":         lua.LuaGenericGetSetNumber[IAvatar](func(v IAvatar) *int { return &v.GetAvatar().MoveUpdate }),
 		"isSpawned":          lua.LuaGenericGetSetBool[IAvatar](func(v IAvatar) *bool { return &v.GetAvatar().IsSpawned }),
+
 		"addChild": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
 			obj := objInterface.GetAvatar()
@@ -45,6 +46,7 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"type": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
 			obj := objInterface.GetAvatar()
@@ -56,6 +58,7 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"writeFullGCObject": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
 			obj := objInterface.GetAvatar()
@@ -65,6 +68,7 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"writeInit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
 			obj := objInterface.GetAvatar()
@@ -74,6 +78,7 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"writeUpdate": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
 			obj := objInterface.GetAvatar()
@@ -83,6 +88,7 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"tick": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
 			obj := objInterface.GetAvatar()
@@ -90,6 +96,7 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getUnitBehaviourID": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
 			obj := objInterface.GetAvatar()
@@ -98,6 +105,7 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"send": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
 			obj := objInterface.GetAvatar()
@@ -107,6 +115,7 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"sendFollowClient": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
 			obj := objInterface.GetAvatar()
@@ -114,6 +123,7 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"sendStopFollowClient": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
 			obj := objInterface.GetAvatar()
@@ -121,6 +131,7 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"warp": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
 			obj := objInterface.GetAvatar()
@@ -128,6 +139,7 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"sendMoveTo": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
 			obj := objInterface.GetAvatar()
@@ -135,6 +147,7 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getUnitContainer": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
 			obj := objInterface.GetAvatar()
@@ -147,6 +160,7 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"getManipulators": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
 			obj := objInterface.GetAvatar()
@@ -159,6 +173,7 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"getUnitBehaviour": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
 			obj := objInterface.GetAvatar()
@@ -171,6 +186,7 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"teleport": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
 			obj := objInterface.GetAvatar()
@@ -180,6 +196,7 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getAvatar": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)
 			obj := objInterface.GetAvatar()

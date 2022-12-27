@@ -31,6 +31,7 @@ func registerLuaManipulators(state *lua2.LState) {
 
 func luaMethodsManipulators() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"writeInit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IManipulators](l, 1)
 			obj := objInterface.GetManipulators()
@@ -40,6 +41,7 @@ func luaMethodsManipulators() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"removeChildByID": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IManipulators](l, 1)
 			obj := objInterface.GetManipulators()
@@ -47,6 +49,7 @@ func luaMethodsManipulators() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"writeRemoveItem": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IManipulators](l, 1)
 			obj := objInterface.GetManipulators()
@@ -57,6 +60,7 @@ func luaMethodsManipulators() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"writeAddItem": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IManipulators](l, 1)
 			obj := objInterface.GetManipulators()
@@ -67,6 +71,7 @@ func luaMethodsManipulators() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"addChildAndUpdate": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IManipulators](l, 1)
 			obj := objInterface.GetManipulators()
@@ -76,6 +81,17 @@ func luaMethodsManipulators() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
+		"removeChildAndUpdate": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IManipulators](l, 1)
+			obj := objInterface.GetManipulators()
+			obj.RemoveChildAndUpdate(
+				lua.CheckValue[drobjecttypes.DRObject](l, 2),
+			)
+
+			return 0
+		},
+
 		"getManipulators": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IManipulators](l, 1)
 			obj := objInterface.GetManipulators()

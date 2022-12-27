@@ -28,6 +28,7 @@ func registerLuaWaypoint(state *lua2.LState) {
 
 func luaMethodsWaypoint() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"getWaypoint": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IWaypoint](l, 1)
 			obj := objInterface.GetWaypoint()

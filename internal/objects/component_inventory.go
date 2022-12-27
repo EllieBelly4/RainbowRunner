@@ -16,8 +16,8 @@ type Inventory struct {
 
 func (i *Inventory) AddChild(child drobjecttypes.DRObject) {
 	switch child.(type) {
-	case *Equipment:
-		child.(*Equipment).Index = i.itemID
+	case IEquipment:
+		child.(IEquipment).GetEquipment().Index = i.itemID
 	case *Item:
 		child.(*Item).Index = i.itemID
 	default:
@@ -58,8 +58,8 @@ func (i *Inventory) RemoveItemByIndex(index int) drobjecttypes.DRObject {
 		foundIndex := 0
 
 		switch child.(type) {
-		case *Equipment:
-			foundIndex = child.(*Equipment).Index
+		case IEquipment:
+			foundIndex = child.(IEquipment).GetEquipment().Index
 		case *Item:
 			foundIndex = child.(*Item).Index
 		default:

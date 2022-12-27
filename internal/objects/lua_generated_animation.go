@@ -33,6 +33,7 @@ func luaMethodsAnimation() map[string]lua2.LGFunction {
 		"triggerTime":      lua.LuaGenericGetSetNumber[IAnimation](func(v IAnimation) *int { return &v.GetAnimation().TriggerTime }),
 		"soundTriggerTime": lua.LuaGenericGetSetNumber[IAnimation](func(v IAnimation) *int { return &v.GetAnimation().SoundTriggerTime }),
 		"animationID":      lua.LuaGenericGetSetNumber[IAnimation](func(v IAnimation) *int { return &v.GetAnimation().AnimationID }),
+
 		"getAnimation": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAnimation](l, 1)
 			obj := objInterface.GetAnimation()

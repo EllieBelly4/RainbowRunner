@@ -42,6 +42,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 		// Unsupported field type PathMap
 		// -------------------------------------------------------------------------------------------------------------
 		"id": lua.LuaGenericGetSetNumber[IZone](func(v IZone) *uint32 { return &v.GetZone().ID }),
+
 		"getZone": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
@@ -54,6 +55,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"initialised": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
@@ -62,6 +64,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"entities": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
@@ -80,6 +83,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"players": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
@@ -98,6 +102,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"removePlayer": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
@@ -105,6 +110,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"spawnEntity": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
@@ -114,6 +120,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"addPlayer": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
@@ -123,6 +130,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"sendToAll": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
@@ -132,6 +140,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"spawnEntityWithPosition": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
@@ -142,6 +151,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"spawn": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
@@ -152,6 +162,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getEntityScript": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
@@ -163,6 +174,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"loadNPCFromConfig": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
@@ -175,6 +187,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"init": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
@@ -182,6 +195,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"clearEntities": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
@@ -189,6 +203,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"reloadPathMap": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
@@ -196,6 +211,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"tick": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
@@ -207,6 +223,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"findEntityByGCTypeName": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
@@ -219,6 +236,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"findEntityByID": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
@@ -231,6 +249,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"giveID": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()

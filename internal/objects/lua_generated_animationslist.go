@@ -31,6 +31,7 @@ func luaMethodsAnimationsList() map[string]lua2.LGFunction {
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type Animations array properties are not supported
 		// -------------------------------------------------------------------------------------------------------------
+
 		"getAnimationsList": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAnimationsList](l, 1)
 			obj := objInterface.GetAnimationsList()

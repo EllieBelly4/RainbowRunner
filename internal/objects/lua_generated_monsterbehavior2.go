@@ -40,6 +40,7 @@ func luaMethodsMonsterBehavior2() map[string]lua2.LGFunction {
 		"monsterBehavior2Unk6":             lua.LuaGenericGetSetNumber[IMonsterBehavior2](func(v IMonsterBehavior2) *uint16 { return &v.GetMonsterBehavior2().MonsterBehavior2Unk6 }),
 		"monsterBehavior2Unk7":             lua.LuaGenericGetSetNumber[IMonsterBehavior2](func(v IMonsterBehavior2) *uint16 { return &v.GetMonsterBehavior2().MonsterBehavior2Unk7 }),
 		"monsterBehavior2Unk8":             lua.LuaGenericGetSetNumber[IMonsterBehavior2](func(v IMonsterBehavior2) *uint16 { return &v.GetMonsterBehavior2().MonsterBehavior2Unk8 }),
+
 		"writeInit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IMonsterBehavior2](l, 1)
 			obj := objInterface.GetMonsterBehavior2()
@@ -49,6 +50,7 @@ func luaMethodsMonsterBehavior2() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getMonsterBehavior2": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IMonsterBehavior2](l, 1)
 			obj := objInterface.GetMonsterBehavior2()

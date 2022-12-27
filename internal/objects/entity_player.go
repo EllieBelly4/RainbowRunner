@@ -120,7 +120,7 @@ func (p *Player) SendCreateNewPlayerEntity(rrplayer *RRPlayer) {
 	body.WriteByte(byte(len(equippedItems)))
 
 	for _, equippedItem := range equippedItems {
-		equippedItem.WriteInit(body)
+		equippedItem.GetEquipment().WriteInit(body)
 	}
 
 	// Invalid component type from server

@@ -39,6 +39,7 @@ func luaMethodsItem() map[string]lua2.LGFunction {
 		// Unsupported field type InventoryPosition
 		// -------------------------------------------------------------------------------------------------------------
 		"index": lua.LuaGenericGetSetNumber[IItem](func(v IItem) *int { return &v.GetItem().Index }),
+
 		"setInventoryPosition": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IItem](l, 1)
 			obj := objInterface.GetItem()
@@ -48,6 +49,7 @@ func luaMethodsItem() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"writeInit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IItem](l, 1)
 			obj := objInterface.GetItem()
@@ -57,6 +59,7 @@ func luaMethodsItem() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getItem": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IItem](l, 1)
 			obj := objInterface.GetItem()

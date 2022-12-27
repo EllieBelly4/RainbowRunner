@@ -28,6 +28,7 @@ func registerLuaCheckpointEntity(state *lua2.LState) {
 
 func luaMethodsCheckpointEntity() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"getCheckpointEntity": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[ICheckpointEntity](l, 1)
 			obj := objInterface.GetCheckpointEntity()

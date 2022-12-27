@@ -28,6 +28,7 @@ func registerLuaSkillProfession(state *lua2.LState) {
 
 func luaMethodsSkillProfession() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"getSkillProfession": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[ISkillProfession](l, 1)
 			obj := objInterface.GetSkillProfession()

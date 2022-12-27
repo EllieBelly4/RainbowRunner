@@ -29,6 +29,7 @@ func registerLuaSkills(state *lua2.LState) {
 
 func luaMethodsSkills() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"readUpdate": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
 			obj := objInterface.GetSkills()
@@ -42,6 +43,7 @@ func luaMethodsSkills() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"getSkillInSlot": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
 			obj := objInterface.GetSkills()
@@ -53,6 +55,7 @@ func luaMethodsSkills() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"writeInit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
 			obj := objInterface.GetSkills()
@@ -62,6 +65,7 @@ func luaMethodsSkills() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getAllSkills": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
 			obj := objInterface.GetSkills()
@@ -79,6 +83,7 @@ func luaMethodsSkills() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"getActivePassiveSkills": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
 			obj := objInterface.GetSkills()
@@ -97,6 +102,7 @@ func luaMethodsSkills() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"getPassiveSkills": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
 			obj := objInterface.GetSkills()
@@ -115,6 +121,7 @@ func luaMethodsSkills() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"getActiveSkills": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
 			obj := objInterface.GetSkills()
@@ -133,6 +140,7 @@ func luaMethodsSkills() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"unequipSkill": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
 			obj := objInterface.GetSkills()
@@ -146,6 +154,7 @@ func luaMethodsSkills() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"equipSkill": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
 			obj := objInterface.GetSkills()
@@ -159,6 +168,7 @@ func luaMethodsSkills() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"addSkill": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
 			obj := objInterface.GetSkills()
@@ -168,6 +178,7 @@ func luaMethodsSkills() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getSkillByGCTypeRequest": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
 			obj := objInterface.GetSkills()
@@ -181,6 +192,7 @@ func luaMethodsSkills() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"getSkillSlots": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
 			obj := objInterface.GetSkills()
@@ -198,6 +210,7 @@ func luaMethodsSkills() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"getSkills": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[ISkills](l, 1)
 			obj := objInterface.GetSkills()

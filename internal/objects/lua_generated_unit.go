@@ -42,6 +42,7 @@ func luaMethodsUnit() map[string]lua2.LGFunction {
 		"unk40Case2":        lua.LuaGenericGetSetNumber[IUnit](func(v IUnit) *uint16 { return &v.GetUnit().Unk40Case2 }),
 		"unk40Case3":        lua.LuaGenericGetSetNumber[IUnit](func(v IUnit) *byte { return &v.GetUnit().Unk40Case3 }),
 		"unk80Case":         lua.LuaGenericGetSetNumber[IUnit](func(v IUnit) *byte { return &v.GetUnit().Unk80Case }),
+
 		"addChild": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnit](l, 1)
 			obj := objInterface.GetUnit()
@@ -51,6 +52,7 @@ func luaMethodsUnit() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"writeInit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnit](l, 1)
 			obj := objInterface.GetUnit()
@@ -60,6 +62,7 @@ func luaMethodsUnit() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"warp": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnit](l, 1)
 			obj := objInterface.GetUnit()
@@ -69,6 +72,7 @@ func luaMethodsUnit() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getUnit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnit](l, 1)
 			obj := objInterface.GetUnit()

@@ -29,6 +29,7 @@ func registerLuaStockUnit(state *lua2.LState) {
 
 func luaMethodsStockUnit() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"writeInit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IStockUnit](l, 1)
 			obj := objInterface.GetStockUnit()
@@ -38,6 +39,7 @@ func luaMethodsStockUnit() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getStockUnit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IStockUnit](l, 1)
 			obj := objInterface.GetStockUnit()

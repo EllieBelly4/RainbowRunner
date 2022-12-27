@@ -29,6 +29,8 @@ type DRObject interface {
 	GetChildrenByGCNativeType(s string) []DRObject
 	GetParentEntity() DRObject
 
+	RemoveChild(object DRObject) bool
+
 	Type() DRObjectType
 
 	Tick()

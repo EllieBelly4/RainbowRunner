@@ -33,6 +33,7 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 		"manipulator": lua.LuaGenericGetSetValue[IUnitContainer, drobjecttypes.DRObject](func(v IUnitContainer) *drobjecttypes.DRObject { return &v.GetUnitContainer().Manipulator }),
 		"activeItem":  lua.LuaGenericGetSetValue[IUnitContainer, drobjecttypes.DRObject](func(v IUnitContainer) *drobjecttypes.DRObject { return &v.GetUnitContainer().ActiveItem }),
 		"avatar":      lua.LuaGenericGetSetValue[IUnitContainer, *Avatar](func(v IUnitContainer) **Avatar { return &v.GetUnitContainer().Avatar }),
+
 		"readUpdate": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
 			obj := objInterface.GetUnitContainer()
@@ -46,6 +47,7 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"writeFullGCObject": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
 			obj := objInterface.GetUnitContainer()
@@ -55,6 +57,7 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"setActiveItem": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
 			obj := objInterface.GetUnitContainer()
@@ -64,6 +67,7 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"writeSetActiveItem": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
 			obj := objInterface.GetUnitContainer()
@@ -73,6 +77,7 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"writeClearActiveItem": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
 			obj := objInterface.GetUnitContainer()
@@ -82,6 +87,7 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"writeRemoveItem": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
 			obj := objInterface.GetUnitContainer()
@@ -91,6 +97,7 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"writeAddItem": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
 			obj := objInterface.GetUnitContainer()
@@ -102,6 +109,7 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getInventoryByID": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
 			obj := objInterface.GetUnitContainer()
@@ -114,6 +122,7 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"getUnitContainer": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
 			obj := objInterface.GetUnitContainer()

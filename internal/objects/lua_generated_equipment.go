@@ -33,6 +33,7 @@ func luaMethodsEquipment() map[string]lua2.LGFunction {
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type Slot
 		// -------------------------------------------------------------------------------------------------------------
+
 		"writeInit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IEquipment](l, 1)
 			obj := objInterface.GetEquipment()
@@ -42,6 +43,7 @@ func luaMethodsEquipment() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"writeManipulatorInit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IEquipment](l, 1)
 			obj := objInterface.GetEquipment()
@@ -51,6 +53,7 @@ func luaMethodsEquipment() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getEquipment": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IEquipment](l, 1)
 			obj := objInterface.GetEquipment()

@@ -35,6 +35,7 @@ func luaMethodsZonePortal() map[string]lua2.LGFunction {
 		"height": lua.LuaGenericGetSetNumber[IZonePortal](func(v IZonePortal) *uint16 { return &v.GetZonePortal().Height }),
 		"unk4":   lua.LuaGenericGetSetNumber[IZonePortal](func(v IZonePortal) *uint32 { return &v.GetZonePortal().Unk4 }),
 		"target": lua.LuaGenericGetSetString[IZonePortal](func(v IZonePortal) *string { return &v.GetZonePortal().Target }),
+
 		"activate": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZonePortal](l, 1)
 			obj := objInterface.GetZonePortal()
@@ -45,6 +46,7 @@ func luaMethodsZonePortal() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"writeInit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZonePortal](l, 1)
 			obj := objInterface.GetZonePortal()
@@ -54,6 +56,7 @@ func luaMethodsZonePortal() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getZonePortal": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZonePortal](l, 1)
 			obj := objInterface.GetZonePortal()

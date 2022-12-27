@@ -54,6 +54,7 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 		"unitBehaviorUnk1": lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitBehaviorUnk1 }),
 		"unitBehaviorUnk2": lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitBehaviorUnk2 }),
 		"isMoving":         lua.LuaGenericGetSetBool[IUnitBehavior](func(v IUnitBehavior) *bool { return &v.GetUnitBehavior().IsMoving }),
+
 		"tick": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
 			obj := objInterface.GetUnitBehavior()
@@ -61,6 +62,7 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"writeInit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
 			obj := objInterface.GetUnitBehavior()
@@ -70,6 +72,7 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"writeMoveUpdate": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
 			obj := objInterface.GetUnitBehavior()
@@ -79,6 +82,7 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"readUpdate": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
 			obj := objInterface.GetUnitBehavior()
@@ -92,6 +96,7 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"warpTo": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
 			obj := objInterface.GetUnitBehavior()
@@ -101,6 +106,7 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"warp": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
 			obj := objInterface.GetUnitBehavior()
@@ -108,6 +114,7 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"writeWarp": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
 			obj := objInterface.GetUnitBehavior()
@@ -117,6 +124,7 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"moveTo": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
 			obj := objInterface.GetUnitBehavior()
@@ -126,6 +134,7 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"moveToEntity": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
 			obj := objInterface.GetUnitBehavior()
@@ -135,6 +144,7 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"executeAction": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
 			obj := objInterface.GetUnitBehavior()
@@ -144,6 +154,7 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"stopFollowClient": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
 			obj := objInterface.GetUnitBehavior()
@@ -151,6 +162,7 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getUnitBehavior": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
 			obj := objInterface.GetUnitBehavior()

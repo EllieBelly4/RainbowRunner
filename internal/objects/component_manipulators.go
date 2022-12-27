@@ -81,6 +81,25 @@ func (m *Manipulators) sendAddItem(child drobjecttypes.DRObject) {
 	player.MessageQueue.EnqueueClientEntity(CEWriter.Body, message.OpTypeManipulators)
 }
 
+func (m *Manipulators) RemoveChildAndUpdate(skill drobjecttypes.DRObject) {
+	m.RemoveChild(skill)
+
+	// TODO emit event
+	m.sendRemoveItem(skill)
+}
+
+func (m *Manipulators) sendRemoveItem(skill drobjecttypes.DRObject) {
+	CEWriter := NewClientEntityWriterWithByter()
+	CEWriter.BeginComponentUpdate(m)
+
+	// 0x00 Add Item
+	CEWriter.Body.WriteByte(0x01)
+	CEWriter.Body.WriteUInt32(uint32(skill.(IRREntityPropertiesHaver).GetRREntityProperties().ID))
+
+	player := m.GetPlayerOwner()
+	player.MessageQueue.EnqueueClientEntity(CEWriter.Body, message.OpTypeManipulators)
+}
+
 func NewManipulators(gcType string) *Manipulators {
 	component := NewComponent(gcType, "Manipulators")
 

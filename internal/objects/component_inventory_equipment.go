@@ -13,7 +13,7 @@ import (
 type EquipmentInventory struct {
 	*Component
 	Avatar *Avatar
-	Slots  map[types.EquipmentSlot]*Equipment
+	Slots  map[types.EquipmentSlot]IEquipment
 }
 
 func (n *EquipmentInventory) AddChild(child drobjecttypes.DRObject) {
@@ -24,7 +24,7 @@ func (n *EquipmentInventory) AddChild(child drobjecttypes.DRObject) {
 	equip := child.(IEquipment).GetEquipment()
 
 	if existing, ok := n.Slots[equip.Slot]; ok {
-		panic(fmt.Sprintf("cannot add equipment '%s' to slot '%s' because '%s' is already equipped", equip.GCType, equip.Slot.String(), existing.GCType))
+		panic(fmt.Sprintf("cannot add equipment '%s' to slot '%s' because '%s' is already equipped", equip.GCType, equip.Slot.String(), existing.GetEquipment().GCType))
 	}
 
 	equip.Index = int(equip.Slot)
@@ -72,17 +72,17 @@ func (n *EquipmentInventory) handleRemoveEquippedItem(reader *byter.Byter) error
 	}
 
 	item := n.RemoveEquipmentBySlot(types.EquipmentSlot(slot))
-	err := n.addRemoveItemMessage(CEWriter, item)
+	err := n.addRemoveItemMessage(CEWriter, item.GetEquipment())
 
 	if err != nil {
 		return err
 	}
 
-	unitContainer.SetActiveItem(item)
+	unitContainer.SetActiveItem(item.GetEquipment())
 	unitContainer.WriteSetActiveItem(CEWriter.Body)
 
-	manipulators.RemoveChildByID(uint32(item.ID()))
-	manipulators.WriteRemoveItem(CEWriter.Body, item.Slot)
+	manipulators.RemoveChildByID(uint32(item.GetEquipment().ID()))
+	manipulators.WriteRemoveItem(CEWriter.Body, item.GetEquipment().Slot)
 
 	Players.GetPlayer(n.OwnerID()).MessageQueue.Enqueue(
 		message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeEquippedItemClickResponse,
@@ -110,11 +110,13 @@ func (n *EquipmentInventory) handleAddEquippedItem(reader *byter.Byter) error {
 		return errors.New(fmt.Sprintf("could not find unit manipulators for player"))
 	}
 
-	equipment, ok := unitContainer.ActiveItem.(*Equipment)
+	iEquipment, ok := unitContainer.ActiveItem.(IEquipment)
 
 	if !ok {
-		return errors.New(fmt.Sprintf("cannot equip, active item '%s' is not Equipment", equipment.GCType))
+		return errors.New(fmt.Sprintf("cannot equip, active item '%s' is not Equipment", unitContainer.ActiveItem.GetGCType()))
 	}
+
+	equipment := iEquipment.GetEquipment()
 
 	if slot != uint32(equipment.Slot) {
 		return errors.New(fmt.Sprintf("cannot equip item, wrong slot"))
@@ -156,23 +158,23 @@ func (n *EquipmentInventory) addRemoveItemMessage(CEWriter *ClientEntityWriter, 
 	return nil
 }
 
-func (n *EquipmentInventory) RemoveEquipmentBySlot(slot types.EquipmentSlot) *Equipment {
+func (n *EquipmentInventory) RemoveEquipmentBySlot(slot types.EquipmentSlot) IEquipment {
 	toRemove := -1
-	var toReturn *Equipment = nil
+	var toReturn IEquipment = nil
 
 	for li, child := range n.Children() {
 		foundIndex := types.EquipmentSlot(0)
 
 		switch child.(type) {
-		case *Equipment:
-			foundIndex = child.(*Equipment).Slot
+		case IEquipment:
+			foundIndex = child.(IEquipment).GetEquipment().Slot
 		default:
 			panic(fmt.Sprintf("cannot add non-item to Inventory: %s", child.(IGCObject).GetGCObject().GCType))
 		}
 
 		if foundIndex == slot {
 			toRemove = li
-			toReturn = child.(*Equipment)
+			toReturn = child.(IEquipment)
 		}
 	}
 
@@ -183,30 +185,30 @@ func (n *EquipmentInventory) RemoveEquipmentBySlot(slot types.EquipmentSlot) *Eq
 	return toReturn
 }
 
-func (n *EquipmentInventory) GetEquipment() []*Equipment {
-	items := make([]*Equipment, 0)
+func (n *EquipmentInventory) GetEquipment() []IEquipment {
+	items := make([]IEquipment, 0)
 
 	for _, child := range n.Children() {
 		switch child.(type) {
-		case *Equipment:
-			items = append(items, child.(*Equipment))
+		case IEquipment:
+			items = append(items, child.(IEquipment))
 		}
 	}
 
 	return items
 }
 
-func (n *EquipmentInventory) addAddItemMessage(CEWriter *ClientEntityWriter, item *Equipment) error {
+func (n *EquipmentInventory) addAddItemMessage(CEWriter *ClientEntityWriter, item IEquipment) error {
 	CEWriter.BeginComponentUpdate(n)
 	// 0x28 Add
 	// 0x29 Remove
 	CEWriter.Body.WriteByte(0x28)
 
 	if item == nil {
-		return errors.New(fmt.Sprintf("could not find item in slot %d", item.Slot))
+		return errors.New(fmt.Sprintf("could not find item in slot %d", item.GetEquipment().Slot))
 	}
 
-	item.WriteInit(CEWriter.Body)
+	item.GetEquipment().WriteInit(CEWriter.Body)
 	CEWriter.EndComponentUpdate(n)
 	return nil
 }

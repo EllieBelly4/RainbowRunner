@@ -40,6 +40,7 @@ func luaMethodsRRPlayer() map[string]lua2.LGFunction {
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type MessageQueue
 		// -------------------------------------------------------------------------------------------------------------
+
 		"getRRPlayer": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IRRPlayer](l, 1)
 			obj := objInterface.GetRRPlayer()
@@ -52,6 +53,7 @@ func luaMethodsRRPlayer() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"zone": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IRRPlayer](l, 1)
 			obj := objInterface.GetRRPlayer()

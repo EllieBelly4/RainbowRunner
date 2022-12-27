@@ -35,6 +35,7 @@ func luaMethodsEquipmentInventory() map[string]lua2.LGFunction {
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type Slots
 		// -------------------------------------------------------------------------------------------------------------
+
 		"addChild": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IEquipmentInventory](l, 1)
 			obj := objInterface.GetEquipmentInventory()
@@ -44,6 +45,7 @@ func luaMethodsEquipmentInventory() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"readUpdate": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IEquipmentInventory](l, 1)
 			obj := objInterface.GetEquipmentInventory()
@@ -57,20 +59,21 @@ func luaMethodsEquipmentInventory() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"removeEquipmentBySlot": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IEquipmentInventory](l, 1)
 			obj := objInterface.GetEquipmentInventory()
 			res0 := obj.RemoveEquipmentBySlot(
 				lua.CheckValue[types.EquipmentSlot](l, 2),
 			)
-			if res0 != nil {
-				l.Push(res0.ToLua(l))
-			} else {
-				l.Push(lua2.LNil)
-			}
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("IEquipment"))
+			l.Push(ud)
 
 			return 1
 		},
+
 		"getEquipment": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IEquipmentInventory](l, 1)
 			obj := objInterface.GetEquipmentInventory()
@@ -78,17 +81,17 @@ func luaMethodsEquipmentInventory() map[string]lua2.LGFunction {
 			res0Array := l.NewTable()
 
 			for _, res0 := range res0 {
-				if res0 != nil {
-					res0Array.Append(res0.ToLua(l))
-				} else {
-					res0Array.Append(lua2.LNil)
-				}
+				ud := l.NewUserData()
+				ud.Value = res0
+				l.SetMetatable(ud, l.GetTypeMetatable("IEquipment"))
+				res0Array.Append(ud)
 			}
 
 			l.Push(res0Array)
 
 			return 1
 		},
+
 		"getEquipmentInventory": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IEquipmentInventory](l, 1)
 			obj := objInterface.GetEquipmentInventory()

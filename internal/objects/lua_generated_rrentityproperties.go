@@ -34,6 +34,7 @@ func luaMethodsRREntityProperties() map[string]lua2.LGFunction {
 		// Unsupported field type Conn
 		// -------------------------------------------------------------------------------------------------------------
 		"zone": lua.LuaGenericGetSetValue[IRREntityProperties, *Zone](func(v IRREntityProperties) **Zone { return &v.GetRREntityProperties().Zone }),
+
 		"getRREntityProperties": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IRREntityProperties](l, 1)
 			obj := objInterface.GetRREntityProperties()
@@ -46,6 +47,7 @@ func luaMethodsRREntityProperties() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"setOwner": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IRREntityProperties](l, 1)
 			obj := objInterface.GetRREntityProperties()

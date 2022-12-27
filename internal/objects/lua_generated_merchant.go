@@ -29,6 +29,7 @@ func registerLuaMerchant(state *lua2.LState) {
 
 func luaMethodsMerchant() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"writeInit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IMerchant](l, 1)
 			obj := objInterface.GetMerchant()
@@ -38,6 +39,7 @@ func luaMethodsMerchant() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getInventoryByID": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IMerchant](l, 1)
 			obj := objInterface.GetMerchant()
@@ -50,6 +52,7 @@ func luaMethodsMerchant() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"getMerchant": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IMerchant](l, 1)
 			obj := objInterface.GetMerchant()

@@ -29,6 +29,7 @@ func registerLuaModifiers(state *lua2.LState) {
 
 func luaMethodsModifiers() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"writeInit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IModifiers](l, 1)
 			obj := objInterface.GetModifiers()
@@ -38,6 +39,7 @@ func luaMethodsModifiers() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getModifiers": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IModifiers](l, 1)
 			obj := objInterface.GetModifiers()
