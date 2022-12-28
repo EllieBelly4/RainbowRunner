@@ -237,13 +237,13 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	avatarSkills := objects.NewSkills("avatar.base.skills")
 	avatarSkills.GCLabel = "EllieSkills"
 
-	skillSlot := objects.NewSkillSlot("skillslot")
-	skillSlot.GCLabel = "EllieSkillSlot"
-	skillSlot.SlotID = 0x64
-	skillSlot.Properties = []objects.GCObjectProperty{
-		objects.Uint32Prop("SlotID", 0x64),
-	}
-	avatarSkills.AddChild(skillSlot)
+	//skillSlot := objects.NewSkillSlot("skillslot")
+	//skillSlot.GCLabel = "EllieSkillSlot"
+	//skillSlot.SlotID = 0x64
+	//skillSlot.Properties = []objects.GCObjectProperty{
+	//	objects.Uint32Prop("SlotID", 0x64),
+	//}
+	//avatarSkills.AddChild(skillSlot)
 
 	skillsToAdd := []struct {
 		Name  string

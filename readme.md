@@ -33,12 +33,13 @@ fully understood.
 * World list
 * Character creation
 * Loading into zones (hardcoded values used to choose zone)
-* Player movement (limited to static areas)
+* Player movement
 * Player equipment (only visuals)
 * Player inventory
 * Chat
 * NPC Spawning (static only)
 * Various bits of GUI information can be modified
+* Skills (only visuals)
 
 #### Additional non-game related server features
 
@@ -71,7 +72,8 @@ To run all commands in here use: `go run cmd/rrcli`
   RainbowRunner, use after you run `cmd/scan_pkg.go` to extract the config files.
 * `get` - Retrieve configuration data for specific GCObjects with text/regexp support, can also limit to categories
   e.g. "Armor"
-* `list category` - Retrieve a list of all categories that can be searched, use with `-d $NUMBER` to increase
+* `list` - List all GCObjects with simple filter and depth options 
+* `list-category` - Retrieve a list of all categories that can be searched, use with `-d $NUMBER` to increase
   depth, `-1` for unlimited
 * `categorise` - Parse the dumped configuration from `dump` and generate the category config
   file ([resources/Dumps/generated/drcategories.json](resources/Dumps/generated/drcategories.json)).

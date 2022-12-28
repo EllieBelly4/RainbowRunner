@@ -10,6 +10,8 @@ import (
 	"RainbowRunner/internal/types"
 	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
+	"crypto/md5"
+	"encoding/binary"
 	"encoding/hex"
 	"fmt"
 	log "github.com/sirupsen/logrus"
@@ -517,7 +519,16 @@ func (p *Player) JoinZone(tZone *Zone) {
 	//body.WriteCString("TheHub")
 	//body.WriteCString("Tutorial")
 	body.WriteCString(tZone.Name)
-	body.WriteUInt32(0xBEEFBEEF)
+
+	md5Seed := md5.Sum([]byte(config.Config.ZoneOptions.Seed))
+
+	zoneSeed := binary.LittleEndian.Uint32(md5Seed[:])
+
+	if config.Config.ZoneOptions.UseRandomSeed {
+		zoneSeed = r.Uint32()
+	}
+
+	body.WriteUInt32(zoneSeed)
 	body.WriteByte(0x01)
 	body.WriteByte(0xFF)
 	body.WriteCString("world.town.quest.Q01_a1")

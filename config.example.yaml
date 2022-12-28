@@ -1,30 +1,89 @@
+# Network options
+network:
+  # Port to listen for the login server
+  login_server_port: 2110
+
+  # Port to listen for the game server
+  game_server_port: 2603
+
+  # This is the IP of the current game server, the login server will send this IP to the client when they choose a
+  # server to join.
+  # For local development this should always be 127.0.0.1
+  game_server_ip: 127.0.0.1
+
+# Send movement messages, without this you cannot move, but it can help with reversing as you don't have
+# a constant flow of messages
 send_movement_messages: true
+
+# Reinitialise zones on enter, this will re-run the initialisation scripts for the zone when you enter it for debugging
 reinitialise_zones_on_enter: false
+
+# Default zone to load when you start the game
 default_zone: town
+
+# Options related to zones
+zone_options:
+  # Seed to send to the client for all zones, if `use_random_seed` is false
+  seed: deepfriedextracrispy
+
+  # Use a random seed for each zone, if this is true then `seed` is ignored
+  use_random_seed: true
+
+# Welcome message options, this message is sent to the client when they first connect.
+# This currently sends every single time you join a zone.
 welcome:
+
+  # Send the welcome message
   send_welcome_message: true
+
+  # Welcome message to send
   message: |
     Welcome to RainbowRunner!
     This server is currently in development and everything is broken.
     If you want to contribute to the codebase just head to https://github.com/EllieBelly4/RainbowRunner.
-network:
-  login_server_port: 2110
-  game_server_port: 2603
-  game_server_ip: 127.0.0.1
+
 logging:
+  # Log messages related to player changing zones
   log_change_zone: false
-  log_moves: false
-  log_received_moves: false
-  log_generic_sent: false
-  log_small_as: false
-  log_hashes: false
-  log_gc_object_serialise: false
-  log_random_equipment: true
-  log_filter_messages: true
-  log_file_name: inventory_logs
-  log_truncate: true
+
+  # Log a specific message format that begins with 'e', these messages are always "channel" messages
   log_e_messages: false
+
+  # Which file to store the logs in, this is stored under resources/Logs
+  log_file_name: inventory_logs
+
+  # Log gc object full serialisation, this is only used in the character select screen for now
+  log_gc_object_serialise: false
+
+  # Log all sent messages, this can get very spammy, so I recommend disabling `send_movement_messages` if possible
+  log_generic_sent: false
+
+  # Log all generated GCType hashes with their corresponding GCType name
+  log_hashes: false
+
+  # Log all generated entity IDs
   log_ids: false
+
+  # Log movement related messages
+  log_moves: false
+
+  # Log random equipment selection messages, this can be helpful to see any items that are causing crashes
+  log_random_equipment: true
+
+  # Log all received movement messages
+  log_received_moves: false
+
+  # Log small 'a' messages, these as far as I can tell are like a heartbeat message
+  log_small_as: false
+
+  # runcate the log file on startup so it doesn't keep growing
+  log_truncate: true
+
+  # Log all messages that can be filtered, this is linked to the `log_sent_message_types` field below
+  # This must be true for the filters to work
+  log_filter_messages: true
+
+  # When used in combination with `log_filter_messages` this can be used to log specific messages that are using the player message queue
   log_sent_message_types:
     OpTypeBehaviourAction: false
     OpTypeAvatarMovement: false

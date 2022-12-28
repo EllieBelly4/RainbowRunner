@@ -55,7 +55,7 @@ func handleZoneJoin(conn *connections.RRConn) {
 	body.WriteUInt16(exploredBitCount)
 
 	for i := 0; i < int(exploredBitCount); i++ {
-		body.WriteUInt32(0x01)
+		body.WriteUInt32(0xFFFFFFFF)
 	}
 
 	connections.WriteCompressedA(conn, 0x01, 0x0f, body)

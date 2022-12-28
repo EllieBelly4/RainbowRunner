@@ -35,6 +35,11 @@ type WelcomeOptions struct {
 	SendWelcomeMessage bool   `mapstructure:"send_welcome_message"`
 }
 
+type ZoneOptions struct {
+	Seed          string `mapstructure:"seed"`
+	UseRandomSeed bool   `mapstructure:"use_random_seed"`
+}
+
 type RRConfig struct {
 	Network                  NetworkOptions `mapstructure:"network"`
 	SendMovementMessages     bool           `mapstructure:"send_movement_messages"`
@@ -42,10 +47,12 @@ type RRConfig struct {
 	ReinitialiseZonesOnEnter bool           `mapstructure:"reinitialise_zones_on_enter"`
 	Welcome                  WelcomeOptions `mapstructure:"welcome"`
 	DefaultZone              string         `mapstructure:"default_zone"`
+	ZoneOptions              ZoneOptions    `mapstructure:"zone_options"`
 }
 
 func Load() {
 	viper.SetDefault("default_zone", "town")
+	viper.SetDefault("zone_options", ZoneOptions{UseRandomSeed: true})
 	viper.SetDefault("network.login_server_port", 2110)
 	viper.SetDefault("network.game_server_port", 2603)
 	viper.SetDefault("network.game_server_ip", "127.0.0.1")
