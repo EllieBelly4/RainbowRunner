@@ -1,6 +1,7 @@
 package config
 
 import (
+	"RainbowRunner/cmd/rrcli/commands/globals"
 	"RainbowRunner/cmd/rrcli/configurator"
 	"encoding/json"
 	"fmt"
@@ -15,7 +16,7 @@ var getCommand = &cobra.Command{
 	Use:  "get <fullgctype>",
 	Args: cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		config, err := configurator.LoadFromDumpedConfigFile(inputFile)
+		config, err := configurator.LoadFromDumpedConfigFile(globals.InputFile)
 
 		if err != nil {
 			panic(err)
@@ -46,9 +47,5 @@ var getCommand = &cobra.Command{
 }
 
 func InitGetCommand() {
-	getCommand.PersistentFlags().StringVarP(&inputFile, "input-config-file", "f", "resources/Dumps/generated/finalconf.json", "-f config\\finalconf.json")
-	getCommand.PersistentFlags().StringVarP(&getOutputFile, "output-file", "o", "", "-o dumps\\dr-class-output.json")
 
-	InitGetCategoryCommand()
-	getCommand.AddCommand(getCategoryCommand)
 }

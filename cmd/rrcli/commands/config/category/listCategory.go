@@ -1,4 +1,4 @@
-package config
+package category
 
 import (
 	"RainbowRunner/cmd/rrcli/configurator"
@@ -13,7 +13,7 @@ var categoryPrefix string
 var listCategoryDepth int
 
 var listCategoryCommand = &cobra.Command{
-	Use:  "list-category",
+	Use:  "list",
 	Args: cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		categoryConfig, err := configurator.LoadFromCategoryConfigFile(categoryInputFile)
@@ -65,7 +65,7 @@ func dumpCategories(config map[string]*configtypes.DRCategory, prefix []string, 
 	}
 }
 
-func InitListCategoryCommand() {
+func initListCategoryCommand() {
 	listCategoryCommand.Flags().StringVarP(&categoryPrefix, "category-prefix", "p", "", "-p armor.basearmor")
 	listCategoryCommand.Flags().IntVarP(&listCategoryDepth, "list-depth", "d", 0, "-d 3")
 	listCategoryCommand.PersistentFlags().StringVarP(&categoryInputFile, "category-input-config-file", "c", "resources/Dumps/generated/drcategories.json", "-f resources/Dumps/generated/drcategories.json")

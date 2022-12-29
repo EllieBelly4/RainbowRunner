@@ -1,7 +1,8 @@
-package config
+package category
 
 import (
 	"RainbowRunner/cmd/configparser/configparser"
+	"RainbowRunner/cmd/rrcli/commands/globals"
 	"RainbowRunner/cmd/rrcli/configurator"
 	"RainbowRunner/internal/types/configtypes"
 	"encoding/json"
@@ -14,9 +15,10 @@ import (
 var categoryInputFile string
 var categoryMinDepth int
 var regexpFilter string
+var getOutputFile string
 
 var getCategoryCommand = &cobra.Command{
-	Use:  "category [category]",
+	Use:  "get [category]",
 	Args: cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 		categoryConfig, err := configurator.LoadFromCategoryConfigFile(categoryInputFile)
@@ -44,7 +46,7 @@ var getCategoryCommand = &cobra.Command{
 			panic(err)
 		}
 
-		config, err := configurator.LoadFromDumpedConfigFile(inputFile)
+		config, err := configurator.LoadFromDumpedConfigFile(globals.InputFile)
 
 		if err != nil {
 			panic(err)
@@ -80,8 +82,9 @@ var getCategoryCommand = &cobra.Command{
 	},
 }
 
-func InitGetCategoryCommand() {
+func initGetCategoryCommand() {
 	getCategoryCommand.PersistentFlags().StringVarP(&categoryInputFile, "category-input-config-file", "c", "resources/Dumps/generated/drcategories.json", "-f resources/Dumps/generated/drcategories.json")
+	getCategoryCommand.PersistentFlags().StringVarP(&getOutputFile, "output-file", "o", "", "-o tmp\\output.json")
 
 	getCategoryCommand.Flags().IntVarP(&categoryMinDepth, "min-depth", "m", -1, "-m 5")
 	getCategoryCommand.Flags().StringVarP(&regexpFilter, "regexp-filter", "x", "", "-x \"^[0-9]+\"")

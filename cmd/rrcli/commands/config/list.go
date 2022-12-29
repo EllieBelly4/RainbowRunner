@@ -1,6 +1,7 @@
 package config
 
 import (
+	"RainbowRunner/cmd/rrcli/commands/globals"
 	"RainbowRunner/cmd/rrcli/configurator"
 	"RainbowRunner/internal/types/configtypes"
 	"encoding/json"
@@ -16,7 +17,7 @@ var listCommand = &cobra.Command{
 	Use:  "list",
 	Args: cobra.ExactArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
-		config, err := configurator.LoadFromDumpedConfigFile(inputFile)
+		config, err := configurator.LoadFromDumpedConfigFile(globals.InputFile)
 
 		if err != nil {
 			panic(err)
@@ -51,7 +52,6 @@ var listCommand = &cobra.Command{
 }
 
 func InitListCommand() {
-	listCommand.PersistentFlags().StringVarP(&inputFile, "input-config-file", "f", "resources/Dumps/generated/finalconf.json", "-f config\\finalconf.json")
 	listCommand.Flags().StringVarP(&listRegexpFilter, "regexp-filter", "x", "", "-x \"^[0-9]+\"")
 	listCommand.Flags().IntVarP(&listMaxDepth, "list-depth", "d", 0, "-d 3")
 }
