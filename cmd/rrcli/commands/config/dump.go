@@ -13,6 +13,7 @@ import (
 var outputFile string
 var rootDir string
 var dumpFileName string
+var dumpAllowedExtensions []string
 
 var dumpCommand = &cobra.Command{
 	Use: "dump",
@@ -25,7 +26,7 @@ var dumpCommand = &cobra.Command{
 				panic("must provide config-root-dir when not specifying an input file path")
 			}
 
-			config, err = configurator.LoadAllConfigurationFiles(rootDir)
+			config, err = configurator.LoadAllConfigurationFiles(rootDir, dumpAllowedExtensions)
 		} else {
 			config, err = configparser.ParseAllFilesToDRConfig(
 				[]string{dumpFileName},
@@ -65,6 +66,7 @@ var dumpCommand = &cobra.Command{
 
 func InitDumpCommand() {
 	dumpCommand.PersistentFlags().StringVarP(&rootDir, "config-root-dir", "d", "", "-d D:\\Work\\DungeonRunners\\ConfigFiles")
+	dumpCommand.Flags().StringArrayVarP(&dumpAllowedExtensions, "allowed-extensions", "e", []string{".gc", ".txt"}, "-e .gc -e .txt")
 
 	//err := cobra.MarkFlagRequired(dumpCommand.PersistentFlags(), "config-root-dir")
 	//

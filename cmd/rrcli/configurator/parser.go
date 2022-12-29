@@ -88,7 +88,7 @@ func LoadFromDumpedConfigFile(path string) (*configtypes.DRConfig, error) {
 	return drConfig, nil
 }
 
-func LoadAllConfigurationFiles(rootDir string) (*configtypes.DRConfig, error) {
+func LoadAllConfigurationFiles(rootDir string, extensions []string) (*configtypes.DRConfig, error) {
 	configsToload := make([]string, 0, 1024)
 
 	err := filepath.WalkDir(rootDir, func(path string, d fs.DirEntry, err error) error {
@@ -101,7 +101,7 @@ func LoadAllConfigurationFiles(rootDir string) (*configtypes.DRConfig, error) {
 		}
 
 		ext := filepath.Ext(path)
-		if slices.Contains([]string{".gc", ".txt"}, ext) {
+		if slices.Contains(extensions, ext) {
 			configsToload = append(configsToload, path)
 		}
 
