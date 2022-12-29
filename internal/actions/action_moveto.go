@@ -2,7 +2,7 @@ package actions
 
 import (
 	"RainbowRunner/pkg/byter"
-	"RainbowRunner/pkg/datatypes"
+	"RainbowRunner/pkg/datatypes/drfloat"
 )
 
 //go:generate go run ../../scripts/generatelua -type=ActionMoveTo
@@ -17,8 +17,10 @@ func (a *ActionMoveTo) OpCode() BehaviourAction {
 
 func (a *ActionMoveTo) Init(body *byter.Byter) {
 	// MoveTo::readData
-	body.WriteUInt32(datatypes.DRFloat(a.PosX).ToUInt())
-	body.WriteUInt32(datatypes.DRFloat(a.PosY).ToUInt())
+	x := drfloat.FromFloat32(a.PosX)
+	y := drfloat.FromFloat32(a.PosY)
+	body.WriteUInt32(x.ToWire())
+	body.WriteUInt32(y.ToWire())
 
 	//// MoveTo::readInit
 	//// Not used when embedding in Behavior

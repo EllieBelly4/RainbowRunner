@@ -8,6 +8,7 @@ import (
 	"RainbowRunner/internal/pathfinding"
 	script2 "RainbowRunner/internal/script"
 	"RainbowRunner/internal/types"
+	"RainbowRunner/internal/types/configtypes"
 	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
@@ -20,6 +21,9 @@ import (
 //go:generate go run ../../scripts/generatelua -type=Zone
 type Zone struct {
 	sync.RWMutex
+
+	zoneDefConfig *configtypes.ZoneDefConfig
+
 	Name     string
 	entities map[uint16]drobjecttypes.DRObject
 	players  map[uint16]*RRPlayer

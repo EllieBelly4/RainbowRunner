@@ -25,6 +25,7 @@ type ZoneConfig struct {
 	Name        string
 	NPCs        map[string]*NPCConfig
 	Checkpoints map[string]*CheckpointConfig
+	World       *configtypes.WorldConfig
 }
 
 func GetZoneConfig(name string) (*ZoneConfig, error) {
@@ -49,6 +50,14 @@ func GetZoneConfig(name string) (*ZoneConfig, error) {
 	}
 
 	zoneConfig := NewZoneConfig(name)
+
+	worldConfig, ok := worlds[name]
+
+	if !ok {
+		log.Errorf("Zone does not have a world config: %s", name)
+	} else {
+		zoneConfig.World = worldConfig
+	}
 
 	if rawConfig != nil {
 		configEntities := rawConfig[0].Entities[0].Children

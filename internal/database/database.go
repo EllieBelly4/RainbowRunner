@@ -2,11 +2,16 @@ package database
 
 import (
 	"RainbowRunner/cmd/rrcli/configurator"
+	"RainbowRunner/internal/gosucks"
 	"RainbowRunner/internal/types"
 	"RainbowRunner/internal/types/configtypes"
+	"RainbowRunner/pkg/datatypes"
+	"RainbowRunner/pkg/datatypes/drfloat"
 	"encoding/json"
+	"fmt"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
+	"reflect"
 	"strings"
 )
 
@@ -20,6 +25,8 @@ type DRWeapon struct {
 
 var config *configtypes.DRConfig
 var checkpointConfigs map[string]map[string]*CheckpointConfig
+var zones map[string]*configtypes.ZoneDefConfig
+var worlds map[string]*configtypes.WorldConfig
 
 var Weapons []*configtypes.DRClassChildGroup
 var Armour []*configtypes.DRClassChildGroup
@@ -62,7 +69,123 @@ func LoadConfigFiles() {
 
 	checkpointConfigs = sortCheckpoints(rawCheckpointConfigs)
 
+	worlds = LoadWorldConfigs()
+	zones = LoadZoneConfigs()
+
 	log.Info("config files loaded")
+}
+
+func LoadZoneConfigs() map[string]*configtypes.ZoneDefConfig {
+	log.Info("loading zone configs")
+
+	zones := make(map[string]*configtypes.ZoneDefConfig)
+
+	zonesConfig, err := configurator.LoadFromDumpedConfigFile("resources/Dumps/generated/zones.json")
+
+	if err != nil {
+		panic(err)
+	}
+
+	for zoneID, zoneGroup := range zonesConfig.Classes.Children {
+		if len(zoneGroup.Entities) > 1 {
+			panic(fmt.Sprintf("zone %s has more than one entity", zoneID))
+		}
+
+		zoneDef := zoneGroup.Entities[0]
+
+		zoneDefConfig := configtypes.NewZoneDefConfig()
+		props := zoneDef.Properties
+
+		setPropertiesOnStruct(zoneDefConfig, props)
+
+		zones[zoneID] = zoneDefConfig
+	}
+
+	gosucks.VAR(zonesConfig)
+
+	return zones
+}
+
+func setPropertiesOnStruct(
+	obj any,
+	props configtypes.DRClassProperties,
+) {
+	rval := reflect.ValueOf(obj)
+
+	objName := reflect.TypeOf(obj).Elem().Name()
+
+	for propKey, val := range props {
+		field := rval.Elem().FieldByName(propKey)
+
+		sField, _ := rval.Type().Elem().FieldByName(propKey)
+
+		tag := getStructTag(sField)
+		tagInfo := parseTag(tag)
+
+		if !field.IsValid() {
+			//panic(fmt.Sprintf("unhandled property %s", propKey))
+			fmt.Printf("%s unhandled property %s = %s\n", objName, propKey, val)
+			continue
+		}
+
+		if field.Type() == reflect.TypeOf(drfloat.DRFloat(0)) {
+			field.Set(reflect.ValueOf(drfloat.FromFloat32(float32(props.FloatVal(propKey)))))
+			return
+		}
+
+		if field.Type() == reflect.TypeOf(datatypes.Vector3Float32{}) {
+			field.Set(reflect.ValueOf(props.Vector3Val(propKey)))
+			return
+		}
+
+		switch field.Kind() {
+		case reflect.String:
+			field.SetString(props.StringVal(propKey))
+		case reflect.Int:
+			if tagInfo.Parse == "hex" {
+				field.SetInt(int64(props.HexVal(propKey)))
+			} else {
+				field.SetInt(int64(props.IntVal(propKey)))
+			}
+		case reflect.Uint:
+			if tagInfo.Parse == "hex" {
+				field.SetUint(uint64(props.HexVal(propKey)))
+			} else {
+				field.SetUint(uint64(props.IntVal(propKey)))
+			}
+		case reflect.Bool:
+			field.SetBool(props.BoolVal(propKey))
+		case reflect.Float64:
+			field.SetFloat(props.FloatVal(propKey))
+		case reflect.Float32:
+			field.SetFloat(props.FloatVal(propKey))
+		default:
+			panic(fmt.Sprintf("%s unhandled property type %s %s", objName, propKey, field.Kind()))
+		}
+	}
+}
+
+type tagInfo struct {
+	Parse string
+}
+
+func parseTag(tag string) tagInfo {
+	split := strings.Split(tag, " ")
+
+	for _, s := range split {
+		if strings.HasPrefix(s, "parse:") {
+			parseVal := strings.Trim(s[6:], "\"")
+			return tagInfo{
+				Parse: parseVal,
+			}
+		}
+	}
+
+	return tagInfo{}
+}
+
+func getStructTag(f reflect.StructField) string {
+	return string(f.Tag)
 }
 
 func LoadEquipmentFixtures() {

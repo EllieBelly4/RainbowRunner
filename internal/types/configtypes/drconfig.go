@@ -79,6 +79,51 @@ func (c *DRConfig) MergeParents(class *DRClassChildGroup) {
 	}
 }
 
+func (c *DRConfig) MergeParentsSingle(entity *DRClass) {
+	if entity.Extends != "" {
+		parentClass, err := c.Get(entity.Extends)
+
+		if err != nil || parentClass == nil || len(parentClass) == 0 {
+			log.Debug("child not found " + entity.Extends)
+			return
+		}
+
+		if len(parentClass) != 1 || len(parentClass[0].Entities) != 1 {
+			panic(fmt.Sprintf("multiple parents found for %s", entity.Name))
+			return
+		}
+
+		parent := parentClass[0]
+		parentEntity := parent.Entities[0]
+
+		c.MergeParents(parent)
+		c.mergeProperties(entity, parentEntity)
+
+		if entity.Children == nil {
+			entity.Children = map[string]*DRClassChildGroup{}
+		}
+
+		for parentChildName, parentChild := range parentEntity.Children {
+			c.MergeParents(parentChild)
+
+			if _, ok := entity.Children[parentChildName]; !ok {
+				entity.Children[parentChildName] = parentChild
+			} else {
+				if len(entity.Children[parentChildName].Entities) > 1 || len(parentChild.Entities) > 1 {
+					fmt.Println("cannot merge children as there are more than 1")
+					continue
+				}
+
+				c.mergeProperties(entity.Children[parentChildName].Entities[0], parentChild.Entities[0])
+			}
+		}
+	} else {
+		for _, child := range entity.Children {
+			c.MergeParents(child)
+		}
+	}
+}
+
 func (c *DRConfig) mergeProperties(entity *DRClass, parentEntity *DRClass) {
 	if entity.Properties == nil {
 		entity.Properties = map[string]string{}
