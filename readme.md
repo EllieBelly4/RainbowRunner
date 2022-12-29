@@ -68,7 +68,7 @@ they will have to be modified directly to change parameters.
 
 To run all commands in here use: `go run cmd/rrcli`
 
-#### `rrcli config`
+#### Config `rrcli config`
 
 Commands for working with DR game configuration.
 
@@ -76,7 +76,7 @@ Commands for working with DR game configuration.
   e.g. "Armor"
 * `list` - List all GCObjects with simple filter and depth options
 
-#### `rrcli config extract`
+#### Config Extract `rrcli config extract`
 
 Commands for extracting data from the configuration files.
 
@@ -85,7 +85,7 @@ Commands for extracting data from the configuration files.
 * `categorise` - Parse the dumped configuration from `dump` and generate the category config
   file ([resources/Dumps/generated/drcategories.json](resources/Dumps/generated/drcategories.json)).
 
-#### `rrcli config category`
+#### Config Category `rrcli config category`
 
 Commands which attempt to group GCObjects into categories for helping with discovery of objects.
 These categories are not always the clearest or most useful but can be in very specific circumstances.
@@ -94,7 +94,7 @@ These categories are not always the clearest or most useful but can be in very s
   depth, `-1` for unlimited
 * `get` - Get a specific category details
 
-#### `rrcli models`
+#### Models `rrcli models`
 
 Commands for working with DR format models
 
