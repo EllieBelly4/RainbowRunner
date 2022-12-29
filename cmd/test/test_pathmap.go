@@ -2,7 +2,6 @@ package main
 
 import (
 	"RainbowRunner/internal/types"
-	"encoding/json"
 	"image"
 	"image/color"
 	"image/png"

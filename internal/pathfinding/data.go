@@ -2,7 +2,6 @@ package pathfinding
 
 import (
 	"RainbowRunner/internal/types"
-	"encoding/json"
 	"io"
 	"os"
 	"path/filepath"

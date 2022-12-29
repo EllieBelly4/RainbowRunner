@@ -4,7 +4,6 @@ import (
 	"RainbowRunner/cmd/rrcli/commands/globals"
 	"RainbowRunner/cmd/rrcli/configurator"
 	"RainbowRunner/internal/types/configtypes"
-	"encoding/json"
 	"fmt"
 	"github.com/spf13/cobra"
 	"regexp"

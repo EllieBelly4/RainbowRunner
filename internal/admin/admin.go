@@ -4,7 +4,6 @@ import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game"
 	byter "RainbowRunner/pkg/byter"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"

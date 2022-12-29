@@ -6,7 +6,6 @@ import (
 	"RainbowRunner/internal/gosucks"
 	"RainbowRunner/internal/types/configtypes"
 	"RainbowRunner/pkg/datatypes"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"

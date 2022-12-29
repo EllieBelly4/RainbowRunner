@@ -3,7 +3,6 @@ package extract
 import (
 	"RainbowRunner/cmd/rrcli/commands/globals"
 	"RainbowRunner/cmd/rrcli/configurator"
-	"encoding/json"
 	"fmt"
 	"github.com/spf13/cobra"
 	"io/ioutil"

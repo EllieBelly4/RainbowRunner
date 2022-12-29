@@ -5,6 +5,15 @@ import (
 	"RainbowRunner/pkg/datatypes/drfloat"
 )
 
+type EntityConfigType int
+
+const (
+	EntityConfigTypeUnknown EntityConfigType = iota
+	EntityConfigTypeNPC
+	EntityConfigTypeCheckpoint
+	EntityConfigTypeWaypoint
+)
+
 //go:generate go run ../../../scripts/generatelua -type=EntityConfig
 type EntityConfig struct {
 	Name             string
@@ -30,6 +39,8 @@ type EntityConfig struct {
 	AutoRespawn      bool
 	WorldEntityTable string
 	RespawnRate      int
+
+	Type EntityConfigType
 }
 
 func NewEntityConfig() *EntityConfig {

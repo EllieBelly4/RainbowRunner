@@ -59,6 +59,10 @@ func GetZoneConfig(name string) (*ZoneConfig, error) {
 		zoneConfig.World = worldConfig
 	}
 
+	if worldConfig.Entities != nil {
+
+	}
+
 	if rawConfig != nil {
 		configEntities := rawConfig[0].Entities[0].Children
 

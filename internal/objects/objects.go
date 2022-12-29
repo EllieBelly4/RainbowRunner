@@ -1,7 +1,6 @@
 package objects
 
 import (
-	"encoding/json"
 	"os"
 )
 

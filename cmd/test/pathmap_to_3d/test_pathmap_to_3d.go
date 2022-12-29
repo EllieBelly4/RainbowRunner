@@ -5,7 +5,6 @@ import (
 	"RainbowRunner/internal/gosucks"
 	"RainbowRunner/internal/types"
 	"RainbowRunner/pkg/datatypes"
-	"encoding/json"
 	"os"
 )
 

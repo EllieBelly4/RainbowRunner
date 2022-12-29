@@ -8,7 +8,6 @@ import (
 	"RainbowRunner/internal/types/configtypes"
 	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
-	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"

@@ -3,7 +3,6 @@ package api
 import (
 	"RainbowRunner/internal/api/types"
 	"RainbowRunner/internal/objects"
-	"encoding/json"
 	"log"
 	"net/http"
 

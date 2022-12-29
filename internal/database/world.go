@@ -6,6 +6,7 @@ import (
 	"RainbowRunner/internal/types/configtypes"
 	"fmt"
 	log "github.com/sirupsen/logrus"
+	"strings"
 )
 
 func LoadWorldConfigs() map[string]*configtypes.WorldConfig {
@@ -52,6 +53,29 @@ func loadWorldEntities(worldConfig *configtypes.WorldConfig, entitiesConfig *con
 
 				entityConfig.Name = entity.Name
 
+				types := config.GetInheritedTypes(entity)
+
+				for _, t := range types {
+					if t[0] == "npc" {
+						entityConfig.Type = configtypes.EntityConfigTypeNPC
+						break
+					}
+
+					if t[0] == "checkpointentity" {
+						entityConfig.Type = configtypes.EntityConfigTypeCheckpoint
+						break
+					}
+
+					if t[0] == "waypoint" {
+						entityConfig.Type = configtypes.EntityConfigTypeWaypoint
+						break
+					}
+				}
+
+				//dumpTypes(types)
+
+				gosucks.VAR(types)
+
 				config.MergeParentsSingle(entity)
 
 				setPropertiesOnStruct(entityConfig, props)
@@ -60,4 +84,17 @@ func loadWorldEntities(worldConfig *configtypes.WorldConfig, entitiesConfig *con
 			}
 		}
 	}
+}
+
+func dumpTypes(types [][]string) {
+	str := ""
+
+	for i, t := range types {
+		if i > 0 {
+			str += " -> "
+		}
+		str += strings.Join(t, ".")
+	}
+
+	fmt.Println(str)
 }

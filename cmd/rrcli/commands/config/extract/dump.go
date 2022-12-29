@@ -5,7 +5,6 @@ import (
 	"RainbowRunner/cmd/rrcli/configurator"
 	"RainbowRunner/internal/types/configtypes"
 	"compress/zlib"
-	"encoding/json"
 	"github.com/spf13/cobra"
 	"os"
 )

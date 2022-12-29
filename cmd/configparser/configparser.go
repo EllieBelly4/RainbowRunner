@@ -2,7 +2,6 @@ package main
 
 import (
 	"RainbowRunner/cmd/configparser/configparser"
-	"encoding/json"
 	"io/ioutil"
 )
 

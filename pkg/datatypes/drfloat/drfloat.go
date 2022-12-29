@@ -1,6 +1,12 @@
 package drfloat
 
+import "fmt"
+
 type DRFloat int32
+
+func (f DRFloat) String() string {
+	return fmt.Sprintf("%f", float32(f)/256.0)
+}
 
 func FromFloat32(val float32) DRFloat {
 	return DRFloat(val * 256)

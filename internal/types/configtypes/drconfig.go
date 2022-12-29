@@ -194,25 +194,27 @@ func (c *DRConfig) getFromGCType(gcType []string, children map[string]*DRClassCh
 	return nil
 }
 
-func (c *DRConfig) getParents(extends string) []string {
+func (c *DRConfig) getParents(extends string) [][]string {
 	extends = strings.ToLower(extends)
 	splitKey := strings.Split(extends, ".")
 	parent, err := c.GetSimple(extends)
 
 	if err != nil || len(parent) == 0 {
-		return splitKey
+		return [][]string{splitKey}
 	}
 
 	if len(parent) > 1 {
 		panic("wrong number of parents found")
 	}
 
+	result := make([][]string, 0)
+
 	if parent[0].Entities[0].Extends != "" && parent[0].Entities[0].Extends != splitKey[0] {
 		parentTypes := c.getParents(parent[0].Entities[0].Extends)
-		splitKey = append(parentTypes, splitKey...)
+		result = append(parentTypes, splitKey)
 	}
 
-	return splitKey
+	return result
 }
 
 //func (c *DRConfig) getParentTypes(extends string) []string {
@@ -263,7 +265,15 @@ func (c *DRConfig) generateCategoryMap(classes map[string]*DRClassChildGroup, ou
 
 			if entity.Extends != "" {
 				parentsGCTypes := c.getParents(entity.Extends)
-				parentGCType := strings.Join(parentsGCTypes, ".")
+				parentsGCTypes2 := make([]string, 0)
+
+				for _, gcTypeSegs := range parentsGCTypes {
+					for _, seg := range gcTypeSegs {
+						parentsGCTypes2 = append(parentsGCTypes2, seg)
+					}
+				}
+
+				parentGCType := strings.Join(parentsGCTypes2, ".")
 
 				fullGCType := parentGCType + "." + className
 
@@ -271,8 +281,8 @@ func (c *DRConfig) generateCategoryMap(classes map[string]*DRClassChildGroup, ou
 				var curCategory *DRCategory = nil
 				curGCType := ""
 
-				for i := 0; i < len(parentsGCTypes); i++ {
-					curGCType = parentsGCTypes[i]
+				for i := 0; i < len(parentsGCTypes2); i++ {
+					curGCType = parentsGCTypes2[i]
 
 					if _, ok := curMap[curGCType]; !ok {
 						curMap[curGCType] = NewDRCategory()
@@ -304,6 +314,20 @@ func (c *DRConfig) List(maxDepth int, predicate func(group *DRClassChildGroup) b
 		c.Classes.Children, results)
 
 	return results, nil
+}
+
+func (c *DRConfig) GetInheritedTypes(entity *DRClass) [][]string {
+	types := make([][]string, 0, 1)
+
+	if entity.Extends == "" {
+		return types
+	}
+
+	parents := c.getParents(entity.Extends)
+
+	types = append(types, parents...)
+
+	return parents
 }
 
 func addChildrenUntilDepth(
