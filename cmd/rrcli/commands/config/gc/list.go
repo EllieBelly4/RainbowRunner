@@ -1,4 +1,4 @@
-package config
+package gc
 
 import (
 	"RainbowRunner/cmd/rrcli/commands/globals"
@@ -51,7 +51,7 @@ var listCommand = &cobra.Command{
 	},
 }
 
-func InitListCommand() {
+func initListCommand() {
 	listCommand.Flags().StringVarP(&listRegexpFilter, "regexp-filter", "x", "", "-x \"^[0-9]+\"")
 	listCommand.Flags().IntVarP(&listMaxDepth, "list-depth", "d", 0, "-d 3")
 }

@@ -1,4 +1,4 @@
-package config
+package gc
 
 import (
 	"RainbowRunner/cmd/rrcli/commands/globals"
@@ -46,6 +46,6 @@ var getCommand = &cobra.Command{
 	},
 }
 
-func InitGetCommand() {
+func initGetCommand() {
 
 }
