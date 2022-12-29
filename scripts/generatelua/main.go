@@ -3,6 +3,7 @@ package main
 import (
 	"RainbowRunner/internal/gosucks"
 	"flag"
+	"github.com/goccy/go-json"
 	"golang.org/x/tools/go/packages"
 	"os"
 	"path/filepath"

@@ -7,6 +7,7 @@ import (
 	"RainbowRunner/internal/types/configtypes"
 	"RainbowRunner/pkg/datatypes"
 	"fmt"
+	"github.com/goccy/go-json"
 	"io/ioutil"
 	"os"
 	"path"

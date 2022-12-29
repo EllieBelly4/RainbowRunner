@@ -3,6 +3,7 @@ package api
 import (
 	"RainbowRunner/internal/api/types"
 	"RainbowRunner/internal/objects"
+	"github.com/goccy/go-json"
 	"log"
 	"net/http"
 

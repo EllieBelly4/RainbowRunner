@@ -2,6 +2,7 @@ package main
 
 import (
 	"RainbowRunner/internal/types"
+	"github.com/goccy/go-json"
 	"image"
 	"image/color"
 	"image/png"

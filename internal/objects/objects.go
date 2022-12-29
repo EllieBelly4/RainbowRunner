@@ -1,6 +1,7 @@
 package objects
 
 import (
+	"github.com/goccy/go-json"
 	"os"
 )
 

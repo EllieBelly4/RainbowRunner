@@ -5,6 +5,7 @@ import (
 	"RainbowRunner/internal/gosucks"
 	"RainbowRunner/internal/types"
 	"RainbowRunner/pkg/datatypes"
+	"github.com/goccy/go-json"
 	"os"
 )
 

@@ -5,6 +5,7 @@ import (
 	"RainbowRunner/cmd/rrcli/configurator"
 	"RainbowRunner/internal/types/configtypes"
 	"fmt"
+	"github.com/goccy/go-json"
 	"github.com/spf13/cobra"
 	"regexp"
 )

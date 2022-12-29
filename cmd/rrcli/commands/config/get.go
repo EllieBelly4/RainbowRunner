@@ -4,6 +4,7 @@ import (
 	"RainbowRunner/cmd/rrcli/commands/globals"
 	"RainbowRunner/cmd/rrcli/configurator"
 	"fmt"
+	"github.com/goccy/go-json"
 	"github.com/spf13/cobra"
 	"io/ioutil"
 )

@@ -9,6 +9,7 @@ import (
 	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	"fmt"
+	"github.com/goccy/go-json"
 	"io"
 	"io/ioutil"
 	"os"

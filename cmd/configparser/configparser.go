@@ -2,6 +2,7 @@ package main
 
 import (
 	"RainbowRunner/cmd/configparser/configparser"
+	"github.com/goccy/go-json"
 	"io/ioutil"
 )
 
