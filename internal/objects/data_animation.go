@@ -1,6 +1,8 @@
 package objects
 
-import "RainbowRunner/internal/database"
+import (
+	"RainbowRunner/internal/types/configtypes"
+)
 
 //go:generate go run ../../scripts/generatelua -type=Animation
 type Animation struct {
@@ -11,7 +13,7 @@ type Animation struct {
 	AnimationID      int
 }
 
-func NewAnimationFromConfig(a *database.AnimationConfig) *Animation {
+func NewAnimationFromConfig(a *configtypes.AnimationConfig) *Animation {
 	animation := NewAnimation()
 
 	animation.ID = a.ID

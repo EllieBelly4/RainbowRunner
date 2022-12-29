@@ -8,7 +8,6 @@ import (
 	"RainbowRunner/internal/pathfinding"
 	script2 "RainbowRunner/internal/script"
 	"RainbowRunner/internal/types"
-	"RainbowRunner/internal/types/configtypes"
 	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
@@ -21,8 +20,6 @@ import (
 //go:generate go run ../../scripts/generatelua -type=Zone
 type Zone struct {
 	sync.RWMutex
-
-	zoneDefConfig *configtypes.ZoneDefConfig
 
 	Name     string
 	entities map[uint16]drobjecttypes.DRObject
@@ -180,6 +177,12 @@ func (z *Zone) GetEntityScript(id string) script2.IEntityScript {
 	}
 
 	return script2.NewEntityScript(script, z.Scripts.State)
+}
+
+func (z *Zone) LoadNPCFromConfigFullGCType(id string) *NPC {
+	shortGCType := strings.TrimPrefix(id, z.BaseConfig.GCType+".npc.")
+
+	return z.LoadNPCFromConfig(shortGCType)
 }
 
 func (z *Zone) LoadNPCFromConfig(id string) *NPC {

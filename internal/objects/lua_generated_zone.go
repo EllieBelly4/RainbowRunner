@@ -2,6 +2,7 @@
 package objects
 
 import (
+	"RainbowRunner/internal/database"
 	lua "RainbowRunner/internal/lua"
 	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
@@ -35,9 +36,7 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type Scripts
 		// -------------------------------------------------------------------------------------------------------------
-		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type BaseConfig
-		// -------------------------------------------------------------------------------------------------------------
+		"baseConfig": lua.LuaGenericGetSetValue[IZone, *database.ZoneConfig](func(v IZone) **database.ZoneConfig { return &v.GetZone().BaseConfig }),
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type PathMap
 		// -------------------------------------------------------------------------------------------------------------
@@ -171,6 +170,19 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 			ud.Value = res0
 			l.SetMetatable(ud, l.GetTypeMetatable("script2.IEntityScript"))
 			l.Push(ud)
+
+			return 1
+		},
+
+		"loadNPCFromConfigFullGCType": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
+			obj := objInterface.GetZone()
+			res0 := obj.LoadNPCFromConfigFullGCType(string(l.CheckString(2)))
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
 
 			return 1
 		},

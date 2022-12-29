@@ -1,7 +1,7 @@
 package objects
 
 import (
-	"RainbowRunner/internal/database"
+	"RainbowRunner/internal/types/configtypes"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 	"strings"
@@ -58,12 +58,12 @@ func NewNPC(
 	return npc
 }
 
-func NewNPCFromConfig(config *database.NPCConfig) *NPC {
+func NewNPCFromConfig(config *configtypes.NPCConfig) *NPC {
 	npc := NewNPCSimple(config.FullGCType)
 
 	npc.Name = config.Name
-	npc.Level = config.Level
-	npc.CollisionRadius = config.CollisionRadius
+	npc.Level = int32(config.Level)
+	npc.CollisionRadius = config.Desc.CollisionRadius
 
 	behaviorType := "npc.Base.Behavior"
 
@@ -73,8 +73,8 @@ func NewNPCFromConfig(config *database.NPCConfig) *NPC {
 
 	behavior2 := NewMonsterBehavior2(behaviorType)
 
-	behavior2.Speed = config.Speed
-	behavior2.TurnRate = config.TurnRate
+	behavior2.Speed = int(config.Desc.Speed)
+	behavior2.TurnRate = config.Desc.TurnRate
 
 	npc.AddChild(behavior2)
 

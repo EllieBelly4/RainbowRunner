@@ -5,16 +5,18 @@ import (
 	"RainbowRunner/internal/database"
 	lua2 "RainbowRunner/internal/lua"
 	"RainbowRunner/internal/script"
+	"RainbowRunner/internal/types/configtypes"
 	"RainbowRunner/pkg/datatypes"
 	lua "github.com/yuin/gopher-lua"
 )
 
-//go:generate go run ../../scripts/generateluaregistrations -includes=.,../actions,../database
+//go:generate go run ../../scripts/generateluaregistrations -includes=.,../actions,../database,../types/configtypes
 func RegisterLuaGlobals(state *lua.LState) {
 	script.RegisterAllTime(state)
 	RegisterAllLuaFunctions(state)
 	actions.RegisterAllLuaFunctions(state)
 	database.RegisterAllLuaFunctions(state)
+	configtypes.RegisterAllLuaFunctions(state)
 
 	lua2.RegisterModules(state)
 }

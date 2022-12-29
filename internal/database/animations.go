@@ -1,20 +1,76 @@
 package database
 
-//go:generate go run ../../scripts/generatelua -type AnimationConfig
-type AnimationConfig struct {
-	ID int
-	// This is used for remapping IDs to another animation
-	// e.g. I think melee attacks by default have 3 animations but not all units have 3 attack animations,
-	// so they map all 3 to the first animationID
-	AnimationID int
-	NumFrames   int
+import (
+	"RainbowRunner/internal/types/configtypes"
+	"strconv"
+)
 
-	// Unk
-	TriggerTime int
+func loadAnimations(gcType string) map[int]configtypes.AnimationConfig {
+	animationResults := make(map[int]configtypes.AnimationConfig)
 
-	// Unk if we can actually use this
-	SoundTriggerTime int
+	config, err := config.Get(gcType)
 
-	// TODO extract this data from the config, animations do not have names but they usually have comments explaining what they are
-	//Comment string
+	if err != nil {
+		return animationResults
+	}
+
+	for _, animations := range config[0].Entities[0].Children {
+		for _, animation := range animations.Entities {
+			anim := configtypes.AnimationConfig{}
+
+			if id, ok := animation.Properties["ID"]; ok {
+				intVal, err := strconv.ParseInt(id, 10, 32)
+
+				if err != nil {
+					panic(err)
+				}
+
+				anim.ID = int(intVal)
+			}
+
+			if animID, ok := animation.Properties["AnimationID"]; ok {
+				intVal, err := strconv.ParseInt(animID, 10, 32)
+
+				if err != nil {
+					panic(err)
+				}
+
+				anim.AnimationID = int(intVal)
+			}
+
+			if numFrames, ok := animation.Properties["NumFrames"]; ok {
+				intVal, err := strconv.ParseInt(numFrames, 10, 32)
+
+				if err != nil {
+					panic(err)
+				}
+
+				anim.NumFrames = int(intVal)
+			}
+
+			if triggerTime, ok := animation.Properties["TriggerTime"]; ok {
+				intVal, err := strconv.ParseInt(triggerTime, 10, 32)
+
+				if err != nil {
+					panic(err)
+				}
+
+				anim.TriggerTime = int(intVal)
+			}
+
+			if soundTriggerTime, ok := animation.Properties["SoundTriggerTime"]; ok {
+				intVal, err := strconv.ParseInt(soundTriggerTime, 10, 32)
+
+				if err != nil {
+					panic(err)
+				}
+
+				anim.SoundTriggerTime = int(intVal)
+			}
+
+			animationResults[anim.ID] = anim
+		}
+	}
+
+	return animationResults
 }

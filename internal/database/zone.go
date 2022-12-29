@@ -21,11 +21,23 @@ type CheckpointEntityConfig struct {
 	Blocking   bool
 }
 
+//go:generate go run ../../scripts/generatelua -type=ZoneConfig
 type ZoneConfig struct {
 	Name        string
-	NPCs        map[string]*NPCConfig
+	NPCs        map[string]*configtypes.NPCConfig
 	Checkpoints map[string]*CheckpointConfig
 	World       *configtypes.WorldConfig
+	GCType      string
+}
+
+func (z *ZoneConfig) GetAllNPCs() []*configtypes.NPCConfig {
+	l := make([]*configtypes.NPCConfig, 0)
+
+	for _, npc := range z.NPCs {
+		l = append(l, npc)
+	}
+
+	return l
 }
 
 func GetZoneConfig(name string) (*ZoneConfig, error) {
@@ -49,7 +61,7 @@ func GetZoneConfig(name string) (*ZoneConfig, error) {
 		break
 	}
 
-	zoneConfig := NewZoneConfig(name)
+	zoneConfig := NewZoneConfig(name, strings.Join(gcRoot, "."))
 
 	worldConfig, ok := worlds[name]
 
@@ -60,15 +72,15 @@ func GetZoneConfig(name string) (*ZoneConfig, error) {
 	}
 
 	if worldConfig.Entities != nil {
-
+		addWorldEntities(zoneConfig, worldConfig, append(gcRoot, "npc"))
 	}
 
 	if rawConfig != nil {
-		configEntities := rawConfig[0].Entities[0].Children
+		//configEntities := rawConfig[0].Entities[0].Children
 
-		if npcConfig, ok := configEntities["npc"]; ok {
-			handleNPCs(zoneConfig, npcConfig, append(gcRoot, "npc"))
-		}
+		//if npcConfig, ok := configEntities["npc"]; ok {
+		//	handleNPCs(zoneConfig, npcConfig, append(gcRoot, "npc"))
+		//}
 
 		if checkConfig, ok := checkpointConfigs[zoneConfig.Name]; ok {
 			zoneConfig.Checkpoints = checkConfig
@@ -80,21 +92,28 @@ func GetZoneConfig(name string) (*ZoneConfig, error) {
 	return zoneConfig, nil
 }
 
-func handleNPCs(zoneConfig *ZoneConfig, rawNPCConfig *configtypes.DRClassChildGroup, gcRoot []string) {
-	zoneConfig.NPCs = make(map[string]*NPCConfig)
+func addWorldEntities(zoneConfig *ZoneConfig, worldConfig *configtypes.WorldConfig, gcroot []string) {
+	if worldConfig.Entities == nil {
+		return
+	}
 
-	for npcKey, npcConfig := range rawNPCConfig.Entities[0].Children {
-		npcGCroot := append(gcRoot, npcKey)
-		npc := NewNPCConfig(npcConfig, npcGCroot)
+	gcrootString := strings.Join(gcroot, ".")
 
-		npc.FullGCType = strings.Join(npcGCroot, ".")
+	if zoneConfig.NPCs == nil {
+		zoneConfig.NPCs = make(map[string]*configtypes.NPCConfig)
+	}
 
-		zoneConfig.NPCs[npcKey] = npc
+	for _, entity := range worldConfig.Entities {
+		if entity.Type == configtypes.EntityConfigTypeNPC {
+			shortGCType := strings.ToLower(strings.TrimPrefix(entity.FullGCType, gcrootString+"."))
+			zoneConfig.NPCs[shortGCType] = configtypes.NewNPCConfigFromEntity(entity)
+		}
 	}
 }
 
-func NewZoneConfig(name string) *ZoneConfig {
+func NewZoneConfig(name string, gctype string) *ZoneConfig {
 	return &ZoneConfig{
-		Name: name,
+		Name:   name,
+		GCType: gctype,
 	}
 }

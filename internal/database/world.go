@@ -30,7 +30,7 @@ func LoadWorldConfigs() map[string]*configtypes.WorldConfig {
 		worldConfig := configtypes.NewWorldConfig()
 		props := worldDef.Properties
 
-		setPropertiesOnStruct(worldConfig, props)
+		configtypes.SetPropertiesOnStruct(worldConfig, props)
 
 		if worldDef.Children != nil && worldDef.Children["entities"] != nil {
 			loadWorldEntities(worldConfig, worldDef.Children["entities"].Entities[0])
@@ -49,9 +49,6 @@ func loadWorldEntities(worldConfig *configtypes.WorldConfig, entitiesConfig *con
 		for _, entityGroup := range entitiesConfig.Children {
 			for _, entity := range entityGroup.Entities {
 				entityConfig := configtypes.NewEntityConfig()
-				props := entity.Properties
-
-				entityConfig.Name = entity.Name
 
 				types := config.GetInheritedTypes(entity)
 
@@ -72,17 +69,49 @@ func loadWorldEntities(worldConfig *configtypes.WorldConfig, entitiesConfig *con
 					}
 				}
 
+				//props := entity.Properties
+
+				entityConfig.Name = entity.Extends
+				entityConfig.FullGCType = entity.Extends
+
 				//dumpTypes(types)
 
 				gosucks.VAR(types)
 
 				config.MergeParentsSingle(entity)
+				entityConfig.Init(entity)
 
-				setPropertiesOnStruct(entityConfig, props)
+				addEntityBehaviour(entityConfig, entity)
+
+				if entityConfig.Desc != nil && entityConfig.Desc.Animations != "" {
+					entityConfig.Animations = loadAnimations(entityConfig.Desc.Animations)
+				}
 
 				worldConfig.Entities = append(worldConfig.Entities, entityConfig)
 			}
 		}
+	}
+}
+
+func addEntityBehaviour(entityConfig *configtypes.EntityConfig, entity *configtypes.DRClass) {
+	if behaviour, ok := entity.Children["behavior"]; ok && entityConfig.Type == configtypes.EntityConfigTypeNPC {
+		behavGCType := "npc.Base.Behavior"
+		customBehaviourType := entityConfig.FullGCType + ".behavior"
+
+		_, err := config.Get(customBehaviourType)
+
+		if entity.Extends == "" && err != nil {
+			behavGCType = customBehaviourType
+		}
+
+		entityConfig.Behaviour = &configtypes.BehaviourConfig{
+			Type: behavGCType,
+		}
+
+		behavEntity := behaviour.Entities[0]
+		configtypes.SetPropertiesOnStruct(entityConfig.Behaviour, behavEntity.Properties)
+
+		entityConfig.Behaviour.Init(behavEntity, entityConfig.FullGCType)
 	}
 }
 
