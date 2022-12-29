@@ -44,7 +44,7 @@ func (u *UnitContainer) ReadUpdate(body *byter.Byter) error {
 		itemObject.WorldPosition = avatarUnitBehaviour.Position
 		zone.SpawnEntity(types.UInt16(u.OwnerID()), itemObject)
 
-		fmt.Printf("Avatar Pos: %d, %d", avatarUnitBehaviour.Position.X, avatarUnitBehaviour.Position.Y)
+		fmt.Printf("Avatar Pos: %f, %f", avatarUnitBehaviour.Position.X, avatarUnitBehaviour.Position.Y)
 
 		CEWriter.Create(itemObject)
 		CEWriter.Init(itemObject)

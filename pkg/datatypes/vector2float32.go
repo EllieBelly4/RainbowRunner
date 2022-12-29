@@ -64,3 +64,10 @@ func (f Vector2Float32) ToVector3Float32() Vector3Float32 {
 		Z: 0,
 	}
 }
+
+func (f Vector2Float32) Add(vector2Float32 Vector2Float32) Vector2Float32 {
+	return Vector2Float32{
+		X: f.X + vector2Float32.X,
+		Y: f.Y + vector2Float32.Y,
+	}
+}

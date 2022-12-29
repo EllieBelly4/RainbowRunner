@@ -45,7 +45,7 @@ func LoadPathMap(zoneName string) *types.PathMap {
 		panic(err)
 	}
 
-	var pathMap types.PathMap
+	var pathMap = &types.PathMap{}
 
 	data, err := io.ReadAll(file)
 
@@ -53,13 +53,15 @@ func LoadPathMap(zoneName string) *types.PathMap {
 		panic(err)
 	}
 
-	err = json.Unmarshal(data, &pathMap)
+	err = json.Unmarshal(data, pathMap)
 
 	if err != nil {
 		panic(err)
 	}
 
-	pathMapCache[lcZoneName] = &pathMap
+	pathMap.Init()
 
-	return &pathMap
+	pathMapCache[lcZoneName] = pathMap
+
+	return pathMap
 }

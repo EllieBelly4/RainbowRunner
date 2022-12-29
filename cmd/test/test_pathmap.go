@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	rawData, err := os.ReadFile("./data/pathmaps/tutorial_pathmap.json")
+	rawData, err := os.ReadFile("./data/pathmaps/dungeon00_level01_pathmap.json")
 
 	if err != nil {
 		panic(err)

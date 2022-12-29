@@ -2,36 +2,50 @@ package types
 
 import (
 	"RainbowRunner/pkg/datatypes"
+	log "github.com/sirupsen/logrus"
 	"math"
 )
 
 type PathMap struct {
-	CoordLimitX int          `json:"coordLimitX"`
-	CoordLimitY int          `json:"coordLimitY"`
-	TileWidth   float32      `json:"tileWidth"`
-	TileHeight  float32      `json:"tileHeight"`
-	ChunkWidth  int          `json:"width"`
-	ChunkHeight int          `json:"height"`
-	Nodes       [][]PathNode `json:"nodes"`
+	WorldOffsetX float32      `json:"worldOffsetX"`
+	WorldOffsetY float32      `json:"worldOffsetY"`
+	WorldOffsetZ float32      `json:"worldOffsetZ"`
+	CoordLimitX  int          `json:"coordLimitX"`
+	CoordLimitY  int          `json:"coordLimitY"`
+	TileWidth    float32      `json:"tileWidth"`
+	TileHeight   float32      `json:"tileHeight"`
+	ChunkWidth   int          `json:"width"`
+	ChunkHeight  int          `json:"height"`
+	Nodes        [][]PathNode `json:"nodes"`
+	Offset       datatypes.Vector3Float32
 }
 
 type PathNode struct {
-	Solid  bool    `json:"solid"`
-	Height float32 `json:"height"`
+	Solid      bool    `json:"solid"`
+	Height     float32 `json:"height"`
+	WorldPosX  float32 `json:"worldX"`
+	WorldPosY  float32 `json:"worldY"`
+	GridCoordX int     `json:"gridX"`
+	GridCoordY int     `json:"gridY"`
 }
 
 // WorldPosToGridCoords Converts world position to a pathmap grid coord
-// WARNING THIS CURRENTLY CONTAINS FUNKY OFFSETS TO THE RESULT TO MAKE TOWNSTON WORK
-// IF YOU TRY TO USE THIS FOR SOMETHING ELSE BEFORE FIXING THINGS IT WILL PROBABLY BE WRONG
 func (p PathMap) WorldPosToGridCoords(pos datatypes.Vector2Float32) datatypes.Vector2 {
+	offsetPos := pos.Add(p.Offset.ToVector2Float32())
+
 	return datatypes.Vector2{
-		// TODO figure these offsets out
-		// The two following offsets to X and Y were found to be reasonably accurate in Townston
-		// They probably do not work in other zones, but I do not know where these come from or where I'm
-		// calculating the position incorrectly
-		X: int32((pos.X-10*p.TileWidth)/10) - 72,
-		Y: int32((pos.Y-10*p.TileHeight)/10) - 8,
+		X: int32((offsetPos.X - 10*p.TileWidth) / 10),
+		Y: int32((offsetPos.Y - 10*p.TileHeight) / 10),
 	}
+}
+
+// GridCoordsToWorldPos Converts a pathmap grid coord to a world position
+func (p PathMap) GridCoordsToWorldPos(coords datatypes.Vector2) datatypes.Vector3Float32 {
+	return datatypes.Vector3Float32{
+		X: float32(coords.X)*10 + 10*p.TileWidth,
+		Y: float32(coords.Y)*10 + 10*p.TileHeight,
+		Z: p.HeightAtGridCoords(coords),
+	}.Sub(p.Offset)
 }
 
 func (p PathMap) GetHeightRange() (highest float32, lowest float32) {
@@ -73,10 +87,8 @@ func (p PathMap) GetHeightRange() (highest float32, lowest float32) {
 }
 
 func (p PathMap) HeightAt(position datatypes.Vector2Float32) float32 {
-	//position.X -= 737
-	//position.Y -= 95
 	gridCoords := p.WorldPosToGridCoords(position)
-	node := p.getPathNode(gridCoords)
+	node := p.GetNode(gridCoords)
 
 	if node == nil {
 		//log.Warningf("position is not on path map: %f, %f, %f (%d,%d)",
@@ -89,8 +101,6 @@ func (p PathMap) HeightAt(position datatypes.Vector2Float32) float32 {
 		return 0
 	}
 
-	//log.Infof("%d,%d height: %f", gridCoords.X, gridCoords.Y, node.Height)
-
 	return node.Height
 }
 
@@ -101,7 +111,14 @@ func (p PathMap) GridCoordsToAbsolute(coords datatypes.Vector2) datatypes.Vector
 	}
 }
 
-func (p PathMap) getPathNode(coords datatypes.Vector2) *PathNode {
+func (p PathMap) AbsoluteGridCoordsToRelative(coords datatypes.Vector2) datatypes.Vector2 {
+	return datatypes.Vector2{
+		X: coords.X - int32(p.ChunkWidth*16)/2,
+		Y: coords.Y - int32(p.ChunkHeight*16)/2,
+	}
+}
+
+func (p PathMap) GetNode(coords datatypes.Vector2) *PathNode {
 	absCoords := p.GridCoordsToAbsolute(coords)
 
 	//ccX := ()
@@ -133,4 +150,53 @@ func (p PathMap) getPathNode(coords datatypes.Vector2) *PathNode {
 	node := nodes[innerIndex]
 
 	return &node
+}
+
+func (p PathMap) HeightAtGridCoords(coords datatypes.Vector2) float32 {
+	node := p.GetNode(coords)
+
+	if node == nil {
+		//log.Warningf("position is not on path map: %f, %f, %f (%d,%d)",
+		//	position.X,
+		//	position.Y,
+		//	position.Z,
+		//	gridCoords.X,
+		//	gridCoords.Y,
+		//)
+		return 0
+	}
+
+	return node.Height
+}
+
+func (p *PathMap) Init() {
+	for _, nodeList := range p.Nodes {
+		if nodeList == nil {
+			continue
+		}
+
+		for _, node := range nodeList {
+			if node.GridCoordX == 0 && node.GridCoordY == 0 {
+				continue
+			}
+
+			nodeRelativeCoords := p.AbsoluteGridCoordsToRelative(datatypes.Vector2{
+				X: int32(node.GridCoordX),
+				Y: int32(node.GridCoordY),
+			})
+
+			calcPos := p.GridCoordsToWorldPos(nodeRelativeCoords)
+
+			nodePos := datatypes.Vector3Float32{
+				X: node.WorldPosX,
+				Y: node.WorldPosY,
+				Z: node.Height,
+			}
+
+			p.Offset = calcPos.Sub(nodePos)
+			return
+		}
+	}
+
+	log.Errorf("could not find offset for path map")
 }
