@@ -15,7 +15,6 @@ import (
 var categoryInputFile string
 var categoryMinDepth int
 var regexpFilter string
-var getOutputFile string
 
 var getCategoryCommand = &cobra.Command{
 	Use:  "get [category]",
@@ -70,10 +69,10 @@ var getCategoryCommand = &cobra.Command{
 			return
 		}
 
-		if getOutputFile == "" {
+		if globals.OutputFile == "" {
 			fmt.Printf("%s\n", jsonData)
 		} else {
-			err := ioutil.WriteFile(getOutputFile, jsonData, 0755)
+			err := ioutil.WriteFile(globals.OutputFile, jsonData, 0755)
 
 			if err != nil {
 				panic(err)
@@ -84,7 +83,6 @@ var getCategoryCommand = &cobra.Command{
 
 func initGetCategoryCommand() {
 	getCategoryCommand.PersistentFlags().StringVarP(&categoryInputFile, "category-input-config-file", "c", "resources/Dumps/generated/drcategories.json", "-f resources/Dumps/generated/drcategories.json")
-	getCategoryCommand.PersistentFlags().StringVarP(&getOutputFile, "output-file", "o", "", "-o tmp\\output.json")
 
 	getCategoryCommand.Flags().IntVarP(&categoryMinDepth, "min-depth", "m", -1, "-m 5")
 	getCategoryCommand.Flags().StringVarP(&regexpFilter, "regexp-filter", "x", "", "-x \"^[0-9]+\"")

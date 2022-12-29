@@ -1,4 +1,4 @@
-package config
+package extract
 
 import (
 	"RainbowRunner/cmd/configparser/configparser"
@@ -64,7 +64,7 @@ var dumpCommand = &cobra.Command{
 	},
 }
 
-func InitDumpCommand() {
+func initDumpCommand() {
 	dumpCommand.PersistentFlags().StringVarP(&rootDir, "config-root-dir", "d", "", "-d D:\\Work\\DungeonRunners\\ConfigFiles")
 	dumpCommand.Flags().StringArrayVarP(&dumpAllowedExtensions, "allowed-extensions", "e", []string{".gc", ".txt"}, "-e .gc -e .txt")
 
