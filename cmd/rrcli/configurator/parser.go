@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"golang.org/x/exp/slices"
 	"io"
 	"io/fs"
 	"io/ioutil"
@@ -99,7 +100,8 @@ func LoadAllConfigurationFiles(rootDir string) (*configtypes.DRConfig, error) {
 			return nil
 		}
 
-		if filepath.Ext(path) == ".txt" {
+		ext := filepath.Ext(path)
+		if slices.Contains([]string{".gc", ".txt"}, ext) {
 			configsToload = append(configsToload, path)
 		}
 
