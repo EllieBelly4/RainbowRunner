@@ -68,16 +68,37 @@ they will have to be modified directly to change parameters.
 
 To run all commands in here use: `go run cmd/rrcli`
 
-* `dump` - Parses all Dungeon Runners configuration files in a directory and outputs a compiled JSON that is readable by
-  RainbowRunner, use after you run `cmd/scan_pkg.go` to extract the config files.
+#### `rrcli config`
+
+Commands for working with DR game configuration.
+
 * `get` - Retrieve configuration data for specific GCObjects with text/regexp support, can also limit to categories
   e.g. "Armor"
-* `list` - List all GCObjects with simple filter and depth options 
-* `list-category` - Retrieve a list of all categories that can be searched, use with `-d $NUMBER` to increase
-  depth, `-1` for unlimited
+* `list` - List all GCObjects with simple filter and depth options
+
+#### `rrcli config extract`
+
+Commands for extracting data from the configuration files.
+
+* `dump` - Parses all Dungeon Runners configuration files in a directory and outputs a compiled JSON that is readable by
+  RainbowRunner, use after you run `cmd/scan_pkg.go` to extract the config files.
 * `categorise` - Parse the dumped configuration from `dump` and generate the category config
   file ([resources/Dumps/generated/drcategories.json](resources/Dumps/generated/drcategories.json)).
-* `models convert` - Convert models from `.3dnode` to `.obj` and `.mtl`
+
+#### `rrcli config category`
+
+Commands which attempt to group GCObjects into categories for helping with discovery of objects.
+These categories are not always the clearest or most useful but can be in very specific circumstances.
+
+* `list` - Retrieve a list of all categories that can be searched, use with `-d $NUMBER` to increase
+  depth, `-1` for unlimited
+* `get` - Get a specific category details
+
+#### `rrcli models`
+
+Commands for working with DR format models
+
+* `convert` - Convert models from `.3dnode` to `.obj` and `.mtl`
 
 ## Contributing
 
