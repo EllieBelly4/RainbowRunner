@@ -5,8 +5,10 @@ import lua2 "github.com/yuin/gopher-lua"
 
 func RegisterAllLuaFunctions(state *lua2.LState) {
 	registerLuaAnimationConfig(state)
+	registerLuaCheckpointEntityConfig(state)
 	registerLuaEntityConfig(state)
 	registerLuaNPCConfig(state)
+	registerLuaWaypointConfig(state)
 	registerLuaWorldConfig(state)
 	registerLuaZoneDefConfig(state)
 }

@@ -1,7 +1,6 @@
 package database
 
 import (
-	"RainbowRunner/internal/gosucks"
 	"RainbowRunner/internal/types/configtypes"
 	"RainbowRunner/internal/types/drconfigtypes"
 )
@@ -18,12 +17,12 @@ func newEntityConfigFromRawConfig(entity *drconfigtypes.DRClass) configtypes.IEn
 		}
 
 		if t[0] == "checkpointentity" {
-			ientityConfig = configtypes.NewEntityConfig(configtypes.EntityConfigTypeCheckpoint)
+			ientityConfig = configtypes.NewCheckpointEntityConfig()
 			break
 		}
 
 		if t[0] == "waypoint" {
-			ientityConfig = configtypes.NewEntityConfig(configtypes.EntityConfigTypeWaypoint)
+			ientityConfig = configtypes.NewWaypointConfig()
 			break
 		}
 	}
@@ -34,14 +33,8 @@ func newEntityConfigFromRawConfig(entity *drconfigtypes.DRClass) configtypes.IEn
 
 	entityConfig := ientityConfig.GetEntityConfig()
 
-	//props := entity.Properties
-
 	entityConfig.Name = entity.Extends
 	entityConfig.FullGCType = entity.Extends
-
-	//dumpTypes(types)
-
-	gosucks.VAR(types)
 
 	config.MergeParentsSingle(entity)
 	entityConfig.Init(entity)

@@ -28,6 +28,9 @@ func registerLuaMerchantInventory(state *lua2.LState) {
 
 func luaMethodsMerchantInventory() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+		// -------------------------------------------------------------------------------------------------------------
+		// Unsupported field type BaseConfig
+		// -------------------------------------------------------------------------------------------------------------
 
 		"getMerchantInventory": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IMerchantInventory](l, 1)

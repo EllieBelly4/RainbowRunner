@@ -185,6 +185,31 @@ func (z *Zone) LoadNPCFromConfigFullGCType(id string) *NPC {
 	return z.LoadNPCFromConfig(shortGCType)
 }
 
+func (z *Zone) LoadCheckpointEntityFromConfigFullGCType(id string) *CheckpointEntity {
+	shortGCType := strings.TrimPrefix(id, z.BaseConfig.GCType+".npc.")
+
+	return z.loadCheckpointEntityFromConfig(shortGCType)
+}
+
+func (z *Zone) loadCheckpointEntityFromConfig(id string) *CheckpointEntity {
+	checkpointEntityConfig, ok := z.BaseConfig.Checkpoints[strings.ToLower(id)]
+
+	if !ok {
+		log.Errorf("checkpointEntity '%s' not found in zone '%s'", id, z.Name)
+		return nil
+	}
+
+	checkpointEntity := NewCheckpointEntityFromConfig(checkpointEntityConfig.GetCheckpointEntityConfig())
+
+	script := z.GetEntityScript("checkpointentity." + strings.ToLower(id))
+
+	if script != nil {
+		checkpointEntity.SetScript(script)
+	}
+
+	return checkpointEntity
+}
+
 func (z *Zone) LoadNPCFromConfig(id string) *NPC {
 	npcConfig, ok := z.BaseConfig.NPCs[strings.ToLower(id)]
 

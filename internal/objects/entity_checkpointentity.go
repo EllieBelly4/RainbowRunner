@@ -1,8 +1,13 @@
 package objects
 
+import (
+	"RainbowRunner/internal/types/configtypes"
+)
+
 //go:generate go run ../../scripts/generatelua -type=CheckpointEntity -extends=WorldEntity
 type CheckpointEntity struct {
 	*WorldEntity
+	BaseConfig *configtypes.CheckpointEntityConfig
 }
 
 func NewCheckpointEntity(gctype string) *CheckpointEntity {
@@ -13,4 +18,12 @@ func NewCheckpointEntity(gctype string) *CheckpointEntity {
 	return &CheckpointEntity{
 		WorldEntity: worldEntity,
 	}
+}
+
+func NewCheckpointEntityFromConfig(config *configtypes.CheckpointEntityConfig) *CheckpointEntity {
+	entity := NewCheckpointEntity(config.FullGCType)
+
+	entity.BaseConfig = config
+
+	return entity
 }

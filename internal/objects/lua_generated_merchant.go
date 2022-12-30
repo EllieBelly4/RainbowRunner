@@ -29,6 +29,9 @@ func registerLuaMerchant(state *lua2.LState) {
 
 func luaMethodsMerchant() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+		// -------------------------------------------------------------------------------------------------------------
+		// Unsupported field type BaseConfig
+		// -------------------------------------------------------------------------------------------------------------
 
 		"writeInit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IMerchant](l, 1)

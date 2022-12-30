@@ -26,7 +26,8 @@ type CheckpointEntityConfig struct {
 type ZoneConfig struct {
 	Name        string
 	NPCs        map[string]configtypes.INPCConfig
-	Checkpoints map[string]*CheckpointConfig
+	Waypoints   map[string]configtypes.IWaypointConfig
+	Checkpoints map[string]configtypes.ICheckpointEntityConfig
 	World       *configtypes.WorldConfig
 	GCType      string
 }
@@ -34,8 +35,28 @@ type ZoneConfig struct {
 func (z *ZoneConfig) GetAllNPCs() []*configtypes.NPCConfig {
 	l := make([]*configtypes.NPCConfig, 0)
 
-	for _, npc := range z.NPCs {
-		l = append(l, npc.GetNPCConfig())
+	for _, entity := range z.NPCs {
+		l = append(l, entity.GetNPCConfig())
+	}
+
+	return l
+}
+
+func (z *ZoneConfig) GetAllCheckpointEntities() []*configtypes.CheckpointEntityConfig {
+	l := make([]*configtypes.CheckpointEntityConfig, 0)
+
+	for _, entity := range z.Checkpoints {
+		l = append(l, entity.GetCheckpointEntityConfig())
+	}
+
+	return l
+}
+
+func (z *ZoneConfig) GetAllWaypoints() []*configtypes.WaypointConfig {
+	l := make([]*configtypes.WaypointConfig, 0)
+
+	for _, entity := range z.Waypoints {
+		l = append(l, entity.GetWaypointConfig())
 	}
 
 	return l
@@ -83,9 +104,9 @@ func GetZoneConfig(name string) (*ZoneConfig, error) {
 		//	handleNPCs(zoneConfig, npcConfig, append(gcRoot, "npc"))
 		//}
 
-		if checkConfig, ok := checkpointConfigs[zoneConfig.Name]; ok {
-			zoneConfig.Checkpoints = checkConfig
-		}
+		//if checkConfig, ok := checkpointConfigs[zoneConfig.Name]; ok {
+		//	zoneConfig.Checkpoints = checkConfig
+		//}
 	} else {
 		log.Warnf("could not find configuration for zone %s, using defaults", name)
 	}
@@ -100,22 +121,29 @@ func addWorldEntities(zoneConfig *ZoneConfig, worldConfig *configtypes.WorldConf
 
 	gcrootString := strings.Join(gcroot, ".")
 
-	if zoneConfig.NPCs == nil {
-		zoneConfig.NPCs = make(map[string]configtypes.INPCConfig)
-	}
-
 	for _, entity := range worldConfig.Entities {
 		shortGCType := strings.ToLower(strings.TrimPrefix(entity.GetEntityConfig().FullGCType, gcrootString+"."))
 
 		if npcConfig, ok := entity.(configtypes.INPCConfig); ok {
 			zoneConfig.NPCs[shortGCType] = npcConfig.GetNPCConfig()
 		}
+
+		if checkpointConfig, ok := entity.(configtypes.ICheckpointEntityConfig); ok {
+			zoneConfig.Checkpoints[shortGCType] = checkpointConfig.GetCheckpointEntityConfig()
+		}
+
+		if waypointConfig, ok := entity.(configtypes.IWaypointConfig); ok {
+			zoneConfig.Waypoints[shortGCType] = waypointConfig.GetWaypointConfig()
+		}
 	}
 }
 
 func NewZoneConfig(name string, gctype string) *ZoneConfig {
 	return &ZoneConfig{
-		Name:   name,
-		GCType: gctype,
+		Name:        name,
+		GCType:      gctype,
+		Checkpoints: map[string]configtypes.ICheckpointEntityConfig{},
+		NPCs:        map[string]configtypes.INPCConfig{},
+		Waypoints:   map[string]configtypes.IWaypointConfig{},
 	}
 }

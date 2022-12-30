@@ -187,6 +187,19 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 			return 1
 		},
 
+		"loadCheckpointEntityFromConfigFullGCType": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
+			obj := objInterface.GetZone()
+			res0 := obj.LoadCheckpointEntityFromConfigFullGCType(string(l.CheckString(2)))
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
+
 		"loadNPCFromConfig": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()

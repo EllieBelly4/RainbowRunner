@@ -4,6 +4,7 @@ import (
 	"RainbowRunner/internal/lua"
 	"RainbowRunner/internal/script"
 	drobjectypes "RainbowRunner/internal/types/drobjecttypes"
+	log "github.com/sirupsen/logrus"
 	lua2 "github.com/yuin/gopher-lua"
 	"strings"
 )
@@ -33,17 +34,15 @@ func (s *ZoneLuaScripts) Load() error {
 func (s *ZoneLuaScripts) Init(entity drobjectypes.DRObject) error {
 	script := s.scriptGroup.Get("init")
 
-	if script == nil {
-		return nil
+	if script != nil {
+		err := script.Execute(s.State)
+
+		if err != nil {
+			log.Errorf("Error executing standalone init script for zone %s", err.Error())
+		}
 	}
 
-	err := script.Execute(s.State)
-
-	if err != nil {
-		return err
-	}
-
-	err = s.EntityScript.Init(entity)
+	err := s.EntityScript.Init(entity)
 
 	if err != nil {
 		return err

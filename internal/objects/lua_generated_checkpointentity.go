@@ -3,6 +3,7 @@ package objects
 
 import (
 	lua "RainbowRunner/internal/lua"
+	"RainbowRunner/internal/types/configtypes"
 	lua2 "github.com/yuin/gopher-lua"
 )
 
@@ -28,6 +29,9 @@ func registerLuaCheckpointEntity(state *lua2.LState) {
 
 func luaMethodsCheckpointEntity() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+		"baseConfig": lua.LuaGenericGetSetValue[ICheckpointEntity, *configtypes.CheckpointEntityConfig](func(v ICheckpointEntity) **configtypes.CheckpointEntityConfig {
+			return &v.GetCheckpointEntity().BaseConfig
+		}),
 
 		"getCheckpointEntity": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[ICheckpointEntity](l, 1)

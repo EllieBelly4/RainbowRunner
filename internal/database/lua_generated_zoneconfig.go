@@ -34,6 +34,9 @@ func luaMethodsZoneConfig() map[string]lua2.LGFunction {
 		// Unsupported field type NPCs
 		// -------------------------------------------------------------------------------------------------------------
 		// -------------------------------------------------------------------------------------------------------------
+		// Unsupported field type Waypoints
+		// -------------------------------------------------------------------------------------------------------------
+		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type Checkpoints
 		// -------------------------------------------------------------------------------------------------------------
 		"world":  lua.LuaGenericGetSetValue[IZoneConfig, *configtypes.WorldConfig](func(v IZoneConfig) **configtypes.WorldConfig { return &v.GetZoneConfig().World }),
@@ -56,6 +59,44 @@ func luaMethodsZoneConfig() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IZoneConfig](l, 1)
 			obj := objInterface.GetZoneConfig()
 			res0 := obj.GetAllNPCs()
+			res0Array := l.NewTable()
+
+			for _, res0 := range res0 {
+				if res0 != nil {
+					res0Array.Append(res0.ToLua(l))
+				} else {
+					res0Array.Append(lua2.LNil)
+				}
+			}
+
+			l.Push(res0Array)
+
+			return 1
+		},
+
+		"getAllCheckpointEntities": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IZoneConfig](l, 1)
+			obj := objInterface.GetZoneConfig()
+			res0 := obj.GetAllCheckpointEntities()
+			res0Array := l.NewTable()
+
+			for _, res0 := range res0 {
+				if res0 != nil {
+					res0Array.Append(res0.ToLua(l))
+				} else {
+					res0Array.Append(lua2.LNil)
+				}
+			}
+
+			l.Push(res0Array)
+
+			return 1
+		},
+
+		"getAllWaypoints": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IZoneConfig](l, 1)
+			obj := objInterface.GetZoneConfig()
+			res0 := obj.GetAllWaypoints()
 			res0Array := l.NewTable()
 
 			for _, res0 := range res0 {
