@@ -15,7 +15,7 @@ type WorldConfig struct {
 	WorldEntityTable         string
 	WorldEntityTable2        string
 	WorldEntityTable3        string
-	Entities                 []*EntityConfig
+	Entities                 []IEntityConfig
 }
 
 func NewWorldConfig() *WorldConfig {

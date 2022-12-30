@@ -25,7 +25,7 @@ type CheckpointEntityConfig struct {
 //go:generate go run ../../scripts/generatelua -type=ZoneConfig
 type ZoneConfig struct {
 	Name        string
-	NPCs        map[string]*configtypes.NPCConfig
+	NPCs        map[string]configtypes.INPCConfig
 	Checkpoints map[string]*CheckpointConfig
 	World       *configtypes.WorldConfig
 	GCType      string
@@ -35,7 +35,7 @@ func (z *ZoneConfig) GetAllNPCs() []*configtypes.NPCConfig {
 	l := make([]*configtypes.NPCConfig, 0)
 
 	for _, npc := range z.NPCs {
-		l = append(l, npc)
+		l = append(l, npc.GetNPCConfig())
 	}
 
 	return l
@@ -101,13 +101,14 @@ func addWorldEntities(zoneConfig *ZoneConfig, worldConfig *configtypes.WorldConf
 	gcrootString := strings.Join(gcroot, ".")
 
 	if zoneConfig.NPCs == nil {
-		zoneConfig.NPCs = make(map[string]*configtypes.NPCConfig)
+		zoneConfig.NPCs = make(map[string]configtypes.INPCConfig)
 	}
 
 	for _, entity := range worldConfig.Entities {
-		if entity.Type == configtypes.EntityConfigTypeNPC {
-			shortGCType := strings.ToLower(strings.TrimPrefix(entity.FullGCType, gcrootString+"."))
-			zoneConfig.NPCs[shortGCType] = configtypes.NewNPCConfigFromEntity(entity)
+		shortGCType := strings.ToLower(strings.TrimPrefix(entity.GetEntityConfig().FullGCType, gcrootString+"."))
+
+		if npcConfig, ok := entity.(configtypes.INPCConfig); ok {
+			zoneConfig.NPCs[shortGCType] = npcConfig.GetNPCConfig()
 		}
 	}
 }

@@ -5,6 +5,10 @@ type NPCConfig struct {
 	*EntityConfig
 }
 
+func NewNPCConfig() *NPCConfig {
+	return &NPCConfig{EntityConfig: NewEntityConfig(EntityConfigTypeNPC)}
+}
+
 func NewNPCConfigFromEntity(entity *EntityConfig) *NPCConfig {
 	npcConfig := &NPCConfig{}
 	npcConfig.EntityConfig = entity

@@ -6,27 +6,33 @@ import (
 	"RainbowRunner/internal/types/drconfigtypes"
 )
 
-func newEntityConfigFromRawConfig(entity *drconfigtypes.DRClass) *configtypes.EntityConfig {
-	entityConfig := configtypes.NewEntityConfig()
+func newEntityConfigFromRawConfig(entity *drconfigtypes.DRClass) configtypes.IEntityConfig {
+	var ientityConfig configtypes.IEntityConfig = nil
 
 	types := config.GetInheritedTypes(entity)
 
 	for _, t := range types {
 		if t[0] == "npc" {
-			entityConfig.Type = configtypes.EntityConfigTypeNPC
+			ientityConfig = configtypes.NewNPCConfig()
 			break
 		}
 
 		if t[0] == "checkpointentity" {
-			entityConfig.Type = configtypes.EntityConfigTypeCheckpoint
+			ientityConfig = configtypes.NewEntityConfig(configtypes.EntityConfigTypeCheckpoint)
 			break
 		}
 
 		if t[0] == "waypoint" {
-			entityConfig.Type = configtypes.EntityConfigTypeWaypoint
+			ientityConfig = configtypes.NewEntityConfig(configtypes.EntityConfigTypeWaypoint)
 			break
 		}
 	}
+
+	if ientityConfig == nil {
+		ientityConfig = configtypes.NewEntityConfig(configtypes.EntityConfigTypeUnknown)
+	}
+
+	entityConfig := ientityConfig.GetEntityConfig()
 
 	//props := entity.Properties
 
@@ -50,7 +56,7 @@ func newEntityConfigFromRawConfig(entity *drconfigtypes.DRClass) *configtypes.En
 		entityConfig.Animations = loadAnimations(entityConfig.Desc.Animations)
 	}
 
-	return entityConfig
+	return ientityConfig
 }
 
 func newMerchantConfigFromRawConfig(merchantConfig *drconfigtypes.DRClass) *configtypes.MerchantConfig {

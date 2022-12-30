@@ -147,8 +147,9 @@ func (e *EntityConfig) Init(entity *drconfigtypes.DRClass) {
 	}
 }
 
-func NewEntityConfig() *EntityConfig {
+func NewEntityConfig(t EntityConfigType) *EntityConfig {
 	return &EntityConfig{
 		CanBeActivated: true,
+		Type:           t,
 	}
 }

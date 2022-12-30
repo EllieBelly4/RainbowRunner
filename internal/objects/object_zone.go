@@ -193,7 +193,7 @@ func (z *Zone) LoadNPCFromConfig(id string) *NPC {
 		return nil
 	}
 
-	npc := NewNPCFromConfig(npcConfig)
+	npc := NewNPCFromConfig(npcConfig.GetNPCConfig())
 
 	script := z.GetEntityScript("npc." + strings.ToLower(id))
 

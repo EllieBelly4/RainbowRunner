@@ -70,6 +70,9 @@ func luaMethodsEntityConfig() map[string]lua2.LGFunction {
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type Behaviour
 		// -------------------------------------------------------------------------------------------------------------
+		// -------------------------------------------------------------------------------------------------------------
+		// Unsupported field type Merchant
+		// -------------------------------------------------------------------------------------------------------------
 
 		"init": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IEntityConfig](l, 1)
@@ -96,7 +99,9 @@ func luaMethodsEntityConfig() map[string]lua2.LGFunction {
 	})
 }
 func newLuaEntityConfig(l *lua2.LState) int {
-	obj := NewEntityConfig()
+	obj := NewEntityConfig(
+		lua.CheckValue[EntityConfigType](l, 1),
+	)
 	ud := l.NewUserData()
 	ud.Value = obj
 
