@@ -2,8 +2,8 @@ package configtypes
 
 type DRClassChildGroup struct {
 	Name     string     `json:"name,omitempty"`
-	Entities []*DRClass `json:"entities"`
 	GCType   string     `json:"gcType,omitempty"`
+	Entities []*DRClass `json:"entities"`
 }
 
 func NewDRClass(className string) *DRClass {

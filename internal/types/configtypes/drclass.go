@@ -10,6 +10,7 @@ import (
 
 type DRClass struct {
 	Name             string                        `json:"name,omitempty"`
+	GCType           string                        `json:"gcType,omitempty"`
 	Extends          string                        `json:"extends,omitempty"`
 	Properties       DRClassProperties             `json:"properties,omitempty"`
 	Children         map[string]*DRClassChildGroup `json:"children,omitempty"`

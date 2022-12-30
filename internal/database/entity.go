@@ -62,21 +62,8 @@ func newMerchantConfigFromRawConfig(merchantConfig *configtypes.DRClass) *config
 
 func addEntityBehaviour(entityConfig *configtypes.EntityConfig, entity *configtypes.DRClass) {
 	if behaviour, ok := entity.Children["behavior"]; ok && entityConfig.Type == configtypes.EntityConfigTypeNPC {
-		behavGCType := "npc.Base.Behavior"
-		//customBehaviourType := entityConfig.FullGCType + ".behavior"
-
-		//behav, err := config.Get(customBehaviourType)
-		//
-		//if err == nil && behav != nil {
-		//	behavEntity := behav[0].Entities[0]
-		//
-		//	if behavEntity.Extends == "" {
-		//		behavGCType = customBehaviourType
-		//	}
-		//}
-
 		entityConfig.Behaviour = &configtypes.BehaviourConfig{
-			Type: behavGCType,
+			Type: behaviour.GCType,
 		}
 
 		behavEntity := behaviour.Entities[0]

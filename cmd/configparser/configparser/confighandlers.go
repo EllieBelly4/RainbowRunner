@@ -49,6 +49,8 @@ func NewDRConfigListener(filePath string, rootPath string, config *configtypes.D
 		curMap = curMap.Children[gcTypeNameLowercase].Entities[0]
 	}
 
+	curMap.GCType = strings.Join(splitBaseType[:len(splitBaseType)-1], ".")
+
 	classStack := NewDRClassStack()
 
 	classStack.Push(curMap)
@@ -68,20 +70,24 @@ func (t *DRConfigParser) EnterEveryRule(ctx antlr.ParserRuleContext) {
 		t.IsGenericClass = false
 		t.depth++
 
-		currentClassName := strings.ToLower(t.classStack.Current().Name)
-		currentClassParent := t.classStack.Previous()
+		current := t.classStack.Current()
+		currentClassName := strings.ToLower(current.Name)
+		parent := t.classStack.Previous()
 
-		parentChild, ok := currentClassParent.Children[currentClassName]
+		current.GCType = parent.GCType + "." + current.Name
+
+		parentChild, ok := parent.Children[currentClassName]
 
 		if !ok {
-			currentClassParent.Children[currentClassName] = configtypes.NewDRClassChildGroup("")
-			parentChild = currentClassParent.Children[currentClassName]
+			parent.Children[currentClassName] = configtypes.NewDRClassChildGroup("")
+			parentChild = parent.Children[currentClassName]
+			parentChild.GCType = current.GCType
 		}
 
 		parentChild.Entities =
 			append(
 				parentChild.Entities,
-				t.classStack.Current(),
+				current,
 			)
 	}
 
