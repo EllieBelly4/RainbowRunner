@@ -1,11 +1,11 @@
 package game
 
 import (
-	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/global"
 	"RainbowRunner/internal/objects"
+	"RainbowRunner/internal/serverconfig"
 	"RainbowRunner/pkg/byter"
 	"fmt"
 )
@@ -174,7 +174,7 @@ func SendMoveTo(conn *connections.RRConn, unk uint8, compID uint16, posX, posY i
 
 	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 
-	if config.Config.Logging.LogMoves {
+	if serverconfig.Config.Logging.LogMoves {
 		fmt.Printf("Send MoveTo %x (%d, %d) (%x, %x)\n", unk, posX, posY, posX, posY)
 	}
 }

@@ -1,8 +1,8 @@
 package objects
 
 import (
-	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
+	"RainbowRunner/internal/serverconfig"
 	"RainbowRunner/internal/types/drobjecttypes"
 	"fmt"
 	"strings"
@@ -39,7 +39,7 @@ func (m *EntityManager) RegisterAll(owner connections.Connection, objects ...dro
 
 			props.ID = uint32(NewID())
 
-			if config.Config.Logging.LogIDs {
+			if serverconfig.Config.Logging.LogIDs {
 				fmt.Printf("%d - %s(%s)\n", props.ID, object.(IGCObject).GetGCObject().GCType, object.(IGCObject).GetGCObject().GCLabel)
 			}
 

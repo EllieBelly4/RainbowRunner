@@ -1,9 +1,9 @@
 package game
 
 import (
-	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
+	"RainbowRunner/internal/serverconfig"
 	byter "RainbowRunner/pkg/byter"
 )
 
@@ -52,6 +52,6 @@ func handleGroupConnected(conn *connections.RRConn) {
 	//sendGoToZone(conn, "dungeon16_level00")//The Mutantmania Training Center (2)
 	//sendGoToZone(conn, "town") //townston
 
-	sendGoToZone(conn, config.Config.DefaultZone)
+	sendGoToZone(conn, serverconfig.Config.DefaultZone)
 
 }

@@ -2,12 +2,12 @@ package objects
 
 import (
 	actions2 "RainbowRunner/internal/actions"
-	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/components/behavior"
 	"RainbowRunner/internal/global"
 	"RainbowRunner/internal/gosucks"
 	"RainbowRunner/internal/message"
+	"RainbowRunner/internal/serverconfig"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 	"RainbowRunner/pkg/events"
@@ -186,7 +186,7 @@ func (u *UnitBehavior) WriteMoveUpdate(b *byter.Byter) {
 		b.WriteInt32(int32(position.Position.X * 256))
 		b.WriteInt32(int32(position.Position.Y * 256))
 
-		if config.Config.Logging.LogMoves {
+		if serverconfig.Config.Logging.LogMoves {
 			fmt.Printf(
 				"Sending move rotation 0x%x(%.2fdeg) (%d, %d) Hex (%x, %x)\n",
 				int32(position.Rotation*256), position.Rotation, position.Position.X, position.Position.Y, position.Position.X, position.Position.Y,
@@ -197,17 +197,17 @@ func (u *UnitBehavior) WriteMoveUpdate(b *byter.Byter) {
 	//b.WriteByte(0x02)
 	//b.WriteUInt32(uint32(global.Tick)) // Random unk value
 
-	oldLog := config.Config.Logging.LogGenericSent
+	oldLog := serverconfig.Config.Logging.LogGenericSent
 
-	if !config.Config.Logging.LogMoves {
-		config.Config.Logging.LogGenericSent = false
+	if !serverconfig.Config.Logging.LogMoves {
+		serverconfig.Config.Logging.LogGenericSent = false
 	}
 
 	//if n.RREntityProperties().Zone != nil {
 	//	n.RREntityProperties().Zone.SendToAll(b)
 	//}
 
-	config.Config.Logging.LogGenericSent = oldLog
+	serverconfig.Config.Logging.LogGenericSent = oldLog
 }
 
 func (u *UnitBehavior) WriteSynch(b *byter.Byter) {
@@ -230,7 +230,7 @@ func (u *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 	count := int(reader.Byte())
 	pos := datatypes.Vector2Float32{}
 
-	if config.Config.Logging.LogMoves {
+	if serverconfig.Config.Logging.LogMoves {
 		fmt.Printf("Received %d player moves unk val: %x\n", count, sessionID)
 	}
 
@@ -251,7 +251,7 @@ func (u *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 		pos.X = float32(reader.Int32()) / 256
 		pos.Y = float32(reader.Int32()) / 256
 
-		if config.Config.Logging.LogReceivedMoves {
+		if serverconfig.Config.Logging.LogReceivedMoves {
 			//xf := float32(pos.X>>8) + (float32(pos.X&0xFF) / 256)
 			//yf := float32(pos.Y>>8) + (float32(pos.Y&0xFF) / 256)
 			fmt.Printf(
@@ -281,13 +281,13 @@ func (u *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 		//})
 
 		if moveUpdateType&0x02 > 0 {
-			if config.Config.Logging.LogMoves {
+			if serverconfig.Config.Logging.LogMoves {
 				fmt.Println("player started moving")
 			}
 			avatar.IsMoving = true
 			//conn.Player.SendPosition(0x02)
 		} else if moveUpdateType&0x01 > 0 {
-			if config.Config.Logging.LogMoves {
+			if serverconfig.Config.Logging.LogMoves {
 				fmt.Println("player finished moving")
 			}
 			avatar.IsMoving = false
@@ -323,7 +323,7 @@ func (u *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 		avatar.MoveUpdate = 0
 	}
 
-	if config.Config.Logging.LogMoves {
+	if serverconfig.Config.Logging.LogMoves {
 		logrus.Infof("\n%s\n", hex.Dump(reader.Data()))
 	}
 }

@@ -1,15 +1,15 @@
 package login
 
 import (
-	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/message"
+	"RainbowRunner/internal/serverconfig"
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"net"
 )
 
 func StartLoginServer() {
-	listen, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", config.Config.Network.LoginServerPort))
+	listen, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", serverconfig.Config.Network.LoginServerPort))
 
 	if err != nil {
 		panic(err)

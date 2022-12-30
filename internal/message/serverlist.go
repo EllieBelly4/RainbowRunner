@@ -1,7 +1,7 @@
 package message
 
 import (
-	"RainbowRunner/internal/config"
+	"RainbowRunner/internal/serverconfig"
 	byter "RainbowRunner/pkg/byter"
 	"strconv"
 	"strings"
@@ -53,13 +53,13 @@ func HandleServerListMessage(c *AuthMessageParser, reader *byter.Byter) error {
 	response.WriteByte(serverCount) // Server Count
 	response.WriteByte(0x00)        // Last Server ID?
 
-	ipInt := ipToInt(config.Config.Network.GameServerIP)
+	ipInt := ipToInt(serverconfig.Config.Network.GameServerIP)
 
 	for i := byte(0); i < serverCount; i++ {
 		// Server Entry
 		response.WriteByte(i) // Server ID
 		response.WriteUInt32(ipInt)
-		response.WriteUInt32(uint32(config.Config.Network.GameServerPort))
+		response.WriteUInt32(uint32(serverconfig.Config.Network.GameServerPort))
 		response.WriteBool(false)                // Age limit
 		response.WriteBool(false)                // PKFlag
 		response.WriteUInt16(uint16(0x0000 + i)) // Current User ? User count?

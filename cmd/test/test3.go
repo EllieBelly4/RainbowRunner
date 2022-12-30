@@ -1,14 +1,14 @@
 package main
 
 import (
-	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/gosucks"
 	"RainbowRunner/internal/objects"
+	"RainbowRunner/internal/serverconfig"
 )
 
 func main() {
-	config.Load()
+	serverconfig.Load()
 	database.LoadConfigFiles()
 
 	zoneConfig, err := database.GetZoneConfig("town")

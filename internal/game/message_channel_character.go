@@ -1,11 +1,11 @@
 package game
 
 import (
-	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/objects"
+	"RainbowRunner/internal/serverconfig"
 	"RainbowRunner/internal/types/drobjecttypes"
 	byter "RainbowRunner/pkg/byter"
 	"fmt"
@@ -439,7 +439,7 @@ func AddEquipment(equipment drobjecttypes.DRObject, manipulators *objects.Manipu
 		manipulators.AddChild(randomWeapon)
 	}
 
-	if config.Config.Logging.LogRandomEquipment {
+	if serverconfig.Config.Logging.LogRandomEquipment {
 		randomArmourName := "None"
 		if randomArmour != nil {
 			randomArmourName = randomArmour.GetGCType()

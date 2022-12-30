@@ -3,13 +3,13 @@ package main
 import (
 	"RainbowRunner/internal/admin"
 	"RainbowRunner/internal/api"
-	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/game"
 	"RainbowRunner/internal/logging"
 	"RainbowRunner/internal/login"
 	"RainbowRunner/internal/lua"
 	"RainbowRunner/internal/objects"
+	"RainbowRunner/internal/serverconfig"
 	"flag"
 	"github.com/pkg/profile"
 )
@@ -25,7 +25,7 @@ func main() {
 		defer profile.Start(profile.ProfilePath("./tmp")).Stop()
 	}
 
-	config.Load()
+	serverconfig.Load()
 	logging.Init()
 	err := lua.LoadScripts("./lua")
 

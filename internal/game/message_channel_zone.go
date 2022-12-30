@@ -1,10 +1,10 @@
 package game
 
 import (
-	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/objects"
+	"RainbowRunner/internal/serverconfig"
 	byter "RainbowRunner/pkg/byter"
 	log "github.com/sirupsen/logrus"
 	"strings"
@@ -93,7 +93,7 @@ func handleZoneJoin(conn *connections.RRConn) {
 	player.CurrentCharacter.SendCreateNewPlayerEntity(player)
 	player.CurrentCharacter.OnZoneJoin()
 
-	if config.Config.Welcome.SendWelcomeMessage {
+	if serverconfig.Config.Welcome.SendWelcomeMessage {
 		SendWelcomeMessage(player)
 	}
 
@@ -253,7 +253,7 @@ func sendGoToZone(conn *connections.RRConn, zoneName string) {
 func SendWelcomeMessage(player *objects.RRPlayer) {
 	msg := messages.ChatMessage{
 		Channel: messages.MessageChannelSourceGlobalAnnouncement,
-		Message: config.Config.Welcome.Message,
+		Message: serverconfig.Config.Welcome.Message,
 	}
 
 	player.Conn.SendMessage(msg)

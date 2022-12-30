@@ -1,8 +1,8 @@
 package objects
 
 import (
-	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
+	"RainbowRunner/internal/serverconfig"
 	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	"fmt"
@@ -268,7 +268,7 @@ GCType: %s
 func logSerialise(format string, args ...interface{}) {
 	regex := regexp.MustCompile("(?m)^")
 
-	if config.Config.Logging.LogGCObjectSerialise {
+	if serverconfig.Config.Logging.LogGCObjectSerialise {
 		indentString := strings.Repeat("\t", indent)
 		log := fmt.Sprintf(format, args...)
 		log = regex.ReplaceAllString(log, indentString)
@@ -331,7 +331,7 @@ func GetTypeHash(name string) uint32 {
 		}
 	}
 
-	if config.Config.Logging.LogHashes {
+	if serverconfig.Config.Logging.LogHashes {
 		fmt.Printf("(%x) %s\n", result, name)
 	}
 

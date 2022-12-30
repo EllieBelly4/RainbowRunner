@@ -1,12 +1,12 @@
 package objects
 
 import (
-	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/lua"
 	"RainbowRunner/internal/pathfinding"
 	script2 "RainbowRunner/internal/script"
+	"RainbowRunner/internal/serverconfig"
 	"RainbowRunner/internal/types"
 	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
@@ -309,7 +309,7 @@ func (z *Zone) GiveID(entity drobjecttypes.DRObject) {
 		eProps.ID = uint32(NewID())
 	}
 
-	if config.Config.Logging.LogIDs {
+	if serverconfig.Config.Logging.LogIDs {
 		fmt.Printf("%d - %s(%s)\n", eProps.ID, entity.(IGCObject).GetGCObject().GCType, entity.(IGCObject).GetGCObject().GCLabel)
 	}
 }

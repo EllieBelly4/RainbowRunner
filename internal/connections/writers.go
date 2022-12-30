@@ -1,7 +1,7 @@
 package connections
 
 import (
-	"RainbowRunner/internal/config"
+	"RainbowRunner/internal/serverconfig"
 	"RainbowRunner/pkg/byter"
 	"bytes"
 	"compress/zlib"
@@ -15,7 +15,7 @@ func WriteCompressedASimple(conn Connection, b *byter.Byter) {
 	pc, file, line, ok := runtime.Caller(1)
 	callerInfo := "unk"
 
-	if config.Config.Logging.LogGenericSent {
+	if serverconfig.Config.Logging.LogGenericSent {
 		if ok {
 			details := runtime.FuncForPC(pc)
 			callerInfo = fmt.Sprintf("%s() %s:%d", details.Name(), file, line)
@@ -59,7 +59,7 @@ func WriteCompressedA(conn Connection, dest uint8, messageType uint8, body *byte
 		return
 	}
 
-	if config.Config.Logging.LogGenericSent {
+	if serverconfig.Config.Logging.LogGenericSent {
 		pc, file, line, ok := runtime.Caller(1)
 		callerInfo := "unk"
 

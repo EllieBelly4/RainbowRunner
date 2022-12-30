@@ -1,7 +1,7 @@
 package objects
 
 import (
-	"RainbowRunner/internal/config"
+	"RainbowRunner/internal/serverconfig"
 	"crypto/md5"
 	"encoding/binary"
 	log "github.com/sirupsen/logrus"
@@ -25,7 +25,7 @@ func (m *ZoneManager) GetOrCreateZone(zoneName string) *Zone {
 
 	z := m.Zones[zoneName]
 
-	if config.Config.ReinitialiseZonesOnEnter {
+	if serverconfig.Config.ReinitialiseZonesOnEnter {
 		z.ClearEntities()
 		z.Init()
 	}

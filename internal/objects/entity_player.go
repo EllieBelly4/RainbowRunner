@@ -1,12 +1,12 @@
 package objects
 
 import (
-	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/game/components/behavior"
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/message"
+	"RainbowRunner/internal/serverconfig"
 	"RainbowRunner/internal/types"
 	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
@@ -520,11 +520,11 @@ func (p *Player) JoinZone(tZone *Zone) {
 	//body.WriteCString("Tutorial")
 	body.WriteCString(tZone.Name)
 
-	md5Seed := md5.Sum([]byte(config.Config.ZoneOptions.Seed))
+	md5Seed := md5.Sum([]byte(serverconfig.Config.ZoneOptions.Seed))
 
 	zoneSeed := binary.LittleEndian.Uint32(md5Seed[:])
 
-	if config.Config.ZoneOptions.UseRandomSeed {
+	if serverconfig.Config.ZoneOptions.UseRandomSeed {
 		zoneSeed = r.Uint32()
 	}
 
@@ -535,7 +535,7 @@ func (p *Player) JoinZone(tZone *Zone) {
 	body.WriteUInt32(0x01)
 	connections.WriteCompressedA(rrPlayer.Conn, 0x01, 0x0f, body)
 
-	if config.Config.Logging.LogChangeZone {
+	if serverconfig.Config.Logging.LogChangeZone {
 		log.Info(fmt.Sprintf("Sent Change Zone: \n%s", hex.Dump(body.Data())))
 	}
 }
@@ -591,7 +591,7 @@ func (p *Player) LeaveZone() {
 	body.WriteCString("zoneleaveuhh")
 	connections.WriteCompressedA(rrplayer.Conn, 0x01, 0x0f, body)
 
-	if config.Config.Logging.LogChangeZone {
+	if serverconfig.Config.Logging.LogChangeZone {
 		log.Info(fmt.Sprintf("Sent Leave Zone: \n%s", hex.Dump(body.Data())))
 	}
 

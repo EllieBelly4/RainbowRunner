@@ -1,10 +1,10 @@
 package objects
 
 import (
-	"RainbowRunner/internal/config"
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/message"
+	"RainbowRunner/internal/serverconfig"
 	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
@@ -62,7 +62,7 @@ func (p *Avatar) Tick() {
 		return
 	}
 
-	if config.Config.SendMovementMessages {
+	if serverconfig.Config.SendMovementMessages {
 		player := Players.GetPlayer(p.OwnerID())
 		unitBehavior := p.GetChildByGCNativeType("UnitBehavior").(*UnitBehavior)
 
@@ -151,7 +151,7 @@ func (p *Avatar) SendMoveTo(unk uint8, compID uint16, posX, posY float32) {
 
 	connections.WriteCompressedA(p.RREntityProperties().Conn, 0x01, 0x0f, body)
 
-	if config.Config.Logging.LogMoves {
+	if serverconfig.Config.Logging.LogMoves {
 		fmt.Printf("Send MoveTo %x (%d, %d) (%x, %x)\n", unk, posX, posY, posX, posY)
 	}
 }
