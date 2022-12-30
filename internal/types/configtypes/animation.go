@@ -1,5 +1,7 @@
 package configtypes
 
+import "RainbowRunner/pkg/datatypes"
+
 //go:generate go run ../../../scripts/generatelua -type AnimationConfig
 type AnimationConfig struct {
 	ID int
@@ -14,6 +16,12 @@ type AnimationConfig struct {
 
 	// Unk if we can actually use this
 	SoundTriggerTime int
+
+	SourceNode   string
+	StartFrame   int
+	SoundID      int
+	SourceOffset datatypes.Vector3Float32
+	Looping      bool
 
 	// TODO extract this data from the config, animations do not have names but they usually have comments explaining what they are
 	//Comment string
