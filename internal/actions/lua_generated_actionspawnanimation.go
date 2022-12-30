@@ -34,6 +34,7 @@ func luaMethodsActionSpawnAnimation() map[string]lua2.LGFunction {
 		"dataUnk0": lua.LuaGenericGetSetNumber[IActionSpawnAnimation](func(v IActionSpawnAnimation) *byte { return &v.GetActionSpawnAnimation().DataUnk0 }),
 		"dataUnk1": lua.LuaGenericGetSetNumber[IActionSpawnAnimation](func(v IActionSpawnAnimation) *uint16 { return &v.GetActionSpawnAnimation().DataUnk1 }),
 		"dataUnk2": lua.LuaGenericGetSetNumber[IActionSpawnAnimation](func(v IActionSpawnAnimation) *uint16 { return &v.GetActionSpawnAnimation().DataUnk2 }),
+
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionSpawnAnimation](l, 1)
 			obj := objInterface.GetActionSpawnAnimation()
@@ -45,6 +46,7 @@ func luaMethodsActionSpawnAnimation() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"init": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionSpawnAnimation](l, 1)
 			obj := objInterface.GetActionSpawnAnimation()
@@ -54,6 +56,7 @@ func luaMethodsActionSpawnAnimation() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getActionSpawnAnimation": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionSpawnAnimation](l, 1)
 			obj := objInterface.GetActionSpawnAnimation()

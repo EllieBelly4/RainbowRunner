@@ -29,6 +29,7 @@ func registerLuaActionImmobilize(state *lua2.LState) {
 
 func luaMethodsActionImmobilize() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionImmobilize](l, 1)
 			obj := objInterface.GetActionImmobilize()
@@ -40,6 +41,7 @@ func luaMethodsActionImmobilize() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"init": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionImmobilize](l, 1)
 			obj := objInterface.GetActionImmobilize()
@@ -49,6 +51,7 @@ func luaMethodsActionImmobilize() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getActionImmobilize": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionImmobilize](l, 1)
 			obj := objInterface.GetActionImmobilize()

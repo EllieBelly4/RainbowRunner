@@ -31,6 +31,7 @@ func luaMethodsActionMoveTo() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
 		"posX": lua.LuaGenericGetSetNumber[IActionMoveTo](func(v IActionMoveTo) *float32 { return &v.GetActionMoveTo().PosX }),
 		"posY": lua.LuaGenericGetSetNumber[IActionMoveTo](func(v IActionMoveTo) *float32 { return &v.GetActionMoveTo().PosY }),
+
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionMoveTo](l, 1)
 			obj := objInterface.GetActionMoveTo()
@@ -42,6 +43,7 @@ func luaMethodsActionMoveTo() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"init": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionMoveTo](l, 1)
 			obj := objInterface.GetActionMoveTo()
@@ -51,6 +53,7 @@ func luaMethodsActionMoveTo() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getActionMoveTo": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionMoveTo](l, 1)
 			obj := objInterface.GetActionMoveTo()

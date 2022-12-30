@@ -29,6 +29,7 @@ func registerLuaActionRessurect(state *lua2.LState) {
 
 func luaMethodsActionRessurect() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionRessurect](l, 1)
 			obj := objInterface.GetActionRessurect()
@@ -40,6 +41,7 @@ func luaMethodsActionRessurect() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"init": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionRessurect](l, 1)
 			obj := objInterface.GetActionRessurect()
@@ -49,6 +51,7 @@ func luaMethodsActionRessurect() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getActionRessurect": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionRessurect](l, 1)
 			obj := objInterface.GetActionRessurect()

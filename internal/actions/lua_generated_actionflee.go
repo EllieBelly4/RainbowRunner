@@ -29,6 +29,7 @@ func registerLuaActionFlee(state *lua2.LState) {
 
 func luaMethodsActionFlee() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionFlee](l, 1)
 			obj := objInterface.GetActionFlee()
@@ -40,6 +41,7 @@ func luaMethodsActionFlee() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"init": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionFlee](l, 1)
 			obj := objInterface.GetActionFlee()
@@ -49,6 +51,7 @@ func luaMethodsActionFlee() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getActionFlee": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionFlee](l, 1)
 			obj := objInterface.GetActionFlee()

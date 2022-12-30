@@ -29,6 +29,7 @@ func registerLuaActionIdle(state *lua2.LState) {
 
 func luaMethodsActionIdle() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionIdle](l, 1)
 			obj := objInterface.GetActionIdle()
@@ -40,6 +41,7 @@ func luaMethodsActionIdle() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"init": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionIdle](l, 1)
 			obj := objInterface.GetActionIdle()
@@ -49,6 +51,7 @@ func luaMethodsActionIdle() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getActionIdle": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionIdle](l, 1)
 			obj := objInterface.GetActionIdle()

@@ -29,6 +29,7 @@ func registerLuaActionKnockBack(state *lua2.LState) {
 
 func luaMethodsActionKnockBack() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionKnockBack](l, 1)
 			obj := objInterface.GetActionKnockBack()
@@ -40,6 +41,7 @@ func luaMethodsActionKnockBack() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"init": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionKnockBack](l, 1)
 			obj := objInterface.GetActionKnockBack()
@@ -49,6 +51,7 @@ func luaMethodsActionKnockBack() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getActionKnockBack": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionKnockBack](l, 1)
 			obj := objInterface.GetActionKnockBack()

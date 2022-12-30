@@ -29,6 +29,7 @@ func registerLuaActionSearchForAttack(state *lua2.LState) {
 
 func luaMethodsActionSearchForAttack() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionSearchForAttack](l, 1)
 			obj := objInterface.GetActionSearchForAttack()
@@ -40,6 +41,7 @@ func luaMethodsActionSearchForAttack() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"init": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionSearchForAttack](l, 1)
 			obj := objInterface.GetActionSearchForAttack()
@@ -49,6 +51,7 @@ func luaMethodsActionSearchForAttack() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getActionSearchForAttack": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionSearchForAttack](l, 1)
 			obj := objInterface.GetActionSearchForAttack()

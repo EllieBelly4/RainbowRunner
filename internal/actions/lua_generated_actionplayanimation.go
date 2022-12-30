@@ -34,6 +34,7 @@ func luaMethodsActionPlayAnimation() map[string]lua2.LGFunction {
 		"animationID":              lua.LuaGenericGetSetNumber[IActionPlayAnimation](func(v IActionPlayAnimation) *uint32 { return &v.GetActionPlayAnimation().AnimationID }),
 		"animationFrames":          lua.LuaGenericGetSetNumber[IActionPlayAnimation](func(v IActionPlayAnimation) *uint32 { return &v.GetActionPlayAnimation().AnimationFrames }),
 		"unk4":                     lua.LuaGenericGetSetNumber[IActionPlayAnimation](func(v IActionPlayAnimation) *uint32 { return &v.GetActionPlayAnimation().Unk4 }),
+
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionPlayAnimation](l, 1)
 			obj := objInterface.GetActionPlayAnimation()
@@ -45,6 +46,7 @@ func luaMethodsActionPlayAnimation() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"init": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionPlayAnimation](l, 1)
 			obj := objInterface.GetActionPlayAnimation()
@@ -54,6 +56,7 @@ func luaMethodsActionPlayAnimation() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getActionPlayAnimation": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionPlayAnimation](l, 1)
 			obj := objInterface.GetActionPlayAnimation()

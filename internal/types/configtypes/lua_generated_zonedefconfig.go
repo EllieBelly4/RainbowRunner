@@ -47,6 +47,19 @@ func luaMethodsZoneDefConfig() map[string]lua2.LGFunction {
 		"pvpmatchType":          lua.LuaGenericGetSetString[IZoneDefConfig](func(v IZoneDefConfig) *string { return &v.GetZoneDefConfig().PVPMatchType }),
 		"allowDuelRequest":      lua.LuaGenericGetSetBool[IZoneDefConfig](func(v IZoneDefConfig) *bool { return &v.GetZoneDefConfig().AllowDuelRequest }),
 		"entryModifier":         lua.LuaGenericGetSetString[IZoneDefConfig](func(v IZoneDefConfig) *string { return &v.GetZoneDefConfig().EntryModifier }),
+
+		"getZoneDefConfig": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IZoneDefConfig](l, 1)
+			obj := objInterface.GetZoneDefConfig()
+			res0 := obj.GetZoneDefConfig()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
 	})
 }
 func newLuaZoneDefConfig(l *lua2.LState) int {

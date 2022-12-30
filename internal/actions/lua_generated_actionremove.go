@@ -29,6 +29,7 @@ func registerLuaActionRemove(state *lua2.LState) {
 
 func luaMethodsActionRemove() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionRemove](l, 1)
 			obj := objInterface.GetActionRemove()
@@ -40,6 +41,7 @@ func luaMethodsActionRemove() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"init": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionRemove](l, 1)
 			obj := objInterface.GetActionRemove()
@@ -49,6 +51,7 @@ func luaMethodsActionRemove() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getActionRemove": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionRemove](l, 1)
 			obj := objInterface.GetActionRemove()

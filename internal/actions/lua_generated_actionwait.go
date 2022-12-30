@@ -29,6 +29,7 @@ func registerLuaActionWait(state *lua2.LState) {
 
 func luaMethodsActionWait() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionWait](l, 1)
 			obj := objInterface.GetActionWait()
@@ -40,6 +41,7 @@ func luaMethodsActionWait() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"init": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionWait](l, 1)
 			obj := objInterface.GetActionWait()
@@ -49,6 +51,7 @@ func luaMethodsActionWait() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getActionWait": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionWait](l, 1)
 			obj := objInterface.GetActionWait()

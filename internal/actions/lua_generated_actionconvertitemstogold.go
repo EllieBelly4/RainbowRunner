@@ -29,6 +29,7 @@ func registerLuaActionConvertItemsToGold(state *lua2.LState) {
 
 func luaMethodsActionConvertItemsToGold() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionConvertItemsToGold](l, 1)
 			obj := objInterface.GetActionConvertItemsToGold()
@@ -40,6 +41,7 @@ func luaMethodsActionConvertItemsToGold() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"init": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionConvertItemsToGold](l, 1)
 			obj := objInterface.GetActionConvertItemsToGold()
@@ -49,6 +51,7 @@ func luaMethodsActionConvertItemsToGold() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getActionConvertItemsToGold": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionConvertItemsToGold](l, 1)
 			obj := objInterface.GetActionConvertItemsToGold()

@@ -29,6 +29,7 @@ func registerLuaActionHide(state *lua2.LState) {
 
 func luaMethodsActionHide() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionHide](l, 1)
 			obj := objInterface.GetActionHide()
@@ -40,6 +41,7 @@ func luaMethodsActionHide() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"init": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionHide](l, 1)
 			obj := objInterface.GetActionHide()
@@ -49,6 +51,7 @@ func luaMethodsActionHide() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getActionHide": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionHide](l, 1)
 			obj := objInterface.GetActionHide()

@@ -29,6 +29,7 @@ func registerLuaActionDoEffect(state *lua2.LState) {
 
 func luaMethodsActionDoEffect() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionDoEffect](l, 1)
 			obj := objInterface.GetActionDoEffect()
@@ -40,6 +41,7 @@ func luaMethodsActionDoEffect() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"init": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionDoEffect](l, 1)
 			obj := objInterface.GetActionDoEffect()
@@ -49,6 +51,7 @@ func luaMethodsActionDoEffect() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getActionDoEffect": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionDoEffect](l, 1)
 			obj := objInterface.GetActionDoEffect()

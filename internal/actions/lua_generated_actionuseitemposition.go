@@ -29,6 +29,7 @@ func registerLuaActionUseItemPosition(state *lua2.LState) {
 
 func luaMethodsActionUseItemPosition() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionUseItemPosition](l, 1)
 			obj := objInterface.GetActionUseItemPosition()
@@ -40,6 +41,7 @@ func luaMethodsActionUseItemPosition() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"init": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionUseItemPosition](l, 1)
 			obj := objInterface.GetActionUseItemPosition()
@@ -49,6 +51,7 @@ func luaMethodsActionUseItemPosition() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getActionUseItemPosition": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionUseItemPosition](l, 1)
 			obj := objInterface.GetActionUseItemPosition()

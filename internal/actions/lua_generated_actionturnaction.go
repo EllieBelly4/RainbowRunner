@@ -29,6 +29,7 @@ func registerLuaActionTurnAction(state *lua2.LState) {
 
 func luaMethodsActionTurnAction() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionTurnAction](l, 1)
 			obj := objInterface.GetActionTurnAction()
@@ -40,6 +41,7 @@ func luaMethodsActionTurnAction() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"init": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionTurnAction](l, 1)
 			obj := objInterface.GetActionTurnAction()
@@ -49,6 +51,7 @@ func luaMethodsActionTurnAction() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getActionTurnAction": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionTurnAction](l, 1)
 			obj := objInterface.GetActionTurnAction()

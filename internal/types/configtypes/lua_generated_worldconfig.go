@@ -27,7 +27,37 @@ func registerLuaWorldConfig(state *lua2.LState) {
 }
 
 func luaMethodsWorldConfig() map[string]lua2.LGFunction {
-	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{})
+	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+		"name":                     lua.LuaGenericGetSetString[IWorldConfig](func(v IWorldConfig) *string { return &v.GetWorldConfig().Name }),
+		"encounterTable":           lua.LuaGenericGetSetString[IWorldConfig](func(v IWorldConfig) *string { return &v.GetWorldConfig().EncounterTable }),
+		"generated":                lua.LuaGenericGetSetBool[IWorldConfig](func(v IWorldConfig) *bool { return &v.GetWorldConfig().Generated }),
+		"mazeDeadEndRemovalChance": lua.LuaGenericGetSetNumber[IWorldConfig](func(v IWorldConfig) *int { return &v.GetWorldConfig().MazeDeadEndRemovalChance }),
+		"mazeHeight":               lua.LuaGenericGetSetNumber[IWorldConfig](func(v IWorldConfig) *int { return &v.GetWorldConfig().MazeHeight }),
+		"mazeRandomness":           lua.LuaGenericGetSetNumber[IWorldConfig](func(v IWorldConfig) *int { return &v.GetWorldConfig().MazeRandomness }),
+		"mazeSparseness":           lua.LuaGenericGetSetNumber[IWorldConfig](func(v IWorldConfig) *int { return &v.GetWorldConfig().MazeSparseness }),
+		"mazeWidth":                lua.LuaGenericGetSetNumber[IWorldConfig](func(v IWorldConfig) *int { return &v.GetWorldConfig().MazeWidth }),
+		"tileSet":                  lua.LuaGenericGetSetString[IWorldConfig](func(v IWorldConfig) *string { return &v.GetWorldConfig().TileSet }),
+		"tileSize":                 lua.LuaGenericGetSetNumber[IWorldConfig](func(v IWorldConfig) *int { return &v.GetWorldConfig().TileSize }),
+		"worldEntityTable":         lua.LuaGenericGetSetString[IWorldConfig](func(v IWorldConfig) *string { return &v.GetWorldConfig().WorldEntityTable }),
+		"worldEntityTable2":        lua.LuaGenericGetSetString[IWorldConfig](func(v IWorldConfig) *string { return &v.GetWorldConfig().WorldEntityTable2 }),
+		"worldEntityTable3":        lua.LuaGenericGetSetString[IWorldConfig](func(v IWorldConfig) *string { return &v.GetWorldConfig().WorldEntityTable3 }),
+		// -------------------------------------------------------------------------------------------------------------
+		// Unsupported field type Entities array properties are not supported
+		// -------------------------------------------------------------------------------------------------------------
+
+		"getWorldConfig": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IWorldConfig](l, 1)
+			obj := objInterface.GetWorldConfig()
+			res0 := obj.GetWorldConfig()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
+	})
 }
 func newLuaWorldConfig(l *lua2.LState) int {
 	obj := NewWorldConfig()

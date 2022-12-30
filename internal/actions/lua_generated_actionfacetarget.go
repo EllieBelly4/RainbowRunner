@@ -29,6 +29,7 @@ func registerLuaActionFaceTarget(state *lua2.LState) {
 
 func luaMethodsActionFaceTarget() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionFaceTarget](l, 1)
 			obj := objInterface.GetActionFaceTarget()
@@ -40,6 +41,7 @@ func luaMethodsActionFaceTarget() map[string]lua2.LGFunction {
 
 			return 1
 		},
+
 		"init": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionFaceTarget](l, 1)
 			obj := objInterface.GetActionFaceTarget()
@@ -49,6 +51,7 @@ func luaMethodsActionFaceTarget() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
 		"getActionFaceTarget": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionFaceTarget](l, 1)
 			obj := objInterface.GetActionFaceTarget()
