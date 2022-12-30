@@ -41,10 +41,23 @@ func newEntityConfigFromRawConfig(entity *configtypes.DRClass) *configtypes.Enti
 
 	addEntityBehaviour(entityConfig, entity)
 
+	if entity.Children["merchant"] != nil {
+		entityConfig.Merchant = newMerchantConfigFromRawConfig(entity.Children["merchant"].Entities[0])
+	}
+
 	if entityConfig.Desc != nil && entityConfig.Desc.Animations != "" {
 		entityConfig.Animations = loadAnimations(entityConfig.Desc.Animations)
 	}
+
 	return entityConfig
+}
+
+func newMerchantConfigFromRawConfig(merchantConfig *configtypes.DRClass) *configtypes.MerchantConfig {
+	merchant := configtypes.NewMerchantConfig()
+
+	configtypes.SetPropertiesOnStruct(merchant, merchantConfig.Properties)
+
+	return merchant
 }
 
 func addEntityBehaviour(entityConfig *configtypes.EntityConfig, entity *configtypes.DRClass) {

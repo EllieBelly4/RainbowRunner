@@ -45,6 +45,7 @@ type EntityConfig struct {
 	FullGCType string
 	Desc       *EntityDesc
 	Behaviour  *BehaviourConfig
+	Merchant   *MerchantConfig
 }
 
 type EntityDesc struct {
