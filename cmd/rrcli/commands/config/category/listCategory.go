@@ -3,7 +3,7 @@ package category
 import (
 	"RainbowRunner/cmd/rrcli/configurator"
 	"RainbowRunner/internal/gosucks"
-	"RainbowRunner/internal/types/configtypes"
+	"RainbowRunner/internal/types/drconfigtypes"
 	"fmt"
 	"github.com/spf13/cobra"
 	"strings"
@@ -32,7 +32,7 @@ var listCategoryCommand = &cobra.Command{
 	},
 }
 
-func dumpCategories(config map[string]*configtypes.DRCategory, prefix []string, depth int) {
+func dumpCategories(config map[string]*drconfigtypes.DRCategory, prefix []string, depth int) {
 	if depth > listCategoryDepth && listCategoryDepth >= 0 {
 		return
 	}

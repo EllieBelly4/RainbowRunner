@@ -3,6 +3,7 @@ package configtypes
 
 import (
 	lua "RainbowRunner/internal/lua"
+	"RainbowRunner/internal/types/drconfigtypes"
 	"RainbowRunner/pkg/datatypes"
 	lua2 "github.com/yuin/gopher-lua"
 )
@@ -74,7 +75,7 @@ func luaMethodsEntityConfig() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IEntityConfig](l, 1)
 			obj := objInterface.GetEntityConfig()
 			obj.Init(
-				lua.CheckReferenceValue[DRClass](l, 2),
+				lua.CheckReferenceValue[drconfigtypes.DRClass](l, 2),
 			)
 
 			return 0

@@ -3,7 +3,7 @@ package extract
 import (
 	"RainbowRunner/cmd/configparser/configparser"
 	"RainbowRunner/cmd/rrcli/configurator"
-	"RainbowRunner/internal/types/configtypes"
+	"RainbowRunner/internal/types/drconfigtypes"
 	"compress/zlib"
 	"github.com/goccy/go-json"
 	"github.com/spf13/cobra"
@@ -18,7 +18,7 @@ var dumpAllowedExtensions []string
 var dumpCommand = &cobra.Command{
 	Use: "dump",
 	Run: func(cmd *cobra.Command, args []string) {
-		var config *configtypes.DRConfig
+		var config *drconfigtypes.DRConfig
 		var err error
 
 		if dumpFileName == "" {

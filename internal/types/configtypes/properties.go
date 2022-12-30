@@ -1,6 +1,7 @@
 package configtypes
 
 import (
+	"RainbowRunner/internal/types/drconfigtypes"
 	"RainbowRunner/pkg/datatypes"
 	"RainbowRunner/pkg/datatypes/drfloat"
 	"fmt"
@@ -10,7 +11,7 @@ import (
 
 func SetPropertiesOnStruct(
 	obj any,
-	props DRClassProperties,
+	props drconfigtypes.DRClassProperties,
 ) {
 	rval := reflect.ValueOf(obj)
 

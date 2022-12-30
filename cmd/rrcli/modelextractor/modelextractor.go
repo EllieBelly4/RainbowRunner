@@ -5,7 +5,7 @@ import (
 	"RainbowRunner/internal/gosucks"
 	"RainbowRunner/internal/objects"
 	"RainbowRunner/internal/types"
-	"RainbowRunner/internal/types/configtypes"
+	"RainbowRunner/internal/types/drconfigtypes"
 	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	"fmt"
@@ -254,7 +254,7 @@ func createMaterial(ref objects.DFCMeshMaterialRef, objBuilder *OBJBuilder, mtlB
 	return nil
 }
 
-func parseColour(colourProperties configtypes.DRClassProperties, property string) *float32 {
+func parseColour(colourProperties drconfigtypes.DRClassProperties, property string) *float32 {
 	if rString, ok := colourProperties[property]; ok {
 		val, err := strconv.ParseInt(rString, 10, 32)
 

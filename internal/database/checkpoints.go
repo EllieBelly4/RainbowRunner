@@ -2,12 +2,12 @@ package database
 
 import (
 	"RainbowRunner/internal/gosucks"
-	"RainbowRunner/internal/types/configtypes"
+	"RainbowRunner/internal/types/drconfigtypes"
 	"strconv"
 	"strings"
 )
 
-func sortCheckpoints(rawCheckpointConfigs []*configtypes.DRClassChildGroup) map[string]map[string]*CheckpointConfig {
+func sortCheckpoints(rawCheckpointConfigs []*drconfigtypes.DRClassChildGroup) map[string]map[string]*CheckpointConfig {
 	tmpCheckpoints := make(map[string]map[string]*CheckpointConfig)
 	zoneMap := make(map[string]string)
 

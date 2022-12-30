@@ -2,7 +2,7 @@ package configurator
 
 import (
 	"RainbowRunner/cmd/configparser/configparser"
-	"RainbowRunner/internal/types/configtypes"
+	"RainbowRunner/internal/types/drconfigtypes"
 	"compress/zlib"
 	"errors"
 	"fmt"
@@ -16,7 +16,7 @@ import (
 	"strings"
 )
 
-func LoadFromCategoryConfigFile(path string) (map[string]*configtypes.DRCategory, error) {
+func LoadFromCategoryConfigFile(path string) (map[string]*drconfigtypes.DRCategory, error) {
 	stat, err := os.Stat(path)
 
 	if err != nil {
@@ -33,7 +33,7 @@ func LoadFromCategoryConfigFile(path string) (map[string]*configtypes.DRCategory
 		return nil, err
 	}
 
-	drConfig := map[string]*configtypes.DRCategory{}
+	drConfig := map[string]*drconfigtypes.DRCategory{}
 
 	err = json.Unmarshal(data, &drConfig)
 
@@ -44,7 +44,7 @@ func LoadFromCategoryConfigFile(path string) (map[string]*configtypes.DRCategory
 	return drConfig, nil
 }
 
-func LoadFromDumpedConfigFile(path string) (*configtypes.DRConfig, error) {
+func LoadFromDumpedConfigFile(path string) (*drconfigtypes.DRConfig, error) {
 	stat, err := os.Stat(path)
 
 	if err != nil {
@@ -77,7 +77,7 @@ func LoadFromDumpedConfigFile(path string) (*configtypes.DRConfig, error) {
 		return nil, err
 	}
 
-	drConfig := configtypes.NewDRConfig()
+	drConfig := drconfigtypes.NewDRConfig()
 
 	err = json.Unmarshal(data, drConfig)
 
@@ -88,7 +88,7 @@ func LoadFromDumpedConfigFile(path string) (*configtypes.DRConfig, error) {
 	return drConfig, nil
 }
 
-func LoadAllConfigurationFiles(rootDir string, extensions []string) (*configtypes.DRConfig, error) {
+func LoadAllConfigurationFiles(rootDir string, extensions []string) (*drconfigtypes.DRConfig, error) {
 	configsToload := make([]string, 0, 1024)
 
 	err := filepath.WalkDir(rootDir, func(path string, d fs.DirEntry, err error) error {

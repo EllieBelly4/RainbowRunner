@@ -2,6 +2,7 @@ package database
 
 import (
 	"RainbowRunner/internal/types/configtypes"
+	"RainbowRunner/internal/types/drconfigtypes"
 	log "github.com/sirupsen/logrus"
 	"strings"
 )
@@ -41,7 +42,7 @@ func (z *ZoneConfig) GetAllNPCs() []*configtypes.NPCConfig {
 }
 
 func GetZoneConfig(name string) (*ZoneConfig, error) {
-	var rawConfig []*configtypes.DRClassChildGroup
+	var rawConfig []*drconfigtypes.DRClassChildGroup
 	var gcRoot []string
 
 	paths := []string{

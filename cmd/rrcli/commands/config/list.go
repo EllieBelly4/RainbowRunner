@@ -3,7 +3,7 @@ package config
 import (
 	"RainbowRunner/cmd/rrcli/commands/globals"
 	"RainbowRunner/cmd/rrcli/configurator"
-	"RainbowRunner/internal/types/configtypes"
+	"RainbowRunner/internal/types/drconfigtypes"
 	"fmt"
 	"github.com/goccy/go-json"
 	"github.com/spf13/cobra"
@@ -29,7 +29,7 @@ var listCommand = &cobra.Command{
 			regex = regexp.MustCompile(listRegexpFilter)
 		}
 
-		class, err := config.List(listMaxDepth, func(group *configtypes.DRClassChildGroup) bool {
+		class, err := config.List(listMaxDepth, func(group *drconfigtypes.DRClassChildGroup) bool {
 			if regex != nil {
 				return regex.Match([]byte(group.Name))
 			}

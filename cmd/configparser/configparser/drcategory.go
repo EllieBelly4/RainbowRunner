@@ -1,21 +1,21 @@
 package configparser
 
 import (
-	"RainbowRunner/internal/types/configtypes"
+	"RainbowRunner/internal/types/drconfigtypes"
 	"errors"
 	"fmt"
 	"regexp"
 	"strings"
 )
 
-func GetGCTypesByCategory(category string, categories map[string]*configtypes.DRCategory, minDepth int, filter *regexp.Regexp) ([]string, error) {
-	var rootElement *configtypes.DRCategory
+func GetGCTypesByCategory(category string, categories map[string]*drconfigtypes.DRCategory, minDepth int, filter *regexp.Regexp) ([]string, error) {
+	var rootElement *drconfigtypes.DRCategory
 	var depthMod = 0
 
 	if category != "" {
 		rootElement = getElementByCategory(strings.Split(category, "."), categories)
 	} else {
-		rootElement = &configtypes.DRCategory{
+		rootElement = &drconfigtypes.DRCategory{
 			Children: categories,
 			Classes:  nil,
 		}
@@ -45,7 +45,7 @@ func GetGCTypesByCategory(category string, categories map[string]*configtypes.DR
 	return results, nil
 }
 
-func getElementByCategory(splitCategory []string, root map[string]*configtypes.DRCategory) *configtypes.DRCategory {
+func getElementByCategory(splitCategory []string, root map[string]*drconfigtypes.DRCategory) *drconfigtypes.DRCategory {
 	if child, ok := root[splitCategory[0]]; ok {
 		if len(splitCategory) == 1 {
 			return child

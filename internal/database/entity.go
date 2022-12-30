@@ -3,9 +3,10 @@ package database
 import (
 	"RainbowRunner/internal/gosucks"
 	"RainbowRunner/internal/types/configtypes"
+	"RainbowRunner/internal/types/drconfigtypes"
 )
 
-func newEntityConfigFromRawConfig(entity *configtypes.DRClass) *configtypes.EntityConfig {
+func newEntityConfigFromRawConfig(entity *drconfigtypes.DRClass) *configtypes.EntityConfig {
 	entityConfig := configtypes.NewEntityConfig()
 
 	types := config.GetInheritedTypes(entity)
@@ -52,15 +53,36 @@ func newEntityConfigFromRawConfig(entity *configtypes.DRClass) *configtypes.Enti
 	return entityConfig
 }
 
-func newMerchantConfigFromRawConfig(merchantConfig *configtypes.DRClass) *configtypes.MerchantConfig {
-	merchant := configtypes.NewMerchantConfig()
+func newMerchantConfigFromRawConfig(merchantConfig *drconfigtypes.DRClass) *configtypes.MerchantConfig {
+	merchant := configtypes.NewMerchantConfig(merchantConfig.GCType)
 
 	configtypes.SetPropertiesOnStruct(merchant, merchantConfig.Properties)
+
+	for name, classGroup := range merchantConfig.Children {
+		childEntity := classGroup.Entities[0]
+
+		if childEntity.Extends == "MerchantInventory" {
+			merchant.AddInventory(name, newMerchantInventoryConfigFromRawConfig(childEntity))
+		}
+	}
 
 	return merchant
 }
 
-func addEntityBehaviour(entityConfig *configtypes.EntityConfig, entity *configtypes.DRClass) {
+func newMerchantInventoryConfigFromRawConfig(entity *drconfigtypes.DRClass) *configtypes.MerchantInventoryConfig {
+	inventory := configtypes.NewMerchantInventoryConfig(entity.GCType)
+
+	configtypes.SetPropertiesOnStruct(inventory, entity.Properties)
+
+	if desc, ok := entity.Children["description"]; ok {
+		inventory.Description = configtypes.NewInventoryDescConfig()
+		configtypes.SetPropertiesOnStruct(inventory.Description, desc.Entities[0].Properties)
+	}
+
+	return inventory
+}
+
+func addEntityBehaviour(entityConfig *configtypes.EntityConfig, entity *drconfigtypes.DRClass) {
 	if behaviour, ok := entity.Children["behavior"]; ok && entityConfig.Type == configtypes.EntityConfigTypeNPC {
 		entityConfig.Behaviour = &configtypes.BehaviourConfig{
 			Type: behaviour.GCType,

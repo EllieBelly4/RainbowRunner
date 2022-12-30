@@ -1,4 +1,4 @@
-package configtypes
+package drconfigtypes
 
 import (
 	"errors"

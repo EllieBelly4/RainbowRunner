@@ -5,6 +5,7 @@ import (
 	"RainbowRunner/internal/gosucks"
 	"RainbowRunner/internal/types"
 	"RainbowRunner/internal/types/configtypes"
+	drconfigtypes2 "RainbowRunner/internal/types/drconfigtypes"
 	"fmt"
 	"github.com/goccy/go-json"
 	log "github.com/sirupsen/logrus"
@@ -12,21 +13,21 @@ import (
 	"strings"
 )
 
-type DRClassCollection map[string]*configtypes.DRClass
+type DRClassCollection map[string]*drconfigtypes2.DRClass
 
-type EquipmentMap map[string]*configtypes.DRClass
+type EquipmentMap map[string]*drconfigtypes2.DRClass
 
 type DRWeapon struct {
-	*configtypes.DRClass
+	*drconfigtypes2.DRClass
 }
 
-var config *configtypes.DRConfig
+var config *drconfigtypes2.DRConfig
 var checkpointConfigs map[string]map[string]*CheckpointConfig
 var zones map[string]*configtypes.ZoneDefConfig
 var worlds map[string]*configtypes.WorldConfig
 
-var Weapons []*configtypes.DRClassChildGroup
-var Armour []*configtypes.DRClassChildGroup
+var Weapons []*drconfigtypes2.DRClassChildGroup
+var Armour []*drconfigtypes2.DRClassChildGroup
 
 var MeleeWeapons EquipmentMap
 var RangedWeapons EquipmentMap
@@ -35,7 +36,7 @@ var Armours EquipmentMap
 var Gloves EquipmentMap
 var Boots EquipmentMap
 
-func FindItem(db []*configtypes.DRClassChildGroup, gcType string) *configtypes.DRClass {
+func FindItem(db []*drconfigtypes2.DRClassChildGroup, gcType string) *drconfigtypes2.DRClass {
 	gcType = strings.ToLower(gcType)
 	for _, group := range db {
 		if strings.ToLower(group.GCType) == gcType {

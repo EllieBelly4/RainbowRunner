@@ -2,14 +2,14 @@ package configparser
 
 import (
 	"RainbowRunner/cmd/configparser/parser"
-	"RainbowRunner/internal/types/configtypes"
+	drconfigtypes2 "RainbowRunner/internal/types/drconfigtypes"
 	"fmt"
 	"github.com/antlr/antlr4/runtime/Go/antlr"
 	"os"
 	"strings"
 )
 
-var baseMaps = make(map[string]*configtypes.DRClass)
+var baseMaps = make(map[string]*drconfigtypes2.DRClass)
 
 type DRConfigParser struct {
 	*parser.BaseDRConfigListener
@@ -25,10 +25,10 @@ type DRConfigParser struct {
 	depth          int
 	IsGenericClass bool
 	gcBaseType     string
-	drConfig       *configtypes.DRConfig
+	drConfig       *drconfigtypes2.DRConfig
 }
 
-func NewDRConfigListener(filePath string, rootPath string, config *configtypes.DRConfig) *DRConfigParser {
+func NewDRConfigListener(filePath string, rootPath string, config *drconfigtypes2.DRConfig) *DRConfigParser {
 	split := strings.Split(filePath, "\\")
 	fileName := strings.Split(split[len(split)-1], ".")[0]
 	extensionlessPath := strings.SplitN(filePath, ".", 2)[0]
@@ -41,9 +41,9 @@ func NewDRConfigListener(filePath string, rootPath string, config *configtypes.D
 		gcTypeNameLowercase := strings.ToLower(splitBaseType[i])
 
 		if _, ok := curMap.Children[gcTypeNameLowercase]; !ok {
-			curMap.Children[gcTypeNameLowercase] = configtypes.NewDRClassChildGroup("")
-			curMap.Children[gcTypeNameLowercase].Entities = make([]*configtypes.DRClass, 0)
-			curMap.Children[gcTypeNameLowercase].Entities = append(curMap.Children[gcTypeNameLowercase].Entities, configtypes.NewDRClass(""))
+			curMap.Children[gcTypeNameLowercase] = drconfigtypes2.NewDRClassChildGroup("")
+			curMap.Children[gcTypeNameLowercase].Entities = make([]*drconfigtypes2.DRClass, 0)
+			curMap.Children[gcTypeNameLowercase].Entities = append(curMap.Children[gcTypeNameLowercase].Entities, drconfigtypes2.NewDRClass(""))
 		}
 
 		curMap = curMap.Children[gcTypeNameLowercase].Entities[0]
@@ -79,7 +79,7 @@ func (t *DRConfigParser) EnterEveryRule(ctx antlr.ParserRuleContext) {
 		parentChild, ok := parent.Children[currentClassName]
 
 		if !ok {
-			parent.Children[currentClassName] = configtypes.NewDRClassChildGroup("")
+			parent.Children[currentClassName] = drconfigtypes2.NewDRClassChildGroup("")
 			parentChild = parent.Children[currentClassName]
 			parentChild.GCType = current.GCType
 		}
@@ -125,7 +125,7 @@ func (t *DRConfigParser) EnterEveryRule(ctx antlr.ParserRuleContext) {
 			}
 		}
 
-		newClass := configtypes.NewDRClass(className)
+		newClass := drconfigtypes2.NewDRClass(className)
 
 		t.classStack.Push(newClass)
 	}
@@ -146,7 +146,7 @@ func (t *DRConfigParser) ExitEveryRule(ctx antlr.ParserRuleContext) {
 	}
 }
 
-func parseFile(path string, rootPath string, config *configtypes.DRConfig) {
+func parseFile(path string, rootPath string, config *drconfigtypes2.DRConfig) {
 	input, _ := antlr.NewFileStream(path)
 	lexer := parser.NewDRConfigLexer(input)
 	stream := antlr.NewCommonTokenStream(lexer, 0)
@@ -158,8 +158,8 @@ func parseFile(path string, rootPath string, config *configtypes.DRConfig) {
 	antlr.ParseTreeWalkerDefault.Walk(listener, tree)
 }
 
-func ParseAllFilesToDRConfig(files []string, rootPath string) (*configtypes.DRConfig, error) {
-	drConfig := configtypes.NewDRConfig()
+func ParseAllFilesToDRConfig(files []string, rootPath string) (*drconfigtypes2.DRConfig, error) {
+	drConfig := drconfigtypes2.NewDRConfig()
 
 	for _, path := range files {
 		_, err := os.Stat(path)

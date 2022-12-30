@@ -4,7 +4,7 @@ import (
 	"RainbowRunner/cmd/configparser/configparser"
 	"RainbowRunner/cmd/rrcli/commands/globals"
 	"RainbowRunner/cmd/rrcli/configurator"
-	"RainbowRunner/internal/types/configtypes"
+	"RainbowRunner/internal/types/drconfigtypes"
 	"fmt"
 	"github.com/goccy/go-json"
 	"github.com/spf13/cobra"
@@ -51,7 +51,7 @@ var getCategoryCommand = &cobra.Command{
 			panic(err)
 		}
 
-		var results []*configtypes.DRClassChildGroup
+		var results []*drconfigtypes.DRClassChildGroup
 
 		for _, gcType := range gcTypes {
 			class, err := config.Get(gcType)

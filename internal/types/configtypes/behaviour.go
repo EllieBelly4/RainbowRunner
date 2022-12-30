@@ -1,11 +1,15 @@
 package configtypes
 
+import (
+	"RainbowRunner/internal/types/drconfigtypes"
+)
+
 type BehaviourConfig struct {
 	Type string
 	Desc *BehaviourDescConfig
 }
 
-func (c *BehaviourConfig) Init(entity *DRClass, rootGCType string) {
+func (c *BehaviourConfig) Init(entity *drconfigtypes.DRClass, rootGCType string) {
 	if desc, ok := entity.Children["description"]; ok {
 		descEntity := desc.Entities[0]
 

@@ -1,17 +1,22 @@
 package configtypes
 
 type MerchantConfig struct {
-	SellValueMod float32
-	BuyValueMod  float32
+	SellValueMod    float32
+	BuyValueMod     float32
+	RegenerateItems bool
+	IDGenerator     int
+
+	Inventories map[string]*MerchantInventoryConfig
+	GCType      string
 }
 
-func NewMerchantConfig() *MerchantConfig {
-	return &MerchantConfig{}
+func (c *MerchantConfig) AddInventory(name string, config *MerchantInventoryConfig) {
+	c.Inventories[name] = config
 }
 
-type MerchantInventory struct {
-}
-
-func NewMerchantInventory() *MerchantInventory {
-	return &MerchantInventory{}
+func NewMerchantConfig(gctype string) *MerchantConfig {
+	return &MerchantConfig{
+		GCType:      gctype,
+		Inventories: map[string]*MerchantInventoryConfig{},
+	}
 }

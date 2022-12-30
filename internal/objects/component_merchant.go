@@ -1,12 +1,14 @@
 package objects
 
 import (
+	"RainbowRunner/internal/types/configtypes"
 	"RainbowRunner/pkg/byter"
 )
 
 //go:generate go run ../../scripts/generatelua -type=Merchant -extends=Container
 type Merchant struct {
 	*Container
+	BaseConfig *configtypes.MerchantConfig
 }
 
 func (m *Merchant) WriteInit(b *byter.Byter) {
@@ -41,4 +43,16 @@ func NewMerchant(gcType string) *Merchant {
 	return &Merchant{
 		Container: container,
 	}
+}
+
+func NewMerchantFromConfig(config *configtypes.MerchantConfig) *Merchant {
+	merchant := NewMerchant(config.GCType)
+
+	merchant.BaseConfig = config
+
+	for _, inventoryConfig := range config.Inventories {
+		merchant.AddChild(NewMerchantInventoryFromConfig(inventoryConfig))
+	}
+
+	return merchant
 }

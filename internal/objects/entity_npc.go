@@ -88,6 +88,10 @@ func NewNPCFromConfig(config *configtypes.NPCConfig) *NPC {
 		npc.WorldEntity.AnimationsList = animationsList
 	}
 
+	if config.Merchant != nil {
+		npc.AddChild(NewMerchantFromConfig(config.Merchant))
+	}
+
 	skills := NewSkills("skills")
 	npc.AddChild(skills)
 

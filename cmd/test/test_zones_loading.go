@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	defer profile.Start(profile.ProfilePath("./tmp")).Stop()
+	defer profile.Start(profile.MemProfile, profile.ProfilePath("./tmp")).Stop()
 
 	database.LoadConfigFiles()
 

@@ -1,6 +1,7 @@
 package configtypes
 
 import (
+	"RainbowRunner/internal/types/drconfigtypes"
 	"RainbowRunner/pkg/datatypes"
 	"RainbowRunner/pkg/datatypes/drfloat"
 )
@@ -133,7 +134,7 @@ type EntityDesc struct {
 	WalkSpeed                        float32
 }
 
-func (e *EntityConfig) Init(entity *DRClass) {
+func (e *EntityConfig) Init(entity *drconfigtypes.DRClass) {
 	SetPropertiesOnStruct(e, entity.Properties)
 
 	if entity.Children == nil {

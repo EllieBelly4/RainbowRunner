@@ -4,7 +4,7 @@ import (
 	"RainbowRunner/cmd/rrcli/configurator"
 	"RainbowRunner/cmd/rrcli/modelextractor"
 	"RainbowRunner/internal/gosucks"
-	"RainbowRunner/internal/types/configtypes"
+	drconfigtypes2 "RainbowRunner/internal/types/drconfigtypes"
 	"RainbowRunner/pkg/datatypes"
 	"fmt"
 	"github.com/goccy/go-json"
@@ -79,7 +79,7 @@ func main() {
 
 func extractModelsForObjects(entities []struct {
 	string
-	*configtypes.DRClass
+	*drconfigtypes2.DRClass
 }, rootPath string, destPath string, split bool) {
 	useCollisionModel := false
 
@@ -165,13 +165,13 @@ func extractModelsForObjects(entities []struct {
 	}
 }
 
-func getDRClassesForStaticObjects(dump []StaticObjectDump, config *configtypes.DRConfig) []struct {
+func getDRClassesForStaticObjects(dump []StaticObjectDump, config *drconfigtypes2.DRConfig) []struct {
 	string
-	*configtypes.DRClass
+	*drconfigtypes2.DRClass
 } {
 	var allEntities []struct {
 		string
-		*configtypes.DRClass
+		*drconfigtypes2.DRClass
 	}
 
 	for _, dumpObject := range dump {
@@ -199,7 +199,7 @@ func getDRClassesForStaticObjects(dump []StaticObjectDump, config *configtypes.D
 
 		allEntities = append(allEntities, struct {
 			string
-			*configtypes.DRClass
+			*drconfigtypes2.DRClass
 		}{dumpObject.GCTypeName, entity})
 	}
 

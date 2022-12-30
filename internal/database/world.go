@@ -4,6 +4,7 @@ import (
 	"RainbowRunner/cmd/rrcli/configurator"
 	"RainbowRunner/internal/gosucks"
 	"RainbowRunner/internal/types/configtypes"
+	"RainbowRunner/internal/types/drconfigtypes"
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"strings"
@@ -44,7 +45,7 @@ func LoadWorldConfigs() map[string]*configtypes.WorldConfig {
 	return worlds
 }
 
-func loadWorldEntities(worldConfig *configtypes.WorldConfig, entitiesConfig *configtypes.DRClass) {
+func loadWorldEntities(worldConfig *configtypes.WorldConfig, entitiesConfig *drconfigtypes.DRClass) {
 	if entitiesConfig.Children != nil {
 		for _, entityGroup := range entitiesConfig.Children {
 			for _, entity := range entityGroup.Entities {

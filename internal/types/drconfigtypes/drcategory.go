@@ -1,4 +1,4 @@
-package configtypes
+package drconfigtypes
 
 type DRCategory struct {
 	Children map[string]*DRCategory

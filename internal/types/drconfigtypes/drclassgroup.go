@@ -1,4 +1,4 @@
-package configtypes
+package drconfigtypes
 
 type DRClassChildGroup struct {
 	Name     string     `json:"name,omitempty"`
