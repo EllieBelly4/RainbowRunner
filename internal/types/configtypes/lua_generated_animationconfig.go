@@ -3,6 +3,7 @@ package configtypes
 
 import (
 	lua "RainbowRunner/internal/lua"
+	"RainbowRunner/pkg/datatypes"
 	lua2 "github.com/yuin/gopher-lua"
 )
 
@@ -32,6 +33,11 @@ func luaMethodsAnimationConfig() map[string]lua2.LGFunction {
 		"numFrames":        lua.LuaGenericGetSetNumber[IAnimationConfig](func(v IAnimationConfig) *int { return &v.GetAnimationConfig().NumFrames }),
 		"triggerTime":      lua.LuaGenericGetSetNumber[IAnimationConfig](func(v IAnimationConfig) *int { return &v.GetAnimationConfig().TriggerTime }),
 		"soundTriggerTime": lua.LuaGenericGetSetNumber[IAnimationConfig](func(v IAnimationConfig) *int { return &v.GetAnimationConfig().SoundTriggerTime }),
+		"sourceNode":       lua.LuaGenericGetSetString[IAnimationConfig](func(v IAnimationConfig) *string { return &v.GetAnimationConfig().SourceNode }),
+		"startFrame":       lua.LuaGenericGetSetNumber[IAnimationConfig](func(v IAnimationConfig) *int { return &v.GetAnimationConfig().StartFrame }),
+		"soundID":          lua.LuaGenericGetSetNumber[IAnimationConfig](func(v IAnimationConfig) *int { return &v.GetAnimationConfig().SoundID }),
+		"sourceOffset":     lua.LuaGenericGetSetValue[IAnimationConfig, datatypes.Vector3Float32](func(v IAnimationConfig) *datatypes.Vector3Float32 { return &v.GetAnimationConfig().SourceOffset }),
+		"looping":          lua.LuaGenericGetSetBool[IAnimationConfig](func(v IAnimationConfig) *bool { return &v.GetAnimationConfig().Looping }),
 
 		"getAnimationConfig": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAnimationConfig](l, 1)

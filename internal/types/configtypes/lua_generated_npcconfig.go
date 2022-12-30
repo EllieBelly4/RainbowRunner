@@ -20,6 +20,7 @@ func registerLuaNPCConfig(state *lua2.LState) {
 
 	mt := state.NewTypeMetatable("NPCConfig")
 	state.SetGlobal("NPCConfig", mt)
+	state.SetField(mt, "new", state.NewFunction(newLuaNPCConfig))
 	state.SetField(mt, "__index", state.SetFuncs(state.NewTable(),
 		luaMethodsNPCConfig(),
 	))
@@ -41,6 +42,15 @@ func luaMethodsNPCConfig() map[string]lua2.LGFunction {
 			return 1
 		},
 	}, luaMethodsEntityConfig)
+}
+func newLuaNPCConfig(l *lua2.LState) int {
+	obj := NewNPCConfig()
+	ud := l.NewUserData()
+	ud.Value = obj
+
+	l.SetMetatable(ud, l.GetTypeMetatable("NPCConfig"))
+	l.Push(ud)
+	return 1
 }
 
 func (n *NPCConfig) ToLua(l *lua2.LState) lua2.LValue {

@@ -20,6 +20,7 @@ func registerLuaCheckpointEntityConfig(state *lua2.LState) {
 
 	mt := state.NewTypeMetatable("CheckpointEntityConfig")
 	state.SetGlobal("CheckpointEntityConfig", mt)
+	state.SetField(mt, "new", state.NewFunction(newLuaCheckpointEntityConfig))
 	state.SetField(mt, "__index", state.SetFuncs(state.NewTable(),
 		luaMethodsCheckpointEntityConfig(),
 	))
@@ -41,6 +42,15 @@ func luaMethodsCheckpointEntityConfig() map[string]lua2.LGFunction {
 			return 1
 		},
 	}, luaMethodsEntityConfig)
+}
+func newLuaCheckpointEntityConfig(l *lua2.LState) int {
+	obj := NewCheckpointEntityConfig()
+	ud := l.NewUserData()
+	ud.Value = obj
+
+	l.SetMetatable(ud, l.GetTypeMetatable("CheckpointEntityConfig"))
+	l.Push(ud)
+	return 1
 }
 
 func (c *CheckpointEntityConfig) ToLua(l *lua2.LState) lua2.LValue {
