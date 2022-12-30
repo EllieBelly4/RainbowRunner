@@ -143,14 +143,6 @@ func (e *EntityConfig) Init(entity *DRClass) {
 		e.Desc = &EntityDesc{}
 		SetPropertiesOnStruct(e.Desc, description.Entities[0].Properties)
 	}
-
-	if behaviour, ok := entity.Children["behavior"]; ok && e.Type == EntityConfigTypeNPC {
-		e.Behaviour = &BehaviourConfig{}
-		behavEntity := behaviour.Entities[0]
-		SetPropertiesOnStruct(e.Behaviour, behavEntity.Properties)
-
-		e.Behaviour.Init(behavEntity, e.FullGCType)
-	}
 }
 
 func NewEntityConfig() *EntityConfig {
