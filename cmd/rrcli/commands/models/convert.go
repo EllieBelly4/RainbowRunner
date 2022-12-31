@@ -20,21 +20,25 @@ var modelOutputDir string
 var modelPrefix string
 var modelName string
 var combineModels bool
+var modelFileExtension string
+var materialFileExtension string
 
 var convertCommand = &cobra.Command{
 	Use: "convert",
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
+		modelextractor.MaterialFileExtension = materialFileExtension
+
 		config, err := configurator.LoadFromDumpedConfigFile(configFile)
 
 		if err != nil {
-			panic(err)
+			return err
 		}
 
-		fileType := ".3dnode"
+		fileType := "." + modelFileExtension
 		allFiles, err := os.ReadDir(modelSourceDir)
 
 		if err != nil {
-			return
+			return err
 		}
 
 		modelOutputDir = strings.ReplaceAll(modelOutputDir, "\\", "/")
@@ -80,6 +84,7 @@ var convertCommand = &cobra.Command{
 		}
 
 		gosucks.VAR(config)
+		return nil
 	},
 }
 
@@ -145,6 +150,8 @@ func createObjectFile(outputDir string, fileName string, objBuilder *modelextrac
 }
 
 func InitConvertCommand() {
+	convertCommand.PersistentFlags().StringVarP(&modelFileExtension, "model-extension", "e", "d3d", "-e d3d, -e 3dnode")
+	convertCommand.PersistentFlags().StringVarP(&materialFileExtension, "material-extension", "x", "msc", "-e msc, -e mat")
 	convertCommand.PersistentFlags().StringVarP(&modelOutputDir, "models-output-dir", "o", "", "-o D:\\ConvertedDRModels")
 	convertCommand.PersistentFlags().StringVarP(&modelPrefix, "model-prefix", "p", "", "-p Townston_")
 	convertCommand.PersistentFlags().StringVarP(&modelName, "model-name", "n", "", "-n ZonePortal")

@@ -18,6 +18,8 @@ import (
 	"strconv"
 )
 
+var MaterialFileExtension = "mat"
+
 var basePath string
 
 func Extract(pathString string, objBuilder *OBJBuilder, mtlBuilder *MTLBuilder) {
@@ -165,7 +167,7 @@ func addMaterials(mesh *objects.DFC3DStaticMeshNode, objBuilder *OBJBuilder, mtl
 }
 
 func createMaterial(ref objects.DFCMeshMaterialRef, objBuilder *OBJBuilder, mtlBuilder *MTLBuilder) error {
-	matFilePath := filepath.Join(basePath, ref.SafeName()+".mat")
+	matFilePath := filepath.Join(basePath, ref.SafeName()+"."+MaterialFileExtension)
 
 	drConfig, err := configparser.ParseAllFilesToDRConfig([]string{matFilePath}, basePath)
 
