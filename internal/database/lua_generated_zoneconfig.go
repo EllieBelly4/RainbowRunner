@@ -39,8 +39,12 @@ func luaMethodsZoneConfig() map[string]lua2.LGFunction {
 		// -------------------------------------------------------------------------------------------------------------
 		// Unsupported field type Checkpoints
 		// -------------------------------------------------------------------------------------------------------------
-		"world":  lua.LuaGenericGetSetValue[IZoneConfig, *configtypes.WorldConfig](func(v IZoneConfig) **configtypes.WorldConfig { return &v.GetZoneConfig().World }),
-		"gctype": lua.LuaGenericGetSetString[IZoneConfig](func(v IZoneConfig) *string { return &v.GetZoneConfig().GCType }),
+		"world":   lua.LuaGenericGetSetValue[IZoneConfig, *configtypes.WorldConfig](func(v IZoneConfig) **configtypes.WorldConfig { return &v.GetZoneConfig().World }),
+		"zoneDef": lua.LuaGenericGetSetValue[IZoneConfig, *configtypes.ZoneDefConfig](func(v IZoneConfig) **configtypes.ZoneDefConfig { return &v.GetZoneConfig().ZoneDef }),
+		"gctype":  lua.LuaGenericGetSetString[IZoneConfig](func(v IZoneConfig) *string { return &v.GetZoneConfig().GCType }),
+		// -------------------------------------------------------------------------------------------------------------
+		// Unsupported field type Entities
+		// -------------------------------------------------------------------------------------------------------------
 
 		"getZoneConfig": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZoneConfig](l, 1)

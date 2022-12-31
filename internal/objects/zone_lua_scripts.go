@@ -51,6 +51,10 @@ func (s *ZoneLuaScripts) Init(entity drobjectypes.DRObject) error {
 	return nil
 }
 
+func (s *ZoneLuaScripts) OnPlayerEnter(player *Player) {
+	s.CallEventHandler("onPlayerEnter", player)
+}
+
 func NewZoneLuaScripts(z *Zone) *ZoneLuaScripts {
 	luaState := lua2.NewState()
 	RegisterLuaGlobals(luaState)

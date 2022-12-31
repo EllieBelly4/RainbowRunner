@@ -6,6 +6,7 @@ import (
 	"RainbowRunner/internal/objects"
 	"RainbowRunner/internal/serverconfig"
 	byter "RainbowRunner/pkg/byter"
+	"RainbowRunner/pkg/events"
 	log "github.com/sirupsen/logrus"
 	"strings"
 )
@@ -73,6 +74,11 @@ func handleZoneJoin(conn *connections.RRConn) {
 
 	player.CurrentCharacter.SendCreateNewPlayerEntity(player)
 	player.CurrentCharacter.OnZoneJoin()
+
+	events.Emit(objects.PlayerEnteredZoneEvent{
+		Player: player.CurrentCharacter,
+		Zone:   player.CurrentCharacter.Zone,
+	})
 
 	if serverconfig.Config.Welcome.SendWelcomeMessage {
 		SendWelcomeMessage(player)

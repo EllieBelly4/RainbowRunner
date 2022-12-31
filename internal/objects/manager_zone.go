@@ -2,6 +2,7 @@ package objects
 
 import (
 	"RainbowRunner/internal/serverconfig"
+	"RainbowRunner/pkg/events"
 	"crypto/md5"
 	"encoding/binary"
 	log "github.com/sirupsen/logrus"
@@ -79,7 +80,13 @@ func (m *ZoneManager) Tick() {
 }
 
 func NewZoneManager() *ZoneManager {
-	return &ZoneManager{
+	zm := &ZoneManager{
 		Zones: make(map[string]*Zone),
 	}
+
+	events.RegisterHandler[PlayerEnteredZoneEvent](func(event PlayerEnteredZoneEvent) {
+		event.Zone.OnPlayerEnter(event.Player)
+	})
+
+	return zm
 }

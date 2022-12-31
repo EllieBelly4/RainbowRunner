@@ -362,6 +362,12 @@ func (z *Zone) GiveID(entity drobjecttypes.DRObject) {
 	}
 }
 
+// OnPlayerEnter is called when a player enters the zone from the game client and requires the initial zone state
+// This is not the same as when a player "Joins" a zone, which is when they are added to the zone's player list
+func (z *Zone) OnPlayerEnter(player *Player) {
+	z.Scripts.OnPlayerEnter(player)
+}
+
 func NewZone(name string, id uint32) *Zone {
 	zone := &Zone{
 		Name:     name,

@@ -29,6 +29,7 @@ type ZoneConfig struct {
 	Waypoints   map[string]configtypes.IWaypointConfig
 	Checkpoints map[string]configtypes.ICheckpointEntityConfig
 	World       *configtypes.WorldConfig
+	ZoneDef     *configtypes.ZoneDefConfig
 	GCType      string
 	Entities    map[string]configtypes.IEntityConfig
 }
@@ -92,6 +93,10 @@ func GetZoneConfig(name string) (*ZoneConfig, error) {
 		log.Errorf("Zone does not have a world config: %s", name)
 	} else {
 		zoneConfig.World = worldConfig
+	}
+
+	if zoneDef, ok := zones[name]; ok {
+		zoneConfig.ZoneDef = zoneDef
 	}
 
 	if worldConfig.Entities != nil {

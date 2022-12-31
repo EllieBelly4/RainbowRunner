@@ -3,6 +3,7 @@ package script
 import (
 	"RainbowRunner/internal/lua"
 	"RainbowRunner/internal/types/drobjecttypes"
+	log "github.com/sirupsen/logrus"
 	lua2 "github.com/yuin/gopher-lua"
 	"strings"
 )
@@ -104,6 +105,32 @@ func (e *EntityScript) Tick() error {
 	})
 
 	return err
+}
+
+func (e *EntityScript) CallEventHandler(eventHandlerName string, args ...interface{}) {
+	if e == nil || e.EventHandlers == nil {
+		return
+	}
+
+	if eventHandler, ok := e.EventHandlers[eventHandlerName]; ok {
+		luaArgs := make([]lua2.LValue, len(args))
+
+		for i, arg := range args {
+			luaArgs[i] = lua.ValueToLValue(e.State, arg)
+		}
+
+		err := e.State.CallByParam(lua2.P{
+			Fn:      eventHandler,
+			NRet:    0,
+			Protect: true,
+		}, luaArgs...)
+
+		if err != nil {
+			log.Error(err)
+		}
+	} else {
+		log.Warnf("Event handler %s not found", eventHandlerName)
+	}
 }
 
 func NewEntityScript(luaScript *lua.LuaScript, state *lua2.LState) *EntityScript {
