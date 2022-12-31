@@ -88,8 +88,6 @@ func (p *Player) WriteSynch(b *byter.Byter) {
 
 func (p *Player) SendCreateNewPlayerEntity(rrplayer *RRPlayer) {
 	zone := rrplayer.Zone()
-	//clientEntityWriter := rrplayer.ClientEntityWriter
-	//equippedItems := getRandomEquipment()
 	avatar := p.GetChildByGCNativeType("Avatar")
 	inventoryEquipment := avatar.GetChildByGCNativeType("Equipment")
 
@@ -508,7 +506,7 @@ func (p *Player) ChangeZone(zoneName string) {
 }
 
 func (p *Player) JoinZone(tZone *Zone) {
-	rrPlayer := Players.GetPlayer(uint16(p.ID()))
+	rrPlayer := Players.GetPlayer(p.OwnerID())
 
 	p.Zone = tZone
 	tZone.AddPlayer(rrPlayer)
@@ -541,7 +539,7 @@ func (p *Player) JoinZone(tZone *Zone) {
 }
 
 func (p *Player) OnZoneJoin() {
-	rrplayer := Players.GetPlayer(uint16(p.ID()))
+	rrplayer := Players.GetPlayer(p.OwnerID())
 
 	p.Spawned = true
 	entities := p.Zone.Entities()
@@ -551,12 +549,16 @@ func (p *Player) OnZoneJoin() {
 			continue
 		}
 
+		if _, ok := entity.(IPlayer); ok {
+			continue
+		}
+
 		CEWriter := NewClientEntityWriterWithByter()
 		CEWriter.Create(entity)
 
 		entity.WalkChildren(func(object drobjecttypes.DRObject) {
-			switch object.Type() {
-			case drobjecttypes.DRObjectComponent:
+			switch object.(type) {
+			case IComponent:
 				//if mb2, ok := object.(*MonsterBehavior2); ok {
 				//	CEWriter.CreateComponentAndInit(object, entity)
 				//}
@@ -582,7 +584,7 @@ func (p *Player) LeaveZone() {
 	p.Spawned = false
 	p.Zone.RemovePlayer(int(p.ID()))
 
-	rrplayer := Players.GetPlayer(uint16(p.ID()))
+	rrplayer := Players.GetPlayer(uint16(p.OwnerID()))
 	rrplayer.MessageQueue.Clear(message.QueueTypeClientEntity)
 
 	body := byter.NewLEByter(make([]byte, 0, 1024))

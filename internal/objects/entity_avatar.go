@@ -50,7 +50,11 @@ func (p *Avatar) WriteFullGCObject(byter *byter.Byter) {
 }
 
 func (p Avatar) WriteInit(b *byter.Byter) {
-	panic("implement me")
+	p.Hero.WriteInit(b)
+
+	b.WriteByte(0x00) // Unk
+	b.WriteByte(0x00) // Unk
+	b.WriteByte(0x00) // Unk
 }
 
 func (p Avatar) WriteUpdate(b *byter.Byter) {

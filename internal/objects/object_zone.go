@@ -3,6 +3,7 @@ package objects
 import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/database"
+	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/lua"
 	"RainbowRunner/internal/pathfinding"
 	script2 "RainbowRunner/internal/script"
@@ -118,10 +119,6 @@ func (z *Zone) AddPlayer(player *RRPlayer) {
 	z.Lock()
 	z.players[uint16(player.Conn.GetID())] = player
 	z.Unlock()
-
-	for _, child := range player.CurrentCharacter.Children() {
-		z.SpawnEntity(types.UInt16(uint16(player.Conn.GetID())), child)
-	}
 }
 
 func (z *Zone) setZone(entities ...drobjecttypes.DRObject) {
@@ -365,7 +362,32 @@ func (z *Zone) GiveID(entity drobjecttypes.DRObject) {
 // OnPlayerEnter is called when a player enters the zone from the game client and requires the initial zone state
 // This is not the same as when a player "Joins" a zone, which is when they are added to the zone's player list
 func (z *Zone) OnPlayerEnter(player *Player) {
+	rrplayer := Players.GetPlayer(player.OwnerID())
+
+	z.SpawnEntity(types.UInt16(player.OwnerID()), player)
+
+	player.SendCreateNewPlayerEntity(rrplayer)
+	player.OnZoneJoin()
+
 	z.Scripts.OnPlayerEnter(player)
+
+	avatar := player.GetChildByGCNativeType("Avatar").(*Avatar)
+
+	avatar.SendFollowClient()
+	avatar.IsSpawned = true
+
+	if serverconfig.Config.Welcome.SendWelcomeMessage {
+		SendWelcomeMessage(rrplayer)
+	}
+}
+
+func SendWelcomeMessage(player *RRPlayer) {
+	msg := messages.ChatMessage{
+		Channel: messages.MessageChannelSourceGlobalAnnouncement,
+		Message: serverconfig.Config.Welcome.Message,
+	}
+
+	player.Conn.SendMessage(msg)
 }
 
 func NewZone(name string, id uint32) *Zone {

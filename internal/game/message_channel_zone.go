@@ -4,7 +4,6 @@ import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/objects"
-	"RainbowRunner/internal/serverconfig"
 	byter "RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/events"
 	log "github.com/sirupsen/logrus"
@@ -71,9 +70,6 @@ func handleZoneJoin(conn *connections.RRConn) {
 
 	SendInterval(conn)
 
-	player.CurrentCharacter.SendCreateNewPlayerEntity(player)
-	player.CurrentCharacter.OnZoneJoin()
-
 	events.Emit(objects.PlayerEnteredZoneEvent{
 		Player: player.CurrentCharacter,
 		Zone:   player.CurrentCharacter.Zone,
@@ -98,15 +94,6 @@ func handleZoneJoin(conn *connections.RRConn) {
 	//FF FF # Per Path (idk)
 	//
 	//06 #end`))
-
-	avatar := player.CurrentCharacter.GetChildByGCNativeType("Avatar").(*objects.Avatar)
-
-	avatar.SendFollowClient()
-	avatar.IsSpawned = true
-
-	if serverconfig.Config.Welcome.SendWelcomeMessage {
-		SendWelcomeMessage(player)
-	}
 }
 
 func sendGoToZone(conn *connections.RRConn, zoneName string) {
@@ -120,13 +107,4 @@ func sendGoToZone(conn *connections.RRConn, zoneName string) {
 	}
 
 	rrPlayer.CurrentCharacter.JoinZone(tZone)
-}
-
-func SendWelcomeMessage(player *objects.RRPlayer) {
-	msg := messages.ChatMessage{
-		Channel: messages.MessageChannelSourceGlobalAnnouncement,
-		Message: serverconfig.Config.Welcome.Message,
-	}
-
-	player.Conn.SendMessage(msg)
 }

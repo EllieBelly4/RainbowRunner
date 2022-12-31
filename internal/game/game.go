@@ -50,6 +50,8 @@ func StartGameServer() {
 	}
 }
 
+var connID int = 1
+
 func handleConnection(conn net.Conn) {
 	//parser := message.NewParser(conn)
 	buf := make([]byte, 1024*10)
@@ -59,9 +61,12 @@ func handleConnection(conn net.Conn) {
 	rrconn := connections.NewRRConn(conn)
 
 	rrconn.Client = connections.NewRRConnClient(
-		1,
+		connID,
 		rrconn,
 	)
+
+	connID += 1
+
 	objects.Players.Register(rrconn)
 
 	Connections[rrconn.Client.ID] = rrconn
