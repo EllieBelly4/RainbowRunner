@@ -17,6 +17,8 @@ func LoadScripts(root string) error {
 }
 
 func reloadScripts() error {
+	scripts = make(map[string]*LuaScriptGroup)
+
 	err := filepath.WalkDir(rootPath, func(path string, d fs.DirEntry, err error) error {
 		if d.IsDir() {
 			return nil
