@@ -19,7 +19,7 @@ func main() {
 	}
 
 	for name, npcConfig := range zone.NPCs {
-		fmt.Printf("%s: %s\n", name, npcConfig.Behaviour.Type)
+		fmt.Printf("%s: %s\n", name, npcConfig.GetNPCConfig().Behaviour.Type)
 	}
 
 	gosucks.VAR(zone)

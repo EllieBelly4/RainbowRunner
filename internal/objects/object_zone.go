@@ -179,19 +179,33 @@ func (z *Zone) GetEntityScript(id string) script2.IEntityScript {
 	return script2.NewEntityScript(script, z.Scripts.State)
 }
 
-func (z *Zone) LoadNPCFromConfigFullGCType(id string) *NPC {
-	shortGCType := strings.TrimPrefix(id, z.BaseConfig.GCType+".npc.")
-
-	return z.LoadNPCFromConfig(shortGCType)
+func (z *Zone) LoadEntityFromConfig(id string) drobjecttypes.DRObject {
+	//shortGCType := strings.TrimPrefix(id, z.BaseConfig.GCType+".npc.")
+	//
+	//entityConfig, ok := z.BaseConfig.Entities[shortGCType]
+	//
+	//if !ok {
+	//	log.Errorf("could not find entity config in zone %s for %s", z.Name, id)
+	//	return nil
+	//}
+	//
+	//entity, err := EntityFromConfig(entityConfig)
+	//
+	//if err != nil {
+	//	log.Errorf("could not load entity from config for %s: %s", id, err)
+	//	return nil
+	//}
+	//
+	//script := z.GetEntityScript("checkpointentity." + strings.ToLower(id))
+	//
+	//if script != nil {
+	//	checkpointEntity.SetScript(script)
+	//}
+	//
+	return nil
 }
 
-func (z *Zone) LoadCheckpointEntityFromConfigFullGCType(id string) *CheckpointEntity {
-	shortGCType := strings.TrimPrefix(id, z.BaseConfig.GCType+".npc.")
-
-	return z.loadCheckpointEntityFromConfig(shortGCType)
-}
-
-func (z *Zone) loadCheckpointEntityFromConfig(id string) *CheckpointEntity {
+func (z *Zone) LoadCheckpointEntityFromConfig(id string) *CheckpointEntity {
 	checkpointEntityConfig, ok := z.BaseConfig.Checkpoints[strings.ToLower(id)]
 
 	if !ok {

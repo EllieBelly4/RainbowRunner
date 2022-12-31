@@ -30,6 +30,7 @@ type ZoneConfig struct {
 	Checkpoints map[string]configtypes.ICheckpointEntityConfig
 	World       *configtypes.WorldConfig
 	GCType      string
+	Entities    map[string]configtypes.IEntityConfig
 }
 
 func (z *ZoneConfig) GetAllNPCs() []*configtypes.NPCConfig {
@@ -119,10 +120,10 @@ func addWorldEntities(zoneConfig *ZoneConfig, worldConfig *configtypes.WorldConf
 		return
 	}
 
-	gcrootString := strings.Join(gcroot, ".")
-
 	for _, entity := range worldConfig.Entities {
-		shortGCType := strings.ToLower(strings.TrimPrefix(entity.GetEntityConfig().FullGCType, gcrootString+"."))
+		shortGCType := strings.ToLower(entity.GetEntityConfig().Name)
+
+		zoneConfig.Entities[shortGCType] = entity
 
 		if npcConfig, ok := entity.(configtypes.INPCConfig); ok {
 			zoneConfig.NPCs[shortGCType] = npcConfig.GetNPCConfig()
@@ -145,5 +146,6 @@ func NewZoneConfig(name string, gctype string) *ZoneConfig {
 		Checkpoints: map[string]configtypes.ICheckpointEntityConfig{},
 		NPCs:        map[string]configtypes.INPCConfig{},
 		Waypoints:   map[string]configtypes.IWaypointConfig{},
+		Entities:    map[string]configtypes.IEntityConfig{},
 	}
 }

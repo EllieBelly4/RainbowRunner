@@ -1,3 +1,8 @@
+function createWaypoint(player)
+    zone = player:zone()
+    zone:loadEntityFromConfigFullGCType("")
+end
+
 function moveNPC(player, x, y)
     zone = player:zone()
     npc = zone:findEntityByGCTypeName("world.town.npc.oldman1")
