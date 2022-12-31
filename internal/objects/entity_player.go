@@ -105,12 +105,6 @@ func (p *Player) SendCreateNewPlayerEntity(rrplayer *RRPlayer) {
 	clientEntityWriter.Init(p)
 	clientEntityWriter.Update(p)
 
-	//creatures.humanoid.base.MeleeBase.Manipulators
-	//avatar.base.Equipment
-	//2HMace5PAL.2HMace5-7
-	//ScaleModPAL.Rare.Mod1
-	// MANIPULATORS //////////////////////////////////
-	//addCreateComponent(body, avatar.RREntityProperties().ID, NewID(), "Manipulators")
 	manipulators := avatar.GetChildByGCNativeType("Manipulators")
 	clientEntityWriter.CreateComponentAndInit(manipulators, avatar)
 
@@ -364,7 +358,7 @@ func (p *Player) SendCreateNewPlayerEntity(rrplayer *RRPlayer) {
 
 	if unitReadinitFlag&0x01 > 0 {
 		// 0x01 case
-		body.WriteUInt16(0x01) // Parent ID!!!!!
+		body.WriteUInt16(uint16(Players.Players[conn.GetID()].CurrentCharacter.EntityProperties.ID)) // Parent ID!!!!!
 	}
 
 	if unitReadinitFlag&0x02 > 0 {

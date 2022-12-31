@@ -50,7 +50,7 @@ func handleCharacterList(conn *connections.RRConn) {
 	body.WriteByte(byte(count))
 
 	for _, character := range objects.Players.Players[conn.GetID()].Characters {
-		body.WriteUInt32(uint32(character.EntityProperties.ID)) // ID?
+		body.WriteUInt32(character.EntityProperties.ID) // ID?
 		sendPlayer(character, conn.Client, body)
 	}
 
@@ -107,7 +107,8 @@ func handleCharacterConnected(conn *connections.RRConn) {
 	for i := 0; i < count; i++ {
 		player := loadPlayer(conn.Client)
 		player.EntityProperties.Conn = conn
-		player.EntityProperties.ID = uint32(i + 1)
+		player.EntityProperties.ID = uint32(objects.NewID())
+		//player.EntityProperties.ID = uint32(i + 1)
 		player.EntityProperties.OwnerID = uint16(conn.GetID())
 		objects.Players.Players[conn.GetID()].Characters = append(objects.Players.Players[conn.GetID()].Characters, player)
 	}
@@ -170,13 +171,13 @@ func sendPlayer(character *objects.Player, client *connections.RRConnClient, bod
 
 	//player := loadPlayer(conn.Client)
 	avatar := loadAvatar(character)
-
 	character.AddChild(avatar)
 
 	//avatar2 := loadAvatar(character)
 	//player.AddChild(avatar)
 
 	character.WriteFullGCObject(body)
+
 	avatar.WriteFullGCObject(body)
 
 	body.WriteByte(0x01)

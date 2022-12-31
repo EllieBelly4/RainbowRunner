@@ -153,6 +153,22 @@ func (w *ClientEntityWriter) CreateActionComplete(action actions.Action) {
 	action.Init(w.Body)
 }
 
+func (w *ClientEntityWriter) CreateAll(entity drobjecttypes.DRObject) {
+	w.Create(entity)
+
+	entity.WalkChildren(func(object drobjecttypes.DRObject) {
+		switch object.(type) {
+		case IComponent:
+			//if mb2, ok := object.(*MonsterBehavior2); ok {
+			//	CEWriter.CreateComponentAndInit(object, entity)
+			//}
+			w.CreateComponentAndInit(object, entity)
+		}
+	})
+
+	w.Init(entity)
+}
+
 func NewClientEntityWriter(b *byter.Byter) *ClientEntityWriter {
 	return &ClientEntityWriter{
 		Body: b,

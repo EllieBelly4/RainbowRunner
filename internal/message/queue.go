@@ -24,6 +24,7 @@ const (
 	OpTypeBehaviourAction
 	OpTypeSkills
 	OpTypeManipulators
+	OpTypeCreateEntity
 )
 
 type QueueItem struct {

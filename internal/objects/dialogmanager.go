@@ -5,6 +5,7 @@ import (
 	"RainbowRunner/pkg/byter"
 )
 
+//go:generate go run ../../scripts/generatelua -type=DialogManager -extends=GCObject
 type DialogManager struct {
 	*GCObject
 }

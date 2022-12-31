@@ -5,6 +5,7 @@ import (
 	"RainbowRunner/pkg/byter"
 )
 
+//go:generate go run ../../scripts/generatelua -type=QuestManager -extends=GCObject
 type QuestManager struct {
 	*GCObject
 }

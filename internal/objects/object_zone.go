@@ -5,6 +5,7 @@ import (
 	"RainbowRunner/internal/database"
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/lua"
+	"RainbowRunner/internal/message"
 	"RainbowRunner/internal/pathfinding"
 	script2 "RainbowRunner/internal/script"
 	"RainbowRunner/internal/serverconfig"
@@ -85,8 +86,7 @@ func (z *Zone) RemovePlayer(id int) {
 }
 
 func (z *Zone) SpawnEntity(owner *uint16, entity drobjecttypes.DRObject) {
-	z.Lock()
-	defer z.Unlock()
+	//z.Lock()
 
 	z.setZone(entity)
 	z.GiveID(entity)
@@ -112,7 +112,11 @@ func (z *Zone) SpawnEntity(owner *uint16, entity drobjecttypes.DRObject) {
 
 	z.entities[id] = entity
 
+	//z.Unlock()
+
 	entity.Init()
+
+	z.OnEntitySpawned(entity)
 }
 
 func (z *Zone) AddPlayer(player *RRPlayer) {
@@ -378,6 +382,60 @@ func (z *Zone) OnPlayerEnter(player *Player) {
 
 	if serverconfig.Config.Welcome.SendWelcomeMessage {
 		SendWelcomeMessage(rrplayer)
+	}
+}
+
+// TODO batch entity spawn events
+func (z *Zone) OnEntitySpawned(entity drobjecttypes.DRObject) {
+	players := make([]*RRPlayer, 0)
+
+	for _, rrplayer := range z.Players() {
+		if int(entity.OwnerID()) == rrplayer.Conn.GetID() {
+			continue
+		}
+
+		players = append(players, rrplayer)
+	}
+
+	if len(players) == 0 {
+		return
+	}
+
+	CEWriter := NewClientEntityWriterWithByter()
+
+	isValidEntity := func(entity drobjecttypes.DRObject) bool {
+		switch entity.(type) {
+		case IPlayer:
+			return false
+		case IQuestManager:
+			return false
+		case IDialogManager:
+			return false
+		}
+
+		return true
+	}
+
+	if isValidEntity(entity) {
+		CEWriter.CreateAll(entity)
+
+		if unitBehavior, ok := entity.GetChildByGCNativeType("UnitBehavior").(IUnitBehavior); unitBehavior != nil && ok {
+			unitBehavior.GetUnitBehavior().WriteWarp(CEWriter)
+		}
+	} else {
+		for _, object := range entity.Children() {
+			if _, ok := object.(IEntity); ok {
+				CEWriter.CreateAll(entity)
+
+				if unitBehavior, ok := object.GetChildByGCNativeType("UnitBehavior").(IUnitBehavior); unitBehavior != nil && ok {
+					unitBehavior.GetUnitBehavior().WriteWarp(CEWriter)
+				}
+			}
+		}
+	}
+
+	for _, rrplayer := range players {
+		rrplayer.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeCreateEntity)
 	}
 }
 
