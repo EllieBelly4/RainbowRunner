@@ -189,7 +189,7 @@ func (z *Zone) LoadWaypointFromConfig(id string) *Waypoint {
 
 	waypoint := NewWaypointFromConfig(waypointConfig.GetWaypointConfig())
 
-	return initialiseWorldEntity[*Waypoint](z, waypoint, id)
+	return loadEntityScripts[*Waypoint](z, waypoint, id)
 }
 
 func (z *Zone) LoadCheckpointEntityFromConfig(id string) *CheckpointEntity {
@@ -202,7 +202,7 @@ func (z *Zone) LoadCheckpointEntityFromConfig(id string) *CheckpointEntity {
 
 	checkpointEntity := NewCheckpointEntityFromConfig(checkpointEntityConfig.GetCheckpointEntityConfig())
 
-	return initialiseWorldEntity[*CheckpointEntity](z, checkpointEntity, id)
+	return loadEntityScripts[*CheckpointEntity](z, checkpointEntity, id)
 }
 
 func (z *Zone) LoadNPCFromConfig(id string) *NPC {
@@ -215,10 +215,10 @@ func (z *Zone) LoadNPCFromConfig(id string) *NPC {
 
 	npc := NewNPCFromConfig(npcConfig.GetNPCConfig())
 
-	return initialiseWorldEntity[*NPC](z, npc, id)
+	return loadEntityScripts[*NPC](z, npc, id)
 }
 
-func initialiseWorldEntity[T IWorldEntity](zone *Zone, entity IWorldEntity, id string) T {
+func loadEntityScripts[T IWorldEntity](zone *Zone, entity IWorldEntity, id string) T {
 	scriptPrefix := "entity"
 
 	switch entity.(type) {
@@ -255,6 +255,16 @@ func (z *Zone) Init() {
 }
 
 func (z *Zone) initLua() {
+	err := z.ReloadScripts()
+
+	err = z.Scripts.Init(nil)
+
+	if err != nil {
+		log.Errorf("failed to execute zone init script %s: %s", z.Name, err.Error())
+	}
+}
+
+func (z *Zone) ReloadScripts() error {
 	log.Infof("initialising zone %s", z.Name)
 
 	z.Scripts = NewZoneLuaScripts(z)
@@ -265,11 +275,14 @@ func (z *Zone) initLua() {
 		panic(err)
 	}
 
-	err = z.Scripts.Init(nil)
-
-	if err != nil {
-		log.Errorf("failed to execute zone init script %s: %s", z.Name, err.Error())
+	for _, entity := range z.Entities() {
+		if iWe, ok := entity.(IWorldEntity); ok {
+			we := iWe.GetWorldEntity()
+			loadEntityScripts[*WorldEntity](z, we, we.GetName())
+		}
 	}
+
+	return err
 }
 
 func (z *Zone) ClearEntities() {

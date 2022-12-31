@@ -30,7 +30,10 @@ func ExecuteLua(player *objects.RRPlayer, args []string) {
 		return
 	}
 
-	state := lua2.NewState()
+	state := lua2.NewState(lua2.Options{
+		IncludeGoStackTrace: true,
+	})
+
 	defer state.Close()
 
 	objects.RegisterLuaGlobals(state)
@@ -73,7 +76,14 @@ func ExecuteLua(player *objects.RRPlayer, args []string) {
 		state.Push(lua2.LString(args[i]))
 	}
 
-	state.Call(argLen+1, 0)
+	err = state.PCall(argLen+1, 0, nil)
+
+	if err != nil {
+		SendLuaErrorMessageResponse(player, fmt.Sprintf("failed to execute function %s in script %s: %s", functionName, scriptName, err.Error()))
+		log.Infof("failed to execute function %s in script %s: %s", functionName, scriptName, err.Error())
+		return
+	}
+
 	return
 }
 
