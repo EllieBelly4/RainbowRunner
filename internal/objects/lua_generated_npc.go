@@ -58,8 +58,8 @@ func luaMethodsNPC() map[string]lua2.LGFunction {
 	}, luaMethodsUnit)
 }
 func newLuaNPC(l *lua2.LState) int {
-	obj := NewNPC(string(l.CheckString(1)), string(l.CheckString(2)),
-		lua.CheckValue[datatypes.Vector3Float32](l, 3), float32(l.CheckNumber(4)),
+	obj := NewNPC(string(l.CheckString(1)),
+		lua.CheckValue[datatypes.Vector3Float32](l, 2), float32(l.CheckNumber(3)),
 	)
 	ud := l.NewUserData()
 	ud.Value = obj

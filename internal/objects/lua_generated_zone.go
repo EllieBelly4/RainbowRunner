@@ -174,10 +174,10 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 			return 1
 		},
 
-		"loadEntityFromConfig": func(l *lua2.LState) int {
+		"loadWaypointFromConfig": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
-			res0 := obj.LoadEntityFromConfig(string(l.CheckString(2)))
+			res0 := obj.LoadWaypointFromConfig(string(l.CheckString(2)))
 			if res0 != nil {
 				l.Push(res0.ToLua(l))
 			} else {

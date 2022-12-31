@@ -35,7 +35,7 @@ func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 		"collisionRadius":         lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *int { return &v.GetWorldEntity().CollisionRadius }),
 		"animationsList":          lua.LuaGenericGetSetValue[IWorldEntity, *AnimationsList](func(v IWorldEntity) **AnimationsList { return &v.GetWorldEntity().AnimationsList }),
 		"worldPosition":           lua.LuaGenericGetSetValue[IWorldEntity, datatypes.Vector3Float32](func(v IWorldEntity) *datatypes.Vector3Float32 { return &v.GetWorldEntity().WorldPosition }),
-		"rotation":                lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *float32 { return &v.GetWorldEntity().Rotation }),
+		"heading":                 lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *float32 { return &v.GetWorldEntity().Heading }),
 		"worldEntityFlags":        lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *uint32 { return &v.GetWorldEntity().WorldEntityFlags }),
 		"worldEntityInitFlags":    lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *byte { return &v.GetWorldEntity().WorldEntityInitFlags }),
 		"label":                   lua.LuaGenericGetSetString[IWorldEntity](func(v IWorldEntity) *string { return &v.GetWorldEntity().Label }),

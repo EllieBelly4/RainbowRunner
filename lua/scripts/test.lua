@@ -1,6 +1,10 @@
 function createWaypoint(player)
     zone = player:zone()
-    zone:loadEntityFromConfigFullGCType("")
+    wp = zone:loadWaypointFromConfig("start")
+
+    wpConf = wp:baseConfig()
+
+    zone:spawn(wp, wpConf:position(), wpConf:heading())
 end
 
 function moveNPC(player, x, y)

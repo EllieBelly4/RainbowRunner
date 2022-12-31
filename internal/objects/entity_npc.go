@@ -20,15 +20,10 @@ func (n *NPC) WriteInit(b *byter.Byter) {
 }
 
 func NewNPCSimple(gcType string) *NPC {
-	return NewNPC(gcType, "", datatypes.Vector3Float32{}, 0)
+	return NewNPC(gcType, datatypes.Vector3Float32{}, 0)
 }
 
-func NewNPC(
-	gcType,
-	behaviourType string,
-	position datatypes.Vector3Float32,
-	rotation float32,
-) *NPC {
+func NewNPC(gcType string, position datatypes.Vector3Float32, rotation float32) *NPC {
 	unit := NewStockUnit(gcType)
 	unit.GCType = gcType
 
@@ -38,28 +33,17 @@ func NewNPC(
 	unit.WorldEntityInitFlags = 0
 
 	unit.WorldPosition = position
-	unit.Rotation = rotation
+	unit.Heading = rotation
 
 	npc := &NPC{
 		StockUnit: unit,
 	}
 
-	//npc.addBehaviour(behaviourType)
-	//
-	//skills := NewSkills("skills")
-	//npc.AddChild(skills)
-	//
-	//manipulators := NewManipulators("manipulators")
-	//npc.AddChild(manipulators)
-	//
-	//modifiers := NewModifiers("modifiers")
-	//npc.AddChild(modifiers)
-
 	return npc
 }
 
 func NewNPCFromConfig(config *configtypes.NPCConfig) *NPC {
-	npc := NewNPCSimple(config.FullGCType)
+	npc := NewNPC(config.FullGCType, config.Position, float32(config.Heading))
 
 	npc.Name = config.Name
 	npc.Level = int32(config.Level)

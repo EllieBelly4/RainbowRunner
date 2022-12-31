@@ -7,6 +7,7 @@ func RegisterAllLuaFunctions(state *lua2.LState) {
 	registerLuaAnimationConfig(state)
 	registerLuaCheckpointEntityConfig(state)
 	registerLuaEntityConfig(state)
+	registerLuaInventoryConfig(state)
 	registerLuaNPCConfig(state)
 	registerLuaWaypointConfig(state)
 	registerLuaWorldConfig(state)

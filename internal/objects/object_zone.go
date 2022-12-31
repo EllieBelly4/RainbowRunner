@@ -150,7 +150,7 @@ func (z *Zone) SpawnEntityWithPosition(
 		worldEntity := entity.(IWorldEntity).GetWorldEntity()
 
 		worldEntity.WorldPosition = position
-		worldEntity.Rotation = rotation
+		worldEntity.Heading = rotation
 	}
 
 	if unitBehavior, ok := entity.GetChildByGCNativeType("UnitBehavior").(IUnitBehavior); unitBehavior != nil && ok {
@@ -179,30 +179,17 @@ func (z *Zone) GetEntityScript(id string) script2.IEntityScript {
 	return script2.NewEntityScript(script, z.Scripts.State)
 }
 
-func (z *Zone) LoadEntityFromConfig(id string) drobjecttypes.DRObject {
-	//shortGCType := strings.TrimPrefix(id, z.BaseConfig.GCType+".npc.")
-	//
-	//entityConfig, ok := z.BaseConfig.Entities[shortGCType]
-	//
-	//if !ok {
-	//	log.Errorf("could not find entity config in zone %s for %s", z.Name, id)
-	//	return nil
-	//}
-	//
-	//entity, err := EntityFromConfig(entityConfig)
-	//
-	//if err != nil {
-	//	log.Errorf("could not load entity from config for %s: %s", id, err)
-	//	return nil
-	//}
-	//
-	//script := z.GetEntityScript("checkpointentity." + strings.ToLower(id))
-	//
-	//if script != nil {
-	//	checkpointEntity.SetScript(script)
-	//}
-	//
-	return nil
+func (z *Zone) LoadWaypointFromConfig(id string) *Waypoint {
+	waypointConfig, ok := z.BaseConfig.Waypoints[strings.ToLower(id)]
+
+	if !ok {
+		log.Errorf("waypoint '%s' not found in zone '%s'", id, z.Name)
+		return nil
+	}
+
+	waypoint := NewWaypointFromConfig(waypointConfig.GetWaypointConfig())
+
+	return initialiseWorldEntity[*Waypoint](z, waypoint, id)
 }
 
 func (z *Zone) LoadCheckpointEntityFromConfig(id string) *CheckpointEntity {
@@ -215,13 +202,7 @@ func (z *Zone) LoadCheckpointEntityFromConfig(id string) *CheckpointEntity {
 
 	checkpointEntity := NewCheckpointEntityFromConfig(checkpointEntityConfig.GetCheckpointEntityConfig())
 
-	script := z.GetEntityScript("checkpointentity." + strings.ToLower(id))
-
-	if script != nil {
-		checkpointEntity.SetScript(script)
-	}
-
-	return checkpointEntity
+	return initialiseWorldEntity[*CheckpointEntity](z, checkpointEntity, id)
 }
 
 func (z *Zone) LoadNPCFromConfig(id string) *NPC {
@@ -234,13 +215,28 @@ func (z *Zone) LoadNPCFromConfig(id string) *NPC {
 
 	npc := NewNPCFromConfig(npcConfig.GetNPCConfig())
 
-	script := z.GetEntityScript("npc." + strings.ToLower(id))
+	return initialiseWorldEntity[*NPC](z, npc, id)
+}
 
-	if script != nil {
-		npc.SetScript(script)
+func initialiseWorldEntity[T IWorldEntity](zone *Zone, entity IWorldEntity, id string) T {
+	scriptPrefix := "entity"
+
+	switch entity.(type) {
+	case ICheckpointEntity:
+		scriptPrefix = "checkpointentity"
+	case IWaypoint:
+		scriptPrefix = "waypoint"
+	case INPC:
+		scriptPrefix = "npc"
 	}
 
-	return npc
+	script := zone.GetEntityScript(scriptPrefix + "." + strings.ToLower(id))
+
+	if script != nil {
+		entity.GetWorldEntity().SetScript(script)
+	}
+
+	return entity.(T)
 }
 
 func (z *Zone) Init() {

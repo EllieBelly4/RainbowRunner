@@ -77,7 +77,7 @@ type WorldEntity struct {
 	AnimationsList *AnimationsList
 
 	WorldPosition        datatypes.Vector3Float32
-	Rotation             float32
+	Heading              float32
 	WorldEntityFlags     uint32
 	WorldEntityInitFlags byte
 	Label                string
@@ -183,7 +183,7 @@ func (n *WorldEntity) SetPosition(position datatypes.Vector3Float32) {
 }
 
 func (n *WorldEntity) SetRotation(degrees float32) {
-	n.Rotation = degrees
+	n.Heading = degrees
 }
 
 func (n *WorldEntity) Type() drobjecttypes.DRObjectType {
@@ -220,7 +220,7 @@ func (n *WorldEntity) WriteInit(b *byter.Byter) {
 	b.WriteInt32(int32(n.WorldPosition.X * 256)) // Pos X
 	b.WriteInt32(int32(n.WorldPosition.Y * 256)) // Pos Y
 	b.WriteInt32(int32(n.WorldPosition.Z * 256)) // Pos Z
-	b.WriteInt32(int32(n.Rotation * 256))
+	b.WriteInt32(int32(n.Heading * 256))
 
 	// Flags
 	// Each flag adds one more section of data to read sequentially
