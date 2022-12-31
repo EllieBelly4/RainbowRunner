@@ -1,5 +1,7 @@
+zoneCommon = require("lib.zone_common")
+
 function module.__init()
-    print("__default main")
+    zoneCommon.spawnEntities(currentZone)
 end
 
 function module.__tick()

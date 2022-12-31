@@ -47,6 +47,10 @@ fully understood.
 * Command API - Can be used to send raw packets directly to clients through the server
   See: [internal/admin](internal/admin)
 
+### Docs
+
+There is some documentation, but it is not updated frequently: [Dungeon Runners](resources/Docs/v2/DungeonRunners.md)
+
 ### Tools
 
 All tools are found under the [cmd](cmd) directory, they currently have lots of hardcoded values in them so for the time
