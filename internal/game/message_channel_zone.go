@@ -69,25 +69,6 @@ func handleZoneJoin(conn *connections.RRConn) {
 	body.WriteUInt32(0x01)
 	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 
-	//entitiesToSpawn := [][]string{
-	//	{"npc.Avatar.Female.base.NPC_Amazon1_Base", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-	//	//{"npc.Avatar.Female.Basic.Amazon_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-	//	//{"npc.Avatar.Female.Basic.Fighter_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-	//	//{"npc.Avatar.Female.Basic.Gladiator_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-	//	//{"npc.Avatar.Female.Basic.Mage_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-	//	//{"npc.Avatar.Female.Basic.Mage_002", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-	//	//{"npc.Avatar.Female.Basic.Ninja_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-	//	//{"npc.Avatar.Female.Basic.Officer_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-	//	//{"npc.Avatar.Female.Basic.Ranger_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-	//	//{"npc.Avatar.Female.Basic.Ranger_002", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-	//	//{"npc.Avatar.Female.Basic.Ranger_003", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-	//	//{"npc.Avatar.Female.Basic.Scout_001", "npc.Avatar.Female.base.NPC_Amazon1_Base.Behavior"},
-	//	//{"world.town.npc.TownCommander", "world.town.npc.TownCommander.Behavior"},
-	//	//{"world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior"},
-	//	//{"world.dungeon16.mob.boss_manager01", "world.dungeon16.mob.boss_manager01.Behavior"},
-	//	//{"world.dungeon15.mob.boss", "world.dungeon15.mob.boss.Behavior"},
-	//}
-
 	SendInterval(conn)
 
 	player.CurrentCharacter.SendCreateNewPlayerEntity(player)
@@ -96,40 +77,6 @@ func handleZoneJoin(conn *connections.RRConn) {
 	if serverconfig.Config.Welcome.SendWelcomeMessage {
 		SendWelcomeMessage(player)
 	}
-
-	if player.Zone().Name == "town" {
-		//for i, entityStrings := range entitiesToSpawn {
-		//	objects.CreateNPC(player, player.Zone, datatypes.Transform{
-		//		Position: datatypes.Vector3Float32{float32(106342+2048*int32(i)) / 256, -140, 49},
-		//		Rotation: 180,
-		//	}, entityStrings[0], entityStrings[1])
-		//}
-
-	}
-	//else if player.Zone.Name == "dungeon16_level00" {
-	//	objects.CreateNPC(player, player.Zone, datatypes.Transform{
-	//		Position: datatypes.Vector3Float32{0, 0, 15000},
-	//		Rotation: 180 * math.DRDegToRot,
-	//	}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
-	//
-	//	objects.CreateNPC(player, player.Zone, datatypes.Transform{
-	//		Position: datatypes.Vector3Float32{20 * 256, 20 * 256, 15000},
-	//		Rotation: 270 * math.DRDegToRot,
-	//	}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
-	//
-	//	objects.CreateNPC(player, player.Zone, datatypes.Transform{
-	//		Position: datatypes.Vector3Float32{0 * 256, 40 * 256, 15000},
-	//		Rotation: 360 * math.DRDegToRot,
-	//	}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
-	//
-	//	objects.CreateNPC(player, player.Zone, datatypes.Transform{
-	//		Position: datatypes.Vector3Float32{-20 * 256, 20 * 256, 15000},
-	//		Rotation: 90 * math.DRDegToRot,
-	//	}, "world.town.npc.HelperNoobosaur01", "npc.misc.HelperNoobosaur.base.HelperNoobosaur_Base.Behavior")
-	//}
-
-	// Creating Player Entity
-	//objects.SendCreateNewPlayerEntity(conn, body)
 
 	//	WriteCompressedA(conn, 0x01, 0x0f, NewLEByterFromCommandString(`
 	//07
@@ -201,40 +148,6 @@ func handleZoneJoin(conn *connections.RRConn) {
 
 	avatar.SendFollowClient()
 	avatar.IsSpawned = true
-
-	////	Some client control message
-	//body = byter.NewLEByter(make([]byte, 0, 1024))
-	//
-	//unitBehavior := behavior.NewUnitBehavior(0x05)
-	//unitBehavior.Action = &behavior.MoveTo{
-	//	PosX: 10,
-	//	PosY: 10,
-	//}
-	//
-	//AddComponentUpdate(body, unitBehavior)
-	//AddSynch(conn, body)
-	//// END STREAM /////////////////////////////////
-	//AddEntityUpdateStreamEnd(body)
-
-	//cmd := NewLEByterFromCommandString(`
-	//07 # ClientEntityChannel
-	//# UnitBehavior - Activate::readData
-	//35 # ComponentUpdate
-	//05 00 # Component ID
-	//# Command
-	//04 # CreateAction1
-	//06 # ActionID
-	//
-	//# Activate::readData
-	//01
-	//02 00
-	//`)
-	//
-	//AddSynch(conn, cmd)
-	//cmd.WriteByte(0x06) // End
-	//WriteCompressedA(conn, 0x01, 0x0f, cmd)
-
-	//WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
 func sendGoToZone(conn *connections.RRConn, zoneName string) {
