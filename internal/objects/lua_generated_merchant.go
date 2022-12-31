@@ -3,6 +3,7 @@ package objects
 
 import (
 	lua "RainbowRunner/internal/lua"
+	"RainbowRunner/internal/types/configtypes"
 	"RainbowRunner/pkg/byter"
 	lua2 "github.com/yuin/gopher-lua"
 )
@@ -29,9 +30,8 @@ func registerLuaMerchant(state *lua2.LState) {
 
 func luaMethodsMerchant() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type BaseConfig
-		// -------------------------------------------------------------------------------------------------------------
+
+		"baseConfig": lua.LuaGenericGetSetValueAny[IMerchant](func(v IMerchant) **configtypes.MerchantConfig { return &v.GetMerchant().BaseConfig }),
 
 		"writeInit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IMerchant](l, 1)

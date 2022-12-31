@@ -29,8 +29,10 @@ func registerLuaActionMoveTo(state *lua2.LState) {
 
 func luaMethodsActionMoveTo() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-		"posX": lua.LuaGenericGetSetNumber[IActionMoveTo](func(v IActionMoveTo) *float32 { return &v.GetActionMoveTo().PosX }),
-		"posY": lua.LuaGenericGetSetNumber[IActionMoveTo](func(v IActionMoveTo) *float32 { return &v.GetActionMoveTo().PosY }),
+
+		"posX": lua.LuaGenericGetSetValueAny[IActionMoveTo](func(v IActionMoveTo) *float32 { return &v.GetActionMoveTo().PosX }),
+
+		"posY": lua.LuaGenericGetSetValueAny[IActionMoveTo](func(v IActionMoveTo) *float32 { return &v.GetActionMoveTo().PosY }),
 
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionMoveTo](l, 1)

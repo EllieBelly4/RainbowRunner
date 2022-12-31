@@ -2,7 +2,9 @@
 package objects
 
 import (
+	"RainbowRunner/internal/connections"
 	lua "RainbowRunner/internal/lua"
+	"RainbowRunner/internal/message"
 	lua2 "github.com/yuin/gopher-lua"
 )
 
@@ -27,19 +29,16 @@ func registerLuaRRPlayer(state *lua2.LState) {
 
 func luaMethodsRRPlayer() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type Conn
-		// -------------------------------------------------------------------------------------------------------------
-		"currentCharacter": lua.LuaGenericGetSetValue[IRRPlayer, *Player](func(v IRRPlayer) **Player { return &v.GetRRPlayer().CurrentCharacter }),
-		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type Characters array properties are not supported
-		// -------------------------------------------------------------------------------------------------------------
-		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type ClientEntityWriter
-		// -------------------------------------------------------------------------------------------------------------
-		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type MessageQueue
-		// -------------------------------------------------------------------------------------------------------------
+
+		"conn": lua.LuaGenericGetSetValueAny[IRRPlayer](func(v IRRPlayer) **connections.RRConn { return &v.GetRRPlayer().Conn }),
+
+		"currentCharacter": lua.LuaGenericGetSetValueAny[IRRPlayer](func(v IRRPlayer) **Player { return &v.GetRRPlayer().CurrentCharacter }),
+
+		"characters": lua.LuaGenericGetSetValueAny[IRRPlayer](func(v IRRPlayer) *[]*Player { return &v.GetRRPlayer().Characters }),
+
+		"clientEntityWriter": lua.LuaGenericGetSetValueAny[IRRPlayer](func(v IRRPlayer) **ClientEntityWriter { return &v.GetRRPlayer().ClientEntityWriter }),
+
+		"messageQueue": lua.LuaGenericGetSetValueAny[IRRPlayer](func(v IRRPlayer) **message.Queue { return &v.GetRRPlayer().MessageQueue }),
 
 		"getRRPlayer": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IRRPlayer](l, 1)

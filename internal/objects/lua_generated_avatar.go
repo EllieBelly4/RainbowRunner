@@ -31,11 +31,16 @@ func registerLuaAvatar(state *lua2.LState) {
 
 func luaMethodsAvatar() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-		"isMoving":           lua.LuaGenericGetSetBool[IAvatar](func(v IAvatar) *bool { return &v.GetAvatar().IsMoving }),
-		"rotation":           lua.LuaGenericGetSetNumber[IAvatar](func(v IAvatar) *int32 { return &v.GetAvatar().Rotation }),
-		"clientUpdateNumber": lua.LuaGenericGetSetNumber[IAvatar](func(v IAvatar) *byte { return &v.GetAvatar().ClientUpdateNumber }),
-		"moveUpdate":         lua.LuaGenericGetSetNumber[IAvatar](func(v IAvatar) *int { return &v.GetAvatar().MoveUpdate }),
-		"isSpawned":          lua.LuaGenericGetSetBool[IAvatar](func(v IAvatar) *bool { return &v.GetAvatar().IsSpawned }),
+
+		"isMoving": lua.LuaGenericGetSetValueAny[IAvatar](func(v IAvatar) *bool { return &v.GetAvatar().IsMoving }),
+
+		"rotation": lua.LuaGenericGetSetValueAny[IAvatar](func(v IAvatar) *int32 { return &v.GetAvatar().Rotation }),
+
+		"clientUpdateNumber": lua.LuaGenericGetSetValueAny[IAvatar](func(v IAvatar) *byte { return &v.GetAvatar().ClientUpdateNumber }),
+
+		"moveUpdate": lua.LuaGenericGetSetValueAny[IAvatar](func(v IAvatar) *int { return &v.GetAvatar().MoveUpdate }),
+
+		"isSpawned": lua.LuaGenericGetSetValueAny[IAvatar](func(v IAvatar) *bool { return &v.GetAvatar().IsSpawned }),
 
 		"addChild": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAvatar](l, 1)

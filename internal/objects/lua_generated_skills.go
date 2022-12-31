@@ -75,7 +75,7 @@ func luaMethodsSkills() map[string]lua2.LGFunction {
 			for _, res0 := range res0 {
 				ud := l.NewUserData()
 				ud.Value = res0
-				l.SetMetatable(ud, l.GetTypeMetatable("ISkill"))
+				l.SetMetatable(ud, l.GetTypeMetatable("[]ISkill"))
 				res0Array.Append(ud)
 			}
 
@@ -202,7 +202,7 @@ func luaMethodsSkills() map[string]lua2.LGFunction {
 			for _, res0 := range res0 {
 				ud := l.NewUserData()
 				ud.Value = res0
-				l.SetMetatable(ud, l.GetTypeMetatable("ISkillSlot"))
+				l.SetMetatable(ud, l.GetTypeMetatable("[]ISkillSlot"))
 				res0Array.Append(ud)
 			}
 

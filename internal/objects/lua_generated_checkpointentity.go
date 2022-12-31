@@ -29,7 +29,8 @@ func registerLuaCheckpointEntity(state *lua2.LState) {
 
 func luaMethodsCheckpointEntity() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-		"baseConfig": lua.LuaGenericGetSetValue[ICheckpointEntity, *configtypes.CheckpointEntityConfig](func(v ICheckpointEntity) **configtypes.CheckpointEntityConfig {
+
+		"baseConfig": lua.LuaGenericGetSetValueAny[ICheckpointEntity](func(v ICheckpointEntity) **configtypes.CheckpointEntityConfig {
 			return &v.GetCheckpointEntity().BaseConfig
 		}),
 

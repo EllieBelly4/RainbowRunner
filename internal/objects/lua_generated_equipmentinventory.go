@@ -31,10 +31,12 @@ func registerLuaEquipmentInventory(state *lua2.LState) {
 
 func luaMethodsEquipmentInventory() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-		"avatar": lua.LuaGenericGetSetValue[IEquipmentInventory, *Avatar](func(v IEquipmentInventory) **Avatar { return &v.GetEquipmentInventory().Avatar }),
-		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type Slots
-		// -------------------------------------------------------------------------------------------------------------
+
+		"avatar": lua.LuaGenericGetSetValueAny[IEquipmentInventory](func(v IEquipmentInventory) **Avatar { return &v.GetEquipmentInventory().Avatar }),
+
+		"slots": lua.LuaGenericGetSetValueAny[IEquipmentInventory](func(v IEquipmentInventory) *map[types.EquipmentSlot]IEquipment {
+			return &v.GetEquipmentInventory().Slots
+		}),
 
 		"addChild": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IEquipmentInventory](l, 1)
@@ -83,7 +85,7 @@ func luaMethodsEquipmentInventory() map[string]lua2.LGFunction {
 			for _, res0 := range res0 {
 				ud := l.NewUserData()
 				ud.Value = res0
-				l.SetMetatable(ud, l.GetTypeMetatable("IEquipment"))
+				l.SetMetatable(ud, l.GetTypeMetatable("[]IEquipment"))
 				res0Array.Append(ud)
 			}
 

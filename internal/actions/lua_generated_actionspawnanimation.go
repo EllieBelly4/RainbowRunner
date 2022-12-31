@@ -29,11 +29,16 @@ func registerLuaActionSpawnAnimation(state *lua2.LState) {
 
 func luaMethodsActionSpawnAnimation() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-		"unk0":     lua.LuaGenericGetSetNumber[IActionSpawnAnimation](func(v IActionSpawnAnimation) *byte { return &v.GetActionSpawnAnimation().Unk0 }),
-		"unk1":     lua.LuaGenericGetSetNumber[IActionSpawnAnimation](func(v IActionSpawnAnimation) *byte { return &v.GetActionSpawnAnimation().Unk1 }),
-		"dataUnk0": lua.LuaGenericGetSetNumber[IActionSpawnAnimation](func(v IActionSpawnAnimation) *byte { return &v.GetActionSpawnAnimation().DataUnk0 }),
-		"dataUnk1": lua.LuaGenericGetSetNumber[IActionSpawnAnimation](func(v IActionSpawnAnimation) *uint16 { return &v.GetActionSpawnAnimation().DataUnk1 }),
-		"dataUnk2": lua.LuaGenericGetSetNumber[IActionSpawnAnimation](func(v IActionSpawnAnimation) *uint16 { return &v.GetActionSpawnAnimation().DataUnk2 }),
+
+		"unk0": lua.LuaGenericGetSetValueAny[IActionSpawnAnimation](func(v IActionSpawnAnimation) *byte { return &v.GetActionSpawnAnimation().Unk0 }),
+
+		"unk1": lua.LuaGenericGetSetValueAny[IActionSpawnAnimation](func(v IActionSpawnAnimation) *byte { return &v.GetActionSpawnAnimation().Unk1 }),
+
+		"dataUnk0": lua.LuaGenericGetSetValueAny[IActionSpawnAnimation](func(v IActionSpawnAnimation) *byte { return &v.GetActionSpawnAnimation().DataUnk0 }),
+
+		"dataUnk1": lua.LuaGenericGetSetValueAny[IActionSpawnAnimation](func(v IActionSpawnAnimation) *uint16 { return &v.GetActionSpawnAnimation().DataUnk1 }),
+
+		"dataUnk2": lua.LuaGenericGetSetValueAny[IActionSpawnAnimation](func(v IActionSpawnAnimation) *uint16 { return &v.GetActionSpawnAnimation().DataUnk2 }),
 
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionSpawnAnimation](l, 1)

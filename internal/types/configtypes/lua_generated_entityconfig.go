@@ -5,6 +5,7 @@ import (
 	lua "RainbowRunner/internal/lua"
 	"RainbowRunner/internal/types/drconfigtypes"
 	"RainbowRunner/pkg/datatypes"
+	"RainbowRunner/pkg/datatypes/drfloat"
 	lua2 "github.com/yuin/gopher-lua"
 )
 
@@ -30,49 +31,64 @@ func registerLuaEntityConfig(state *lua2.LState) {
 
 func luaMethodsEntityConfig() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-		"name": lua.LuaGenericGetSetString[IEntityConfig](func(v IEntityConfig) *string { return &v.GetEntityConfig().Name }),
-		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type HitPoints
-		// -------------------------------------------------------------------------------------------------------------
-		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type ManaPoints
-		// -------------------------------------------------------------------------------------------------------------
-		"position":         lua.LuaGenericGetSetValue[IEntityConfig, datatypes.Vector3Float32](func(v IEntityConfig) *datatypes.Vector3Float32 { return &v.GetEntityConfig().Position }),
-		"heading":          lua.LuaGenericGetSetNumber[IEntityConfig](func(v IEntityConfig) *int { return &v.GetEntityConfig().Heading }),
-		"width":            lua.LuaGenericGetSetNumber[IEntityConfig](func(v IEntityConfig) *int { return &v.GetEntityConfig().Width }),
-		"zone":             lua.LuaGenericGetSetString[IEntityConfig](func(v IEntityConfig) *string { return &v.GetEntityConfig().Zone }),
-		"encounterTable":   lua.LuaGenericGetSetString[IEntityConfig](func(v IEntityConfig) *string { return &v.GetEntityConfig().EncounterTable }),
-		"height":           lua.LuaGenericGetSetNumber[IEntityConfig](func(v IEntityConfig) *int { return &v.GetEntityConfig().Height }),
-		"spawnPoint":       lua.LuaGenericGetSetString[IEntityConfig](func(v IEntityConfig) *string { return &v.GetEntityConfig().SpawnPoint }),
-		"sizeX":            lua.LuaGenericGetSetNumber[IEntityConfig](func(v IEntityConfig) *int { return &v.GetEntityConfig().SizeX }),
-		"sizeY":            lua.LuaGenericGetSetNumber[IEntityConfig](func(v IEntityConfig) *int { return &v.GetEntityConfig().SizeY }),
-		"sizeZ":            lua.LuaGenericGetSetNumber[IEntityConfig](func(v IEntityConfig) *int { return &v.GetEntityConfig().SizeZ }),
-		"canBeActivated":   lua.LuaGenericGetSetBool[IEntityConfig](func(v IEntityConfig) *bool { return &v.GetEntityConfig().CanBeActivated }),
-		"respawnWhenClear": lua.LuaGenericGetSetBool[IEntityConfig](func(v IEntityConfig) *bool { return &v.GetEntityConfig().RespawnWhenClear }),
-		"blocking":         lua.LuaGenericGetSetBool[IEntityConfig](func(v IEntityConfig) *bool { return &v.GetEntityConfig().Blocking }),
-		"tableSelector":    lua.LuaGenericGetSetNumber[IEntityConfig](func(v IEntityConfig) *int { return &v.GetEntityConfig().TableSelector }),
-		"color":            lua.LuaGenericGetSetNumber[IEntityConfig](func(v IEntityConfig) *uint { return &v.GetEntityConfig().Color }),
-		"zoneStart":        lua.LuaGenericGetSetBool[IEntityConfig](func(v IEntityConfig) *bool { return &v.GetEntityConfig().ZoneStart }),
-		"level":            lua.LuaGenericGetSetNumber[IEntityConfig](func(v IEntityConfig) *int { return &v.GetEntityConfig().Level }),
-		"autoRespawn":      lua.LuaGenericGetSetBool[IEntityConfig](func(v IEntityConfig) *bool { return &v.GetEntityConfig().AutoRespawn }),
-		"worldEntityTable": lua.LuaGenericGetSetString[IEntityConfig](func(v IEntityConfig) *string { return &v.GetEntityConfig().WorldEntityTable }),
-		"respawnRate":      lua.LuaGenericGetSetNumber[IEntityConfig](func(v IEntityConfig) *int { return &v.GetEntityConfig().RespawnRate }),
-		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type Animations
-		// -------------------------------------------------------------------------------------------------------------
-		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type Type
-		// -------------------------------------------------------------------------------------------------------------
-		"fullGCType": lua.LuaGenericGetSetString[IEntityConfig](func(v IEntityConfig) *string { return &v.GetEntityConfig().FullGCType }),
-		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type Desc
-		// -------------------------------------------------------------------------------------------------------------
-		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type Behaviour
-		// -------------------------------------------------------------------------------------------------------------
-		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type Merchant
-		// -------------------------------------------------------------------------------------------------------------
+
+		"name": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *string { return &v.GetEntityConfig().Name }),
+
+		"hitPoints": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *drfloat.DRFloat { return &v.GetEntityConfig().HitPoints }),
+
+		"manaPoints": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *drfloat.DRFloat { return &v.GetEntityConfig().ManaPoints }),
+
+		"position": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *datatypes.Vector3Float32 { return &v.GetEntityConfig().Position }),
+
+		"heading": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *int { return &v.GetEntityConfig().Heading }),
+
+		"width": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *int { return &v.GetEntityConfig().Width }),
+
+		"zone": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *string { return &v.GetEntityConfig().Zone }),
+
+		"encounterTable": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *string { return &v.GetEntityConfig().EncounterTable }),
+
+		"height": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *int { return &v.GetEntityConfig().Height }),
+
+		"spawnPoint": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *string { return &v.GetEntityConfig().SpawnPoint }),
+
+		"sizeX": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *int { return &v.GetEntityConfig().SizeX }),
+
+		"sizeY": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *int { return &v.GetEntityConfig().SizeY }),
+
+		"sizeZ": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *int { return &v.GetEntityConfig().SizeZ }),
+
+		"canBeActivated": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *bool { return &v.GetEntityConfig().CanBeActivated }),
+
+		"respawnWhenClear": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *bool { return &v.GetEntityConfig().RespawnWhenClear }),
+
+		"blocking": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *bool { return &v.GetEntityConfig().Blocking }),
+
+		"tableSelector": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *int { return &v.GetEntityConfig().TableSelector }),
+
+		"color": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *uint { return &v.GetEntityConfig().Color }),
+
+		"zoneStart": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *bool { return &v.GetEntityConfig().ZoneStart }),
+
+		"level": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *int { return &v.GetEntityConfig().Level }),
+
+		"autoRespawn": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *bool { return &v.GetEntityConfig().AutoRespawn }),
+
+		"worldEntityTable": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *string { return &v.GetEntityConfig().WorldEntityTable }),
+
+		"respawnRate": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *int { return &v.GetEntityConfig().RespawnRate }),
+
+		"animations": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *map[int]AnimationConfig { return &v.GetEntityConfig().Animations }),
+
+		"type": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *EntityConfigType { return &v.GetEntityConfig().Type }),
+
+		"fullGCType": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) *string { return &v.GetEntityConfig().FullGCType }),
+
+		"desc": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) **EntityDesc { return &v.GetEntityConfig().Desc }),
+
+		"behaviour": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) **BehaviourConfig { return &v.GetEntityConfig().Behaviour }),
+
+		"merchant": lua.LuaGenericGetSetValueAny[IEntityConfig](func(v IEntityConfig) **MerchantConfig { return &v.GetEntityConfig().Merchant }),
 
 		"init": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IEntityConfig](l, 1)

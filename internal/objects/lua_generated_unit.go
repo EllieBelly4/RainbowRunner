@@ -31,17 +31,28 @@ func registerLuaUnit(state *lua2.LState) {
 
 func luaMethodsUnit() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-		"hp":                lua.LuaGenericGetSetNumber[IUnit](func(v IUnit) *int { return &v.GetUnit().HP }),
-		"mp":                lua.LuaGenericGetSetNumber[IUnit](func(v IUnit) *int { return &v.GetUnit().MP }),
-		"unitFlags":         lua.LuaGenericGetSetNumber[IUnit](func(v IUnit) *byte { return &v.GetUnit().UnitFlags }),
-		"level":             lua.LuaGenericGetSetNumber[IUnit](func(v IUnit) *byte { return &v.GetUnit().Level }),
-		"unk10Case":         lua.LuaGenericGetSetNumber[IUnit](func(v IUnit) *byte { return &v.GetUnit().Unk10Case }),
-		"unk20CaseEntityID": lua.LuaGenericGetSetNumber[IUnit](func(v IUnit) *uint16 { return &v.GetUnit().Unk20CaseEntityID }),
-		"unk40Case0":        lua.LuaGenericGetSetNumber[IUnit](func(v IUnit) *uint16 { return &v.GetUnit().Unk40Case0 }),
-		"unk40Case1":        lua.LuaGenericGetSetNumber[IUnit](func(v IUnit) *uint16 { return &v.GetUnit().Unk40Case1 }),
-		"unk40Case2":        lua.LuaGenericGetSetNumber[IUnit](func(v IUnit) *uint16 { return &v.GetUnit().Unk40Case2 }),
-		"unk40Case3":        lua.LuaGenericGetSetNumber[IUnit](func(v IUnit) *byte { return &v.GetUnit().Unk40Case3 }),
-		"unk80Case":         lua.LuaGenericGetSetNumber[IUnit](func(v IUnit) *byte { return &v.GetUnit().Unk80Case }),
+
+		"hp": lua.LuaGenericGetSetValueAny[IUnit](func(v IUnit) *int { return &v.GetUnit().HP }),
+
+		"mp": lua.LuaGenericGetSetValueAny[IUnit](func(v IUnit) *int { return &v.GetUnit().MP }),
+
+		"unitFlags": lua.LuaGenericGetSetValueAny[IUnit](func(v IUnit) *byte { return &v.GetUnit().UnitFlags }),
+
+		"level": lua.LuaGenericGetSetValueAny[IUnit](func(v IUnit) *byte { return &v.GetUnit().Level }),
+
+		"unk10Case": lua.LuaGenericGetSetValueAny[IUnit](func(v IUnit) *byte { return &v.GetUnit().Unk10Case }),
+
+		"unk20CaseEntityID": lua.LuaGenericGetSetValueAny[IUnit](func(v IUnit) *uint16 { return &v.GetUnit().Unk20CaseEntityID }),
+
+		"unk40Case0": lua.LuaGenericGetSetValueAny[IUnit](func(v IUnit) *uint16 { return &v.GetUnit().Unk40Case0 }),
+
+		"unk40Case1": lua.LuaGenericGetSetValueAny[IUnit](func(v IUnit) *uint16 { return &v.GetUnit().Unk40Case1 }),
+
+		"unk40Case2": lua.LuaGenericGetSetValueAny[IUnit](func(v IUnit) *uint16 { return &v.GetUnit().Unk40Case2 }),
+
+		"unk40Case3": lua.LuaGenericGetSetValueAny[IUnit](func(v IUnit) *byte { return &v.GetUnit().Unk40Case3 }),
+
+		"unk80Case": lua.LuaGenericGetSetValueAny[IUnit](func(v IUnit) *byte { return &v.GetUnit().Unk80Case }),
 
 		"addChild": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnit](l, 1)

@@ -30,7 +30,8 @@ func registerLuaActionWarpTo(state *lua2.LState) {
 
 func luaMethodsActionWarpTo() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-		"position": lua.LuaGenericGetSetValue[IActionWarpTo, datatypes.Vector3Float32](func(v IActionWarpTo) *datatypes.Vector3Float32 { return &v.GetActionWarpTo().Position }),
+
+		"position": lua.LuaGenericGetSetValueAny[IActionWarpTo](func(v IActionWarpTo) *datatypes.Vector3Float32 { return &v.GetActionWarpTo().Position }),
 
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionWarpTo](l, 1)

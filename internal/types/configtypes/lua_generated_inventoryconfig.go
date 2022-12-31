@@ -28,11 +28,25 @@ func registerLuaInventoryConfig(state *lua2.LState) {
 
 func luaMethodsInventoryConfig() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-		"id": lua.LuaGenericGetSetNumber[IInventoryConfig](func(v IInventoryConfig) *int { return &v.GetInventoryConfig().ID }),
-		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type Description
-		// -------------------------------------------------------------------------------------------------------------
-		"gctype": lua.LuaGenericGetSetString[IInventoryConfig](func(v IInventoryConfig) *string { return &v.GetInventoryConfig().GCType }),
+
+		"id": lua.LuaGenericGetSetValueAny[IInventoryConfig](func(v IInventoryConfig) *int { return &v.GetInventoryConfig().ID }),
+
+		"description": lua.LuaGenericGetSetValueAny[IInventoryConfig](func(v IInventoryConfig) **InventoryDescConfig { return &v.GetInventoryConfig().Description }),
+
+		"gctype": lua.LuaGenericGetSetValueAny[IInventoryConfig](func(v IInventoryConfig) *string { return &v.GetInventoryConfig().GCType }),
+
+		"getInventoryConfig": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IInventoryConfig](l, 1)
+			obj := objInterface.GetInventoryConfig()
+			res0 := obj.GetInventoryConfig()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
 	})
 }
 func newLuaInventoryConfig(l *lua2.LState) int {

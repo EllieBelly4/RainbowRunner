@@ -30,6 +30,17 @@ func registerLuaEntity(state *lua2.LState) {
 func luaMethodsEntity() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
 
+		"name": lua.LuaGenericGetSetValueAny[IEntity](func(v IEntity) *string { return &v.GetEntity().Name }),
+
+		"getName": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IEntity](l, 1)
+			obj := objInterface.GetEntity()
+			res0 := obj.GetName()
+			l.Push(lua2.LString(res0))
+
+			return 1
+		},
+
 		"addChild": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IEntity](l, 1)
 			obj := objInterface.GetEntity()

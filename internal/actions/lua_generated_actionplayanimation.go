@@ -29,11 +29,16 @@ func registerLuaActionPlayAnimation(state *lua2.LState) {
 
 func luaMethodsActionPlayAnimation() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-		"unk0":                     lua.LuaGenericGetSetNumber[IActionPlayAnimation](func(v IActionPlayAnimation) *byte { return &v.GetActionPlayAnimation().Unk0 }),
-		"animationIDSelectionType": lua.LuaGenericGetSetNumber[IActionPlayAnimation](func(v IActionPlayAnimation) *uint32 { return &v.GetActionPlayAnimation().AnimationIDSelectionType }),
-		"animationID":              lua.LuaGenericGetSetNumber[IActionPlayAnimation](func(v IActionPlayAnimation) *uint32 { return &v.GetActionPlayAnimation().AnimationID }),
-		"animationFrames":          lua.LuaGenericGetSetNumber[IActionPlayAnimation](func(v IActionPlayAnimation) *uint32 { return &v.GetActionPlayAnimation().AnimationFrames }),
-		"unk4":                     lua.LuaGenericGetSetNumber[IActionPlayAnimation](func(v IActionPlayAnimation) *uint32 { return &v.GetActionPlayAnimation().Unk4 }),
+
+		"unk0": lua.LuaGenericGetSetValueAny[IActionPlayAnimation](func(v IActionPlayAnimation) *byte { return &v.GetActionPlayAnimation().Unk0 }),
+
+		"animationIDSelectionType": lua.LuaGenericGetSetValueAny[IActionPlayAnimation](func(v IActionPlayAnimation) *uint32 { return &v.GetActionPlayAnimation().AnimationIDSelectionType }),
+
+		"animationID": lua.LuaGenericGetSetValueAny[IActionPlayAnimation](func(v IActionPlayAnimation) *uint32 { return &v.GetActionPlayAnimation().AnimationID }),
+
+		"animationFrames": lua.LuaGenericGetSetValueAny[IActionPlayAnimation](func(v IActionPlayAnimation) *uint32 { return &v.GetActionPlayAnimation().AnimationFrames }),
+
+		"unk4": lua.LuaGenericGetSetValueAny[IActionPlayAnimation](func(v IActionPlayAnimation) *uint32 { return &v.GetActionPlayAnimation().Unk4 }),
 
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionPlayAnimation](l, 1)

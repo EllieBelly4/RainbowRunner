@@ -4,6 +4,7 @@ package objects
 import (
 	"RainbowRunner/internal/database"
 	lua "RainbowRunner/internal/lua"
+	"RainbowRunner/internal/types"
 	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
@@ -32,15 +33,16 @@ func registerLuaZone(state *lua2.LState) {
 
 func luaMethodsZone() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-		"name": lua.LuaGenericGetSetString[IZone](func(v IZone) *string { return &v.GetZone().Name }),
-		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type Scripts
-		// -------------------------------------------------------------------------------------------------------------
-		"baseConfig": lua.LuaGenericGetSetValue[IZone, *database.ZoneConfig](func(v IZone) **database.ZoneConfig { return &v.GetZone().BaseConfig }),
-		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type PathMap
-		// -------------------------------------------------------------------------------------------------------------
-		"id": lua.LuaGenericGetSetNumber[IZone](func(v IZone) *uint32 { return &v.GetZone().ID }),
+
+		"name": lua.LuaGenericGetSetValueAny[IZone](func(v IZone) *string { return &v.GetZone().Name }),
+
+		"scripts": lua.LuaGenericGetSetValueAny[IZone](func(v IZone) **ZoneLuaScripts { return &v.GetZone().Scripts }),
+
+		"baseConfig": lua.LuaGenericGetSetValueAny[IZone](func(v IZone) **database.ZoneConfig { return &v.GetZone().BaseConfig }),
+
+		"pathMap": lua.LuaGenericGetSetValueAny[IZone](func(v IZone) **types.PathMap { return &v.GetZone().PathMap }),
+
+		"id": lua.LuaGenericGetSetValueAny[IZone](func(v IZone) *uint32 { return &v.GetZone().ID }),
 
 		"getZone": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
@@ -221,6 +223,18 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 			return 0
 		},
 
+		"reloadScripts": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
+			obj := objInterface.GetZone()
+			res0 := obj.ReloadScripts()
+			ud := l.NewUserData()
+			ud.Value = res0
+			l.SetMetatable(ud, l.GetTypeMetatable("error"))
+			l.Push(ud)
+
+			return 1
+		},
+
 		"clearEntities": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
@@ -280,6 +294,16 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 			obj := objInterface.GetZone()
 			obj.GiveID(
 				lua.CheckValue[drobjecttypes.DRObject](l, 2),
+			)
+
+			return 0
+		},
+
+		"onPlayerEnter": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
+			obj := objInterface.GetZone()
+			obj.OnPlayerEnter(
+				lua.CheckReferenceValue[Player](l, 2),
 			)
 
 			return 0

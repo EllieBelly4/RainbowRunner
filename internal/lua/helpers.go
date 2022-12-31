@@ -30,6 +30,18 @@ func ValueToLValue(state *lua2.LState, value interface{}) lua2.LValue {
 		return lua2.LBool(v)
 	case nil:
 		return lua2.LNil
+	case []interface{}:
+		table := state.NewTable()
+		for i, v := range v {
+			table.RawSetInt(i+1, ValueToLValue(state, v))
+		}
+		return table
+	case map[interface{}]interface{}:
+		table := state.NewTable()
+		for k, v := range v {
+			table.RawSet(ValueToLValue(state, k), ValueToLValue(state, v))
+		}
+		return table
 	default:
 		panic("Unsupported type")
 	}

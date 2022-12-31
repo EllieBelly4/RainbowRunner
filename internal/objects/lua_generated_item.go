@@ -30,15 +30,16 @@ func registerLuaItem(state *lua2.LState) {
 
 func luaMethodsItem() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-		"modCount": lua.LuaGenericGetSetNumber[IItem](func(v IItem) *int { return &v.GetItem().ModCount }),
-		"mod":      lua.LuaGenericGetSetString[IItem](func(v IItem) *string { return &v.GetItem().Mod }),
-		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type ItemType
-		// -------------------------------------------------------------------------------------------------------------
-		// -------------------------------------------------------------------------------------------------------------
-		// Unsupported field type InventoryPosition
-		// -------------------------------------------------------------------------------------------------------------
-		"index": lua.LuaGenericGetSetNumber[IItem](func(v IItem) *int { return &v.GetItem().Index }),
+
+		"modCount": lua.LuaGenericGetSetValueAny[IItem](func(v IItem) *int { return &v.GetItem().ModCount }),
+
+		"mod": lua.LuaGenericGetSetValueAny[IItem](func(v IItem) *string { return &v.GetItem().Mod }),
+
+		"itemType": lua.LuaGenericGetSetValueAny[IItem](func(v IItem) *ItemType { return &v.GetItem().ItemType }),
+
+		"inventoryPosition": lua.LuaGenericGetSetValueAny[IItem](func(v IItem) *datatypes.Vector2 { return &v.GetItem().InventoryPosition }),
+
+		"index": lua.LuaGenericGetSetValueAny[IItem](func(v IItem) *int { return &v.GetItem().Index }),
 
 		"setInventoryPosition": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IItem](l, 1)

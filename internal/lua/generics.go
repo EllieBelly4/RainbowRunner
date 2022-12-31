@@ -19,6 +19,29 @@ func LuaGenericGetSetNumber[T any, K byte | uint16 | uint32 | int8 | int16 | int
 	}
 }
 
+func LuaGenericGetSetMap[TSource any, TKey comparable, TVal any](
+	valueCallback func(val TSource) *map[TKey]TVal,
+) lua.LGFunction {
+	return func(state *lua.LState) int {
+		obj := CheckInterfaceValue[TSource](state, 1)
+		val := valueCallback(obj)
+
+		if state.GetTop() == 1 {
+			table := state.NewTable()
+
+			for k, v := range *val {
+				table.RawSet(ValueToLValue(state, k), ValueToLValue(state, v))
+			}
+
+			state.Push(table)
+			return 1
+		}
+
+		//*val = LuaToMap[TKey, TVal](state, 2)
+		return 0
+	}
+}
+
 func LuaGenericGetSetString[T any](
 	valueCallback func(val T) *string,
 ) lua.LGFunction {
@@ -49,6 +72,23 @@ func LuaGenericGetSetBool[T any](
 		}
 
 		*val = state.CheckBool(2)
+		return 0
+	}
+}
+
+func LuaGenericGetSetValueAny[T any, K any](
+	valueCallback func(val T) *K,
+) lua.LGFunction {
+	return func(state *lua.LState) int {
+		obj := CheckInterfaceValue[T](state, 1)
+		val := valueCallback(obj)
+
+		if state.GetTop() == 1 {
+			state.Push(ValueToLValue(state, *val))
+			return 1
+		}
+
+		*val = CheckValue[K](state, 2)
 		return 0
 	}
 }

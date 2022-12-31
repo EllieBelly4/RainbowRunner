@@ -4,6 +4,7 @@ import (
 	"RainbowRunner/internal/gosucks"
 	"flag"
 	"github.com/goccy/go-json"
+	"github.com/pkg/profile"
 	"golang.org/x/tools/go/packages"
 	"os"
 	"path/filepath"
@@ -11,8 +12,9 @@ import (
 )
 
 var (
-	typeName = flag.String("type", "", "Comma separated list of types to generate lua wrappers for")
-	extends  = flag.String("extends", "", "Comma separated list of types to extend")
+	typeName   = flag.String("type", "", "Comma separated list of types to generate lua wrappers for")
+	extends    = flag.String("extends", "", "Comma separated list of types to extend")
+	profileOut = flag.String("profile-out", "", "Profile the execution of the program")
 )
 
 var (
@@ -26,6 +28,10 @@ var (
 // TODO refactor to allow other packages to be generated
 func main() {
 	flag.Parse()
+
+	if *profileOut != "" {
+		defer profile.Start(profile.CPUProfile, profile.ProfilePath(*profileOut)).Stop()
+	}
 
 	splitExtends := strings.Split(*extends, ",")
 
