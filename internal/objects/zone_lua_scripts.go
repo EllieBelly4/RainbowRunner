@@ -60,8 +60,8 @@ func NewZoneLuaScripts(z *Zone) *ZoneLuaScripts {
 	RegisterLuaGlobals(luaState)
 
 	luaState.SetGlobal("currentZone", z.ToLua(luaState))
-	scriptGroup := lua.GetScriptGroup("zones." + strings.ToLower(z.Name))
 
+	scriptGroup := lua.GetScriptGroup("zones." + strings.ToLower(z.Name))
 	defaultScriptGroup := lua.GetScriptGroup("zones.__default")
 
 	main := scriptGroup.Get("main")

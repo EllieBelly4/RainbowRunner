@@ -23,9 +23,9 @@ func Init() {
 		CEWriter.WriteSynch(behavior)
 
 		for _, player := range players {
-			if player.Conn.GetID() == int(behavior.OwnerID()) {
-				continue
-			}
+			//if player.Conn.GetID() == int(behavior.OwnerID()) {
+			//	continue
+			//}
 
 			player.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeBehaviourAction)
 		}

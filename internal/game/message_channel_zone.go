@@ -8,7 +8,6 @@ import (
 	byter "RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/events"
 	log "github.com/sirupsen/logrus"
-	"strings"
 )
 
 type ZoneChannelMessage byte
@@ -80,10 +79,6 @@ func handleZoneJoin(conn *connections.RRConn) {
 		Zone:   player.CurrentCharacter.Zone,
 	})
 
-	if serverconfig.Config.Welcome.SendWelcomeMessage {
-		SendWelcomeMessage(player)
-	}
-
 	//	WriteCompressedA(conn, 0x01, 0x0f, NewLEByterFromCommandString(`
 	//07
 	//# ClientEntityManager::processInterval
@@ -104,56 +99,60 @@ func handleZoneJoin(conn *connections.RRConn) {
 	//
 	//06 #end`))
 
+	//lcZoneName := strings.ToLower(player.Zone().Name)
+	//if lcZoneName == "town" {
+	//	avatar.Warp(106342/256, -46263/256, 12778/256)
+	//}
+	//else if lcZoneName == "dungeon03_level00" {
+	//	avatar.Warp(100, 150, 7700/256)
+	//} else if lcZoneName == "dungeon16_level00" {
+	//	avatar.Warp(0, 0, 15000/256)
+	//} else if lcZoneName == "dungeon00_level01" {
+	//	avatar.Warp(-200, 0, 10)
+	//} else if lcZoneName == "dungeon02_level00" {
+	//	avatar.Warp(-150, 500, 2700/256)
+	//} else if lcZoneName == "dungeon04_level00" {
+	//	avatar.Warp(100, 500, 2700/256)
+	//} else if lcZoneName == "dungeon05_level00" {
+	//	avatar.Warp(0, -50, 10000/256)
+	//} else if lcZoneName == "dungeon06_level00" {
+	//	avatar.Warp(600, 0, 6500/256)
+	//} else if lcZoneName == "dungeon09_level00" {
+	//	avatar.Warp(75, -50, 12500/256)
+	//} else if lcZoneName == "dungeon11_level00" {
+	//	avatar.Warp(75, 150, 2000/256)
+	//} else if lcZoneName == "dungeon15_level00" {
+	//	avatar.Warp(75, 150, 2000/256)
+	//} else if lcZoneName == "dungeon15_level01" {
+	//	avatar.Warp(-200, 150, 20)
+	//} else if lcZoneName == "tutorial" {
+	//	avatar.Warp(750, 450, 10000/256)
+	//} else if lcZoneName == "testvendorlevelspecarmor" {
+	//	avatar.Warp(0, 100, 5000/256)
+	//} else if lcZoneName == "thehubportals_dungeon01" {
+	//	avatar.Warp(600, -100, 5000/256)
+	//} else if lcZoneName == "dungeon08_level00" {
+	//	avatar.Warp(0, 0, 5000/256)
+	//} else if lcZoneName == "pvp_start" {
+	//	avatar.Warp(-200, -200, 5000/256)
+	//} else if lcZoneName == "dungeon02_level08_boss" {
+	//	avatar.Warp(-200, -200, 5000/256)
+	//} else if lcZoneName == "d06_l01_q05" {
+	//	avatar.Warp(150, -200, 15000/256)
+	//} else if lcZoneName == "d06_l07_q05" {
+	//	avatar.Warp(150, -200, 15000/256)
+	//} else if lcZoneName == "epic01_central" {
+	//	avatar.Warp(-250, 250, 75000/256)
+	//}
+
 	avatar := player.CurrentCharacter.GetChildByGCNativeType("Avatar").(*objects.Avatar)
-	lcZoneName := strings.ToLower(player.Zone().Name)
-	if lcZoneName == "town" {
-		avatar.Warp(106342/256, -46263/256, 12778/256)
-		//avatar.SendPosition()
-	} else if lcZoneName == "dungeon03_level00" {
-		avatar.Warp(100, 150, 7700/256)
-		//avatar.SendPosition()
-	} else if lcZoneName == "dungeon16_level00" {
-		avatar.Warp(0, 0, 15000/256)
-	} else if lcZoneName == "dungeon00_level01" {
-		avatar.Warp(-200, 0, 10)
-	} else if lcZoneName == "dungeon02_level00" {
-		avatar.Warp(-150, 500, 2700/256)
-	} else if lcZoneName == "dungeon04_level00" {
-		avatar.Warp(100, 500, 2700/256)
-	} else if lcZoneName == "dungeon05_level00" {
-		avatar.Warp(0, -50, 10000/256)
-	} else if lcZoneName == "dungeon06_level00" {
-		avatar.Warp(600, 0, 6500/256)
-	} else if lcZoneName == "dungeon09_level00" {
-		avatar.Warp(75, -50, 12500/256)
-	} else if lcZoneName == "dungeon11_level00" {
-		avatar.Warp(75, 150, 2000/256)
-	} else if lcZoneName == "dungeon15_level00" {
-		avatar.Warp(75, 150, 2000/256)
-	} else if lcZoneName == "dungeon15_level01" {
-		avatar.Warp(-200, 150, 20)
-	} else if lcZoneName == "tutorial" {
-		avatar.Warp(750, 450, 10000/256)
-	} else if lcZoneName == "testvendorlevelspecarmor" {
-		avatar.Warp(0, 100, 5000/256)
-	} else if lcZoneName == "thehubportals_dungeon01" {
-		avatar.Warp(600, -100, 5000/256)
-	} else if lcZoneName == "dungeon08_level00" {
-		avatar.Warp(0, 0, 5000/256)
-	} else if lcZoneName == "pvp_start" {
-		avatar.Warp(-200, -200, 5000/256)
-	} else if lcZoneName == "dungeon02_level08_boss" {
-		avatar.Warp(-200, -200, 5000/256)
-	} else if lcZoneName == "d06_l01_q05" {
-		avatar.Warp(150, -200, 15000/256)
-	} else if lcZoneName == "d06_l07_q05" {
-		avatar.Warp(150, -200, 15000/256)
-	} else if lcZoneName == "epic01_central" {
-		avatar.Warp(-250, 250, 75000/256)
-	}
 
 	avatar.SendFollowClient()
 	avatar.IsSpawned = true
+
+	if serverconfig.Config.Welcome.SendWelcomeMessage {
+		SendWelcomeMessage(player)
+	}
 }
 
 func sendGoToZone(conn *connections.RRConn, zoneName string) {

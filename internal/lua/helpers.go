@@ -1,6 +1,10 @@
 package lua
 
-import lua2 "github.com/yuin/gopher-lua"
+import (
+	log "github.com/sirupsen/logrus"
+	lua2 "github.com/yuin/gopher-lua"
+	"reflect"
+)
 
 func ValueToLValue(state *lua2.LState, value interface{}) lua2.LValue {
 	switch v := value.(type) {
@@ -36,13 +40,21 @@ func ValueToLValue(state *lua2.LState, value interface{}) lua2.LValue {
 			table.RawSetInt(i+1, ValueToLValue(state, v))
 		}
 		return table
-	case map[interface{}]interface{}:
-		table := state.NewTable()
-		for k, v := range v {
-			table.RawSet(ValueToLValue(state, k), ValueToLValue(state, v))
-		}
-		return table
-	default:
-		panic("Unsupported type")
 	}
+
+	rv := reflect.ValueOf(value)
+
+	switch rv.Kind() {
+	case reflect.Map:
+		table := state.NewTable()
+
+		for _, key := range rv.MapKeys() {
+			table.RawSet(ValueToLValue(state, key.Interface()), ValueToLValue(state, rv.MapIndex(key).Interface()))
+		}
+
+		return table
+	}
+
+	log.Error("unsupported type: ", value)
+	return lua2.LNil
 }

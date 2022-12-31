@@ -345,6 +345,13 @@ func (g *GCObject) GetChildByGCNativeType(s string) drobjecttypes.DRObject {
 		}
 	}
 
+	for _, child := range g.GCChildren {
+		res := child.GetChildByGCNativeType(s)
+		if res != nil {
+			return res
+		}
+	}
+
 	return nil
 }
 

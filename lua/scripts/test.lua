@@ -1,3 +1,7 @@
+function test(player)
+    unitBehaviour = player:getChildByGCNativeType("UnitBehavior")
+end
+
 function createWaypoint(player)
     zone = player:zone()
     wp = zone:loadWaypointFromConfig("start")

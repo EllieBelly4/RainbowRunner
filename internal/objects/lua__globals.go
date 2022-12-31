@@ -26,6 +26,11 @@ func registerLuaVector3(s *lua.LState) {
 	s.SetGlobal("Vector3", mt)
 	s.SetField(mt, "__index", s.SetFuncs(s.NewTable(),
 		map[string]lua.LGFunction{
+			"string": func(l *lua.LState) int {
+				obj := lua2.CheckValue[datatypes.Vector3Float32](l, 1)
+				l.Push(lua.LString(obj.String()))
+				return 1
+			},
 			"x": lua2.LuaGenericGetSetNumber[datatypes.Vector3Float32](func(v datatypes.Vector3Float32) *float32 { return &v.X }),
 			"y": lua2.LuaGenericGetSetNumber[datatypes.Vector3Float32](func(v datatypes.Vector3Float32) *float32 { return &v.Y }),
 			"z": lua2.LuaGenericGetSetNumber[datatypes.Vector3Float32](func(v datatypes.Vector3Float32) *float32 { return &v.Z }),
@@ -56,6 +61,11 @@ func registerLuaVector2(s *lua.LState) {
 	s.SetGlobal("Vector2", mt)
 	s.SetField(mt, "__index", s.SetFuncs(s.NewTable(),
 		map[string]lua.LGFunction{
+			"string": func(l *lua.LState) int {
+				obj := lua2.CheckValue[datatypes.Vector2Float32](l, 1)
+				l.Push(lua.LString(obj.String()))
+				return 1
+			},
 			"x": lua2.LuaGenericGetSetNumber[datatypes.Vector2Float32](func(v datatypes.Vector2Float32) *float32 { return &v.X }),
 			"y": lua2.LuaGenericGetSetNumber[datatypes.Vector2Float32](func(v datatypes.Vector2Float32) *float32 { return &v.Y }),
 		},
