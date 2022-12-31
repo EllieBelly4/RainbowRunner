@@ -109,6 +109,9 @@ aware the codebase is a mess.
 2. Open PR
 3. Get approved and merge!
 
+Before merging a PR please ensure that you have run `go fmt ./...` and `go generate ./...`.
+Automated checks to come later if there are any contributions to this project.
+
 ## License
 
 [GNU GPLv3](https://choosealicense.com/licenses/gpl-3.0/)
