@@ -374,7 +374,13 @@ func (z *Zone) OnPlayerEnter(player *Player) {
 
 	z.SpawnEntity(types.UInt16(player.OwnerID()), player)
 
-	player.SendCreateNewPlayerEntity()
+	CEWriter := NewClientEntityWriterWithByter()
+	CEWriter.BeginStream()
+	player.WriteCreateNewPlayerEntity(CEWriter)
+	CEWriter.EndStreamConnected()
+
+	connections.WriteCompressedA(player.RREntityProperties().Conn, 0x01, 0x0f, CEWriter.Body)
+
 	player.OnZoneJoin()
 
 	z.Scripts.OnPlayerEnter(player)
@@ -407,35 +413,16 @@ func (z *Zone) OnEntitySpawned(entity drobjecttypes.DRObject) {
 
 	CEWriter := NewClientEntityWriterWithByter()
 
-	isValidEntity := func(entity drobjecttypes.DRObject) bool {
-		switch entity.(type) {
-		case IPlayer:
-			return false
-		case IQuestManager:
-			return false
-		case IDialogManager:
-			return false
-		}
+	player, isPlayer := entity.(IPlayer)
 
-		return true
-	}
-
-	if isValidEntity(entity) {
+	if !isPlayer {
 		CEWriter.CreateAll(entity)
 
 		if unitBehavior, ok := entity.GetChildByGCNativeType("UnitBehavior").(IUnitBehavior); unitBehavior != nil && ok {
 			unitBehavior.GetUnitBehavior().WriteWarp(CEWriter)
 		}
 	} else {
-		for _, object := range entity.Children() {
-			if _, ok := object.(IEntity); ok {
-				CEWriter.CreateAll(entity)
-
-				if unitBehavior, ok := object.GetChildByGCNativeType("UnitBehavior").(IUnitBehavior); unitBehavior != nil && ok {
-					unitBehavior.GetUnitBehavior().WriteWarp(CEWriter)
-				}
-			}
-		}
+		player.GetPlayer().WriteCreateNewPlayerEntity(CEWriter)
 	}
 
 	for _, rrplayer := range players {

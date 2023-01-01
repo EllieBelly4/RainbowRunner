@@ -53,7 +53,6 @@ func (p *Player) WriteInit(b *byter.Byter) {
 
 	b.WriteCString("Hello")
 	b.WriteUInt32(0x01)
-
 }
 
 func (p *Player) WriteUpdate(b *byter.Byter) {
@@ -84,14 +83,8 @@ func (p *Player) WriteSynch(b *byter.Byter) {
 	b.WriteUInt32(p.CurrentHP)
 }
 
-func (p *Player) SendCreateNewPlayerEntity() {
+func (p *Player) WriteCreateNewPlayerEntity(clientEntityWriter *ClientEntityWriter) {
 	avatar := p.GetChildByGCNativeType("Avatar")
-
-	body := byter.NewLEByter(make([]byte, 0, 2048))
-
-	conn := p.RREntityProperties().Conn
-	clientEntityWriter := NewClientEntityWriter(body)
-	clientEntityWriter.BeginStream()
 
 	clientEntityWriter.Create(avatar)
 
@@ -124,9 +117,6 @@ func (p *Player) SendCreateNewPlayerEntity() {
 	clientEntityWriter.CreateComponentAndInit(unitBehaviour, avatar)
 
 	clientEntityWriter.Init(avatar)
-
-	body.WriteByte(70) // Now connected
-	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
 
 var r = rand.New(rand.NewSource(time.Now().Unix()))

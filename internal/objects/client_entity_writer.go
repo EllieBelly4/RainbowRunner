@@ -105,6 +105,10 @@ func (w *ClientEntityWriter) EndStream() {
 	w.Body.WriteByte(0x06)
 }
 
+func (w *ClientEntityWriter) EndStreamConnected() {
+	w.Body.WriteByte(70) // Now connected
+}
+
 func (w *ClientEntityWriter) WriteSynch(object drobjecttypes.DRObject) {
 	w.dirty = true
 

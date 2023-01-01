@@ -99,7 +99,6 @@ var playerSendBuffer = byter.NewByter(make([]byte, 1024*1024+10))
 
 func (m *PlayerManager) AfterTick() {
 	playerSendBuffer.Clear()
-	clientEntityWriter := NewClientEntityWriter(playerSendBuffer)
 
 	for _, player := range m.Players {
 		if player.CurrentCharacter == nil {
@@ -111,9 +110,11 @@ func (m *PlayerManager) AfterTick() {
 			continue
 		}
 
+		player.ClientEntityWriter.Clear()
+
 		clientEntitySend := false
 
-		clientEntityWriter.BeginStream()
+		player.ClientEntityWriter.BeginStream()
 
 		for !player.MessageQueue.IsEmpty(message.QueueTypeClientEntity) {
 			item := player.MessageQueue.Dequeue(message.QueueTypeClientEntity)
@@ -128,13 +129,11 @@ func (m *PlayerManager) AfterTick() {
 			clientEntitySend = true
 		}
 
-		clientEntityWriter.EndStream()
+		player.ClientEntityWriter.EndStream()
 
 		if clientEntitySend {
 			connections.WriteCompressedASimple(player.Conn, playerSendBuffer)
 		}
-
-		player.ClientEntityWriter.Clear()
 	}
 }
 

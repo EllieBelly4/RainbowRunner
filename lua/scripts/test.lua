@@ -2,7 +2,7 @@ function test(player)
     zone = player:zone()
     wpConf = zone:loadWaypointFromConfig("start"):baseConfig()
 
---     avatar = Avatar.new("avatar.classes.RangerMale")
+    avatar = Avatar.new("avatar.classes.RangerMale")
 
     player = Player.new("Billy")
 

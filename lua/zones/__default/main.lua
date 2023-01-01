@@ -1,7 +1,7 @@
 zoneCommon = require("lib.zone_common")
 
 function module.__init()
-    zoneCommon.spawnEntities(currentZone)
+--     zoneCommon.spawnEntities(currentZone)
 end
 
 function module.__tick()
@@ -9,6 +9,8 @@ function module.__tick()
 end
 
 function module.__onPlayerEnter(player)
+    do return end
+
     zoneConf = currentZone:baseConfig()
     waypoints = zoneConf:waypoints()
 
