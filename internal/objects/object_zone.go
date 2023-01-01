@@ -413,6 +413,14 @@ func (z *Zone) OnEntitySpawned(entity drobjecttypes.DRObject) {
 
 	CEWriter := NewClientEntityWriterWithByter()
 
+	WriteCreateExistingEntity(entity, CEWriter)
+
+	for _, rrplayer := range players {
+		rrplayer.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeCreateEntity)
+	}
+}
+
+func WriteCreateExistingEntity(entity drobjecttypes.DRObject, CEWriter *ClientEntityWriter) {
 	player, isPlayer := entity.(IPlayer)
 
 	if !isPlayer {
@@ -423,10 +431,6 @@ func (z *Zone) OnEntitySpawned(entity drobjecttypes.DRObject) {
 		}
 	} else {
 		player.GetPlayer().WriteCreateNewPlayerEntity(CEWriter)
-	}
-
-	for _, rrplayer := range players {
-		rrplayer.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeCreateEntity)
 	}
 }
 

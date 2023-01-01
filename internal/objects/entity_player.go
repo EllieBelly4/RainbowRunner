@@ -220,24 +220,9 @@ func (p *Player) OnZoneJoin() {
 			continue
 		}
 
-		if _, ok := entity.(IPlayer); ok {
-			continue
-		}
-
 		CEWriter := NewClientEntityWriterWithByter()
-		CEWriter.Create(entity)
 
-		entity.WalkChildren(func(object drobjecttypes.DRObject) {
-			switch object.(type) {
-			case IComponent:
-				//if mb2, ok := object.(*MonsterBehavior2); ok {
-				//	CEWriter.CreateComponentAndInit(object, entity)
-				//}
-				CEWriter.CreateComponentAndInit(object, entity)
-			}
-		})
-
-		CEWriter.Init(entity)
+		WriteCreateExistingEntity(entity, CEWriter)
 
 		if unitBehavior, ok := entity.GetChildByGCNativeType("UnitBehavior").(IUnitBehavior); unitBehavior != nil && ok {
 			unitBehavior.GetUnitBehavior().WriteWarp(CEWriter)
