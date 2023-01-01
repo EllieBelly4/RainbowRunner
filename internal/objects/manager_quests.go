@@ -24,6 +24,12 @@ func NewQuestManager() *QuestManager {
 	return q
 }
 
+func (q *QuestManager) WriteFullGCObject(byter *byter.Byter) {
+	q.GCObject.WriteFullGCObject(byter)
+
+	byter.WriteCString("SomethingUnknown")
+}
+
 func (q QuestManager) WriteInit(b *byter.Byter) {
 	// QuestManager::readInit()
 	b.WriteUInt32(0x01)

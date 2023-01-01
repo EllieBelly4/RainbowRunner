@@ -1,5 +1,12 @@
 function test(player)
-    avatar = Avatar.new()
+    zone = player:zone()
+    wpConf = zone:loadWaypointFromConfig("start"):baseConfig()
+
+--     avatar = Avatar.new("avatar.classes.RangerMale")
+
+    player = Player.new("Billy")
+
+    zone:spawn(player, wpConf:position(), wpConf:heading())
 end
 
 function createWaypoint(player)

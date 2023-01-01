@@ -7,7 +7,6 @@ import (
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/message"
 	"RainbowRunner/internal/serverconfig"
-	"RainbowRunner/internal/types"
 	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	"crypto/md5"
@@ -86,8 +85,7 @@ func (p *Player) WriteSynch(b *byter.Byter) {
 	b.WriteUInt32(p.CurrentHP)
 }
 
-func (p *Player) SendCreateNewPlayerEntity(rrplayer *RRPlayer) {
-	zone := rrplayer.Zone()
+func (p *Player) SendCreateNewPlayerEntity() {
 	avatar := p.GetChildByGCNativeType("Avatar")
 	inventoryEquipment := avatar.GetChildByGCNativeType("Equipment")
 
@@ -123,21 +121,9 @@ func (p *Player) SendCreateNewPlayerEntity(rrplayer *RRPlayer) {
 	//clientEntityWriter.CreateComponent(fighterEquipment, avatar)
 
 	questManager := p.GetChildByGCType("QuestManager")
-	ownerID := types.UInt16(uint16(rrplayer.Conn.GetID()))
-
-	if questManager == nil {
-		questManager = NewQuestManager()
-	}
-
-	zone.SpawnEntity(ownerID, questManager)
 	clientEntityWriter.CreateComponentAndInit(questManager, p)
 
 	dialogManager := p.GetChildByGCType("DialogManager")
-	if dialogManager == nil {
-		dialogManager = NewDialogManager()
-	}
-
-	zone.SpawnEntity(ownerID, dialogManager)
 	clientEntityWriter.CreateComponentAndInit(dialogManager, p)
 
 	//addCreateComponent(body, 0x01, 0x0C, "AvatarMetrics")
@@ -216,61 +202,57 @@ func (p *Player) SendCreateNewPlayerEntity(rrplayer *RRPlayer) {
 	//}
 
 	// UnitBehaviour//////////////////////////////////
-	behaviorName := "avatar.base.UnitBehavior"
-
 	unitBehaviour := avatar.GetChildByGCNativeType("UnitBehavior")
 
-	if behaviorName == "avatar.base.UnitBehavior" {
-		addCreateComponent(body, uint16(avatar.(IRREntityPropertiesHaver).GetRREntityProperties().ID), uint16(unitBehaviour.(IRREntityPropertiesHaver).GetRREntityProperties().ID), "avatar.base.UnitBehavior")
+	addCreateComponent(body, uint16(avatar.(IRREntityPropertiesHaver).GetRREntityProperties().ID), uint16(unitBehaviour.(IRREntityPropertiesHaver).GetRREntityProperties().ID), "avatar.base.UnitBehavior")
 
-		behav := behavior.NewBehavior()
-		behav.Init(body, nil, nil, 0xFF)
+	behav := behavior.NewBehavior()
+	behav.Init(body, nil, nil, 0xFF)
 
-		// UnitMover::readInit()
-		// Flags
-		// 0x04
-		// 0x01
-		unitMover := byte(0x00)
-		body.WriteByte(unitMover)
+	// UnitMover::readInit()
+	// Flags
+	// 0x04
+	// 0x01
+	unitMover := byte(0x00)
+	body.WriteByte(unitMover)
 
-		if unitMover&0x04 > 0 {
-			body.WriteByte(0xFF)
-		}
-
-		if unitMover&0x01 > 0 {
-			// 0x01 case
-			body.WriteUInt32(0x01)
-			body.WriteUInt32(0x01)
-		}
-
-		body.WriteUInt32(0x00)
-		body.WriteUInt32(0x00)
-
-		if unitMover&0x80 > 0 {
-			body.WriteUInt32(0x00)
-		}
-
-		// Set to 2 for waypoints
-		unitMover2 := byte(0) // Could potentially be waypoints?
-
-		body.WriteByte(unitMover2)
-
-		if unitMover2 == 2 {
-			waypointCount := uint16(0x0002)
-			body.WriteUInt16(waypointCount)
-
-			for i := 0; i < int(waypointCount); i++ {
-				// Vector2
-				body.WriteUInt32(uint32(1000 * i))   // X?
-				body.WriteUInt32(uint32(100000 * i)) // Y?
-			}
-		}
-
-		// UnitBehavior::readInit()
-		body.WriteByte(0xFF)
-		body.WriteByte(0xFF)
+	if unitMover&0x04 > 0 {
 		body.WriteByte(0xFF)
 	}
+
+	if unitMover&0x01 > 0 {
+		// 0x01 case
+		body.WriteUInt32(0x01)
+		body.WriteUInt32(0x01)
+	}
+
+	body.WriteUInt32(0x00)
+	body.WriteUInt32(0x00)
+
+	if unitMover&0x80 > 0 {
+		body.WriteUInt32(0x00)
+	}
+
+	// Set to 2 for waypoints
+	unitMover2 := byte(0) // Could potentially be waypoints?
+
+	body.WriteByte(unitMover2)
+
+	if unitMover2 == 2 {
+		waypointCount := uint16(0x0002)
+		body.WriteUInt16(waypointCount)
+
+		for i := 0; i < int(waypointCount); i++ {
+			// Vector2
+			body.WriteUInt32(uint32(1000 * i))   // X?
+			body.WriteUInt32(uint32(100000 * i)) // Y?
+		}
+	}
+
+	// UnitBehavior::readInit()
+	body.WriteByte(0xFF)
+	body.WriteByte(0xFF)
+	body.WriteByte(0xFF)
 
 	// AVATAR ////////////////////////////////////////
 

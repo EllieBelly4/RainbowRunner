@@ -166,7 +166,11 @@ func (z *Zone) SpawnEntityWithPosition(
 
 // Spawn
 // Deprecated: use SpawnEntityWithPosition
-func (z *Zone) Spawn(entity drobjecttypes.DRObject, position datatypes.Vector3Float32, rotation float32) {
+func (z *Zone) Spawn(
+	entity drobjecttypes.DRObject,
+	position datatypes.Vector3Float32,
+	rotation float32,
+) {
 	z.SpawnEntityWithPosition(entity, position, rotation, nil)
 }
 
@@ -370,7 +374,7 @@ func (z *Zone) OnPlayerEnter(player *Player) {
 
 	z.SpawnEntity(types.UInt16(player.OwnerID()), player)
 
-	player.SendCreateNewPlayerEntity(rrplayer)
+	player.SendCreateNewPlayerEntity()
 	player.OnZoneJoin()
 
 	z.Scripts.OnPlayerEnter(player)

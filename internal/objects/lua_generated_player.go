@@ -93,9 +93,7 @@ func luaMethodsPlayer() map[string]lua2.LGFunction {
 		"sendCreateNewPlayerEntity": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IPlayer](l, 1)
 			obj := objInterface.GetPlayer()
-			obj.SendCreateNewPlayerEntity(
-				lua.CheckReferenceValue[RRPlayer](l, 2),
-			)
+			obj.SendCreateNewPlayerEntity()
 
 			return 0
 		},

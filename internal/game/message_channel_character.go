@@ -232,6 +232,9 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	dialogManager := objects.NewGCObject("DialogManager")
 	dialogManager.GCLabel = "EllieDialogManager"
 
+	questManager := objects.NewQuestManager()
+	questManager.GCLabel = "EllieQuestManager"
+
 	//animationList := objects.NewGCObject("AnimationList")
 	//animationList.Name = "EllieAnimations"
 
@@ -401,6 +404,7 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 	avatar.AddChild(manipulators)
 	avatar.AddChild(metrics)
 	avatar.AddChild(dialogManager)
+	avatar.AddChild(questManager)
 	//avatar.AddChild(avatarDesc)
 	return avatar
 }
