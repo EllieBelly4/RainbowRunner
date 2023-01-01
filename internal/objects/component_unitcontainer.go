@@ -19,6 +19,27 @@ type UnitContainer struct {
 	Avatar      *Avatar
 }
 
+func (u *UnitContainer) WriteInit(body *byter.Byter) {
+	// TODO create container sub component
+	// Container::readInit()
+	body.WriteUInt32(1)
+	body.WriteUInt32(1)
+	body.WriteByte(0x03) // Inventory Count?
+
+	// TODO implement inventories properly
+	baseInventory := u.GetChildByGCType("avatar.base.Inventory")
+	baseInventory.WriteInit(body)
+
+	bankInventory := u.GetChildByGCType("avatar.base.Bank")
+	bankInventory.WriteInit(body)
+
+	tradeInventory := u.GetChildByGCType("avatar.base.TradeInventory")
+	tradeInventory.WriteInit(body)
+
+	// UnitContainer::readInit()
+	body.WriteByte(0x00) // If >0 it tries to read more, something to do with item
+}
+
 func (u *UnitContainer) ReadUpdate(body *byter.Byter) error {
 	zone := u.EntityProperties.Zone
 	op := body.Byte()

@@ -3,7 +3,6 @@ package objects
 import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/database"
-	"RainbowRunner/internal/game/components/behavior"
 	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/message"
 	"RainbowRunner/internal/serverconfig"
@@ -87,10 +86,7 @@ func (p *Player) WriteSynch(b *byter.Byter) {
 
 func (p *Player) SendCreateNewPlayerEntity() {
 	avatar := p.GetChildByGCNativeType("Avatar")
-	inventoryEquipment := avatar.GetChildByGCNativeType("Equipment")
 
-	equippedItems := inventoryEquipment.(*EquipmentInventory).GetEquipment()
-	fmt.Printf("%+v\n", inventoryEquipment)
 	body := byter.NewLEByter(make([]byte, 0, 2048))
 
 	conn := p.RREntityProperties().Conn
@@ -107,13 +103,7 @@ func (p *Player) SendCreateNewPlayerEntity() {
 	clientEntityWriter.CreateComponentAndInit(manipulators, avatar)
 
 	equipment := avatar.GetChildByGCType("avatar.base.Equipment")
-	addCreateComponent(body, uint16(avatar.(IRREntityPropertiesHaver).GetRREntityProperties().ID), uint16(equipment.(IRREntityPropertiesHaver).GetRREntityProperties().ID), "avatar.base.Equipment")
-
-	body.WriteByte(byte(len(equippedItems)))
-
-	for _, equippedItem := range equippedItems {
-		equippedItem.GetEquipment().WriteInit(body)
-	}
+	clientEntityWriter.CreateComponentAndInit(equipment, avatar)
 
 	questManager := p.GetChildByGCType("QuestManager")
 	clientEntityWriter.CreateComponentAndInit(questManager, p)
@@ -121,116 +111,22 @@ func (p *Player) SendCreateNewPlayerEntity() {
 	dialogManager := p.GetChildByGCType("DialogManager")
 	clientEntityWriter.CreateComponentAndInit(dialogManager, p)
 
-	// UNITCONTAINER ////////////////////////////////////
 	unitContainer := avatar.(*Avatar).GetUnitContainer()
 	clientEntityWriter.CreateComponentAndInit(unitContainer, avatar)
-	//addCreateComponent(body, avatar.RREntityProperties().ID, NewID(), "UnitContainer")
 
-	// Container::readInit()
-	body.WriteUInt32(1)
-	body.WriteUInt32(1)
-	body.WriteByte(0x03) // Inventory Count?
+	modifiers := avatar.GetChildByGCNativeType("Modifiers")
+	clientEntityWriter.CreateComponentAndInit(modifiers, avatar)
 
-	baseInventory := unitContainer.GetChildByGCType("avatar.base.Inventory")
-	baseInventory.WriteInit(clientEntityWriter.Body)
-
-	bankInventory := unitContainer.GetChildByGCType("avatar.base.Bank")
-	bankInventory.WriteInit(clientEntityWriter.Body)
-
-	tradeInventory := unitContainer.GetChildByGCType("avatar.base.TradeInventory")
-	tradeInventory.WriteInit(clientEntityWriter.Body)
-
-	// UnitContainer::readInit()
-	body.WriteByte(0x00) // If >0 it tries to read more, something to do with item
-
-	// UNITCONTAINER UPDATE
-	//addUnitContainerUpdate(body, 0x01)
-
-	// MODIFIERS //////////////////////////////////
-	// Modifiers are for modifying damage and defences
-	addCreateComponent(body, uint16(avatar.(IRREntityPropertiesHaver).GetRREntityProperties().ID), NewID(), "Modifiers")
-
-	// Modifiers::readInit
-	body.WriteUInt32(0x00) //
-	body.WriteUInt32(0x00) //
-
-	// GCObject::readChildData<Modifier>
-	body.WriteByte(0x00)
-
-	// SKILLS //////////////////////////////////
 	skills := avatar.GetChildByGCNativeType("Skills")
 	clientEntityWriter.CreateComponentAndInit(skills, avatar)
 
-	// UnitBehaviour//////////////////////////////////
 	unitBehaviour := avatar.GetChildByGCNativeType("UnitBehavior")
-
-	addCreateComponent(body, uint16(avatar.(IRREntityPropertiesHaver).GetRREntityProperties().ID), uint16(unitBehaviour.(IRREntityPropertiesHaver).GetRREntityProperties().ID), "avatar.base.UnitBehavior")
-
-	behav := behavior.NewBehavior()
-	behav.Init(body, nil, nil, 0xFF)
-
-	// UnitMover::readInit()
-	// Flags
-	// 0x04
-	// 0x01
-	unitMover := byte(0x00)
-	body.WriteByte(unitMover)
-
-	if unitMover&0x04 > 0 {
-		body.WriteByte(0xFF)
-	}
-
-	if unitMover&0x01 > 0 {
-		// 0x01 case
-		body.WriteUInt32(0x01)
-		body.WriteUInt32(0x01)
-	}
-
-	body.WriteUInt32(0x00)
-	body.WriteUInt32(0x00)
-
-	if unitMover&0x80 > 0 {
-		body.WriteUInt32(0x00)
-	}
-
-	// Set to 2 for waypoints
-	unitMover2 := byte(0) // Could potentially be waypoints?
-
-	body.WriteByte(unitMover2)
-
-	if unitMover2 == 2 {
-		waypointCount := uint16(0x0002)
-		body.WriteUInt16(waypointCount)
-
-		for i := 0; i < int(waypointCount); i++ {
-			// Vector2
-			body.WriteUInt32(uint32(1000 * i))   // X?
-			body.WriteUInt32(uint32(100000 * i)) // Y?
-		}
-	}
-
-	// UnitBehavior::readInit()
-	body.WriteByte(0xFF)
-	body.WriteByte(0xFF)
-	body.WriteByte(0xFF)
+	clientEntityWriter.CreateComponentAndInit(unitBehaviour, avatar)
 
 	clientEntityWriter.Init(avatar)
 
-	// Avatar::processUpdate
-	// 0x15 is special Avatar::processUpdate case(spawn entity?) anything else goes to Hero::processUpdate
-	// Hero::processUpdate
-	// 0x08 is Unit::processUseItemUpdate
-	// 0x00 Hero::processUpdateAddExperience
-	// 0x01 Hero::processUpdateRemoveExperience
-	// 0x02 Hero::processUpdateSpendAttribPoint
-	// 0x03 Hero::processUpdateReturnAttribPoint
-	// 0x04 Hero::processUpdateRespectAttrbutes
-	//body.WriteByte(0x15)
-
 	body.WriteByte(70) // Now connected
 	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
-
-	//log.Info(fmt.Sprintf("Sent: \n%s", hex.Dump(body.Data())))
 }
 
 var r = rand.New(rand.NewSource(time.Now().Unix()))

@@ -219,8 +219,7 @@ func getAvatar(conn connections.Connection) *objects.Avatar {
 
 	metrics := objects.NewAvatarMetrics(0xFE34BE34, "EllieMetrics")
 
-	modifiers := objects.NewGCObject("Modifiers")
-	modifiers.GCType = "Modifiers"
+	modifiers := objects.NewModifiers("Modifiers")
 	modifiers.GCLabel = "Mod Name"
 	modifiers.Properties = []objects.GCObjectProperty{
 		objects.Uint32Prop("IDGenerator", 0x01),

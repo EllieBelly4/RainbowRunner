@@ -50,6 +50,16 @@ func (p Avatar) WriteInit(b *byter.Byter) {
 	b.WriteByte(p.HairColour)
 }
 
+// Avatar::processUpdate
+// 0x15 is special Avatar::processUpdate case(spawn entity?) anything else goes to Hero::processUpdate
+// Hero::processUpdate
+// 0x08 is Unit::processUseItemUpdate
+// 0x00 Hero::processUpdateAddExperience
+// 0x01 Hero::processUpdateRemoveExperience
+// 0x02 Hero::processUpdateSpendAttribPoint
+// 0x03 Hero::processUpdateReturnAttribPoint
+// 0x04 Hero::processUpdateRespectAttrbutes
+// body.WriteByte(0x15)
 func (p Avatar) WriteUpdate(b *byter.Byter) {
 	panic("implement me")
 }
