@@ -244,9 +244,9 @@ func (n *WorldEntity) WriteInit(b *byter.Byter) {
 
 	b.WriteByte(initFlags)
 
+	// Has parent/owner?
 	if n.WorldEntityInitFlags&0x01 > 0 {
-		// 0x01
-		b.WriteUInt16(n.Unk1Case)
+		b.WriteUInt16(uint16(n.GCParent.(IRREntityPropertiesHaver).GetRREntityProperties().ID))
 	}
 
 	if n.WorldEntityInitFlags&0x02 > 0 {

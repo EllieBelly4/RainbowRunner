@@ -19,6 +19,10 @@ type Avatar struct {
 	ClientUpdateNumber byte
 	MoveUpdate         int
 	IsSpawned          bool
+
+	FaceVariant byte
+	HairStyle   byte
+	HairColour  byte
 }
 
 func (u *Avatar) AddChild(child drobjecttypes.DRObject) {
@@ -28,17 +32,6 @@ func (u *Avatar) AddChild(child drobjecttypes.DRObject) {
 
 func (p *Avatar) Type() drobjecttypes.DRObjectType {
 	return drobjecttypes.DRObjectOther
-}
-
-func NewAvatar(gcType string) *Avatar {
-	a := &Avatar{
-		Hero: NewHero("Avatar"),
-	}
-
-	a.GCType = gcType
-	a.GCLabel = "EllieAvatar"
-
-	return a
 }
 
 func (p *Avatar) WriteFullGCObject(byter *byter.Byter) {
@@ -52,9 +45,9 @@ func (p *Avatar) WriteFullGCObject(byter *byter.Byter) {
 func (p Avatar) WriteInit(b *byter.Byter) {
 	p.Hero.WriteInit(b)
 
-	b.WriteByte(0x00) // Unk
-	b.WriteByte(0x00) // Unk
-	b.WriteByte(0x00) // Unk
+	b.WriteByte(p.FaceVariant)
+	b.WriteByte(p.HairStyle)
+	b.WriteByte(p.HairColour)
 }
 
 func (p Avatar) WriteUpdate(b *byter.Byter) {
@@ -185,3 +178,20 @@ func (p *Avatar) Teleport(coords datatypes.Vector3Float32) {
 //	p.updated()
 //	//p.RREntityProperties().Conn.Send(body)
 //}
+
+func NewAvatar(gcType string) *Avatar {
+	a := &Avatar{
+		Hero: NewHero("Avatar"),
+	}
+
+	a.WorldEntityFlags = 0x04
+	a.WorldEntityInitFlags = 0xFF
+
+	a.UnitFlags = 0x07
+	a.Level = 72
+
+	a.GCType = gcType
+	a.GCLabel = "EllieAvatar"
+
+	return a
+}

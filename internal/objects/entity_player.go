@@ -115,27 +115,11 @@ func (p *Player) SendCreateNewPlayerEntity() {
 		equippedItem.GetEquipment().WriteInit(body)
 	}
 
-	// Invalid component type from server
-	//fighterEquipment := NewGCObject("avatar.classes.FighterStartingEquipment")
-	//Entities.RegisterAll(conn, fighterEquipment)
-	//clientEntityWriter.CreateComponent(fighterEquipment, avatar)
-
 	questManager := p.GetChildByGCType("QuestManager")
 	clientEntityWriter.CreateComponentAndInit(questManager, p)
 
 	dialogManager := p.GetChildByGCType("DialogManager")
 	clientEntityWriter.CreateComponentAndInit(dialogManager, p)
-
-	//addCreateComponent(body, 0x01, 0x0C, "AvatarMetrics")
-	//addCreateComponent(body, 0x01, 0x0B, "QuestManager")
-	//addCreateComponent(body, 0x01, 32, "DialogManager")
-
-	//// CREATE AVATAR /////////////////////////////////////////
-	//body.WriteByte(0x01)     // Create
-	//body.WriteUInt16(0x0002) // Entity ID
-	//body.WriteByte(0xFF)
-	//body.WriteCString("avatar.classes.FighterFemale")
-	//body.WriteCString("avatar.classes.FighterMale")
 
 	// UNITCONTAINER ////////////////////////////////////
 	unitContainer := avatar.(*Avatar).GetUnitContainer()
@@ -156,14 +140,6 @@ func (p *Player) SendCreateNewPlayerEntity() {
 	tradeInventory := unitContainer.GetChildByGCType("avatar.base.TradeInventory")
 	tradeInventory.WriteInit(clientEntityWriter.Body)
 
-	// Items with PAL seem to be for players
-	//for i := 0; i < inventoryItemCount; i++ {
-	//AddInventoryItem(body, "1HAxe2PAL.1HAxe2-1", 0, 0)
-	//AddInventoryItem(body, "LeatherArmor1PAL.LeatherArmor1-1", 2, 0, true)
-	//AddInventoryItem(body, "CrystalHelm1PAL.CrystalHelm1-1", 2, 0)
-	//AddInventoryItem(body, "CrystalMythicPAL.CrystalMythicArmor2", 2, 0)
-	//}
-
 	// UnitContainer::readInit()
 	body.WriteByte(0x00) // If >0 it tries to read more, something to do with item
 
@@ -181,25 +157,9 @@ func (p *Player) SendCreateNewPlayerEntity() {
 	// GCObject::readChildData<Modifier>
 	body.WriteByte(0x00)
 
-	//for i := 0; i < int(manipCount); i++ {
-	//	equipBoots := NewEquipment(
-	//		"PlateMythicPAL.PlateMythicBoots1",
-	//		"PlateMythicPAL.PlateMythicBoots1.Mod1",
-	//		EquipmentItemArmour, EquipmentSlotFoot, 5,
-	//	)
-	//
-	//	equipBoots.WriteInit(body)
-	//}
-
 	// SKILLS //////////////////////////////////
 	skills := avatar.GetChildByGCNativeType("Skills")
 	clientEntityWriter.CreateComponentAndInit(skills, avatar)
-
-	//skillSlots := skills.(*Skills).GetSkillSlots()
-	//
-	//for _, slot := range skillSlots {
-	//	clientEntityWriter.Create(slot.GetSkillSlot())
-	//}
 
 	// UnitBehaviour//////////////////////////////////
 	unitBehaviour := avatar.GetChildByGCNativeType("UnitBehavior")
@@ -254,154 +214,7 @@ func (p *Player) SendCreateNewPlayerEntity() {
 	body.WriteByte(0xFF)
 	body.WriteByte(0xFF)
 
-	// AVATAR ////////////////////////////////////////
-
-	// Init
-	body.WriteByte(0x02)
-	body.WriteUInt16(uint16(avatar.(IRREntityPropertiesHaver).GetRREntityProperties().ID))
-
-	//WorldEntity::readInit
-	// Flags
-	// 0x01 Static object?
-	// 0x02 Unk
-	// 0x04 Makes character appear
-	// 0x08 Unk
-	// 0x10 Unk
-	// 0x20 Unk
-	// 0x40 Unk
-	// 0x80 Unk
-	// 0x100 Unk
-	// 0x200 Unk
-	// 0x400 Unk
-	// 0x800 Breaks everything
-	// 0x1000 Makes the character invisible
-	// 0x2000 Makes movement very jumpy
-	// 0x4000 Unk
-	// 0x8000 Unk
-	// 0x10000 Unk
-	// One of these flags stops the below positions from working
-	// With only 0x04 the character can be moved and is the least broken
-	body.WriteUInt32(
-		0x04, // With this one alone it was working
-	)
-	// These positions stopped working at some point
-	body.WriteInt32(0)    // Pos X
-	body.WriteInt32(0)    // Pos Y
-	body.WriteInt32(0)    // Pos Z
-	body.WriteInt32(0x01) // Unk
-
-	// Flags
-	// Each flag adds one more section of data to read sequentially
-	// 0x01 Has Parent?
-	// 0x02 Unk
-	// 0x04 Makes movement smoother, interpolated position?
-	// 0x08 Unk
-	//body.WriteByte(1 | 2 | 4 | 8)
-	// When this is set to 0 the character is slightly less broken
-	// With 1 | 2 | 4 | 8 it was causing the character to have no animations and
-	// eventually collapse into itself
-	//worldEntityInitFlag := 0x04 | 0x08
-	worldEntityInitFlag := 0xFF
-	body.WriteByte(byte(worldEntityInitFlag))
-
-	if worldEntityInitFlag&0x01 > 0 {
-		// 0x01
-		body.WriteUInt16(0x00)
-	}
-
-	if worldEntityInitFlag&0x02 > 0 {
-		// Ox02
-		body.WriteByte(0xFF)
-	}
-
-	if worldEntityInitFlag&0x04 > 0 {
-		// 0x04
-		body.WriteUInt32(0xFFFFFFFF)
-	}
-
-	if worldEntityInitFlag&0x08 > 0 {
-		// 0x08
-		body.WriteUInt32(0xFFFFFFFF)
-	}
-
-	// Unit::readInit()
-	// Next 4 values always used
-	// Same flag as above? + has extras
-	// 0x01 - has parent/player owner?
-	// 0x02 - add HP
-	// 0x04 -
-	//body.WriteByte(0x07) // HasParent + Unk
-	//unitReadinitFlag := 0x01 | 0x02 | 0x04 | 0x10 | 0x20 | 0x40 | 0x80
-	unitReadinitFlag := 0x01 | 0x02 | 0x04
-	body.WriteByte(byte(unitReadinitFlag))
-	body.WriteByte(50) // Level
-	body.WriteUInt16(0x01)
-	body.WriteUInt16(0x02)
-
-	if unitReadinitFlag&0x01 > 0 {
-		// 0x01 case
-		body.WriteUInt16(uint16(Players.Players[conn.GetID()].CurrentCharacter.EntityProperties.ID)) // Parent ID!!!!!
-	}
-
-	if unitReadinitFlag&0x02 > 0 {
-		Players.Players[conn.GetID()].CurrentCharacter.CurrentHP = 1150 * 256
-		// 0x02 case
-		// Multiply HP by 256
-		body.WriteUInt32(Players.Players[conn.GetID()].CurrentCharacter.CurrentHP) // Current HP
-	}
-
-	if unitReadinitFlag&0x04 > 0 {
-		// 0x04 case
-		// Multiply MP by 256
-		body.WriteUInt32(505 * 256) // MP
-	}
-
-	if unitReadinitFlag&0x010 > 0 {
-		// 0x10 case
-		body.WriteByte(0x04) // Unk
-	}
-
-	if unitReadinitFlag&0x020 > 0 {
-		// 0x20 case
-		body.WriteUInt16(0x01) // Entity ID, Includes a call to IsKindOf<EncounterObject,Entity>(Entity *)
-	}
-
-	if unitReadinitFlag&0x040 > 0 {
-		// 0x40 case
-		body.WriteUInt16(0x02) // Unk
-		body.WriteUInt16(0x03) // Unk
-		body.WriteUInt16(0x04) // Unk
-		body.WriteByte(0x02)
-	}
-
-	if unitReadinitFlag&0x080 > 0 {
-		//0x80 case
-		body.WriteByte(0x05)
-	}
-
-	// Hero::readInit()
-	// The actual EXP value you want to add needs to be multiplied by 20
-	body.WriteUInt32(6000 * 20) // Current EXP this level
-
-	// Stats
-	// These stats are added to the base stats (seems to be 10)
-	body.WriteUInt16(0x02) // Strength
-	body.WriteUInt16(0x03) // Agility
-	body.WriteUInt16(0x04) // Endurance
-	body.WriteUInt16(0x05) // Intellect
-	body.WriteUInt16(0x00) // Points remaining
-	body.WriteUInt16(0x07) // Respec something or other
-	body.WriteUInt32(0x01) // Unk
-	body.WriteUInt32(0x01) // Unk
-
-	// Avatar::readInit()
-	body.WriteByte(10)  // Face variant
-	body.WriteByte(10)  // Hair style
-	body.WriteByte(100) // Hair colour
-
-	// AVATAR UPDATE /////////////////////////////////////
-	//body.WriteByte(0x03)     // Update
-	//body.WriteUInt16(0x0002) // ID
+	clientEntityWriter.Init(avatar)
 
 	// Avatar::processUpdate
 	// 0x15 is special Avatar::processUpdate case(spawn entity?) anything else goes to Hero::processUpdate
@@ -413,10 +226,6 @@ func (p *Player) SendCreateNewPlayerEntity() {
 	// 0x03 Hero::processUpdateReturnAttribPoint
 	// 0x04 Hero::processUpdateRespectAttrbutes
 	//body.WriteByte(0x15)
-	//
-	//// EntitySynchInfo::ReadFromStream
-	//body.WriteByte(0x2)
-	//body.WriteUInt32(147200) // HP
 
 	body.WriteByte(70) // Now connected
 	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
