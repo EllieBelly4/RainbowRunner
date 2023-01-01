@@ -9,8 +9,6 @@ function module.__tick()
 end
 
 function module.__onPlayerEnter(player)
-    do return end
-
     zoneConf = currentZone:baseConfig()
     waypoints = zoneConf:waypoints()
 
