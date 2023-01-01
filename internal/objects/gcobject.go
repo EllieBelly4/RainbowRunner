@@ -161,11 +161,15 @@ func (g *GCObject) WriteSynch(b *byter.Byter) {
 }
 
 func (g *GCObject) Tick() {
-
+	for _, child := range g.GCChildren {
+		child.Tick()
+	}
 }
 
 func (g *GCObject) Init() {
-
+	for _, child := range g.GCChildren {
+		child.Init()
+	}
 }
 
 func (g *GCObject) WriteData(b *byter.Byter) {

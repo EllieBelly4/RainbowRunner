@@ -246,7 +246,11 @@ func (n *WorldEntity) WriteInit(b *byter.Byter) {
 
 	// Has parent/owner?
 	if n.WorldEntityInitFlags&0x01 > 0 {
-		b.WriteUInt16(uint16(n.GCParent.(IRREntityPropertiesHaver).GetRREntityProperties().ID))
+		if n.GCParent == nil {
+			b.WriteUInt16(0)
+		} else {
+			b.WriteUInt16(uint16(n.GCParent.(IRREntityPropertiesHaver).GetRREntityProperties().ID))
+		}
 	}
 
 	if n.WorldEntityInitFlags&0x02 > 0 {
