@@ -96,7 +96,7 @@ func (u *UnitContainer) handlePlaceItemInInventory(body *byter.Byter) error {
 	x := body.Byte()
 	y := body.Byte()
 
-	inventory.AddChild(item)
+	inventory.AddItem(item)
 	u.WriteAddItem(CEWriter.Body, item, inventory, x, y)
 
 	Players.GetPlayer(uint16(u.OwnerID())).MessageQueue.Enqueue(

@@ -1,5 +1,5 @@
 function test(player)
-    unitBehaviour = player:getChildByGCNativeType("UnitBehavior")
+    avatar = Avatar.new()
 end
 
 function createWaypoint(player)

@@ -158,6 +158,11 @@ func (w *ClientEntityWriter) CreateAll(entity drobjecttypes.DRObject) {
 
 	entity.WalkChildren(func(object drobjecttypes.DRObject) {
 		switch object.(type) {
+		// Child items are stored in inventories and cannot be initialised in this way,
+		// they must be initialised by the inventory
+		// Also I am starting to doubt that Items are "Components" and I think I misundertood
+		case IItem:
+			return
 		case IComponent:
 			//if mb2, ok := object.(*MonsterBehavior2); ok {
 			//	CEWriter.CreateComponentAndInit(object, entity)

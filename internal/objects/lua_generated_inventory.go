@@ -36,7 +36,7 @@ func luaMethodsInventory() map[string]lua2.LGFunction {
 		"addChild": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IInventory](l, 1)
 			obj := objInterface.GetInventory()
-			obj.AddChild(
+			obj.AddItem(
 				lua.CheckValue[drobjecttypes.DRObject](l, 2),
 			)
 
