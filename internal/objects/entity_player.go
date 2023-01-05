@@ -31,17 +31,15 @@ func (p *Player) Type() drobjecttypes.DRObjectType {
 }
 
 func (p *Player) WriteInit(b *byter.Byter) {
-	rrPlayer := Players.Players[int(p.OwnerID())]
-
 	// Init PLAYER /////////////////////////////////////////
 	b.WriteCString("Ellie")
 	b.WriteUInt32(0x01)
 	b.WriteUInt32(0x01)
 	b.WriteByte(0x01)
 
-	b.WriteUInt32(rrPlayer.Zone().ID) // World ID
-	b.WriteUInt32(1001)               // PvP wins
-	b.WriteUInt32(1000)               // PvP rating?, 0 = ???
+	b.WriteUInt32(p.Zone.ID) // World ID
+	b.WriteUInt32(1001)      // PvP wins
+	b.WriteUInt32(1000)      // PvP rating?, 0 = ???
 
 	// Here goes PvP Team
 	// Null string
@@ -83,7 +81,7 @@ func (p *Player) WriteSynch(b *byter.Byter) {
 	b.WriteUInt32(p.CurrentHP)
 }
 
-func (p *Player) WriteCreateNewPlayerEntity(clientEntityWriter *ClientEntityWriter) {
+func (p *Player) WriteCreateNewPlayerEntity(clientEntityWriter *ClientEntityWriter, owned bool) {
 	avatar := p.GetChildByGCNativeType("Avatar")
 
 	clientEntityWriter.Create(avatar)

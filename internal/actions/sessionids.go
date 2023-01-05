@@ -15,7 +15,7 @@ var (
 		BehaviourActionWarpTo:                true,
 		BehaviourActionAmbush:                false,
 		BehaviourActionMoveInDirectionAction: false,
-		BehaviourActionTurnAction:            false,
+		BehaviourActionTurnAction:            true,
 		BehaviourActionWander:                false,
 		BehaviourActionFollow:                false,
 		BehaviourActionPlayAnimation:         false,

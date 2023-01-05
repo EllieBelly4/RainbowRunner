@@ -94,7 +94,7 @@ func luaMethodsPlayer() map[string]lua2.LGFunction {
 			objInterface := lua.CheckInterfaceValue[IPlayer](l, 1)
 			obj := objInterface.GetPlayer()
 			obj.WriteCreateNewPlayerEntity(
-				lua.CheckReferenceValue[ClientEntityWriter](l, 2),
+				lua.CheckReferenceValue[ClientEntityWriter](l, 2), bool(l.CheckBool(3)),
 			)
 
 			return 0

@@ -2,11 +2,22 @@ function test(player)
     zone = player:zone()
     wpConf = zone:loadWaypointFromConfig("start"):baseConfig()
 
-    avatar = Avatar.new("avatar.classes.RangerMale")
-
     player = Player.new("Billy")
+    player:zone(zone)
 
-    zone:spawn(player, wpConf:position(), wpConf:heading())
+    avatar = ObjectHelpers.loadAvatar()
+    player:addChild(avatar)
+
+    zone:spawnEntity(player, wpConf:position(), wpConf:heading())
+end
+
+function faceTarget(player)
+    zone = player:zone()
+    unitBehav = player:getChildByGCNativeType("UnitBehavior")
+
+    faceTarget = ActionFaceTarget.new()
+
+    unitBehav:executeAction(faceTarget)
 end
 
 function createWaypoint(player)

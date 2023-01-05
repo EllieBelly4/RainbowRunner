@@ -40,7 +40,7 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 
 		"position": lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *datatypes.Vector3Float32 { return &v.GetUnitBehavior().Position }),
 
-		"rotation": lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *float32 { return &v.GetUnitBehavior().Rotation }),
+		"rotation": lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *float32 { return &v.GetUnitBehavior().Heading }),
 
 		"unitMoverFlags": lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitMoverFlags }),
 

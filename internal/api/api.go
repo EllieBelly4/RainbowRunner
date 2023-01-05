@@ -17,7 +17,7 @@ type query struct{}
 //func (_ *query) CreateEntity() *types.Entity {
 //	createNPC(conn, player.Zone, pkg.Transform{
 //		Position: pkg.Vector3{106342 + 2048*int32(i), -36000, 12778},
-//		Rotation: 180 * math.DRDegToRot,
+//		Heading: 180 * math.DRDegToRot,
 //	}, entityStrings[0], entityStrings[1])
 //
 //	return types.NewEntity()

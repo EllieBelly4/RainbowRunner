@@ -16,8 +16,8 @@ var globalSourceEventsMap = make(map[any][]interface{})
 type Events struct {
 }
 
-func Emit[TEvent any](event TEvent) {
-	if handlers, ok := globalSourceEventsMap[reflect.TypeOf(event)]; ok {
+func EmitNoReflect[TEvent any](t reflect.Type, event TEvent) {
+	if handlers, ok := globalSourceEventsMap[t]; ok {
 		for _, handlerEntry := range handlers {
 			eventHandlerEntry := handlerEntry.(*EventHandlerEntry[TEvent])
 
@@ -28,6 +28,10 @@ func Emit[TEvent any](event TEvent) {
 			eventHandlerEntry.Handler(event)
 		}
 	}
+}
+
+func Emit[TEvent any](event TEvent) {
+	EmitNoReflect[TEvent](reflect.TypeOf(event), event)
 }
 
 func RegisterHandler[TEvent any](handler func(TEvent)) {

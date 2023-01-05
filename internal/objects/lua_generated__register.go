@@ -4,6 +4,7 @@ package objects
 import lua2 "github.com/yuin/gopher-lua"
 
 func RegisterAllLuaFunctions(state *lua2.LState) {
+	registerLuaObjectHelpers(state)
 	registerLuaVector3(state)
 	registerLuaVector2(state)
 	registerLuaBit32(state)
@@ -16,6 +17,7 @@ func RegisterAllLuaFunctions(state *lua2.LState) {
 	registerLuaCheckpointEntity(state)
 	registerLuaComponent(state)
 	registerLuaContainer(state)
+	registerLuaDialogManager(state)
 	registerLuaEntity(state)
 	registerLuaEquipment(state)
 	registerLuaEquipmentInventory(state)
@@ -34,6 +36,7 @@ func RegisterAllLuaFunctions(state *lua2.LState) {
 	registerLuaNPC(state)
 	registerLuaPassiveSkill(state)
 	registerLuaPlayer(state)
+	registerLuaQuestManager(state)
 	registerLuaRREntityProperties(state)
 	registerLuaRRPlayer(state)
 	registerLuaSkill(state)

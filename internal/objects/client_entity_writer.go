@@ -133,7 +133,7 @@ func (w *ClientEntityWriter) IsDirty() bool {
 	return w.dirty
 }
 
-func (w *ClientEntityWriter) CreateAction(action actions.BehaviourAction, sessionID byte) {
+func (w *ClientEntityWriter) createAction(action actions.BehaviourAction, sessionID byte) {
 	w.Body.WriteByte(0x04)
 	w.Body.WriteByte(byte(action))
 
@@ -153,7 +153,7 @@ func (w *ClientEntityWriter) CreateActionResponse(action actions.BehaviourAction
 }
 
 func (w *ClientEntityWriter) CreateActionComplete(action actions.Action) {
-	w.CreateAction(action.OpCode(), w.sessionID)
+	w.createAction(action.OpCode(), w.sessionID)
 	action.Init(w.Body)
 }
 

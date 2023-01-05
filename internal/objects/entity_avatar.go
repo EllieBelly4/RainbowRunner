@@ -88,7 +88,7 @@ func (p *Avatar) Tick() {
 //	unitBehavior.SendPositions([]UnitPathPosition{
 //		{
 //			Position: p.Position.ToVector2(),
-//			Rotation: p.Rotation,
+//			Heading: p.Heading,
 //		},
 //	})
 //	p.updated()

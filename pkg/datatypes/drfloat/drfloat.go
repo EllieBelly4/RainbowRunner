@@ -20,6 +20,14 @@ func FromInt32(val int32) DRFloat {
 	return DRFloat(val * 256)
 }
 
+func (f DRFloat) Sub(other DRFloat) DRFloat {
+	return DRFloat(int32(f) - int32(other))
+}
+
+func (f DRFloat) Add(other DRFloat) DRFloat {
+	return DRFloat(int32(f) + int32(other))
+}
+
 func (f DRFloat) ToUInt() uint32 {
 	return uint32(f / 256)
 }

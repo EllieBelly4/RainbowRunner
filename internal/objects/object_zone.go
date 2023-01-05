@@ -158,7 +158,7 @@ func (z *Zone) SpawnEntityWithPosition(
 		behavior := unitBehavior.GetUnitBehavior()
 
 		behavior.Position = position
-		behavior.Rotation = rotation
+		behavior.Heading = rotation
 	}
 
 	z.SpawnEntity(ownerID, entity)
@@ -376,7 +376,7 @@ func (z *Zone) OnPlayerEnter(player *Player) {
 
 	CEWriter := NewClientEntityWriterWithByter()
 	CEWriter.BeginStream()
-	player.WriteCreateNewPlayerEntity(CEWriter)
+	player.WriteCreateNewPlayerEntity(CEWriter, true)
 	CEWriter.EndStreamConnected()
 
 	connections.WriteCompressedA(player.RREntityProperties().Conn, 0x01, 0x0f, CEWriter.Body)
@@ -430,7 +430,7 @@ func WriteCreateExistingEntity(entity drobjecttypes.DRObject, CEWriter *ClientEn
 			unitBehavior.GetUnitBehavior().WriteWarp(CEWriter)
 		}
 	} else {
-		player.GetPlayer().WriteCreateNewPlayerEntity(CEWriter)
+		player.GetPlayer().WriteCreateNewPlayerEntity(CEWriter, false)
 	}
 }
 
