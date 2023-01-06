@@ -30,7 +30,6 @@ func registerLuaMerchant(state *lua2.LState) {
 
 func luaMethodsMerchant() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-
 		"baseConfig": lua.LuaGenericGetSetValueAny[IMerchant](func(v IMerchant) **configtypes.MerchantConfig { return &v.GetMerchant().BaseConfig }),
 
 		"writeInit": func(l *lua2.LState) int {

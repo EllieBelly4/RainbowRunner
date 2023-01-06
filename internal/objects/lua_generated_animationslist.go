@@ -28,7 +28,6 @@ func registerLuaAnimationsList(state *lua2.LState) {
 
 func luaMethodsAnimationsList() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-
 		"animations": lua.LuaGenericGetSetValueAny[IAnimationsList](func(v IAnimationsList) *[]*Animation { return &v.GetAnimationsList().Animations }),
 
 		"getAnimationsList": func(l *lua2.LState) int {

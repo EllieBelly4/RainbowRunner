@@ -30,7 +30,6 @@ func registerLuaEquipment(state *lua2.LState) {
 
 func luaMethodsEquipment() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-
 		"slot": lua.LuaGenericGetSetValueAny[IEquipment](func(v IEquipment) *types.EquipmentSlot { return &v.GetEquipment().Slot }),
 
 		"writeInit": func(l *lua2.LState) int {

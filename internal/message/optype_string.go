@@ -17,11 +17,13 @@ func _() {
 	_ = x[OpTypeBehaviourAction-6]
 	_ = x[OpTypeSkills-7]
 	_ = x[OpTypeManipulators-8]
+	_ = x[OpTypeCreateEntity-9]
+	_ = x[OpTypeAvatarMovementOthers-10]
 }
 
-const _OpType_name = "OpTypeAvatarMovementOpTypeCreateNPCOpTypeEquippedItemClickResponseOpTypeInventoryItemClickResponseOpTypeInventoryItemDropResponseOpTypeOtherOpTypeBehaviourActionOpTypeSkillsOpTypeManipulators"
+const _OpType_name = "OpTypeAvatarMovementOpTypeCreateNPCOpTypeEquippedItemClickResponseOpTypeInventoryItemClickResponseOpTypeInventoryItemDropResponseOpTypeOtherOpTypeBehaviourActionOpTypeSkillsOpTypeManipulatorsOpTypeCreateEntityOpTypeAvatarMovementOthers"
 
-var _OpType_index = [...]uint8{0, 20, 35, 66, 98, 129, 140, 161, 173, 191}
+var _OpType_index = [...]uint8{0, 20, 35, 66, 98, 129, 140, 161, 173, 191, 209, 235}
 
 func (i OpType) String() string {
 	if i < 0 || i >= OpType(len(_OpType_index)-1) {

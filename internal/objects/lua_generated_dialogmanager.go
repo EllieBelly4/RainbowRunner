@@ -61,6 +61,19 @@ func luaMethodsDialogManager() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
+		"getDialogManager": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IDialogManager](l, 1)
+			obj := objInterface.GetDialogManager()
+			res0 := obj.GetDialogManager()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
 	}, luaMethodsGCObject)
 }
 func newLuaDialogManager(l *lua2.LState) int {

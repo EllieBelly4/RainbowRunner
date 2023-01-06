@@ -30,7 +30,6 @@ func registerLuaActionTurnAction(state *lua2.LState) {
 
 func luaMethodsActionTurnAction() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-
 		"speed": lua.LuaGenericGetSetValueAny[IActionTurnAction](func(v IActionTurnAction) *drfloat.DRFloat { return &v.GetActionTurnAction().Speed }),
 
 		"opCode": func(l *lua2.LState) int {

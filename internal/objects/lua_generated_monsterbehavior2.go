@@ -29,28 +29,17 @@ func registerLuaMonsterBehavior2(state *lua2.LState) {
 
 func luaMethodsMonsterBehavior2() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-
-		"monsterBehaviorStateMachineFlags": lua.LuaGenericGetSetValueAny[IMonsterBehavior2](func(v IMonsterBehavior2) *byte { return &v.GetMonsterBehavior2().MonsterBehaviorStateMachineFlags }),
-
-		"monsterBehavior2Unk0": lua.LuaGenericGetSetValueAny[IMonsterBehavior2](func(v IMonsterBehavior2) *uint16 { return &v.GetMonsterBehavior2().MonsterBehavior2Unk0 }),
-
-		"monsterBehavior2Unk1": lua.LuaGenericGetSetValueAny[IMonsterBehavior2](func(v IMonsterBehavior2) *uint16 { return &v.GetMonsterBehavior2().MonsterBehavior2Unk1 }),
-
-		"monsterBehavior2Unk2": lua.LuaGenericGetSetValueAny[IMonsterBehavior2](func(v IMonsterBehavior2) *uint16 { return &v.GetMonsterBehavior2().MonsterBehavior2Unk2 }),
-
-		"monsterBehavior2Unk3": lua.LuaGenericGetSetValueAny[IMonsterBehavior2](func(v IMonsterBehavior2) *uint16 { return &v.GetMonsterBehavior2().MonsterBehavior2Unk3 }),
-
-		"monsterBehaviorFlags": lua.LuaGenericGetSetValueAny[IMonsterBehavior2](func(v IMonsterBehavior2) *byte { return &v.GetMonsterBehavior2().MonsterBehaviorFlags }),
-
-		"monsterBehavior2Unk4": lua.LuaGenericGetSetValueAny[IMonsterBehavior2](func(v IMonsterBehavior2) *uint32 { return &v.GetMonsterBehavior2().MonsterBehavior2Unk4 }),
-
-		"monsterBehavior2Unk5": lua.LuaGenericGetSetValueAny[IMonsterBehavior2](func(v IMonsterBehavior2) *uint32 { return &v.GetMonsterBehavior2().MonsterBehavior2Unk5 }),
-
-		"monsterBehavior2Unk6": lua.LuaGenericGetSetValueAny[IMonsterBehavior2](func(v IMonsterBehavior2) *uint16 { return &v.GetMonsterBehavior2().MonsterBehavior2Unk6 }),
-
-		"monsterBehavior2Unk7": lua.LuaGenericGetSetValueAny[IMonsterBehavior2](func(v IMonsterBehavior2) *uint16 { return &v.GetMonsterBehavior2().MonsterBehavior2Unk7 }),
-
-		"monsterBehavior2Unk8": lua.LuaGenericGetSetValueAny[IMonsterBehavior2](func(v IMonsterBehavior2) *uint16 { return &v.GetMonsterBehavior2().MonsterBehavior2Unk8 }),
+		"monsterBehaviorStateMachineFlags": lua.LuaGenericGetSetNumber[IMonsterBehavior2](func(v IMonsterBehavior2) *byte { return &v.GetMonsterBehavior2().MonsterBehaviorStateMachineFlags }),
+		"monsterBehavior2Unk0":             lua.LuaGenericGetSetNumber[IMonsterBehavior2](func(v IMonsterBehavior2) *uint16 { return &v.GetMonsterBehavior2().MonsterBehavior2Unk0 }),
+		"monsterBehavior2Unk1":             lua.LuaGenericGetSetNumber[IMonsterBehavior2](func(v IMonsterBehavior2) *uint16 { return &v.GetMonsterBehavior2().MonsterBehavior2Unk1 }),
+		"monsterBehavior2Unk2":             lua.LuaGenericGetSetNumber[IMonsterBehavior2](func(v IMonsterBehavior2) *uint16 { return &v.GetMonsterBehavior2().MonsterBehavior2Unk2 }),
+		"monsterBehavior2Unk3":             lua.LuaGenericGetSetNumber[IMonsterBehavior2](func(v IMonsterBehavior2) *uint16 { return &v.GetMonsterBehavior2().MonsterBehavior2Unk3 }),
+		"monsterBehaviorFlags":             lua.LuaGenericGetSetNumber[IMonsterBehavior2](func(v IMonsterBehavior2) *byte { return &v.GetMonsterBehavior2().MonsterBehaviorFlags }),
+		"monsterBehavior2Unk4":             lua.LuaGenericGetSetNumber[IMonsterBehavior2](func(v IMonsterBehavior2) *uint32 { return &v.GetMonsterBehavior2().MonsterBehavior2Unk4 }),
+		"monsterBehavior2Unk5":             lua.LuaGenericGetSetNumber[IMonsterBehavior2](func(v IMonsterBehavior2) *uint32 { return &v.GetMonsterBehavior2().MonsterBehavior2Unk5 }),
+		"monsterBehavior2Unk6":             lua.LuaGenericGetSetNumber[IMonsterBehavior2](func(v IMonsterBehavior2) *uint16 { return &v.GetMonsterBehavior2().MonsterBehavior2Unk6 }),
+		"monsterBehavior2Unk7":             lua.LuaGenericGetSetNumber[IMonsterBehavior2](func(v IMonsterBehavior2) *uint16 { return &v.GetMonsterBehavior2().MonsterBehavior2Unk7 }),
+		"monsterBehavior2Unk8":             lua.LuaGenericGetSetNumber[IMonsterBehavior2](func(v IMonsterBehavior2) *uint16 { return &v.GetMonsterBehavior2().MonsterBehavior2Unk8 }),
 
 		"writeInit": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IMonsterBehavior2](l, 1)

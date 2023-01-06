@@ -35,6 +35,10 @@ type FieldDef struct {
 	field      *ast.Field
 }
 
+func (v ValueType) IsScalar() bool {
+	return v.IsStringType() || v.IsNumberType() || v.IsBoolType()
+}
+
 func (f *FuncDef) IsCallSupported() bool {
 	if f.Params != nil {
 		for _, param := range f.Params {
@@ -176,6 +180,10 @@ func (v ValueType) IsStringType() bool {
 
 func (v ValueType) IsNumberType() bool {
 	return IsNumberType(&v)
+}
+
+func (v ValueType) IsBoolType() bool {
+	return IsBoolType(&v)
 }
 
 func (f *FuncDef) ResultAssignmentString() string {

@@ -30,6 +30,19 @@ func registerLuaQuestManager(state *lua2.LState) {
 func luaMethodsQuestManager() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
 
+		"getQuestManager": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IQuestManager](l, 1)
+			obj := objInterface.GetQuestManager()
+			res0 := obj.GetQuestManager()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
+
 		"type": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IQuestManager](l, 1)
 			obj := objInterface.GetQuestManager()
@@ -40,6 +53,16 @@ func luaMethodsQuestManager() map[string]lua2.LGFunction {
 			l.Push(ud)
 
 			return 1
+		},
+
+		"writeFullGCObject": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IQuestManager](l, 1)
+			obj := objInterface.GetQuestManager()
+			obj.WriteFullGCObject(
+				lua.CheckReferenceValue[byter.Byter](l, 2),
+			)
+
+			return 0
 		},
 
 		"writeInit": func(l *lua2.LState) int {

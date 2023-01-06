@@ -29,7 +29,6 @@ func registerLuaWaypoint(state *lua2.LState) {
 
 func luaMethodsWaypoint() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-
 		"baseConfig": lua.LuaGenericGetSetValueAny[IWaypoint](func(v IWaypoint) **configtypes.WaypointConfig { return &v.GetWaypoint().BaseConfig }),
 
 		"getWaypoint": func(l *lua2.LState) int {

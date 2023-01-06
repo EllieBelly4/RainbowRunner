@@ -1,6 +1,8 @@
 package lua
 
-import "github.com/yuin/gopher-lua"
+import (
+	"github.com/yuin/gopher-lua"
+)
 
 func LuaGenericGetSetNumber[T any, K byte | uint16 | uint32 | int8 | int16 | int32 | int | uint | float32 | float64](
 	valueCallback func(val T) *K,

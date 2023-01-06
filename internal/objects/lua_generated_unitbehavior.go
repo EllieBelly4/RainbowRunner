@@ -6,6 +6,7 @@ import (
 	lua "RainbowRunner/internal/lua"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
+	"RainbowRunner/pkg/datatypes/drfloat"
 	lua2 "github.com/yuin/gopher-lua"
 )
 
@@ -31,44 +32,26 @@ func registerLuaUnitBehavior(state *lua2.LState) {
 
 func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-
-		"speed": lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *int { return &v.GetUnitBehavior().Speed }),
-
-		"turnRate": lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *int { return &v.GetUnitBehavior().TurnRate }),
-
-		"lastPosition": lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *datatypes.Vector3Float32 { return &v.GetUnitBehavior().LastPosition }),
-
-		"position": lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *datatypes.Vector3Float32 { return &v.GetUnitBehavior().Position }),
-
-		"rotation": lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *float32 { return &v.GetUnitBehavior().Heading }),
-
-		"unitMoverFlags": lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitMoverFlags }),
-
-		"action1": lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *actions2.Action { return &v.GetUnitBehavior().Action1 }),
-
-		"action2": lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *actions2.Action { return &v.GetUnitBehavior().Action2 }),
-
-		"sessionID": lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().SessionID }),
-
-		"unitMoverUnk0": lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitMoverUnk0 }),
-
-		"unitMoverUnk1": lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *uint32 { return &v.GetUnitBehavior().UnitMoverUnk1 }),
-
-		"unitMoverUnk2": lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *uint32 { return &v.GetUnitBehavior().UnitMoverUnk2 }),
-
-		"unitMoverUnk3": lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *uint32 { return &v.GetUnitBehavior().UnitMoverUnk3 }),
-
-		"unitMoverUnk4": lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *uint32 { return &v.GetUnitBehavior().UnitMoverUnk4 }),
-
-		"unitMoverUnk7": lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *uint32 { return &v.GetUnitBehavior().UnitMoverUnk7 }),
-
-		"unitBehaviorUnk0": lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitBehaviorUnk0 }),
-
-		"unitBehaviorUnk1": lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitBehaviorUnk1 }),
-
-		"unitBehaviorUnk2": lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitBehaviorUnk2 }),
-
-		"isMoving": lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *bool { return &v.GetUnitBehavior().IsMoving }),
+		"speed":            lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *int { return &v.GetUnitBehavior().Speed }),
+		"turnRate":         lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *int { return &v.GetUnitBehavior().TurnRate }),
+		"lastPosition":     lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *datatypes.Vector3Float32 { return &v.GetUnitBehavior().LastPosition }),
+		"position":         lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *datatypes.Vector3Float32 { return &v.GetUnitBehavior().Position }),
+		"heading":          lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *float32 { return &v.GetUnitBehavior().Heading }),
+		"unitMoverFlags":   lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitMoverFlags }),
+		"action1":          lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *actions2.Action { return &v.GetUnitBehavior().Action1 }),
+		"action2":          lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *actions2.Action { return &v.GetUnitBehavior().Action2 }),
+		"sessionID":        lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().SessionID }),
+		"unitMoverUnk0":    lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitMoverUnk0 }),
+		"unitMoverUnk1":    lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *uint32 { return &v.GetUnitBehavior().UnitMoverUnk1 }),
+		"unitMoverUnk2":    lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *uint32 { return &v.GetUnitBehavior().UnitMoverUnk2 }),
+		"unitMoverUnk3":    lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *uint32 { return &v.GetUnitBehavior().UnitMoverUnk3 }),
+		"unitMoverUnk4":    lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *uint32 { return &v.GetUnitBehavior().UnitMoverUnk4 }),
+		"unitMoverUnk7":    lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *uint32 { return &v.GetUnitBehavior().UnitMoverUnk7 }),
+		"unitBehaviorUnk0": lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitBehaviorUnk0 }),
+		"unitBehaviorUnk1": lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitBehaviorUnk1 }),
+		"unitBehaviorUnk2": lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitBehaviorUnk2 }),
+		"isMoving":         lua.LuaGenericGetSetBool[IUnitBehavior](func(v IUnitBehavior) *bool { return &v.GetUnitBehavior().IsMoving }),
+		"lastHeading":      lua.LuaGenericGetSetValueAny[IUnitBehavior](func(v IUnitBehavior) *drfloat.DRFloat { return &v.GetUnitBehavior().LastHeading }),
 
 		"tick": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)

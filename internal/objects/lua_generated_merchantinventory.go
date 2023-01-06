@@ -29,7 +29,6 @@ func registerLuaMerchantInventory(state *lua2.LState) {
 
 func luaMethodsMerchantInventory() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-
 		"baseConfig": lua.LuaGenericGetSetValueAny[IMerchantInventory](func(v IMerchantInventory) **configtypes.MerchantInventoryConfig {
 			return &v.GetMerchantInventory().BaseConfig
 		}),

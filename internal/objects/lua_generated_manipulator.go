@@ -28,8 +28,7 @@ func registerLuaManipulator(state *lua2.LState) {
 
 func luaMethodsManipulator() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-
-		"slot": lua.LuaGenericGetSetValueAny[IManipulator](func(v IManipulator) *int { return &v.GetManipulator().Slot }),
+		"slot": lua.LuaGenericGetSetNumber[IManipulator](func(v IManipulator) *int { return &v.GetManipulator().Slot }),
 
 		"getManipulator": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IManipulator](l, 1)

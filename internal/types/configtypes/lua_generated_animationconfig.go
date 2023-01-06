@@ -28,26 +28,16 @@ func registerLuaAnimationConfig(state *lua2.LState) {
 
 func luaMethodsAnimationConfig() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-
-		"id": lua.LuaGenericGetSetValueAny[IAnimationConfig](func(v IAnimationConfig) *int { return &v.GetAnimationConfig().ID }),
-
-		"animationID": lua.LuaGenericGetSetValueAny[IAnimationConfig](func(v IAnimationConfig) *int { return &v.GetAnimationConfig().AnimationID }),
-
-		"numFrames": lua.LuaGenericGetSetValueAny[IAnimationConfig](func(v IAnimationConfig) *int { return &v.GetAnimationConfig().NumFrames }),
-
-		"triggerTime": lua.LuaGenericGetSetValueAny[IAnimationConfig](func(v IAnimationConfig) *int { return &v.GetAnimationConfig().TriggerTime }),
-
-		"soundTriggerTime": lua.LuaGenericGetSetValueAny[IAnimationConfig](func(v IAnimationConfig) *int { return &v.GetAnimationConfig().SoundTriggerTime }),
-
-		"sourceNode": lua.LuaGenericGetSetValueAny[IAnimationConfig](func(v IAnimationConfig) *string { return &v.GetAnimationConfig().SourceNode }),
-
-		"startFrame": lua.LuaGenericGetSetValueAny[IAnimationConfig](func(v IAnimationConfig) *int { return &v.GetAnimationConfig().StartFrame }),
-
-		"soundID": lua.LuaGenericGetSetValueAny[IAnimationConfig](func(v IAnimationConfig) *int { return &v.GetAnimationConfig().SoundID }),
-
-		"sourceOffset": lua.LuaGenericGetSetValueAny[IAnimationConfig](func(v IAnimationConfig) *datatypes.Vector3Float32 { return &v.GetAnimationConfig().SourceOffset }),
-
-		"looping": lua.LuaGenericGetSetValueAny[IAnimationConfig](func(v IAnimationConfig) *bool { return &v.GetAnimationConfig().Looping }),
+		"id":               lua.LuaGenericGetSetNumber[IAnimationConfig](func(v IAnimationConfig) *int { return &v.GetAnimationConfig().ID }),
+		"animationID":      lua.LuaGenericGetSetNumber[IAnimationConfig](func(v IAnimationConfig) *int { return &v.GetAnimationConfig().AnimationID }),
+		"numFrames":        lua.LuaGenericGetSetNumber[IAnimationConfig](func(v IAnimationConfig) *int { return &v.GetAnimationConfig().NumFrames }),
+		"triggerTime":      lua.LuaGenericGetSetNumber[IAnimationConfig](func(v IAnimationConfig) *int { return &v.GetAnimationConfig().TriggerTime }),
+		"soundTriggerTime": lua.LuaGenericGetSetNumber[IAnimationConfig](func(v IAnimationConfig) *int { return &v.GetAnimationConfig().SoundTriggerTime }),
+		"sourceNode":       lua.LuaGenericGetSetString[IAnimationConfig](func(v IAnimationConfig) *string { return &v.GetAnimationConfig().SourceNode }),
+		"startFrame":       lua.LuaGenericGetSetNumber[IAnimationConfig](func(v IAnimationConfig) *int { return &v.GetAnimationConfig().StartFrame }),
+		"soundID":          lua.LuaGenericGetSetNumber[IAnimationConfig](func(v IAnimationConfig) *int { return &v.GetAnimationConfig().SoundID }),
+		"sourceOffset":     lua.LuaGenericGetSetValueAny[IAnimationConfig](func(v IAnimationConfig) *datatypes.Vector3Float32 { return &v.GetAnimationConfig().SourceOffset }),
+		"looping":          lua.LuaGenericGetSetBool[IAnimationConfig](func(v IAnimationConfig) *bool { return &v.GetAnimationConfig().Looping }),
 
 		"getAnimationConfig": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAnimationConfig](l, 1)
