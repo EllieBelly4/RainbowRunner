@@ -11,6 +11,7 @@ type RRConn struct {
 	Client        *RRConnClient
 	IsConnected   bool
 	MessageBuffer *byter.Byter
+	LoginName     string
 }
 
 func (R *RRConn) Send(b *byter.Byter) error {

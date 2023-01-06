@@ -32,9 +32,9 @@ func (p *Player) Type() drobjecttypes.DRObjectType {
 
 func (p *Player) WriteInit(b *byter.Byter) {
 	// Init PLAYER /////////////////////////////////////////
-	b.WriteCString("Ellie")
-	b.WriteUInt32(0x01)
-	b.WriteUInt32(0x01)
+	b.WriteCString(p.Name)
+	b.WriteUInt32(0xFFFFFFFF)
+	b.WriteUInt32(0xFFFFFFFF)
 	b.WriteByte(0x01)
 
 	b.WriteUInt32(p.Zone.ID) // World ID
@@ -49,18 +49,16 @@ func (p *Player) WriteInit(b *byter.Byter) {
 	//b.WriteByte(0xFF)
 	//b.WriteCString("pvp.DefaultTeamList.BlueTeam")
 
-	b.WriteCString("Hello")
-	b.WriteUInt32(0x01)
+	b.WriteCString("RainbowRunners") // Posse Name
+	b.WriteUInt32(0x00)
 }
 
 func (p *Player) WriteUpdate(b *byter.Byter) {
 	// This maps to a specific event type for Player::processUpdate()
-	// 0x01 - do nothing
-	// 0x03 - Unk
-	b.WriteByte(0x03)
+	b.WriteByte(0x01)
 
 	// 0x03 case
-	b.WriteUInt16(0x02)
+	//b.WriteUInt16(0x02)
 }
 
 func (p *Player) WriteFullGCObject(byter *byter.Byter) {
@@ -83,12 +81,12 @@ func (p *Player) WriteSynch(b *byter.Byter) {
 
 func (p *Player) WriteCreateNewPlayerEntity(clientEntityWriter *ClientEntityWriter, owned bool) {
 	avatar := p.GetChildByGCNativeType("Avatar")
+	avatarObj := avatar.(IAvatar).GetAvatar()
 
 	clientEntityWriter.Create(avatar)
 
 	clientEntityWriter.Create(p)
 	clientEntityWriter.Init(p)
-	clientEntityWriter.Update(p)
 
 	manipulators := avatar.GetChildByGCNativeType("Manipulators")
 	clientEntityWriter.CreateComponentAndInit(manipulators, avatar)
@@ -111,8 +109,17 @@ func (p *Player) WriteCreateNewPlayerEntity(clientEntityWriter *ClientEntityWrit
 	skills := avatar.GetChildByGCNativeType("Skills")
 	clientEntityWriter.CreateComponentAndInit(skills, avatar)
 
+	ub := avatarObj.GetUnitBehaviour()
+	umf := ub.UnitMoverFlags
+
+	if !owned {
+		ub.UnitMoverFlags = 0x01 | 0x04 | 0x80
+	}
+
 	unitBehaviour := avatar.GetChildByGCNativeType("UnitBehavior")
 	clientEntityWriter.CreateComponentAndInit(unitBehaviour, avatar)
+
+	ub.UnitMoverFlags = umf
 
 	clientEntityWriter.Init(avatar)
 }

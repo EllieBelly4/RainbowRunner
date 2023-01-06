@@ -69,9 +69,9 @@ func handleCharacterCreate(conn *connections.RRConn, reader *byter.Byter) {
 	body.WriteByte(byte(CharacterCreate))
 	body.WriteUInt32(0x01)
 
-	body.WriteCString("Ellie")
+	body.WriteCString(conn.LoginName)
 
-	sendPlayer(loadPlayer(conn.Client), conn.Client, body)
+	sendPlayer(loadPlayer(conn.LoginName), conn.Client, body)
 
 	connections.WriteCompressedA(conn, 0x01, 0x0f, body)
 }
@@ -102,7 +102,7 @@ func handleCharacterConnected(conn *connections.RRConn) {
 	objects.Players.Players[conn.GetID()].Characters = make([]*objects.Player, 0, count)
 
 	for i := 0; i < count; i++ {
-		player := loadPlayer(conn.Client)
+		player := loadPlayer(conn.LoginName)
 		player.EntityProperties.Conn = conn
 		player.EntityProperties.ID = uint32(objects.NewID())
 		//player.EntityProperties.ID = uint32(i + 1)
@@ -188,8 +188,8 @@ func sendPlayer(character *objects.Player, client *connections.RRConnClient, bod
 	body.WriteUInt32(0x01)
 }
 
-func loadPlayer(client *connections.RRConnClient) *objects.Player {
-	player := objects.NewPlayer("Ellie")
+func loadPlayer(name string) *objects.Player {
+	player := objects.NewPlayer(name)
 	//objects.Entities.RegisterAll(client, player.Children()...)
 	return player
 }

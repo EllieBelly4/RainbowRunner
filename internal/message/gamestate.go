@@ -1,6 +1,7 @@
 package message
 
 import (
+	"RainbowRunner/internal/global"
 	byter "RainbowRunner/pkg/byter"
 	"fmt"
 	log "github.com/sirupsen/logrus"
@@ -15,7 +16,15 @@ func HandleAboutToPlay(p *AuthMessageParser, reader *byter.Byter) error {
 
 	response := byter.NewLEByter(make([]byte, 0, 0xFF))
 
-	response.WriteUInt32(0xDEADBEEF) // OneTimeKey
+	key := global.GenerateOneTimeKey()
+
+	err := global.AddLoginRequest(key, p.Username)
+
+	if err != nil {
+		return err
+	}
+
+	response.WriteUInt32(key)        // OneTimeKey
 	response.WriteUInt32(0x5678DEFA) // UID?
 	response.WriteByte(serverID)     // Server ID
 	p.WriteAuthMessage(AuthServerPlayOkPacket, response)
