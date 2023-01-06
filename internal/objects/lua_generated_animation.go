@@ -28,16 +28,11 @@ func registerLuaAnimation(state *lua2.LState) {
 
 func luaMethodsAnimation() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-
-		"id": lua.LuaGenericGetSetValueAny[IAnimation](func(v IAnimation) *int { return &v.GetAnimation().ID }),
-
-		"numFrames": lua.LuaGenericGetSetValueAny[IAnimation](func(v IAnimation) *int { return &v.GetAnimation().NumFrames }),
-
-		"triggerTime": lua.LuaGenericGetSetValueAny[IAnimation](func(v IAnimation) *int { return &v.GetAnimation().TriggerTime }),
-
-		"soundTriggerTime": lua.LuaGenericGetSetValueAny[IAnimation](func(v IAnimation) *int { return &v.GetAnimation().SoundTriggerTime }),
-
-		"animationID": lua.LuaGenericGetSetValueAny[IAnimation](func(v IAnimation) *int { return &v.GetAnimation().AnimationID }),
+		"id":               lua.LuaGenericGetSetNumber[IAnimation](func(v IAnimation) *int { return &v.GetAnimation().ID }),
+		"numFrames":        lua.LuaGenericGetSetNumber[IAnimation](func(v IAnimation) *int { return &v.GetAnimation().NumFrames }),
+		"triggerTime":      lua.LuaGenericGetSetNumber[IAnimation](func(v IAnimation) *int { return &v.GetAnimation().TriggerTime }),
+		"soundTriggerTime": lua.LuaGenericGetSetNumber[IAnimation](func(v IAnimation) *int { return &v.GetAnimation().SoundTriggerTime }),
+		"animationID":      lua.LuaGenericGetSetNumber[IAnimation](func(v IAnimation) *int { return &v.GetAnimation().AnimationID }),
 
 		"getAnimation": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IAnimation](l, 1)

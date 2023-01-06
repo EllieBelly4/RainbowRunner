@@ -29,23 +29,15 @@ func registerLuaZoneConfig(state *lua2.LState) {
 
 func luaMethodsZoneConfig() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-
-		"name": lua.LuaGenericGetSetValueAny[IZoneConfig](func(v IZoneConfig) *string { return &v.GetZoneConfig().Name }),
-
-		"npcs": lua.LuaGenericGetSetValueAny[IZoneConfig](func(v IZoneConfig) *map[string]configtypes.INPCConfig { return &v.GetZoneConfig().NPCs }),
-
+		"name":      lua.LuaGenericGetSetString[IZoneConfig](func(v IZoneConfig) *string { return &v.GetZoneConfig().Name }),
+		"npcs":      lua.LuaGenericGetSetValueAny[IZoneConfig](func(v IZoneConfig) *map[string]configtypes.INPCConfig { return &v.GetZoneConfig().NPCs }),
 		"waypoints": lua.LuaGenericGetSetValueAny[IZoneConfig](func(v IZoneConfig) *map[string]configtypes.IWaypointConfig { return &v.GetZoneConfig().Waypoints }),
-
 		"checkpoints": lua.LuaGenericGetSetValueAny[IZoneConfig](func(v IZoneConfig) *map[string]configtypes.ICheckpointEntityConfig {
 			return &v.GetZoneConfig().Checkpoints
 		}),
-
-		"world": lua.LuaGenericGetSetValueAny[IZoneConfig](func(v IZoneConfig) **configtypes.WorldConfig { return &v.GetZoneConfig().World }),
-
-		"zoneDef": lua.LuaGenericGetSetValueAny[IZoneConfig](func(v IZoneConfig) **configtypes.ZoneDefConfig { return &v.GetZoneConfig().ZoneDef }),
-
-		"gctype": lua.LuaGenericGetSetValueAny[IZoneConfig](func(v IZoneConfig) *string { return &v.GetZoneConfig().GCType }),
-
+		"world":    lua.LuaGenericGetSetValueAny[IZoneConfig](func(v IZoneConfig) **configtypes.WorldConfig { return &v.GetZoneConfig().World }),
+		"zoneDef":  lua.LuaGenericGetSetValueAny[IZoneConfig](func(v IZoneConfig) **configtypes.ZoneDefConfig { return &v.GetZoneConfig().ZoneDef }),
+		"gctype":   lua.LuaGenericGetSetString[IZoneConfig](func(v IZoneConfig) *string { return &v.GetZoneConfig().GCType }),
 		"entities": lua.LuaGenericGetSetValueAny[IZoneConfig](func(v IZoneConfig) *map[string]configtypes.IEntityConfig { return &v.GetZoneConfig().Entities }),
 
 		"getZoneConfig": func(l *lua2.LState) int {

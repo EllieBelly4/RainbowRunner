@@ -29,16 +29,11 @@ func registerLuaRRPlayer(state *lua2.LState) {
 
 func luaMethodsRRPlayer() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-
-		"conn": lua.LuaGenericGetSetValueAny[IRRPlayer](func(v IRRPlayer) **connections.RRConn { return &v.GetRRPlayer().Conn }),
-
-		"currentCharacter": lua.LuaGenericGetSetValueAny[IRRPlayer](func(v IRRPlayer) **Player { return &v.GetRRPlayer().CurrentCharacter }),
-
-		"characters": lua.LuaGenericGetSetValueAny[IRRPlayer](func(v IRRPlayer) *[]*Player { return &v.GetRRPlayer().Characters }),
-
+		"conn":               lua.LuaGenericGetSetValueAny[IRRPlayer](func(v IRRPlayer) **connections.RRConn { return &v.GetRRPlayer().Conn }),
+		"currentCharacter":   lua.LuaGenericGetSetValueAny[IRRPlayer](func(v IRRPlayer) **Player { return &v.GetRRPlayer().CurrentCharacter }),
+		"characters":         lua.LuaGenericGetSetValueAny[IRRPlayer](func(v IRRPlayer) *[]*Player { return &v.GetRRPlayer().Characters }),
 		"clientEntityWriter": lua.LuaGenericGetSetValueAny[IRRPlayer](func(v IRRPlayer) **ClientEntityWriter { return &v.GetRRPlayer().ClientEntityWriter }),
-
-		"messageQueue": lua.LuaGenericGetSetValueAny[IRRPlayer](func(v IRRPlayer) **message.Queue { return &v.GetRRPlayer().MessageQueue }),
+		"messageQueue":       lua.LuaGenericGetSetValueAny[IRRPlayer](func(v IRRPlayer) **message.Queue { return &v.GetRRPlayer().MessageQueue }),
 
 		"getRRPlayer": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IRRPlayer](l, 1)

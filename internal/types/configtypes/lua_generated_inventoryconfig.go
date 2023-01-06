@@ -28,12 +28,9 @@ func registerLuaInventoryConfig(state *lua2.LState) {
 
 func luaMethodsInventoryConfig() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-
-		"id": lua.LuaGenericGetSetValueAny[IInventoryConfig](func(v IInventoryConfig) *int { return &v.GetInventoryConfig().ID }),
-
+		"id":          lua.LuaGenericGetSetNumber[IInventoryConfig](func(v IInventoryConfig) *int { return &v.GetInventoryConfig().ID }),
 		"description": lua.LuaGenericGetSetValueAny[IInventoryConfig](func(v IInventoryConfig) **InventoryDescConfig { return &v.GetInventoryConfig().Description }),
-
-		"gctype": lua.LuaGenericGetSetValueAny[IInventoryConfig](func(v IInventoryConfig) *string { return &v.GetInventoryConfig().GCType }),
+		"gctype":      lua.LuaGenericGetSetString[IInventoryConfig](func(v IInventoryConfig) *string { return &v.GetInventoryConfig().GCType }),
 
 		"getInventoryConfig": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IInventoryConfig](l, 1)

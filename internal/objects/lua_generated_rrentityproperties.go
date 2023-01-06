@@ -29,14 +29,10 @@ func registerLuaRREntityProperties(state *lua2.LState) {
 
 func luaMethodsRREntityProperties() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-
-		"ownerID": lua.LuaGenericGetSetValueAny[IRREntityProperties](func(v IRREntityProperties) *uint16 { return &v.GetRREntityProperties().OwnerID }),
-
-		"id": lua.LuaGenericGetSetValueAny[IRREntityProperties](func(v IRREntityProperties) *uint32 { return &v.GetRREntityProperties().ID }),
-
-		"conn": lua.LuaGenericGetSetValueAny[IRREntityProperties](func(v IRREntityProperties) *connections.Connection { return &v.GetRREntityProperties().Conn }),
-
-		"zone": lua.LuaGenericGetSetValueAny[IRREntityProperties](func(v IRREntityProperties) **Zone { return &v.GetRREntityProperties().Zone }),
+		"ownerID": lua.LuaGenericGetSetNumber[IRREntityProperties](func(v IRREntityProperties) *uint16 { return &v.GetRREntityProperties().OwnerID }),
+		"id":      lua.LuaGenericGetSetNumber[IRREntityProperties](func(v IRREntityProperties) *uint32 { return &v.GetRREntityProperties().ID }),
+		"conn":    lua.LuaGenericGetSetValueAny[IRREntityProperties](func(v IRREntityProperties) *connections.Connection { return &v.GetRREntityProperties().Conn }),
+		"zone":    lua.LuaGenericGetSetValueAny[IRREntityProperties](func(v IRREntityProperties) **Zone { return &v.GetRREntityProperties().Zone }),
 
 		"getRREntityProperties": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IRREntityProperties](l, 1)

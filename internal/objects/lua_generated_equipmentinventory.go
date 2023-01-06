@@ -31,9 +31,7 @@ func registerLuaEquipmentInventory(state *lua2.LState) {
 
 func luaMethodsEquipmentInventory() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-
 		"avatar": lua.LuaGenericGetSetValueAny[IEquipmentInventory](func(v IEquipmentInventory) **Avatar { return &v.GetEquipmentInventory().Avatar }),
-
 		"slots": lua.LuaGenericGetSetValueAny[IEquipmentInventory](func(v IEquipmentInventory) *map[types.EquipmentSlot]IEquipment {
 			return &v.GetEquipmentInventory().Slots
 		}),

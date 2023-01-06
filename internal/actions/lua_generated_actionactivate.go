@@ -29,8 +29,7 @@ func registerLuaActionActivate(state *lua2.LState) {
 
 func luaMethodsActionActivate() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-
-		"targetEntityID": lua.LuaGenericGetSetValueAny[IActionActivate](func(v IActionActivate) *uint16 { return &v.GetActionActivate().TargetEntityID }),
+		"targetEntityID": lua.LuaGenericGetSetNumber[IActionActivate](func(v IActionActivate) *uint16 { return &v.GetActionActivate().TargetEntityID }),
 
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionActivate](l, 1)

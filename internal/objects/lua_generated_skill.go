@@ -29,12 +29,9 @@ func registerLuaSkill(state *lua2.LState) {
 
 func luaMethodsSkill() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-
-		"level": lua.LuaGenericGetSetValueAny[ISkill](func(v ISkill) *byte { return &v.GetSkill().Level }),
-
-		"originalSlot": lua.LuaGenericGetSetValueAny[ISkill](func(v ISkill) *int { return &v.GetSkill().OriginalSlot }),
-
-		"skillFlags": lua.LuaGenericGetSetValueAny[ISkill](func(v ISkill) *byte { return &v.GetSkill().SkillFlags }),
+		"level":        lua.LuaGenericGetSetNumber[ISkill](func(v ISkill) *byte { return &v.GetSkill().Level }),
+		"originalSlot": lua.LuaGenericGetSetNumber[ISkill](func(v ISkill) *int { return &v.GetSkill().OriginalSlot }),
+		"skillFlags":   lua.LuaGenericGetSetNumber[ISkill](func(v ISkill) *byte { return &v.GetSkill().SkillFlags }),
 
 		"writeData": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[ISkill](l, 1)

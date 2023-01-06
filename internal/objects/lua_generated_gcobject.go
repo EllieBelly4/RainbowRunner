@@ -31,24 +31,15 @@ func registerLuaGCObject(state *lua2.LState) {
 
 func luaMethodsGCObject() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-
 		"entityProperties": lua.LuaGenericGetSetValueAny[IGCObject](func(v IGCObject) *RREntityProperties { return &v.GetGCObject().EntityProperties }),
-
-		"version": lua.LuaGenericGetSetValueAny[IGCObject](func(v IGCObject) *uint8 { return &v.GetGCObject().Version }),
-
-		"gcnativeType": lua.LuaGenericGetSetValueAny[IGCObject](func(v IGCObject) *string { return &v.GetGCObject().GCNativeType }),
-
-		"gclabel": lua.LuaGenericGetSetValueAny[IGCObject](func(v IGCObject) *string { return &v.GetGCObject().GCLabel }),
-
-		"gcchildren": lua.LuaGenericGetSetValueAny[IGCObject](func(v IGCObject) *[]drobjecttypes.DRObject { return &v.GetGCObject().GCChildren }),
-
-		"gctype": lua.LuaGenericGetSetValueAny[IGCObject](func(v IGCObject) *string { return &v.GetGCObject().GCType }),
-
-		"properties": lua.LuaGenericGetSetValueAny[IGCObject](func(v IGCObject) *[]GCObjectProperty { return &v.GetGCObject().Properties }),
-
-		"entityHandler": lua.LuaGenericGetSetValueAny[IGCObject](func(v IGCObject) *EntityMessageHandler { return &v.GetGCObject().EntityHandler }),
-
-		"gcparent": lua.LuaGenericGetSetValueAny[IGCObject](func(v IGCObject) *drobjecttypes.DRObject { return &v.GetGCObject().GCParent }),
+		"version":          lua.LuaGenericGetSetNumber[IGCObject](func(v IGCObject) *uint8 { return &v.GetGCObject().Version }),
+		"gcnativeType":     lua.LuaGenericGetSetString[IGCObject](func(v IGCObject) *string { return &v.GetGCObject().GCNativeType }),
+		"gclabel":          lua.LuaGenericGetSetString[IGCObject](func(v IGCObject) *string { return &v.GetGCObject().GCLabel }),
+		"gcchildren":       lua.LuaGenericGetSetValueAny[IGCObject](func(v IGCObject) *[]drobjecttypes.DRObject { return &v.GetGCObject().GCChildren }),
+		"gctype":           lua.LuaGenericGetSetString[IGCObject](func(v IGCObject) *string { return &v.GetGCObject().GCType }),
+		"properties":       lua.LuaGenericGetSetValueAny[IGCObject](func(v IGCObject) *[]GCObjectProperty { return &v.GetGCObject().Properties }),
+		"entityHandler":    lua.LuaGenericGetSetValueAny[IGCObject](func(v IGCObject) *EntityMessageHandler { return &v.GetGCObject().EntityHandler }),
+		"gcparent":         lua.LuaGenericGetSetValueAny[IGCObject](func(v IGCObject) *drobjecttypes.DRObject { return &v.GetGCObject().GCParent }),
 
 		"removeChild": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IGCObject](l, 1)
