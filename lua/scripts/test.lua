@@ -2,13 +2,15 @@ function test(player)
     zone = player:zone()
     wpConf = zone:loadWaypointFromConfig("start"):baseConfig()
 
-    player = Player.new("Billy")
-    player:zone(zone)
+--     player = Player.new("Billy")
+--     player:zone(zone)
 
     avatar = ObjectHelpers.loadAvatar()
-    player:addChild(avatar)
+--     player:addChild(avatar)
 
-    zone:spawnEntity(player, wpConf:position(), wpConf:heading())
+    avatar:worldEntityFlags(0x06)
+
+--     zone:spawn(avatar, wpConf:position(), wpConf:heading())
 end
 
 function faceTarget(player)
