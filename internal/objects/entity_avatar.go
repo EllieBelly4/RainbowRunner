@@ -194,8 +194,10 @@ func NewAvatar(gcType string) *Avatar {
 		Hero: NewHero("Avatar"),
 	}
 
+	a.CanBeActivated = true
+
 	a.WorldEntityFlags = 0x04
-	a.WorldEntityInitFlags = 0xFF
+	a.WorldEntityInitFlags = 0x01
 
 	a.UnitFlags = 0x07
 	a.Level = 72

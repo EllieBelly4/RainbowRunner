@@ -134,6 +134,8 @@ func (w *ClientEntityWriter) IsDirty() bool {
 }
 
 func (w *ClientEntityWriter) createAction(action actions.BehaviourAction, sessionID byte) {
+	w.dirty = true
+
 	w.Body.WriteByte(0x04)
 	w.Body.WriteByte(byte(action))
 
@@ -143,6 +145,8 @@ func (w *ClientEntityWriter) createAction(action actions.BehaviourAction, sessio
 }
 
 func (w *ClientEntityWriter) CreateActionResponse(action actions.BehaviourAction, responseID byte, sessionID byte) {
+	w.dirty = true
+
 	w.Body.WriteByte(0x01)
 	w.Body.WriteByte(responseID)
 	w.Body.WriteByte(byte(action))
@@ -153,14 +157,24 @@ func (w *ClientEntityWriter) CreateActionResponse(action actions.BehaviourAction
 }
 
 func (w *ClientEntityWriter) CreateActionComplete(action actions.Action) {
+	w.dirty = true
+
 	w.createAction(action.OpCode(), w.sessionID)
 	action.Init(w.Body)
 }
 
 func (w *ClientEntityWriter) CreateAll(entity drobjecttypes.DRObject) {
+	w.dirty = true
+
 	w.Create(entity)
 
 	entity.WalkChildren(func(object drobjecttypes.DRObject) {
+		_, ok := object.GetParentEntity().(IEntity)
+
+		if !ok {
+			return
+		}
+
 		switch object.(type) {
 		// Child items are stored in inventories and cannot be initialised in this way,
 		// they must be initialised by the inventory
@@ -176,6 +190,14 @@ func (w *ClientEntityWriter) CreateAll(entity drobjecttypes.DRObject) {
 	})
 
 	w.Init(entity)
+}
+
+func (w *ClientEntityWriter) Remove(entity drobjecttypes.DRObject) {
+	w.dirty = true
+
+	w.Body.WriteByte(0x05) // Remove
+
+	w.Body.WriteUInt16(uint16(entity.(IRREntityPropertiesHaver).GetRREntityProperties().ID))
 }
 
 func NewClientEntityWriter(b *byter.Byter) *ClientEntityWriter {

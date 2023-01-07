@@ -67,7 +67,6 @@ func (z *Zone) Players() []*RRPlayer {
 
 func (z *Zone) RemovePlayer(id int) {
 	z.Lock()
-	defer z.Unlock()
 
 	delete(z.players, uint16(id))
 
@@ -79,10 +78,42 @@ func (z *Zone) RemovePlayer(id int) {
 		}
 	}
 
+	z.Unlock()
+
 	for _, index := range toDelete {
-		z.entities[index].(IRREntityPropertiesHaver).GetRREntityProperties().Zone = nil
+		z.Lock()
+		entity := z.entities[index]
+		entity.(IRREntityPropertiesHaver).GetRREntityProperties().Zone = nil
 		delete(z.entities, index)
+		z.Unlock()
+
+		if player, ok := entity.(IPlayer); ok {
+			avatar := player.GetPlayer().GetChildByGCNativeType("Avatar")
+
+			if avatar != nil {
+				z.OnEntityDespawned(avatar)
+			}
+		}
+
+		z.OnEntityDespawned(entity)
 	}
+}
+
+func (z *Zone) Despawn(entity drobjecttypes.DRObject) {
+	id := uint16(entity.(IRREntityPropertiesHaver).GetRREntityProperties().ID)
+
+	z.Lock()
+
+	if _, ok := z.entities[id]; !ok {
+		z.Unlock()
+		return
+	}
+
+	delete(z.entities, id)
+
+	z.Unlock()
+
+	z.OnEntityDespawned(entity)
 }
 
 func (z *Zone) SpawnEntity(owner *uint16, entity drobjecttypes.DRObject) {
@@ -331,6 +362,20 @@ func (z *Zone) FindEntityByGCTypeName(name string) drobjecttypes.DRObject {
 	return nil
 }
 
+func (z *Zone) FindEntityByName(name string) drobjecttypes.DRObject {
+	for _, entity := range z.Entities() {
+		if entity == nil {
+			continue
+		}
+
+		if ee, ok := entity.(IEntity); ok && ee.GetEntity().Name == name {
+			return entity
+		}
+	}
+
+	return nil
+}
+
 func (z *Zone) FindEntityByID(id uint16) drobjecttypes.DRObject {
 	z.RLock()
 	defer z.RUnlock()
@@ -397,10 +442,29 @@ func (z *Zone) OnPlayerEnter(player *Player) {
 
 // TODO batch entity spawn events
 func (z *Zone) OnEntitySpawned(entity drobjecttypes.DRObject) {
+	z.notifyPlayers(types.Pointer(entity.OwnerID()), func() *byter.Byter {
+		CEWriter := NewClientEntityWriterWithByter()
+
+		WriteCreateExistingEntity(entity, CEWriter)
+		return CEWriter.Body
+	})
+}
+
+func (z *Zone) OnEntityDespawned(entity drobjecttypes.DRObject) {
+	z.notifyPlayers(types.Pointer(entity.OwnerID()), func() *byter.Byter {
+		CEWriter := NewClientEntityWriterWithByter()
+
+		CEWriter.Remove(entity)
+
+		return CEWriter.Body
+	})
+}
+
+func (z *Zone) notifyPlayers(excludeID *uint16, f func() *byter.Byter) {
 	players := make([]*RRPlayer, 0)
 
 	for _, rrplayer := range z.Players() {
-		if int(entity.OwnerID()) == rrplayer.Conn.GetID() {
+		if excludeID != nil && int(*excludeID) == rrplayer.Conn.GetID() {
 			continue
 		}
 
@@ -411,12 +475,10 @@ func (z *Zone) OnEntitySpawned(entity drobjecttypes.DRObject) {
 		return
 	}
 
-	CEWriter := NewClientEntityWriterWithByter()
-
-	WriteCreateExistingEntity(entity, CEWriter)
+	body := f()
 
 	for _, rrplayer := range players {
-		rrplayer.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeCreateEntity)
+		rrplayer.MessageQueue.Enqueue(message.QueueTypeClientEntity, body, message.OpTypeCreateEntity)
 	}
 }
 

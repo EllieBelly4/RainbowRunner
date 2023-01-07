@@ -13,6 +13,7 @@ type CheckpointEntity struct {
 func NewCheckpointEntity(gctype string) *CheckpointEntity {
 	worldEntity := NewWorldEntity(gctype)
 
+	worldEntity.CanBeActivated = true
 	worldEntity.WorldEntityFlags = 0x07
 
 	return &CheckpointEntity{

@@ -35,7 +35,7 @@ type WorldEntityFlags uint32
 // 0x07 is the least required to get NPCs working
 const (
 	WorldEntityFlagStatic WorldEntityFlags = 1 << iota
-	WorldEntityFlagInteractable
+	WorldEntityFlagCanBeActivated
 	WorldEntityFlagVisible
 	WorldEntityFlagUnk2
 	WorldEntityFlagUnk3
@@ -51,8 +51,6 @@ const (
 	WorldEntityFlagUnk10
 	WorldEntityFlagUnk11
 	WorldEntityFlagUnk12
-
-	WorldEntityFlagInteractableNPC = WorldEntityFlagStatic | WorldEntityFlagInteractable | WorldEntityFlagVisible
 )
 
 type WorldEntityInitFlags uint8
@@ -90,7 +88,8 @@ type WorldEntity struct {
 	UseCustomAnimationSpeed bool
 	AnimationSpeed          float32
 
-	luaScript script.IEntityScript
+	luaScript      script.IEntityScript
+	CanBeActivated bool
 
 	/*
 		PropertyWorldEntityPosition
@@ -214,7 +213,7 @@ func (n *WorldEntity) WriteInit(b *byter.Byter) {
 	// With only 0x04 the character can be moved and is the least broken
 	// 0x07 is the least required to get NPCs working
 	b.WriteUInt32(
-		n.WorldEntityFlags, // With this one alone it was working
+		n.worldEntityFlags(), // With this one alone it was working
 	)
 	// These positions stopped working at some point
 	b.WriteInt32(int32(n.WorldPosition.X * 256)) // Pos X
@@ -267,6 +266,18 @@ func (n *WorldEntity) WriteInit(b *byter.Byter) {
 		// 0x08
 		b.WriteUInt32(uint32(n.AnimationSpeed * 256))
 	}
+}
+
+func (n *WorldEntity) worldEntityFlags() uint32 {
+	flags := n.WorldEntityFlags
+
+	if n.CanBeActivated {
+		flags |= uint32(WorldEntityFlagCanBeActivated)
+	} else {
+		flags &= ^uint32(WorldEntityFlagCanBeActivated)
+	}
+
+	return flags
 }
 
 func NewWorldEntity(gcType string) *WorldEntity {

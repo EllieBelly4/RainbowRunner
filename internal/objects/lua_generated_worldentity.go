@@ -44,6 +44,7 @@ func luaMethodsWorldEntity() map[string]lua2.LGFunction {
 		"unk4Case":                lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *uint32 { return &v.GetWorldEntity().Unk4Case }),
 		"useCustomAnimationSpeed": lua.LuaGenericGetSetBool[IWorldEntity](func(v IWorldEntity) *bool { return &v.GetWorldEntity().UseCustomAnimationSpeed }),
 		"animationSpeed":          lua.LuaGenericGetSetNumber[IWorldEntity](func(v IWorldEntity) *float32 { return &v.GetWorldEntity().AnimationSpeed }),
+		"canBeActivated":          lua.LuaGenericGetSetBool[IWorldEntity](func(v IWorldEntity) *bool { return &v.GetWorldEntity().CanBeActivated }),
 
 		"addChild": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IWorldEntity](l, 1)

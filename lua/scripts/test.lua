@@ -1,14 +1,33 @@
-function test(player)
+function test(player, num)
     zone = player:zone()
     wpConf = zone:loadWaypointFromConfig("start"):baseConfig()
 
 --     player = Player.new("Billy")
 --     player:zone(zone)
 
-    avatar = ObjectHelpers.loadAvatar()
---     player:addChild(avatar)
+    existing = zone:findEntityByName("testnpc123")
 
-    avatar:worldEntityFlags(0x06)
+    if existing then
+        zone:despawn(existing)
+    end
+
+    avatar = ObjectHelpers.loadAvatar()
+
+    avatar:name("testnpc123")
+    avatar:canBeActivated(false)
+
+    avatar:unitFlags(0xFF)
+
+    avatar:unitUnkUint16_0(0xFFFF)
+    avatar:unitUnkUint16_1(0xFFFF)
+
+    avatar:unk10Case(0xFF)
+    avatar:unk20CaseEntityID(0xFFFF)
+    avatar:unk40Case0(0xFF)
+    avatar:unk40Case1(0xFF)
+    avatar:unk40Case2(0xFF)
+    avatar:unk40Case3(0xFF)
+    avatar:unk80Case(0xFF)
 
 --     zone:spawn(avatar, wpConf:position(), wpConf:heading())
 end

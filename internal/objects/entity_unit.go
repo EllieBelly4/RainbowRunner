@@ -21,6 +21,8 @@ type Unit struct {
 	Unk40Case2        uint16
 	Unk40Case3        byte
 	Unk80Case         byte
+	UnitUnkUint16_0   uint16
+	UnitUnkUint16_1   uint16
 }
 
 func (u *Unit) AddChild(child drobjecttypes.DRObject) {
@@ -41,8 +43,8 @@ func (u *Unit) WriteInit(b *byter.Byter) {
 	//u.UnitFlags := 0x01 | 0x02 | 0x04 | 0x10 | 0x20 | 0x40 | 0x80
 	b.WriteByte(u.UnitFlags)
 	b.WriteByte(u.Level) // Level
-	b.WriteUInt16(0x01)
-	b.WriteUInt16(0x02)
+	b.WriteUInt16(u.UnitUnkUint16_0)
+	b.WriteUInt16(u.UnitUnkUint16_1)
 
 	if u.UnitFlags&0x01 > 0 {
 		if u.RREntityProperties().OwnerID != 0 {
