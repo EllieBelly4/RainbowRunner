@@ -13,14 +13,23 @@ type RRPlayer struct {
 	ClientEntityWriter *ClientEntityWriter
 	MessageQueue       *message.Queue
 
-	debugOptions RRPlayerDebugOptions
+	debugOptions *RRPlayerDebugOptions
 }
 
+//go:generate go run ../../scripts/generatelua -type=RRPlayerDebugOptions
 type RRPlayerDebugOptions struct {
 	SendMovementMessages bool
 }
 
-func (p *RRPlayer) DebugOptions() RRPlayerDebugOptions {
+func (p *RRPlayer) SetDebugSendMovementMessages(b bool) {
+	p.debugOptions.SendMovementMessages = b
+}
+
+func (p *RRPlayer) GetDebugSendMovementMessages() bool {
+	return p.debugOptions.SendMovementMessages
+}
+
+func (p *RRPlayer) DebugOptions() *RRPlayerDebugOptions {
 	return p.debugOptions
 }
 
@@ -34,7 +43,7 @@ func NewRRPlayer(rrconn *connections.RRConn, cewriter *ClientEntityWriter, queue
 		Conn:               rrconn,
 		ClientEntityWriter: cewriter,
 		MessageQueue:       queue,
-		debugOptions: RRPlayerDebugOptions{
+		debugOptions: &RRPlayerDebugOptions{
 			SendMovementMessages: true,
 		},
 	}
