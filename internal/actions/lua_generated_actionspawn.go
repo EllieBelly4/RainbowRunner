@@ -4,6 +4,8 @@ package actions
 import (
 	lua "RainbowRunner/internal/lua"
 	byter "RainbowRunner/pkg/byter"
+	"RainbowRunner/pkg/datatypes"
+	"RainbowRunner/pkg/datatypes/drfloat"
 	lua2 "github.com/yuin/gopher-lua"
 )
 
@@ -29,6 +31,9 @@ func registerLuaActionSpawn(state *lua2.LState) {
 
 func luaMethodsActionSpawn() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+		"pos":        lua.LuaGenericGetSetValueAny[IActionSpawn](func(v IActionSpawn) *datatypes.Vector3Float32 { return &v.GetActionSpawn().Pos }),
+		"heading":    lua.LuaGenericGetSetValueAny[IActionSpawn](func(v IActionSpawn) *drfloat.DRFloat { return &v.GetActionSpawn().Heading }),
+		"someUnitID": lua.LuaGenericGetSetNumber[IActionSpawn](func(v IActionSpawn) *uint16 { return &v.GetActionSpawn().SomeUnitID }),
 
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionSpawn](l, 1)

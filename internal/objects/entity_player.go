@@ -33,9 +33,9 @@ func (p *Player) Type() drobjecttypes.DRObjectType {
 func (p *Player) WriteInit(b *byter.Byter) {
 	// Init PLAYER /////////////////////////////////////////
 	b.WriteCString(p.Name)
-	b.WriteUInt32(0xFFFFFFFF)
-	b.WriteUInt32(0xFFFFFFFF)
-	b.WriteByte(0x01)
+	b.WriteUInt32(0x00)
+	b.WriteUInt32(0x00)
+	b.WriteByte(0xFF)
 
 	b.WriteUInt32(p.Zone.ID) // World ID
 	b.WriteUInt32(1001)      // PvP wins

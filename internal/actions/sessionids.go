@@ -3,7 +3,7 @@ package actions
 var (
 	sessionIDMap = map[BehaviourAction]bool{
 		BehaviourActionMoveTo:                true,
-		BehaviourActionSpawn:                 false,
+		BehaviourActionSpawn:                 true,
 		BehaviourActionActivate:              true,
 		BehaviourActionKnockBack:             false,
 		BehaviourActionKnockDown:             false,

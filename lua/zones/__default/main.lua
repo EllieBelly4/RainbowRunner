@@ -14,18 +14,27 @@ function module.__onPlayerEnter(player)
 
     unitBehaviour = player:getChildByGCNativeType("UnitBehavior")
 
+    spawn = ActionSpawn.new()
+
+    pos = nil
+
     if waypoints["start"] ~= nil then
-        unitBehaviour:warpTo(waypoints["start"]:position())
+        pos = waypoints["start"]:position()
     elseif waypoints["waypoint"] ~= nil then
-        unitBehaviour:warpTo(waypoints["waypoint"]:position())
+        pos = waypoints["waypoint"]:position()
     else
         customStart = require("config.custom_start")
 
         lcZoneName = currentZone:name():lower()
 
         if customStart.locations[lcZoneName] ~= nil then
-            unitBehaviour:warpTo(customStart.locations[lcZoneName])
+            pos = customStart.locations[lcZoneName]
         end
+    end
+
+    if pos ~= nil then
+        spawn:pos(pos)
+        unitBehaviour:executeAction(spawn)
     end
 end
 

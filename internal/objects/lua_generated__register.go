@@ -5,6 +5,8 @@ import lua2 "github.com/yuin/gopher-lua"
 
 func RegisterAllLuaFunctions(state *lua2.LState) {
 	registerLuaObjectHelpers(state)
+	registerLuaDRFloat(state)
+	registerLuaVector3DRFloat(state)
 	registerLuaVector3(state)
 	registerLuaVector2(state)
 	registerLuaBit32(state)

@@ -196,6 +196,7 @@ func NewAvatar(gcType string) *Avatar {
 
 	a.CanBeActivated = true
 
+	//a.WorldEntityFlags = 0x04 | 0x800
 	a.WorldEntityFlags = 0x04
 	a.WorldEntityInitFlags = 0x01
 
