@@ -3,6 +3,7 @@ package game
 import (
 	"RainbowRunner/internal/global"
 	"RainbowRunner/internal/objects"
+	"RainbowRunner/internal/synchronisation"
 	"time"
 )
 
@@ -31,6 +32,8 @@ func StartGameLoop() {
 			objects.Players.RUnlock()
 
 			objects.Zones.Tick()
+
+			synchronisation.Tick()
 
 			//if conn.Player.IsMoving {
 			//	conn.Player.SendPosition()

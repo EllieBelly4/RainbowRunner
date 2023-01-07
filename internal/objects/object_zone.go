@@ -442,7 +442,7 @@ func (z *Zone) OnPlayerEnter(player *Player) {
 
 // TODO batch entity spawn events
 func (z *Zone) OnEntitySpawned(entity drobjecttypes.DRObject) {
-	z.notifyPlayers(types.Pointer(entity.OwnerID()), func() *byter.Byter {
+	z.NotifyPlayers(types.Pointer(entity.OwnerID()), func() *byter.Byter {
 		CEWriter := NewClientEntityWriterWithByter()
 
 		WriteCreateExistingEntity(entity, CEWriter)
@@ -451,7 +451,7 @@ func (z *Zone) OnEntitySpawned(entity drobjecttypes.DRObject) {
 }
 
 func (z *Zone) OnEntityDespawned(entity drobjecttypes.DRObject) {
-	z.notifyPlayers(types.Pointer(entity.OwnerID()), func() *byter.Byter {
+	z.NotifyPlayers(types.Pointer(entity.OwnerID()), func() *byter.Byter {
 		CEWriter := NewClientEntityWriterWithByter()
 
 		CEWriter.Remove(entity)
@@ -460,7 +460,7 @@ func (z *Zone) OnEntityDespawned(entity drobjecttypes.DRObject) {
 	})
 }
 
-func (z *Zone) notifyPlayers(excludeID *uint16, f func() *byter.Byter) {
+func (z *Zone) NotifyPlayers(excludeID *uint16, f func() *byter.Byter) {
 	players := make([]*RRPlayer, 0)
 
 	for _, rrplayer := range z.Players() {

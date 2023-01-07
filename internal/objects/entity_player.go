@@ -261,6 +261,10 @@ func (p *Player) LeaveZone() {
 	p.OnZoneLeave()
 }
 
+func (p *Player) GetAvatar() *Avatar {
+	return p.GetChildByGCNativeType("Avatar").(IAvatar).GetAvatar()
+}
+
 func NewPlayer(name string) (p *Player) {
 	p = &Player{
 		Name: name,
