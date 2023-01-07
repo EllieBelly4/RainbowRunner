@@ -71,6 +71,11 @@ func (p *Avatar) Tick() {
 
 	if serverconfig.Config.SendMovementMessages {
 		player := Players.GetPlayer(p.OwnerID())
+
+		if !player.DebugOptions().SendMovementMessages {
+			return
+		}
+
 		unitBehavior := p.GetChildByGCNativeType("UnitBehavior").(*UnitBehavior)
 
 		CEWriter := NewClientEntityWriterWithByter()

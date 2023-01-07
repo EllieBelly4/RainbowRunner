@@ -133,6 +133,16 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 			return 0
 		},
 
+		"spawn": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
+			obj := objInterface.GetUnitBehavior()
+			obj.Spawn(
+				lua.CheckValue[datatypes.Vector3Float32](l, 2),
+			)
+
+			return 0
+		},
+
 		"moveTo": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitBehavior](l, 1)
 			obj := objInterface.GetUnitBehavior()

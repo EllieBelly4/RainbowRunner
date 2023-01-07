@@ -14,9 +14,8 @@ function module.__onPlayerEnter(player)
 
     unitBehaviour = player:getChildByGCNativeType("UnitBehavior")
 
-    spawn = ActionSpawn.new()
-
     pos = nil
+    waypointID = 0
 
     if waypoints["start"] ~= nil then
         pos = waypoints["start"]:position()
@@ -33,8 +32,7 @@ function module.__onPlayerEnter(player)
     end
 
     if pos ~= nil then
-        spawn:pos(pos)
-        unitBehaviour:executeAction(spawn)
+        unitBehaviour:spawn(pos)
     end
 end
 

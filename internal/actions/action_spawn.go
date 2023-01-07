@@ -3,13 +3,11 @@ package actions
 import (
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
-	"RainbowRunner/pkg/datatypes/drfloat"
 )
 
 //go:generate go run ../../scripts/generatelua -type=ActionSpawn
 type ActionSpawn struct {
-	Pos     datatypes.Vector3Float32
-	Heading drfloat.DRFloat
+	Pos datatypes.Vector3Float32
 
 	SomeUnitID uint16
 }

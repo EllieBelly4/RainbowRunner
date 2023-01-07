@@ -524,6 +524,16 @@ func (u *UnitBehavior) handleActionUsePosition(reader *byter.Byter, id byte, ses
 	return nil
 }
 
+func (u *UnitBehavior) Spawn(pos datatypes.Vector3Float32) {
+	action := actions2.ActionSpawn{
+		Pos: pos,
+	}
+
+	u.Position = pos
+
+	u.ExecuteAction(action)
+}
+
 func (u *UnitBehavior) MoveTo(pos datatypes.Vector2Float32) {
 	action := &actions2.ActionMoveTo{
 		PosX: pos.X,

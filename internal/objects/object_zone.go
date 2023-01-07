@@ -493,6 +493,10 @@ func WriteCreateExistingEntity(entity drobjecttypes.DRObject, CEWriter *ClientEn
 		}
 	} else {
 		player.GetPlayer().WriteCreateNewPlayerEntity(CEWriter, false)
+		avatar := player.GetPlayer().GetChildByGCNativeType("Avatar").(*Avatar)
+		if unitBehavior, ok := avatar.GetChildByGCNativeType("UnitBehavior").(IUnitBehavior); unitBehavior != nil && ok {
+			unitBehavior.GetUnitBehavior().WriteWarp(CEWriter)
+		}
 	}
 }
 

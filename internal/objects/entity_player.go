@@ -26,6 +26,10 @@ type Player struct {
 	Zone      *Zone
 }
 
+func (p *Player) GetRRPlayer() *RRPlayer {
+	return Players.GetPlayer(p.OwnerID())
+}
+
 func (p *Player) Type() drobjecttypes.DRObjectType {
 	return drobjecttypes.DRObjectOther
 }
@@ -228,10 +232,6 @@ func (p *Player) OnZoneJoin() {
 		CEWriter := NewClientEntityWriterWithByter()
 
 		WriteCreateExistingEntity(entity, CEWriter)
-
-		if unitBehavior, ok := entity.GetChildByGCNativeType("UnitBehavior").(IUnitBehavior); unitBehavior != nil && ok {
-			unitBehavior.GetUnitBehavior().WriteWarp(CEWriter)
-		}
 
 		rrplayer.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeCreateNPC)
 	}
