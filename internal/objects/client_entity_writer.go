@@ -47,12 +47,17 @@ func (w *ClientEntityWriter) Create(object drobjecttypes.DRObject) {
 	//}
 }
 
-func (w *ClientEntityWriter) Init(object drobjecttypes.DRObject) {
+func (w *ClientEntityWriter) StartInit(object drobjecttypes.DRObject) {
 	w.dirty = true
 
 	w.Body.WriteByte(0x02) // Init
 	w.Body.WriteUInt16(uint16(object.(IRREntityPropertiesHaver).GetRREntityProperties().ID))
+}
 
+func (w *ClientEntityWriter) Init(object drobjecttypes.DRObject) {
+	w.dirty = true
+
+	w.StartInit(object)
 	object.WriteInit(w.Body)
 }
 

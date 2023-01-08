@@ -182,7 +182,7 @@ func LoadAvatar() *Avatar {
 	unitBehaviour.UnitMoverUnk0 = 0x01
 	unitBehaviour.UnitBehaviorTicksSinceLastUpdate = 0x10
 
-	unitBehaviour.IsUnderClientControl = true
+	unitBehaviour.IsUnderClientControl = false
 
 	unitBehaviour.GCLabel = "EllieBehaviour"
 

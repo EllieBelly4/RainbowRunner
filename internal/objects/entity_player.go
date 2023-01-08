@@ -125,7 +125,9 @@ func (p *Player) WriteCreateNewPlayerEntity(clientEntityWriter *ClientEntityWrit
 
 	ub.UnitMoverFlags = umf
 
+	avatar.(IAvatar).GetAvatar().GetUnitBehaviour().IsOwnedByCurrentPlayer = owned
 	clientEntityWriter.Init(avatar)
+	avatar.(IAvatar).GetAvatar().GetUnitBehaviour().IsOwnedByCurrentPlayer = true
 }
 
 var r = rand.New(rand.NewSource(time.Now().Unix()))

@@ -64,6 +64,9 @@ type UnitBehavior struct {
 	UnitBehaviorTicksSinceLastUpdate byte
 	UnitBehaviorInitFlags2           byte
 
+	// This is a hacky workaround to get differing behaviour for writeInit when target is non-owning player
+	IsOwnedByCurrentPlayer bool
+
 	//TODO add movement path
 }
 
@@ -103,14 +106,25 @@ func (u *UnitBehavior) WriteInit(b *byter.Byter) {
 	// Flags
 	// 0x04
 	// 0x01
-	unitMover := u.UnitMoverFlags
-	b.WriteByte(unitMover)
+	unitMoverFlags := u.UnitMoverFlags
+	unitBehaviorUnk1 := u.UnitBehaviorUnk1
+	unitBehaviorUnk2 := u.UnitBehaviorUnk2
+	unitMoverUnk0 := u.UnitMoverUnk0
 
-	if unitMover&0x04 > 0 {
-		b.WriteByte(u.UnitMoverUnk0)
+	//if !u.IsOwnedByCurrentPlayer {
+	//	unitMoverFlags = 0x00
+	//	unitBehaviorUnk1 = 0x00
+	//	unitBehaviorUnk2 = 0x00
+	//	unitMoverUnk0 = 0x00
+	//}
+
+	b.WriteByte(unitMoverFlags)
+
+	if unitMoverFlags&0x04 > 0 {
+		b.WriteByte(unitMoverUnk0)
 	}
 
-	if unitMover&0x01 > 0 {
+	if unitMoverFlags&0x01 > 0 {
 		// 0x01 case
 		b.WriteUInt32(u.UnitMoverUnk1)
 		b.WriteUInt32(u.UnitMoverUnk2)
@@ -119,7 +133,7 @@ func (u *UnitBehavior) WriteInit(b *byter.Byter) {
 	b.WriteUInt32(u.UnitMoverUnk3)
 	b.WriteUInt32(u.UnitMoverUnk4)
 
-	if unitMover&0x80 > 0 {
+	if unitMoverFlags&0x80 > 0 {
 		b.WriteUInt32(u.UnitMoverUnk7)
 	}
 
@@ -128,6 +142,8 @@ func (u *UnitBehavior) WriteInit(b *byter.Byter) {
 
 	if u.IsUnderClientControl {
 		flags = 0x04
+	} else {
+		flags = 0x00
 	}
 
 	b.WriteByte(flags)
@@ -145,8 +161,8 @@ func (u *UnitBehavior) WriteInit(b *byter.Byter) {
 
 	// UnitBehavior::readInit()
 	b.WriteByte(u.SessionID)
-	b.WriteByte(u.UnitBehaviorUnk1)
-	b.WriteByte(u.UnitBehaviorUnk2)
+	b.WriteByte(unitBehaviorUnk1)
+	b.WriteByte(unitBehaviorUnk2)
 
 	if u.UnitBehaviorUnk2 != 0 && u.IsUnderClientControl {
 		b.WriteByte(u.UnitBehaviorTicksSinceLastUpdate) // Seems to smooth out movement, potentially move buffer
