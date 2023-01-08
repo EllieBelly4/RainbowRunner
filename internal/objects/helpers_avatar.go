@@ -176,6 +176,14 @@ func LoadAvatar() *Avatar {
 	)
 
 	unitBehaviour := NewUnitBehavior("avatar.base.UnitBehavior")
+	unitBehaviour.UnitBehaviorUnk1 = 0x01
+	unitBehaviour.UnitBehaviorUnk2 = 0x01
+	unitBehaviour.UnitMoverFlags &= 0x08
+	unitBehaviour.UnitMoverUnk0 = 0x01
+	unitBehaviour.UnitBehaviorTicksSinceLastUpdate = 0x10
+
+	unitBehaviour.IsUnderClientControl = true
+
 	unitBehaviour.GCLabel = "EllieBehaviour"
 
 	unitContainer.AddChild(baseInventory)

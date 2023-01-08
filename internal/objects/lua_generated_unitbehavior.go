@@ -47,7 +47,6 @@ func luaMethodsUnitBehavior() map[string]lua2.LGFunction {
 		"unitMoverUnk3":    lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *uint32 { return &v.GetUnitBehavior().UnitMoverUnk3 }),
 		"unitMoverUnk4":    lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *uint32 { return &v.GetUnitBehavior().UnitMoverUnk4 }),
 		"unitMoverUnk7":    lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *uint32 { return &v.GetUnitBehavior().UnitMoverUnk7 }),
-		"unitBehaviorUnk0": lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitBehaviorUnk0 }),
 		"unitBehaviorUnk1": lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitBehaviorUnk1 }),
 		"unitBehaviorUnk2": lua.LuaGenericGetSetNumber[IUnitBehavior](func(v IUnitBehavior) *byte { return &v.GetUnitBehavior().UnitBehaviorUnk2 }),
 		"isMoving":         lua.LuaGenericGetSetBool[IUnitBehavior](func(v IUnitBehavior) *bool { return &v.GetUnitBehavior().IsMoving }),

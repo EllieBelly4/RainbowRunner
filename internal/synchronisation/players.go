@@ -16,13 +16,13 @@ func onPlayerMove(event objects.PlayerMoveEvent) {
 
 	CEWriter.Body.WriteByte(0x65) // UnitMoverUpdate
 
-	CEWriter.Body.WriteByte(event.UnitBehavior.SessionID)
+	CEWriter.Body.WriteByte(0x00) // Session ID
 
 	CEWriter.Body.WriteByte(0x01)             // Update count
 	CEWriter.Body.WriteByte(event.UpdateType) // Update type
+	CEWriter.Body.WriteUInt32(event.NewHeading.ToWire())
 	CEWriter.Body.WriteUInt32(newPos.X.ToWire())
 	CEWriter.Body.WriteUInt32(newPos.Y.ToWire())
-	CEWriter.Body.WriteUInt32(newPos.Z.ToWire())
 
 	CEWriter.EndComponentUpdate(event.UnitBehavior)
 

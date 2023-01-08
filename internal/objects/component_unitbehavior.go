@@ -53,14 +53,16 @@ type UnitBehavior struct {
 	// unitMoverFlags & 0x80
 	UnitMoverUnk7 uint32
 
-	UnitBehaviorUnk0 byte
 	UnitBehaviorUnk1 byte
 	UnitBehaviorUnk2 byte
 
 	//Movement
-	targetPosition datatypes.Vector2Float32
-	IsMoving       bool
-	LastHeading    drfloat.DRFloat
+	targetPosition                   datatypes.Vector2Float32
+	IsMoving                         bool
+	LastHeading                      drfloat.DRFloat
+	IsUnderClientControl             bool
+	UnitBehaviorTicksSinceLastUpdate byte
+	UnitBehaviorInitFlags2           byte
 
 	//TODO add movement path
 }
@@ -122,12 +124,15 @@ func (u *UnitBehavior) WriteInit(b *byter.Byter) {
 	}
 
 	// Set to 2 for waypoints
-	// TODO look into waypoints as movement targets, RTS movement would always be based on waypoints
-	unitMover2 := byte(0) // Could potentially be waypoints?
+	flags := byte(0)
 
-	b.WriteByte(unitMover2)
+	if u.IsUnderClientControl {
+		flags = 0x04
+	}
 
-	if unitMover2 == 2 {
+	b.WriteByte(flags)
+
+	if flags == 2 {
 		waypointCount := uint16(0x0002)
 		b.WriteUInt16(waypointCount)
 
@@ -139,9 +144,15 @@ func (u *UnitBehavior) WriteInit(b *byter.Byter) {
 	}
 
 	// UnitBehavior::readInit()
-	b.WriteByte(u.UnitBehaviorUnk0)
+	b.WriteByte(u.SessionID)
 	b.WriteByte(u.UnitBehaviorUnk1)
 	b.WriteByte(u.UnitBehaviorUnk2)
+
+	if u.UnitBehaviorUnk2 != 0 && u.IsUnderClientControl {
+		b.WriteByte(u.UnitBehaviorTicksSinceLastUpdate) // Seems to smooth out movement, potentially move buffer
+		b.WriteByte(u.UnitBehaviorInitFlags2)
+		b.WriteByte(0x00) // Initial Move Update Count
+	}
 }
 
 func (u *UnitBehavior) WriteMoveUpdate(b *byter.Byter) {

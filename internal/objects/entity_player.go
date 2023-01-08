@@ -233,7 +233,7 @@ func (p *Player) OnZoneJoin() {
 
 		WriteCreateExistingEntity(entity, CEWriter)
 
-		rrplayer.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeCreateNPC)
+		rrplayer.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeCreateEntity)
 	}
 }
 

@@ -11,9 +11,9 @@ import (
 var playerPosMap = make(map[int]datatypes.Vector3Float32)
 
 func Tick() {
-	for _, zone := range objects.Zones.GetZones() {
-		synchronisePlayerMovement(zone)
-	}
+	//for _, zone := range objects.Zones.GetZones() {
+	//synchronisePlayerMovement(zone)
+	//}
 }
 
 func synchronisePlayerMovement(zone *objects.Zone) {
