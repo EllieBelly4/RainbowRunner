@@ -85,7 +85,6 @@ func (p *Player) WriteSynch(b *byter.Byter) {
 
 func (p *Player) WriteCreateNewPlayerEntity(clientEntityWriter *ClientEntityWriter, owned bool) {
 	avatar := p.GetChildByGCNativeType("Avatar")
-	avatarObj := avatar.(IAvatar).GetAvatar()
 
 	clientEntityWriter.Create(avatar)
 
@@ -113,21 +112,19 @@ func (p *Player) WriteCreateNewPlayerEntity(clientEntityWriter *ClientEntityWrit
 	skills := avatar.GetChildByGCNativeType("Skills")
 	clientEntityWriter.CreateComponentAndInit(skills, avatar)
 
-	ub := avatarObj.GetUnitBehaviour()
-	umf := ub.UnitMoverFlags
-
-	if !owned {
-		ub.UnitMoverFlags = 0x01 | 0x04 | 0x80
-	}
-
 	unitBehaviour := avatar.GetChildByGCNativeType("UnitBehavior")
 	clientEntityWriter.CreateComponentAndInit(unitBehaviour, avatar)
 
-	ub.UnitMoverFlags = umf
+	unitBehavior := avatar.(IAvatar).GetAvatar().GetUnitBehaviour()
+	oldClientControl := unitBehavior.IsUnderClientControl
 
-	avatar.(IAvatar).GetAvatar().GetUnitBehaviour().IsOwnedByCurrentPlayer = owned
+	unitBehavior.IsUnderClientControl = true
+	unitBehavior.IsOwnedByCurrentPlayer = owned
+
 	clientEntityWriter.Init(avatar)
-	avatar.(IAvatar).GetAvatar().GetUnitBehaviour().IsOwnedByCurrentPlayer = true
+
+	unitBehavior.IsUnderClientControl = oldClientControl
+	unitBehavior.IsOwnedByCurrentPlayer = true
 }
 
 var r = rand.New(rand.NewSource(time.Now().Unix()))
