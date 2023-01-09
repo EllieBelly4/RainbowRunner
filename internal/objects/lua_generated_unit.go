@@ -42,6 +42,8 @@ func luaMethodsUnit() map[string]lua2.LGFunction {
 		"unk40Case2":        lua.LuaGenericGetSetNumber[IUnit](func(v IUnit) *uint16 { return &v.GetUnit().Unk40Case2 }),
 		"unk40Case3":        lua.LuaGenericGetSetNumber[IUnit](func(v IUnit) *byte { return &v.GetUnit().Unk40Case3 }),
 		"unk80Case":         lua.LuaGenericGetSetNumber[IUnit](func(v IUnit) *byte { return &v.GetUnit().Unk80Case }),
+		"unitUnkUint16_0":   lua.LuaGenericGetSetNumber[IUnit](func(v IUnit) *uint16 { return &v.GetUnit().UnitUnkUint16_0 }),
+		"unitUnkUint16_1":   lua.LuaGenericGetSetNumber[IUnit](func(v IUnit) *uint16 { return &v.GetUnit().UnitUnkUint16_1 }),
 
 		"addChild": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnit](l, 1)

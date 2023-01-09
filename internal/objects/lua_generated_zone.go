@@ -346,6 +346,16 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 
 			return 0
 		},
+
+		"notifyPlayers": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
+			obj := objInterface.GetZone()
+			obj.NotifyPlayers(func(v uint16) *uint16 { return &v }(uint16(l.CheckNumber(2))),
+				lua.CheckValue[func() *byter.Byter](l, 3),
+			)
+
+			return 0
+		},
 	})
 }
 func newLuaZone(l *lua2.LState) int {

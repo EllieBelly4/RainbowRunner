@@ -151,6 +151,19 @@ func luaMethodsPlayer() map[string]lua2.LGFunction {
 			return 0
 		},
 
+		"getAvatar": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IPlayer](l, 1)
+			obj := objInterface.GetPlayer()
+			res0 := obj.GetAvatar()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
+
 		"getPlayer": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IPlayer](l, 1)
 			obj := objInterface.GetPlayer()

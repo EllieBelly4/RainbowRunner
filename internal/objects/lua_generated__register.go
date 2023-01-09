@@ -41,6 +41,7 @@ func RegisterAllLuaFunctions(state *lua2.LState) {
 	registerLuaQuestManager(state)
 	registerLuaRREntityProperties(state)
 	registerLuaRRPlayer(state)
+	registerLuaRRPlayerDebugOptions(state)
 	registerLuaSkill(state)
 	registerLuaSkillProfession(state)
 	registerLuaSkills(state)

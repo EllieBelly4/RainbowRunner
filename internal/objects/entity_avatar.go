@@ -9,6 +9,7 @@ import (
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
 	"fmt"
+	log "github.com/sirupsen/logrus"
 )
 
 //go:generate go run ../../scripts/generatelua -type=Avatar -extends=Hero
@@ -71,6 +72,11 @@ func (p *Avatar) Tick() {
 
 	if serverconfig.Config.SendMovementMessages {
 		player := Players.GetPlayer(p.OwnerID())
+
+		if player == nil {
+			log.Errorf("player is nil for owner: %d", p.OwnerID())
+			return
+		}
 
 		if !player.DebugOptions().SendMovementMessages {
 			return
