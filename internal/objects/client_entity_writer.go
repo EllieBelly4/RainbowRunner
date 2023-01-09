@@ -47,12 +47,17 @@ func (w *ClientEntityWriter) Create(object drobjecttypes.DRObject) {
 	//}
 }
 
-func (w *ClientEntityWriter) Init(object drobjecttypes.DRObject) {
+func (w *ClientEntityWriter) StartInit(object drobjecttypes.DRObject) {
 	w.dirty = true
 
 	w.Body.WriteByte(0x02) // Init
 	w.Body.WriteUInt16(uint16(object.(IRREntityPropertiesHaver).GetRREntityProperties().ID))
+}
 
+func (w *ClientEntityWriter) Init(object drobjecttypes.DRObject) {
+	w.dirty = true
+
+	w.StartInit(object)
 	object.WriteInit(w.Body)
 }
 
@@ -105,6 +110,10 @@ func (w *ClientEntityWriter) EndStream() {
 	w.Body.WriteByte(0x06)
 }
 
+func (w *ClientEntityWriter) EndStreamConnected() {
+	w.Body.WriteByte(70) // Now connected
+}
+
 func (w *ClientEntityWriter) WriteSynch(object drobjecttypes.DRObject) {
 	w.dirty = true
 
@@ -129,7 +138,9 @@ func (w *ClientEntityWriter) IsDirty() bool {
 	return w.dirty
 }
 
-func (w *ClientEntityWriter) CreateAction(action actions.BehaviourAction, sessionID byte) {
+func (w *ClientEntityWriter) createAction(action actions.BehaviourAction, sessionID byte) {
+	w.dirty = true
+
 	w.Body.WriteByte(0x04)
 	w.Body.WriteByte(byte(action))
 
@@ -139,6 +150,8 @@ func (w *ClientEntityWriter) CreateAction(action actions.BehaviourAction, sessio
 }
 
 func (w *ClientEntityWriter) CreateActionResponse(action actions.BehaviourAction, responseID byte, sessionID byte) {
+	w.dirty = true
+
 	w.Body.WriteByte(0x01)
 	w.Body.WriteByte(responseID)
 	w.Body.WriteByte(byte(action))
@@ -149,8 +162,47 @@ func (w *ClientEntityWriter) CreateActionResponse(action actions.BehaviourAction
 }
 
 func (w *ClientEntityWriter) CreateActionComplete(action actions.Action) {
-	w.CreateAction(action.OpCode(), w.sessionID)
+	w.dirty = true
+
+	w.createAction(action.OpCode(), w.sessionID)
 	action.Init(w.Body)
+}
+
+func (w *ClientEntityWriter) CreateAll(entity drobjecttypes.DRObject) {
+	w.dirty = true
+
+	w.Create(entity)
+
+	entity.WalkChildren(func(object drobjecttypes.DRObject) {
+		_, ok := object.GetParentEntity().(IEntity)
+
+		if !ok {
+			return
+		}
+
+		switch object.(type) {
+		// Child items are stored in inventories and cannot be initialised in this way,
+		// they must be initialised by the inventory
+		// Also I am starting to doubt that Items are "Components" and I think I misundertood
+		case IItem:
+			return
+		case IComponent:
+			//if mb2, ok := object.(*MonsterBehavior2); ok {
+			//	CEWriter.CreateComponentAndInit(object, entity)
+			//}
+			w.CreateComponentAndInit(object, entity)
+		}
+	})
+
+	w.Init(entity)
+}
+
+func (w *ClientEntityWriter) Remove(entity drobjecttypes.DRObject) {
+	w.dirty = true
+
+	w.Body.WriteByte(0x05) // Remove
+
+	w.Body.WriteUInt16(uint16(entity.(IRREntityPropertiesHaver).GetRREntityProperties().ID))
 }
 
 func NewClientEntityWriter(b *byter.Byter) *ClientEntityWriter {

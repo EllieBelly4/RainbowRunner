@@ -11,7 +11,6 @@ import (
 type NPC struct {
 	*StockUnit
 
-	Name  string
 	Level int32
 }
 
@@ -27,9 +26,11 @@ func NewNPC(gcType string, position datatypes.Vector3Float32, rotation float32) 
 	unit := NewStockUnit(gcType)
 	unit.GCType = gcType
 
+	unit.WorldEntity.CanBeActivated = true
+
 	unit.UnitFlags = 0
 	// Adding 0x01 makes it super speedy and disables mouse movement, client selected entity?
-	unit.WorldEntityFlags = 0x06
+	unit.WorldEntityFlags = 0x04
 	unit.WorldEntityInitFlags = 0
 
 	unit.WorldPosition = position
@@ -48,6 +49,8 @@ func NewNPCFromConfig(config *configtypes.NPCConfig) *NPC {
 	npc.Name = config.Name
 	npc.Level = int32(config.Level)
 	npc.CollisionRadius = config.Desc.CollisionRadius
+
+	npc.WorldEntity.CanBeActivated = config.CanBeActivated
 
 	behaviorType := "npc.Base.Behavior"
 

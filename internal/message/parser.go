@@ -13,6 +13,7 @@ import (
 
 type AuthMessageParser struct {
 	connection *pkg.Connection
+	Username   string
 }
 
 func (p *AuthMessageParser) Parse(read []byte, count int) {

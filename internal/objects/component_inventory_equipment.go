@@ -16,6 +16,18 @@ type EquipmentInventory struct {
 	Slots  map[types.EquipmentSlot]IEquipment
 }
 
+func (n *EquipmentInventory) WriteInit(body *byter.Byter) {
+	n.Component.WriteInit(body)
+
+	equippedItems := n.GetEquipment()
+
+	body.WriteByte(byte(len(equippedItems)))
+
+	for _, equippedItem := range equippedItems {
+		equippedItem.GetEquipment().WriteInit(body)
+	}
+}
+
 func (n *EquipmentInventory) AddChild(child drobjecttypes.DRObject) {
 	if _, ok := child.(IEquipment); !ok {
 		panic(fmt.Sprintf("cannot add non-equipment item to EquipmentInventory: %s", child.(IGCObject).GetGCObject().GCType))

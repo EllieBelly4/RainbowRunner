@@ -36,6 +36,16 @@ func luaMethodsEquipmentInventory() map[string]lua2.LGFunction {
 			return &v.GetEquipmentInventory().Slots
 		}),
 
+		"writeInit": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IEquipmentInventory](l, 1)
+			obj := objInterface.GetEquipmentInventory()
+			obj.WriteInit(
+				lua.CheckReferenceValue[byter.Byter](l, 2),
+			)
+
+			return 0
+		},
+
 		"addChild": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IEquipmentInventory](l, 1)
 			obj := objInterface.GetEquipmentInventory()

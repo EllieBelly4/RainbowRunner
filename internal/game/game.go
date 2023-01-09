@@ -50,6 +50,8 @@ func StartGameServer() {
 	}
 }
 
+var connID int = 1
+
 func handleConnection(conn net.Conn) {
 	//parser := message.NewParser(conn)
 	buf := make([]byte, 1024*10)
@@ -59,9 +61,12 @@ func handleConnection(conn net.Conn) {
 	rrconn := connections.NewRRConn(conn)
 
 	rrconn.Client = connections.NewRRConnClient(
-		1,
+		connID,
 		rrconn,
 	)
+
+	connID += 1
+
 	objects.Players.Register(rrconn)
 
 	Connections[rrconn.Client.ID] = rrconn
@@ -96,6 +101,11 @@ func handleConnection(conn net.Conn) {
 func readPacket(conn *connections.RRConn, reader *byter.Byter) {
 	msgType := reader.UInt8() // Message Type?
 
+	if msgType != 0x0a && conn.LoginName == "" {
+		log.Errorf("Received invalid message before login")
+		return
+	}
+
 	if msgType == 0x0a {
 		reader.UInt24()                 // Unk
 		packetLength := reader.UInt32() // Packet Length
@@ -109,10 +119,24 @@ func readPacket(conn *connections.RRConn, reader *byter.Byter) {
 
 		reader = ReadCompressedA(reader, packetLength)
 
+		if msgTypeA != 0x00 && conn.LoginName == "" {
+			log.Errorf("Received invalid message before login")
+			return
+		}
+
 		if msgTypeA == 0x00 {
-			reader.UInt8()      // Some type?
-			_ = reader.UInt32() // One Time Key
-			reader.Bytes(1)     // Null
+			reader.UInt8()                // Some type?
+			oneTimeKey := reader.UInt32() // One Time Key
+
+			var user = global.GetAccountFromOneTimeKey(oneTimeKey)
+
+			if user == nil {
+				panic("Could not authenticate with one time key")
+			}
+
+			conn.LoginName = *user
+
+			reader.Bytes(1) // Null
 
 			body := byter.NewLEByter(make([]byte, 0, 1024))
 

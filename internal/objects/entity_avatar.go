@@ -19,6 +19,10 @@ type Avatar struct {
 	ClientUpdateNumber byte
 	MoveUpdate         int
 	IsSpawned          bool
+
+	FaceVariant byte
+	HairStyle   byte
+	HairColour  byte
 }
 
 func (u *Avatar) AddChild(child drobjecttypes.DRObject) {
@@ -30,17 +34,6 @@ func (p *Avatar) Type() drobjecttypes.DRObjectType {
 	return drobjecttypes.DRObjectOther
 }
 
-func NewAvatar(gcType string) *Avatar {
-	a := &Avatar{
-		Hero: NewHero("Avatar"),
-	}
-
-	a.GCType = gcType
-	a.GCLabel = "EllieAvatar"
-
-	return a
-}
-
 func (p *Avatar) WriteFullGCObject(byter *byter.Byter) {
 	//p.Properties = []GCObjectProperty{
 	//	StringProp("Name", p.Name),
@@ -50,9 +43,23 @@ func (p *Avatar) WriteFullGCObject(byter *byter.Byter) {
 }
 
 func (p Avatar) WriteInit(b *byter.Byter) {
-	panic("implement me")
+	p.Hero.WriteInit(b)
+
+	b.WriteByte(p.FaceVariant)
+	b.WriteByte(p.HairStyle)
+	b.WriteByte(p.HairColour)
 }
 
+// Avatar::processUpdate
+// 0x15 is special Avatar::processUpdate case(spawn entity?) anything else goes to Hero::processUpdate
+// Hero::processUpdate
+// 0x08 is Unit::processUseItemUpdate
+// 0x00 Hero::processUpdateAddExperience
+// 0x01 Hero::processUpdateRemoveExperience
+// 0x02 Hero::processUpdateSpendAttribPoint
+// 0x03 Hero::processUpdateReturnAttribPoint
+// 0x04 Hero::processUpdateRespectAttrbutes
+// body.WriteByte(0x15)
 func (p Avatar) WriteUpdate(b *byter.Byter) {
 	panic("implement me")
 }
@@ -64,6 +71,11 @@ func (p *Avatar) Tick() {
 
 	if serverconfig.Config.SendMovementMessages {
 		player := Players.GetPlayer(p.OwnerID())
+
+		if !player.DebugOptions().SendMovementMessages {
+			return
+		}
+
 		unitBehavior := p.GetChildByGCNativeType("UnitBehavior").(*UnitBehavior)
 
 		CEWriter := NewClientEntityWriterWithByter()
@@ -81,7 +93,7 @@ func (p *Avatar) Tick() {
 //	unitBehavior.SendPositions([]UnitPathPosition{
 //		{
 //			Position: p.Position.ToVector2(),
-//			Rotation: p.Rotation,
+//			Heading: p.Heading,
 //		},
 //	})
 //	p.updated()
@@ -181,3 +193,23 @@ func (p *Avatar) Teleport(coords datatypes.Vector3Float32) {
 //	p.updated()
 //	//p.RREntityProperties().Conn.Send(body)
 //}
+
+func NewAvatar(gcType string) *Avatar {
+	a := &Avatar{
+		Hero: NewHero("Avatar"),
+	}
+
+	a.CanBeActivated = true
+
+	//a.WorldEntityFlags = 0x04 | 0x800
+	a.WorldEntityFlags = 0x04
+	a.WorldEntityInitFlags = 0x01
+
+	a.UnitFlags = 0x07
+	a.Level = 72
+
+	a.GCType = gcType
+	a.GCLabel = "EllieAvatar"
+
+	return a
+}

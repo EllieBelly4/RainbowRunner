@@ -34,6 +34,16 @@ func luaMethodsUnitContainer() map[string]lua2.LGFunction {
 		"activeItem":  lua.LuaGenericGetSetValueAny[IUnitContainer](func(v IUnitContainer) *drobjecttypes.DRObject { return &v.GetUnitContainer().ActiveItem }),
 		"avatar":      lua.LuaGenericGetSetValueAny[IUnitContainer](func(v IUnitContainer) **Avatar { return &v.GetUnitContainer().Avatar }),
 
+		"writeInit": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
+			obj := objInterface.GetUnitContainer()
+			obj.WriteInit(
+				lua.CheckReferenceValue[byter.Byter](l, 2),
+			)
+
+			return 0
+		},
+
 		"readUpdate": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IUnitContainer](l, 1)
 			obj := objInterface.GetUnitContainer()

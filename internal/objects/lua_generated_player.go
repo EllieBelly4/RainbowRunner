@@ -34,6 +34,19 @@ func luaMethodsPlayer() map[string]lua2.LGFunction {
 		"spawned":   lua.LuaGenericGetSetBool[IPlayer](func(v IPlayer) *bool { return &v.GetPlayer().Spawned }),
 		"zone":      lua.LuaGenericGetSetValueAny[IPlayer](func(v IPlayer) **Zone { return &v.GetPlayer().Zone }),
 
+		"getRRPlayer": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IPlayer](l, 1)
+			obj := objInterface.GetPlayer()
+			res0 := obj.GetRRPlayer()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
+
 		"type": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IPlayer](l, 1)
 			obj := objInterface.GetPlayer()
@@ -86,11 +99,11 @@ func luaMethodsPlayer() map[string]lua2.LGFunction {
 			return 0
 		},
 
-		"sendCreateNewPlayerEntity": func(l *lua2.LState) int {
+		"writeCreateNewPlayerEntity": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IPlayer](l, 1)
 			obj := objInterface.GetPlayer()
-			obj.SendCreateNewPlayerEntity(
-				lua.CheckReferenceValue[RRPlayer](l, 2),
+			obj.WriteCreateNewPlayerEntity(
+				lua.CheckReferenceValue[ClientEntityWriter](l, 2), bool(l.CheckBool(3)),
 			)
 
 			return 0

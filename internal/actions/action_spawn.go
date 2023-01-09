@@ -1,9 +1,15 @@
 package actions
 
-import "RainbowRunner/pkg/byter"
+import (
+	"RainbowRunner/pkg/byter"
+	"RainbowRunner/pkg/datatypes"
+)
 
 //go:generate go run ../../scripts/generatelua -type=ActionSpawn
 type ActionSpawn struct {
+	Pos datatypes.Vector3Float32
+
+	SomeUnitID uint16
 }
 
 func (a ActionSpawn) OpCode() BehaviourAction {
@@ -11,7 +17,12 @@ func (a ActionSpawn) OpCode() BehaviourAction {
 }
 
 func (a ActionSpawn) Init(body *byter.Byter) {
-	panic("implement me")
+	pos := a.Pos.ToVector3DRFloat()
+
+	body.WriteUInt32(pos.X.ToWire())
+	body.WriteUInt32(pos.Y.ToWire())
+	body.WriteUInt32(pos.Z.ToWire())
+	body.WriteUInt16(a.SomeUnitID)
 }
 
 func NewActionSpawn() *ActionSpawn {

@@ -4,6 +4,7 @@ package objects
 import (
 	lua "RainbowRunner/internal/lua"
 	"RainbowRunner/internal/types/drobjecttypes"
+	"RainbowRunner/pkg/byter"
 	lua2 "github.com/yuin/gopher-lua"
 )
 
@@ -29,6 +30,25 @@ func registerLuaHero(state *lua2.LState) {
 
 func luaMethodsHero() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+		"expThisLevel":        lua.LuaGenericGetSetNumber[IHero](func(v IHero) *uint32 { return &v.GetHero().ExpThisLevel }),
+		"strength":            lua.LuaGenericGetSetNumber[IHero](func(v IHero) *uint16 { return &v.GetHero().Strength }),
+		"agility":             lua.LuaGenericGetSetNumber[IHero](func(v IHero) *uint16 { return &v.GetHero().Agility }),
+		"endurance":           lua.LuaGenericGetSetNumber[IHero](func(v IHero) *uint16 { return &v.GetHero().Endurance }),
+		"intellect":           lua.LuaGenericGetSetNumber[IHero](func(v IHero) *uint16 { return &v.GetHero().Intellect }),
+		"statPointsRemaining": lua.LuaGenericGetSetNumber[IHero](func(v IHero) *uint16 { return &v.GetHero().StatPointsRemaining }),
+		"respecSomething":     lua.LuaGenericGetSetNumber[IHero](func(v IHero) *uint16 { return &v.GetHero().RespecSomething }),
+		"heroUnk0":            lua.LuaGenericGetSetNumber[IHero](func(v IHero) *uint32 { return &v.GetHero().HeroUnk0 }),
+		"heroUnk1":            lua.LuaGenericGetSetNumber[IHero](func(v IHero) *uint32 { return &v.GetHero().HeroUnk1 }),
+
+		"writeInit": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IHero](l, 1)
+			obj := objInterface.GetHero()
+			obj.WriteInit(
+				lua.CheckReferenceValue[byter.Byter](l, 2),
+			)
+
+			return 0
+		},
 
 		"addChild": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IHero](l, 1)

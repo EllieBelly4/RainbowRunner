@@ -12,21 +12,19 @@ type Inventory struct {
 
 	itemID      int
 	InventoryID byte
+	Items       []IItem
 }
 
-func (i *Inventory) AddChild(child drobjecttypes.DRObject) {
+func (i *Inventory) AddItem(child drobjecttypes.DRObject) {
 	switch child.(type) {
-	case IEquipment:
-		child.(IEquipment).GetEquipment().Index = i.itemID
-	case *Item:
-		child.(*Item).Index = i.itemID
+	case IItem:
+		child.(IItem).GetItem().Index = i.itemID
 	default:
 		panic(fmt.Sprintf("cannot add non-item to Inventory: %s", child.(IGCObject).GetGCObject().GCType))
 	}
 
 	i.itemID++
-
-	i.GCObject.AddChild(child)
+	i.Items = append(i.Items, child.(IItem))
 }
 
 func (i *Inventory) WriteInit(body *byter.Byter) {

@@ -3,7 +3,9 @@ package objects
 import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/database"
+	"RainbowRunner/internal/game/messages"
 	"RainbowRunner/internal/lua"
+	"RainbowRunner/internal/message"
 	"RainbowRunner/internal/pathfinding"
 	script2 "RainbowRunner/internal/script"
 	"RainbowRunner/internal/serverconfig"
@@ -65,7 +67,6 @@ func (z *Zone) Players() []*RRPlayer {
 
 func (z *Zone) RemovePlayer(id int) {
 	z.Lock()
-	defer z.Unlock()
 
 	delete(z.players, uint16(id))
 
@@ -77,15 +78,46 @@ func (z *Zone) RemovePlayer(id int) {
 		}
 	}
 
+	z.Unlock()
+
 	for _, index := range toDelete {
-		z.entities[index].(IRREntityPropertiesHaver).GetRREntityProperties().Zone = nil
+		z.Lock()
+		entity := z.entities[index]
+		entity.(IRREntityPropertiesHaver).GetRREntityProperties().Zone = nil
 		delete(z.entities, index)
+		z.Unlock()
+
+		if player, ok := entity.(IPlayer); ok {
+			avatar := player.GetPlayer().GetChildByGCNativeType("Avatar")
+
+			if avatar != nil {
+				z.OnEntityDespawned(avatar)
+			}
+		}
+
+		z.OnEntityDespawned(entity)
 	}
 }
 
-func (z *Zone) SpawnEntity(owner *uint16, entity drobjecttypes.DRObject) {
+func (z *Zone) Despawn(entity drobjecttypes.DRObject) {
+	id := uint16(entity.(IRREntityPropertiesHaver).GetRREntityProperties().ID)
+
 	z.Lock()
-	defer z.Unlock()
+
+	if _, ok := z.entities[id]; !ok {
+		z.Unlock()
+		return
+	}
+
+	delete(z.entities, id)
+
+	z.Unlock()
+
+	z.OnEntityDespawned(entity)
+}
+
+func (z *Zone) SpawnEntity(owner *uint16, entity drobjecttypes.DRObject) {
+	//z.Lock()
 
 	z.setZone(entity)
 	z.GiveID(entity)
@@ -111,17 +143,17 @@ func (z *Zone) SpawnEntity(owner *uint16, entity drobjecttypes.DRObject) {
 
 	z.entities[id] = entity
 
+	//z.Unlock()
+
 	entity.Init()
+
+	z.OnEntitySpawned(entity)
 }
 
 func (z *Zone) AddPlayer(player *RRPlayer) {
 	z.Lock()
 	z.players[uint16(player.Conn.GetID())] = player
 	z.Unlock()
-
-	for _, child := range player.CurrentCharacter.Children() {
-		z.SpawnEntity(types.UInt16(uint16(player.Conn.GetID())), child)
-	}
 }
 
 func (z *Zone) setZone(entities ...drobjecttypes.DRObject) {
@@ -157,7 +189,7 @@ func (z *Zone) SpawnEntityWithPosition(
 		behavior := unitBehavior.GetUnitBehavior()
 
 		behavior.Position = position
-		behavior.Rotation = rotation
+		behavior.Heading = rotation
 	}
 
 	z.SpawnEntity(ownerID, entity)
@@ -165,7 +197,11 @@ func (z *Zone) SpawnEntityWithPosition(
 
 // Spawn
 // Deprecated: use SpawnEntityWithPosition
-func (z *Zone) Spawn(entity drobjecttypes.DRObject, position datatypes.Vector3Float32, rotation float32) {
+func (z *Zone) Spawn(
+	entity drobjecttypes.DRObject,
+	position datatypes.Vector3Float32,
+	rotation float32,
+) {
 	z.SpawnEntityWithPosition(entity, position, rotation, nil)
 }
 
@@ -326,6 +362,20 @@ func (z *Zone) FindEntityByGCTypeName(name string) drobjecttypes.DRObject {
 	return nil
 }
 
+func (z *Zone) FindEntityByName(name string) drobjecttypes.DRObject {
+	for _, entity := range z.Entities() {
+		if entity == nil {
+			continue
+		}
+
+		if ee, ok := entity.(IEntity); ok && ee.GetEntity().Name == name {
+			return entity
+		}
+	}
+
+	return nil
+}
+
 func (z *Zone) FindEntityByID(id uint16) drobjecttypes.DRObject {
 	z.RLock()
 	defer z.RUnlock()
@@ -365,7 +415,98 @@ func (z *Zone) GiveID(entity drobjecttypes.DRObject) {
 // OnPlayerEnter is called when a player enters the zone from the game client and requires the initial zone state
 // This is not the same as when a player "Joins" a zone, which is when they are added to the zone's player list
 func (z *Zone) OnPlayerEnter(player *Player) {
+	rrplayer := Players.GetPlayer(player.OwnerID())
+
+	z.SpawnEntity(types.UInt16(player.OwnerID()), player)
+
+	CEWriter := NewClientEntityWriterWithByter()
+	CEWriter.BeginStream()
+	player.WriteCreateNewPlayerEntity(CEWriter, true)
+	CEWriter.EndStreamConnected()
+
+	connections.WriteCompressedA(player.RREntityProperties().Conn, 0x01, 0x0f, CEWriter.Body)
+
+	player.OnZoneJoin()
+
 	z.Scripts.OnPlayerEnter(player)
+
+	avatar := player.GetChildByGCNativeType("Avatar").(*Avatar)
+
+	avatar.SendFollowClient()
+	avatar.IsSpawned = true
+
+	if serverconfig.Config.Welcome.SendWelcomeMessage {
+		SendWelcomeMessage(rrplayer)
+	}
+}
+
+// TODO batch entity spawn events
+func (z *Zone) OnEntitySpawned(entity drobjecttypes.DRObject) {
+	z.NotifyPlayers(types.Pointer(entity.OwnerID()), func() *byter.Byter {
+		CEWriter := NewClientEntityWriterWithByter()
+
+		WriteCreateExistingEntity(entity, CEWriter)
+		return CEWriter.Body
+	})
+}
+
+func (z *Zone) OnEntityDespawned(entity drobjecttypes.DRObject) {
+	z.NotifyPlayers(types.Pointer(entity.OwnerID()), func() *byter.Byter {
+		CEWriter := NewClientEntityWriterWithByter()
+
+		CEWriter.Remove(entity)
+
+		return CEWriter.Body
+	})
+}
+
+func (z *Zone) NotifyPlayers(excludeID *uint16, f func() *byter.Byter) {
+	players := make([]*RRPlayer, 0)
+
+	for _, rrplayer := range z.Players() {
+		if excludeID != nil && int(*excludeID) == rrplayer.Conn.GetID() {
+			continue
+		}
+
+		players = append(players, rrplayer)
+	}
+
+	if len(players) == 0 {
+		return
+	}
+
+	body := f()
+
+	for _, rrplayer := range players {
+		rrplayer.MessageQueue.Enqueue(message.QueueTypeClientEntity, body, message.OpTypeCreateEntity)
+	}
+}
+
+func WriteCreateExistingEntity(entity drobjecttypes.DRObject, CEWriter *ClientEntityWriter) {
+	player, isPlayer := entity.(IPlayer)
+
+	if !isPlayer {
+		CEWriter.CreateAll(entity)
+
+		if unitBehavior, ok := entity.GetChildByGCNativeType("UnitBehavior").(IUnitBehavior); unitBehavior != nil && ok {
+			unitBehavior.GetUnitBehavior().WriteWarp(CEWriter)
+		}
+	} else {
+		player.GetPlayer().WriteCreateNewPlayerEntity(CEWriter, false)
+		avatar := player.GetPlayer().GetChildByGCNativeType("Avatar").(*Avatar)
+		if unitBehavior, ok := avatar.GetChildByGCNativeType("UnitBehavior").(IUnitBehavior); unitBehavior != nil && ok {
+			unitBehavior.GetUnitBehavior().WriteWarp(CEWriter)
+		}
+	}
+}
+
+func SendWelcomeMessage(player *RRPlayer) {
+	msg := messages.ChatMessage{
+		Channel: messages.MessageChannelSourceGlobalAnnouncement,
+		Message: serverconfig.Config.Welcome.Message,
+	}
+
+	player.Conn.SendMessage(msg)
 }
 
 func NewZone(name string, id uint32) *Zone {

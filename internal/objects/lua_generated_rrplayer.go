@@ -22,6 +22,7 @@ func registerLuaRRPlayer(state *lua2.LState) {
 
 	mt := state.NewTypeMetatable("RRPlayer")
 	state.SetGlobal("RRPlayer", mt)
+	state.SetField(mt, "new", state.NewFunction(newLuaRRPlayer))
 	state.SetField(mt, "__index", state.SetFuncs(state.NewTable(),
 		luaMethodsRRPlayer(),
 	))
@@ -48,6 +49,36 @@ func luaMethodsRRPlayer() map[string]lua2.LGFunction {
 			return 1
 		},
 
+		"setDebugSendMovementMessages": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IRRPlayer](l, 1)
+			obj := objInterface.GetRRPlayer()
+			obj.SetDebugSendMovementMessages(bool(l.CheckBool(2)))
+
+			return 0
+		},
+
+		"getDebugSendMovementMessages": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IRRPlayer](l, 1)
+			obj := objInterface.GetRRPlayer()
+			res0 := obj.GetDebugSendMovementMessages()
+			l.Push(lua2.LBool(res0))
+
+			return 1
+		},
+
+		"debugOptions": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IRRPlayer](l, 1)
+			obj := objInterface.GetRRPlayer()
+			res0 := obj.DebugOptions()
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
+
 		"zone": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IRRPlayer](l, 1)
 			obj := objInterface.GetRRPlayer()
@@ -61,6 +92,19 @@ func luaMethodsRRPlayer() map[string]lua2.LGFunction {
 			return 1
 		},
 	})
+}
+func newLuaRRPlayer(l *lua2.LState) int {
+	obj := NewRRPlayer(
+		lua.CheckReferenceValue[connections.RRConn](l, 1),
+		lua.CheckReferenceValue[ClientEntityWriter](l, 2),
+		lua.CheckReferenceValue[message.Queue](l, 3),
+	)
+	ud := l.NewUserData()
+	ud.Value = obj
+
+	l.SetMetatable(ud, l.GetTypeMetatable("RRPlayer"))
+	l.Push(ud)
+	return 1
 }
 
 func (r *RRPlayer) ToLua(l *lua2.LState) lua2.LValue {

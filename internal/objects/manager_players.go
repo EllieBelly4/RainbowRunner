@@ -36,11 +36,7 @@ func (m *PlayerManager) Register(rrconn *connections.RRConn) *RRPlayer {
 	m.Lock()
 	defer m.Unlock()
 
-	rrPlayer := &RRPlayer{
-		Conn:               rrconn,
-		ClientEntityWriter: NewClientEntityWriterWithByter(),
-		MessageQueue:       message.NewQueue(),
-	}
+	rrPlayer := NewRRPlayer(rrconn, NewClientEntityWriterWithByter(), message.NewQueue())
 
 	m.Players[int(rrconn.Client.ID)] = rrPlayer
 
@@ -134,6 +130,7 @@ func (m *PlayerManager) AfterTick() {
 			connections.WriteCompressedASimple(player.Conn, playerSendBuffer)
 		}
 
+		playerSendBuffer.Clear()
 		player.ClientEntityWriter.Clear()
 	}
 }

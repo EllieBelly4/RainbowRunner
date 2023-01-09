@@ -4,6 +4,7 @@ package actions
 import (
 	lua "RainbowRunner/internal/lua"
 	byter "RainbowRunner/pkg/byter"
+	"RainbowRunner/pkg/datatypes/drfloat"
 	lua2 "github.com/yuin/gopher-lua"
 )
 
@@ -29,6 +30,7 @@ func registerLuaActionTurnAction(state *lua2.LState) {
 
 func luaMethodsActionTurnAction() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
+		"speed": lua.LuaGenericGetSetValueAny[IActionTurnAction](func(v IActionTurnAction) *drfloat.DRFloat { return &v.GetActionTurnAction().Speed }),
 
 		"opCode": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IActionTurnAction](l, 1)

@@ -107,6 +107,16 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 			return 0
 		},
 
+		"despawn": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
+			obj := objInterface.GetZone()
+			obj.Despawn(
+				lua.CheckValue[drobjecttypes.DRObject](l, 2),
+			)
+
+			return 0
+		},
+
 		"spawnEntity": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
@@ -271,6 +281,19 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 			return 1
 		},
 
+		"findEntityByName": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
+			obj := objInterface.GetZone()
+			res0 := obj.FindEntityByName(string(l.CheckString(2)))
+			if res0 != nil {
+				l.Push(res0.ToLua(l))
+			} else {
+				l.Push(lua2.LNil)
+			}
+
+			return 1
+		},
+
 		"findEntityByID": func(l *lua2.LState) int {
 			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
 			obj := objInterface.GetZone()
@@ -299,6 +322,26 @@ func luaMethodsZone() map[string]lua2.LGFunction {
 			obj := objInterface.GetZone()
 			obj.OnPlayerEnter(
 				lua.CheckReferenceValue[Player](l, 2),
+			)
+
+			return 0
+		},
+
+		"onEntitySpawned": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
+			obj := objInterface.GetZone()
+			obj.OnEntitySpawned(
+				lua.CheckValue[drobjecttypes.DRObject](l, 2),
+			)
+
+			return 0
+		},
+
+		"onEntityDespawned": func(l *lua2.LState) int {
+			objInterface := lua.CheckInterfaceValue[IZone](l, 1)
+			obj := objInterface.GetZone()
+			obj.OnEntityDespawned(
+				lua.CheckValue[drobjecttypes.DRObject](l, 2),
 			)
 
 			return 0

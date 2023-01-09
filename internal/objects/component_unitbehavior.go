@@ -10,12 +10,14 @@ import (
 	"RainbowRunner/internal/serverconfig"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
+	"RainbowRunner/pkg/datatypes/drfloat"
 	"RainbowRunner/pkg/events"
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"math"
+	"reflect"
 )
 
 //go:generate go run ../../scripts/generateLua/ -type=UnitBehavior -extends=Component
@@ -28,7 +30,7 @@ type UnitBehavior struct {
 
 	LastPosition   datatypes.Vector3Float32
 	Position       datatypes.Vector3Float32
-	Rotation       float32
+	Heading        float32
 	UnitMoverFlags byte
 	Action1        actions2.Action
 	Action2        actions2.Action
@@ -51,13 +53,20 @@ type UnitBehavior struct {
 	// unitMoverFlags & 0x80
 	UnitMoverUnk7 uint32
 
-	UnitBehaviorUnk0 byte
 	UnitBehaviorUnk1 byte
 	UnitBehaviorUnk2 byte
 
 	//Movement
-	targetPosition datatypes.Vector2Float32
-	IsMoving       bool
+	targetPosition                   datatypes.Vector2Float32
+	IsMoving                         bool
+	LastHeading                      drfloat.DRFloat
+	IsUnderClientControl             bool
+	UnitBehaviorTicksSinceLastUpdate byte
+	UnitBehaviorInitFlags2           byte
+
+	// This is a hacky workaround to get differing behaviour for writeInit when target is non-owning player
+	IsOwnedByCurrentPlayer bool
+
 	//TODO add movement path
 }
 
@@ -69,7 +78,7 @@ func (u *UnitBehavior) Tick() {
 
 		distanceToTarget := u.Position.ToVector2Float32().Distance(u.targetPosition)
 		if distanceToTarget < 0.1 {
-			//logrus.Info("reached target position")
+			//log.Info("reached target position")
 			u.IsMoving = false
 			return
 		}
@@ -97,14 +106,25 @@ func (u *UnitBehavior) WriteInit(b *byter.Byter) {
 	// Flags
 	// 0x04
 	// 0x01
-	unitMover := u.UnitMoverFlags
-	b.WriteByte(unitMover)
+	unitMoverFlags := u.UnitMoverFlags
+	unitBehaviorUnk1 := u.UnitBehaviorUnk1
+	unitBehaviorUnk2 := u.UnitBehaviorUnk2
+	unitMoverUnk0 := u.UnitMoverUnk0
 
-	if unitMover&0x04 > 0 {
-		b.WriteByte(u.UnitMoverUnk0)
+	//if !u.IsOwnedByCurrentPlayer {
+	//	unitMoverFlags = 0x00
+	//	unitBehaviorUnk1 = 0x00
+	//	unitBehaviorUnk2 = 0x00
+	//	unitMoverUnk0 = 0x00
+	//}
+
+	b.WriteByte(unitMoverFlags)
+
+	if unitMoverFlags&0x04 > 0 {
+		b.WriteByte(unitMoverUnk0)
 	}
 
-	if unitMover&0x01 > 0 {
+	if unitMoverFlags&0x01 > 0 {
 		// 0x01 case
 		b.WriteUInt32(u.UnitMoverUnk1)
 		b.WriteUInt32(u.UnitMoverUnk2)
@@ -113,17 +133,22 @@ func (u *UnitBehavior) WriteInit(b *byter.Byter) {
 	b.WriteUInt32(u.UnitMoverUnk3)
 	b.WriteUInt32(u.UnitMoverUnk4)
 
-	if unitMover&0x80 > 0 {
+	if unitMoverFlags&0x80 > 0 {
 		b.WriteUInt32(u.UnitMoverUnk7)
 	}
 
 	// Set to 2 for waypoints
-	// TODO look into waypoints as movement targets, RTS movement would always be based on waypoints
-	unitMover2 := byte(0) // Could potentially be waypoints?
+	flags := byte(0)
 
-	b.WriteByte(unitMover2)
+	if u.IsUnderClientControl {
+		flags = 0x04
+	} else {
+		flags = 0x00
+	}
 
-	if unitMover2 == 2 {
+	b.WriteByte(flags)
+
+	if flags == 2 {
 		waypointCount := uint16(0x0002)
 		b.WriteUInt16(waypointCount)
 
@@ -135,16 +160,22 @@ func (u *UnitBehavior) WriteInit(b *byter.Byter) {
 	}
 
 	// UnitBehavior::readInit()
-	b.WriteByte(u.UnitBehaviorUnk0)
-	b.WriteByte(u.UnitBehaviorUnk1)
-	b.WriteByte(u.UnitBehaviorUnk2)
+	b.WriteByte(u.SessionID)
+	b.WriteByte(unitBehaviorUnk1)
+	b.WriteByte(unitBehaviorUnk2)
+
+	if u.UnitBehaviorUnk2 != 0 && u.IsUnderClientControl {
+		b.WriteByte(u.UnitBehaviorTicksSinceLastUpdate) // Seems to smooth out movement, potentially move buffer
+		b.WriteByte(u.UnitBehaviorInitFlags2)
+		b.WriteByte(0x00) // Initial Move Update Count
+	}
 }
 
 func (u *UnitBehavior) WriteMoveUpdate(b *byter.Byter) {
 	positions := []UnitPathPosition{
 		{
 			Position: u.Position.ToVector2Float32(),
-			Rotation: u.Rotation,
+			Rotation: u.Heading,
 		},
 	}
 
@@ -152,15 +183,10 @@ func (u *UnitBehavior) WriteMoveUpdate(b *byter.Byter) {
 		panic("cannot send more than 255 position updates in a single message")
 	}
 
-	//writer := NewClientEntityWriterWithByter()
-	//writer.BeginStream()
-	//writer.BeginComponentUpdate(n)
-
 	b.WriteByte(0x65) // UnitMoverUpdate
 
 	// UnitBehavior::processUpdate
-	// Potentially move type? only 0xFF works with players?
-	b.WriteByte(u.SessionID) // Unk
+	b.WriteByte(u.SessionID)
 
 	updateCount := byte(len(positions))
 	b.WriteByte(updateCount) // Update count
@@ -220,6 +246,8 @@ type UnitPathPosition struct {
 	ResponseID byte
 }
 
+var eventTypePlayerMove = reflect.TypeOf(PlayerMoveEvent{})
+
 func (u *UnitBehavior) handleClientMove(conn connections.Connection, reader *byter.Byter) {
 	// This is the session ID that increments every time the client attempts to sync
 	sessionID := reader.Byte()
@@ -242,11 +270,12 @@ func (u *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 	avatar := Players.Players[conn.GetID()].CurrentCharacter.GetChildByGCNativeType("Avatar").(*Avatar)
 
 	for i := 0; i < count; i++ {
-		moveUpdateType := reader.Byte()     // Unk
-		rotation := float32(reader.Int32()) // Seems to be rotation
+		moveUpdateType := reader.Byte() // Unk
 
-		//degrees := float32((float64(rotation) / 0x17000) * 360)
-		degrees := float32(rotation / 256)
+		heading := float32(reader.Int32()) // Seems to be heading
+
+		//degrees := float32((float64(heading) / 0x17000) * 360)
+		degrees := float32(heading / 256)
 
 		pos.X = float32(reader.Int32()) / 256
 		pos.Y = float32(reader.Int32()) / 256
@@ -255,35 +284,45 @@ func (u *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 			//xf := float32(pos.X>>8) + (float32(pos.X&0xFF) / 256)
 			//yf := float32(pos.Y>>8) + (float32(pos.Y&0xFF) / 256)
 			fmt.Printf(
-				"Player move 0x%x rotation 0x%x(%.2fdeg) (%f, %f) Hex (%x, %x)\n",
-				moveUpdateType, rotation, degrees, pos.X, pos.Y, pos.X, pos.Y,
+				"Player move 0x%x heading 0x%x(%.2fdeg) (%f, %f) Hex (%x, %x)\n",
+				moveUpdateType, heading, degrees, pos.X, pos.Y, pos.X, pos.Y,
 			)
 		}
 
 		u.LastPosition = u.Position
+		u.LastHeading = drfloat.FromFloat32(u.Heading)
 
-		u.Position.X = pos.X
-		u.Position.Y = pos.Y
-		u.Position.Z = 0
-
-		if currentZone.PathMap != nil {
-			u.Position.Z = currentZone.PathMap.HeightAt(u.Position.ToVector2Float32())
+		newPosition := datatypes.Vector3Float32{
+			X: pos.X,
+			Y: pos.Y,
+			Z: 0,
 		}
 
-		u.Rotation = degrees
+		if currentZone.PathMap != nil {
+			newPosition.Z = currentZone.PathMap.HeightAt(u.Position.ToVector2Float32())
+		}
 
-		//conn.Player.SendPosition(moveUpdateType)
+		u.Position = newPosition
+		u.Heading = degrees
 
-		//conn.Player.MoveQueue.Add(MovementUpdate{
-		//	Position: pos,
-		//	Rotation: rotation,
-		//	Tick:     Tick,
-		//})
+		events.EmitNoReflect(eventTypePlayerMove, PlayerMoveEvent{
+			UnitBehavior: u,
+			UpdateType:   moveUpdateType,
+			PrevPosition: u.LastPosition,
+			PrevHeading:  u.LastHeading,
+			NewPosition:  newPosition,
+			NewHeading:   drfloat.FromFloat32(degrees),
+		})
 
-		if moveUpdateType&0x02 > 0 {
+		if moveUpdateType == 0 {
+			//log.Infof("Move 0 %f - delta %f", degrees, u.Position.ToVector2Float32().Distance(u.LastPosition.ToVector2Float32()))
+		} else if moveUpdateType&0x02 > 0 {
 			if serverconfig.Config.Logging.LogMoves {
-				fmt.Println("player started moving")
+				fmt.Println("move forwards in direction")
 			}
+
+			//log.Infof("delta %f", u.Position.ToVector2Float32().Distance(u.LastPosition.ToVector2Float32()))
+
 			avatar.IsMoving = true
 			//conn.Player.SendPosition(0x02)
 		} else if moveUpdateType&0x01 > 0 {
@@ -296,7 +335,7 @@ func (u *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 
 		responseMoves = append(responseMoves, UnitPathPosition{
 			ResponseID: sessionID,
-			Rotation:   rotation,
+			Rotation:   heading,
 			Position: datatypes.Vector2Float32{
 				X: pos.X,
 				Y: pos.Y,
@@ -306,7 +345,7 @@ func (u *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 
 	if currentZone.PathMap != nil {
 		//gridPos := currentZone.PathMap.WorldPosToGridCoords(u.Position)
-		//logrus.Infof("Current coords: %d, %d height: %f", gridPos.X, gridPos.Y, u.Position.Z)
+		//log.Infof("Current coords: %d, %d height: %f", gridPos.X, gridPos.Y, u.Position.Z)
 	}
 
 	//TODO replace this
@@ -324,7 +363,7 @@ func (u *UnitBehavior) handleClientMove(conn connections.Connection, reader *byt
 	}
 
 	if serverconfig.Config.Logging.LogMoves {
-		logrus.Infof("\n%s\n", hex.Dump(reader.Data()))
+		log.Infof("\n%s\n", hex.Dump(reader.Data()))
 	}
 }
 
@@ -339,11 +378,10 @@ func (u *UnitBehavior) ReadUpdate(reader *byter.Byter) error {
 		u.handleClientMove(u.EntityProperties.Conn, reader)
 	// Potentially requesting current position because starting a new path
 	case 0x03:
-		// This seems to also be used when the player tries to interact with an object when it is too far away
+		// When a player is moving towards an entity due to activate, and the player attempts to move away
+		// this is triggered, I think it should be handled by cancelling the current moveTo action towards the entity
+		// and instead give back control?
 		fmt.Printf("player send move request\n")
-		// This is required to be handled so the player can move after getting stuck due to attacking
-		// TODO investigate this behaviour
-		//Players.Players[g.RREntityProperties().Conn.GetID()].CurrentCharacter.GetChildByGCNativeType("Avatar").(*Avatar).SendPosition()
 	default:
 		fmt.Printf("unhandled client entity sub message %x\n", subMessage)
 		return errors.New("unhandled unitbehavior update\n")
@@ -434,7 +472,7 @@ func (u *UnitBehavior) handleExecuteAction(reader *byter.Byter) error {
 	action := actions2.BehaviourAction(reader.Byte())
 	sessionID := reader.Byte()
 
-	logrus.Infof("execute action %s, unk0 %d sessionID %d\n", action.String(), responseId, sessionID)
+	log.Infof("execute action %s, unk0 %d sessionID %d\n", action.String(), responseId, sessionID)
 	reader.DumpRemaining()
 
 	var err error
@@ -453,7 +491,7 @@ func (u *UnitBehavior) handleExecuteAction(reader *byter.Byter) error {
 }
 
 func (u *UnitBehavior) handleExecuteActivate(reader *byter.Byter, responseID byte, sessionID byte) error {
-	logrus.Infof("execute Activate responseID %x", sessionID)
+	log.Infof("execute Activate responseID %x", sessionID)
 
 	targetID := reader.UInt16()
 
@@ -466,7 +504,7 @@ func (u *UnitBehavior) handleExecuteActivate(reader *byter.Byter, responseID byt
 	activateable, ok := targetEntity.(IActivatable)
 
 	if !ok {
-		logrus.Errorf("tried to activate non-activatable: %s", targetEntity.String())
+		log.Errorf("tried to activate non-activatable: %s", targetEntity.String())
 		return nil
 	}
 
@@ -482,7 +520,7 @@ func (u *UnitBehavior) handleActionUsePosition(reader *byter.Byter, id byte, ses
 	posY := float64(reader.Int32()) / 256
 	posZ := float64(reader.Int32()) / 256
 
-	logrus.Infof("use position actionID %d\n%f,%f,%f", actionID, posX, posY, posZ)
+	log.Infof("use position actionID %d\n%f,%f,%f", actionID, posX, posY, posZ)
 
 	gosucks.VAR(posX, posY, posZ)
 
@@ -511,6 +549,16 @@ func (u *UnitBehavior) handleActionUsePosition(reader *byter.Byter, id byte, ses
 	)
 
 	return nil
+}
+
+func (u *UnitBehavior) Spawn(pos datatypes.Vector3Float32) {
+	action := actions2.ActionSpawn{
+		Pos: pos,
+	}
+
+	u.Position = pos
+
+	u.ExecuteAction(action)
 }
 
 func (u *UnitBehavior) MoveTo(pos datatypes.Vector2Float32) {
@@ -547,7 +595,7 @@ func (u *UnitBehavior) MoveToEntity(g IWorldEntity) {
 	}
 
 	if !set {
-		logrus.Warningf("cannot move to target as it does not have a position")
+		log.Warningf("cannot move to target as it does not have a position")
 		return
 	}
 
@@ -583,7 +631,7 @@ func (u *UnitBehavior) StopFollowClient() {
 }
 
 func (u *UnitBehavior) handleActionUse(reader *byter.Byter, responseID byte, sessionID byte) error {
-	logrus.Infof("use actionID %d", responseID)
+	log.Infof("use actionID %d", responseID)
 
 	CEWriter := NewClientEntityWriterWithByter()
 

@@ -252,6 +252,7 @@ func (b *Byter) Write(body *Byter) {
 }
 
 func (b *Byter) Clear() {
+	b.I = 0
 	b.Buffer = b.Buffer[:0]
 }
 

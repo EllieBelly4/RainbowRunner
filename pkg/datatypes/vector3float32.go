@@ -1,6 +1,7 @@
 package datatypes
 
 import (
+	"RainbowRunner/pkg/datatypes/drfloat"
 	"fmt"
 	"github.com/yuin/gopher-lua"
 )
@@ -57,4 +58,12 @@ func (f Vector3Float32) ToLua(state *lua.LState) lua.LValue {
 	ud.Value = f
 	state.SetMetatable(ud, state.GetTypeMetatable("Vector3"))
 	return ud
+}
+
+func (v Vector3Float32) ToVector3DRFloat() Vector3DRFloat {
+	return Vector3DRFloat{
+		X: drfloat.FromFloat32(v.X),
+		Y: drfloat.FromFloat32(v.Y),
+		Z: drfloat.FromFloat32(v.Z),
+	}
 }

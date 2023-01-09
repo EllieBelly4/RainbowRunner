@@ -30,4 +30,6 @@ func Init() {
 			player.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeBehaviourAction)
 		}
 	})
+
+	events.RegisterHandler[objects.PlayerMoveEvent](onPlayerMove)
 }

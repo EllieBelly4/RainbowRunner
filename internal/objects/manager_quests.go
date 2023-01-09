@@ -5,6 +5,7 @@ import (
 	"RainbowRunner/pkg/byter"
 )
 
+//go:generate go run ../../scripts/generatelua -type=QuestManager -extends=GCObject
 type QuestManager struct {
 	*GCObject
 }
@@ -21,6 +22,12 @@ func NewQuestManager() *QuestManager {
 	q.GCType = "QuestManager"
 
 	return q
+}
+
+func (q *QuestManager) WriteFullGCObject(byter *byter.Byter) {
+	q.GCObject.WriteFullGCObject(byter)
+
+	byter.WriteCString("SomethingUnknown")
 }
 
 func (q QuestManager) WriteInit(b *byter.Byter) {

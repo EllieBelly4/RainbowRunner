@@ -161,11 +161,15 @@ func (g *GCObject) WriteSynch(b *byter.Byter) {
 }
 
 func (g *GCObject) Tick() {
-
+	for _, child := range g.GCChildren {
+		child.Tick()
+	}
 }
 
 func (g *GCObject) Init() {
-
+	for _, child := range g.GCChildren {
+		child.Init()
+	}
 }
 
 func (g *GCObject) WriteData(b *byter.Byter) {
@@ -470,6 +474,13 @@ func SelectByGCTypeName(s string, objects []drobjecttypes.DRObject) drobjecttype
 		}
 	}
 
+	for _, child := range objects {
+		res := SelectByGCTypeName(s, child.Children())
+		if res != nil {
+			return res
+		}
+	}
+
 	return nil
 }
 
@@ -477,6 +488,13 @@ func SelectByGCTypeHash(hash uint32, objects []drobjecttypes.DRObject) drobjectt
 	for _, object := range objects {
 		if GetTypeHash(object.(IGCObject).GetGCObject().GCType) == hash {
 			return object
+		}
+	}
+
+	for _, child := range objects {
+		res := SelectByGCTypeHash(hash, child.Children())
+		if res != nil {
+			return res
 		}
 	}
 
