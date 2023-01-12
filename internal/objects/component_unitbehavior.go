@@ -141,7 +141,9 @@ func (u *UnitBehavior) WriteInit(b *byter.Byter) {
 	flags := byte(0)
 
 	if u.IsUnderClientControl {
-		flags = 0x04
+		//TODO finish this
+		//flags = 0x04
+		flags = 0x00
 	} else {
 		flags = 0x00
 	}
