@@ -31,8 +31,6 @@ func registerLuaUnit(state *lua2.LState) {
 
 func luaMethodsUnit() map[string]lua2.LGFunction {
 	return lua.LuaMethodsExtend(map[string]lua2.LGFunction{
-		"hp":                lua.LuaGenericGetSetNumber[IUnit](func(v IUnit) *int { return &v.GetUnit().HP }),
-		"mp":                lua.LuaGenericGetSetNumber[IUnit](func(v IUnit) *int { return &v.GetUnit().MP }),
 		"unitFlags":         lua.LuaGenericGetSetNumber[IUnit](func(v IUnit) *byte { return &v.GetUnit().UnitFlags }),
 		"level":             lua.LuaGenericGetSetNumber[IUnit](func(v IUnit) *byte { return &v.GetUnit().Level }),
 		"unk10Case":         lua.LuaGenericGetSetNumber[IUnit](func(v IUnit) *byte { return &v.GetUnit().Unk10Case }),

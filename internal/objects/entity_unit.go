@@ -9,8 +9,7 @@ import (
 //go:generate go run ../../scripts/generateLua/ -type=Unit -extends=WorldEntity
 type Unit struct {
 	*WorldEntity
-	HP        int
-	MP        int
+
 	UnitFlags byte
 	Level     byte
 
@@ -58,13 +57,13 @@ func (u *Unit) WriteInit(b *byter.Byter) {
 		//u.HP = 1150
 		// 0x02 case
 		// Multiply HP by 256
-		b.WriteUInt32(uint32(u.HP) * 256) // Current HP
+		b.WriteUInt32(u.HP.ToWire()) // Current HP
 	}
 
 	if u.UnitFlags&0x04 > 0 {
 		// 0x04 case
 		// Multiply MP by 256
-		b.WriteUInt32(uint32(u.MP) * 256) // MP
+		b.WriteUInt32(u.MP.ToWire()) // MP
 	}
 
 	if u.UnitFlags&0x010 > 0 {
@@ -105,8 +104,6 @@ func NewUnit(gcType string) *Unit {
 
 	return &Unit{
 		Level:       1,
-		HP:          100,
-		MP:          100,
 		WorldEntity: worldEntity,
 		UnitFlags:   0x01 | 0x02 | 0x04 | 0x20,
 	}

@@ -3,6 +3,7 @@ package objects
 import (
 	"RainbowRunner/internal/connections"
 	"RainbowRunner/internal/message"
+	"RainbowRunner/internal/serverconfig"
 )
 
 //go:generate go run ../../scripts/generatelua -type=RRPlayer
@@ -39,12 +40,14 @@ func (p *RRPlayer) Zone() *Zone {
 }
 
 func NewRRPlayer(rrconn *connections.RRConn, cewriter *ClientEntityWriter, queue *message.Queue) *RRPlayer {
+	defaultSendMovement := serverconfig.Config.SendMovementMessages
+
 	return &RRPlayer{
 		Conn:               rrconn,
 		ClientEntityWriter: cewriter,
 		MessageQueue:       queue,
 		debugOptions: &RRPlayerDebugOptions{
-			SendMovementMessages: true,
+			SendMovementMessages: defaultSendMovement,
 		},
 	}
 }

@@ -19,7 +19,7 @@ type Avatar struct {
 	Rotation           int32
 	ClientUpdateNumber byte
 	MoveUpdate         int
-	IsSpawned          bool
+	Spawned            bool
 
 	FaceVariant byte
 	HairStyle   byte
@@ -66,32 +66,30 @@ func (p Avatar) WriteUpdate(b *byter.Byter) {
 }
 
 func (p *Avatar) Tick() {
-	if !p.IsSpawned {
+	if !p.Spawned {
 		return
 	}
 
-	if serverconfig.Config.SendMovementMessages {
-		player := Players.GetPlayer(p.OwnerID())
+	player := Players.GetPlayer(p.OwnerID())
 
-		if player == nil {
-			log.Errorf("player is nil for owner: %d", p.OwnerID())
-			return
-		}
-
-		if !player.DebugOptions().SendMovementMessages {
-			return
-		}
-
-		unitBehavior := p.GetChildByGCNativeType("UnitBehavior").(*UnitBehavior)
-
-		CEWriter := NewClientEntityWriterWithByter()
-
-		CEWriter.BeginComponentUpdate(unitBehavior)
-		unitBehavior.WriteMoveUpdate(CEWriter.GetBody())
-		CEWriter.EndComponentUpdate(unitBehavior)
-
-		player.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeAvatarMovement)
+	if player == nil {
+		log.Errorf("player is nil for owner: %d", p.OwnerID())
+		return
 	}
+
+	if !player.DebugOptions().SendMovementMessages {
+		return
+	}
+
+	unitBehavior := p.GetChildByGCNativeType("UnitBehavior").(*UnitBehavior)
+
+	CEWriter := NewClientEntityWriterWithByter()
+
+	CEWriter.BeginComponentUpdate(unitBehavior)
+	unitBehavior.WriteMoveUpdate(CEWriter.GetBody())
+	CEWriter.EndComponentUpdate(unitBehavior)
+
+	player.MessageQueue.Enqueue(message.QueueTypeClientEntity, CEWriter.Body, message.OpTypeAvatarMovement)
 }
 
 //func (p *Avatar) SendPosition() {

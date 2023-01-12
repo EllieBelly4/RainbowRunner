@@ -433,7 +433,7 @@ func (z *Zone) OnPlayerEnter(player *Player) {
 	avatar := player.GetChildByGCNativeType("Avatar").(*Avatar)
 
 	avatar.SendFollowClient()
-	avatar.IsSpawned = true
+	avatar.Spawned = true
 
 	if serverconfig.Config.Welcome.SendWelcomeMessage {
 		SendWelcomeMessage(rrplayer)

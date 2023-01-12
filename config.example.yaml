@@ -87,6 +87,7 @@ logging:
   log_sent_message_types:
     OpTypeBehaviourAction: false
     OpTypeAvatarMovement: false
+    OpTypeCreateEntity: false
     OpTypeCreateNPC: false
     OpTypeEquippedItemClickResponse: false
     OpTypeOther: false

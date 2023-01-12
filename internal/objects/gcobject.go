@@ -154,9 +154,10 @@ func (g *GCObject) WriteSynch(b *byter.Byter) {
 	//b.WriteByte(0x00) // 0x00 If in town
 	b.WriteByte(byte(flag)) // 0x02 If in dungeon
 
+	parent := g.GCParent.(IWorldEntity).GetWorldEntity()
+
 	if flag == 0x02 {
-		// This value must be exactly 0x47E00 but I do not know why.
-		b.WriteUInt32(0x47E00) // Unk - EntitySynchInfo::ReadFromStream
+		b.WriteUInt32(parent.GetSynch()) // Unk - EntitySynchInfo::ReadFromStream
 	}
 }
 

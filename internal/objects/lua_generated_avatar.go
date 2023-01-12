@@ -35,7 +35,7 @@ func luaMethodsAvatar() map[string]lua2.LGFunction {
 		"rotation":           lua.LuaGenericGetSetNumber[IAvatar](func(v IAvatar) *int32 { return &v.GetAvatar().Rotation }),
 		"clientUpdateNumber": lua.LuaGenericGetSetNumber[IAvatar](func(v IAvatar) *byte { return &v.GetAvatar().ClientUpdateNumber }),
 		"moveUpdate":         lua.LuaGenericGetSetNumber[IAvatar](func(v IAvatar) *int { return &v.GetAvatar().MoveUpdate }),
-		"isSpawned":          lua.LuaGenericGetSetBool[IAvatar](func(v IAvatar) *bool { return &v.GetAvatar().IsSpawned }),
+		"isSpawned":          lua.LuaGenericGetSetBool[IAvatar](func(v IAvatar) *bool { return &v.GetAvatar().Spawned }),
 		"faceVariant":        lua.LuaGenericGetSetNumber[IAvatar](func(v IAvatar) *byte { return &v.GetAvatar().FaceVariant }),
 		"hairStyle":          lua.LuaGenericGetSetNumber[IAvatar](func(v IAvatar) *byte { return &v.GetAvatar().HairStyle }),
 		"hairColour":         lua.LuaGenericGetSetNumber[IAvatar](func(v IAvatar) *byte { return &v.GetAvatar().HairColour }),

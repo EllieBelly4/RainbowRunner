@@ -559,6 +559,8 @@ func (u *UnitBehavior) Spawn(pos datatypes.Vector3Float32) {
 	u.Position = pos
 
 	u.ExecuteAction(action)
+
+	u.GCParent.(IWorldEntity).GetWorldEntity().Spawned = true
 }
 
 func (u *UnitBehavior) MoveTo(pos datatypes.Vector2Float32) {

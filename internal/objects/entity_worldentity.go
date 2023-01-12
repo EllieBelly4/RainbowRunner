@@ -7,6 +7,7 @@ import (
 	"RainbowRunner/internal/types/drobjecttypes"
 	"RainbowRunner/pkg/byter"
 	"RainbowRunner/pkg/datatypes"
+	"RainbowRunner/pkg/datatypes/drfloat"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -44,12 +45,12 @@ const (
 	WorldEntityFlagUnk6
 	WorldEntityFlagUnk7
 	WorldEntityFlagUnk8
-	WorldEntityFlagUnk9
+	WorldEntityFlagIsSynched_mb
 	WorldEntityFlagBreaksEverything
 	WorldEntityFlagMakesCharacterInvisible
 	WorldEntityFlagMakesMovementVeryJumpy
 	WorldEntityFlagUnk10
-	WorldEntityFlagUnk11
+	WorldEntityFlagHasAttributes_mb
 	WorldEntityFlagUnk12
 )
 
@@ -69,6 +70,9 @@ const (
 //go:generate go run ../../scripts/generatelua -type=WorldEntity -extends=Entity
 type WorldEntity struct {
 	*Entity
+
+	HP drfloat.DRFloat
+	MP drfloat.DRFloat
 
 	CollisionRadius int
 
@@ -91,6 +95,8 @@ type WorldEntity struct {
 	luaScript      script.IEntityScript
 	CanBeActivated bool
 
+	Spawned bool
+
 	/*
 		PropertyWorldEntityPosition
 		PropertyWorldEntityHeading
@@ -105,6 +111,19 @@ type WorldEntity struct {
 		PropertyWorldEntityDescPolyPick
 		PropertyWorldEntityDescBlocking
 	*/
+}
+
+func (g *WorldEntity) WriteSynch(b *byter.Byter) {
+	flag := 0x02
+	// TODO consider checking the zone to see if it's a town, as it is 0x02 will work in town
+	//b.WriteByte(0x00) // 0x00 If in town
+	b.WriteByte(byte(flag)) // 0x02 If in dungeon
+
+	if flag == 0x02 {
+		b.WriteUInt32(
+			g.GetSynch(),
+		) // HP - EntitySynchInfo::ReadFromStream
+	}
 }
 
 func (g *WorldEntity) AddChild(child drobjecttypes.DRObject) {
@@ -280,12 +299,27 @@ func (n *WorldEntity) worldEntityFlags() uint32 {
 	return flags
 }
 
+func (w *WorldEntity) GetSynch() uint32 {
+	synch := w.HP.ToWire() & 0xFFFFFF00
+
+	if w.Spawned {
+		//Ref: void_Unit::computeAttributes_void_1
+		//HP regen needs to be in here
+		// HPRegen = ((0x200 * 0x100) >> 8) >> 8 == 0x02
+		//synch |= 0xF0
+	}
+
+	return synch
+}
+
 func NewWorldEntity(gcType string) *WorldEntity {
 	entity := NewEntity(gcType)
 	entity.GCType = gcType
 
 	return &WorldEntity{
 		Entity:               entity,
+		HP:                   drfloat.FromInt32(100),
+		MP:                   drfloat.FromInt32(100),
 		WorldEntityFlags:     0x04,
 		WorldEntityInitFlags: 0xFF,
 	}
